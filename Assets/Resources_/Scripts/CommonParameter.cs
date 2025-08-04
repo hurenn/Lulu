@@ -5,6 +5,7 @@ public class CommonParameter : ScriptableObject
 {
     [Header("ˆÚ“®—Í")]
     public float moveSpeed = 5.0f;
+    public float dashSpeed = 10.0f;
 
     [Header("ƒWƒƒƒ“ƒv—Í")]
     public float jumpForce = 5.0f;
