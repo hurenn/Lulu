@@ -123,11 +123,11 @@ public class RuruAnime : MonoBehaviour
         }
         if (state == 14)
         {
-            if(WarpControl.overHeat == true)
+            if(WarpControl_Old.overHeat == true)
             {
                 state = 6;
             }
-            else if (GetComponent<WarpControl>().cool == true)
+            else if (GetComponent<WarpControl_Old>().cool == true)
             {
                 anim.Play("Warp_Fall");
                 StartCoroutine("trans");

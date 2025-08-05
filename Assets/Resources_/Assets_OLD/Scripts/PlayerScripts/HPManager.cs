@@ -55,7 +55,7 @@ public class HPManager : MonoBehaviour
         }
         else
         {
-            GetComponent<WarpControl>().SetIntervalTimer(0);    //無敵時間終了時、MP回復タイマーリセット
+            GetComponent<WarpControl_Old>().SetIntervalTimer(0);    //無敵時間終了時、MP回復タイマーリセット
             //isInvince = false;
             invinceFlag--;
             invinceTime = maxInvince;
@@ -70,18 +70,18 @@ public class HPManager : MonoBehaviour
         }
         //if (GetInvince() == false && isInvince2 == false)
 
-        if (WarpControl.nowMagic - damage <= 0 && Friends.Pepe && !WarpControl.overHeat)//かすりヒット
+        if (WarpControl_Old.nowMagic - damage <= 0 && Friends.Pepe && !WarpControl_Old.overHeat)//かすりヒット
         {
             Instantiate(Resources.Load("HitEffect1"), transform.position + transform.up * 2, Quaternion.identity);
-            GetComponent<WarpControl>().EmergencyEffectStart();
+            GetComponent<WarpControl_Old>().EmergencyEffectStart();
             GetComponent<Lulu>().avoidance = false;
             SE.playnum = 5;
             GetComponent<Lulu>().DamageAnimation();
             GameObject collapse = (GameObject)Instantiate(CollapseHeart, transform.position, Quaternion.identity, GameObject.Find("Life Gage").transform);
             collapse.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
 
-            damage = Mathf.Clamp(damage - (int)WarpControl.nowMagic, 5, (int)WarpControl.maxMagic);
-            WarpControl.nowMagic = 0;
+            damage = Mathf.Clamp(damage - (int)WarpControl_Old.nowMagic, 5, (int)WarpControl_Old.maxMagic);
+            WarpControl_Old.nowMagic = 0;
 
             if (Life.nowLife - (damage) > 0)
                 DOTween.To
@@ -94,11 +94,11 @@ public class HPManager : MonoBehaviour
             else
                 Life.nowLife = 0;
 
-            WarpControl.nowMagic = Mathf.Clamp(WarpControl.nowMagic - damage, 0, WarpControl.maxMagic);
+            WarpControl_Old.nowMagic = Mathf.Clamp(WarpControl_Old.nowMagic - damage, 0, WarpControl_Old.maxMagic);
             GameObject collapseMP = Instantiate(CollapseCharge, transform.position, Quaternion.identity, GameObject.Find("Back Gage").transform);
             collapseMP.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
         }
-        else if (WarpControl.overHeat || !Friends.Pepe)//直撃
+        else if (WarpControl_Old.overHeat || !Friends.Pepe)//直撃
         {
             Instantiate(Resources.Load("HitEffect1"), transform.position + transform.up * 2, Quaternion.identity);
             SE.playnum = 29;
@@ -119,9 +119,9 @@ public class HPManager : MonoBehaviour
         }
         else//回避
         {
-            GetComponent<WarpControl>().EmergencyEffectStart();
+            GetComponent<WarpControl_Old>().EmergencyEffectStart();
             SE.playnum = 5;
-            WarpControl.nowMagic = Mathf.Clamp(WarpControl.nowMagic - damage, 0, WarpControl.maxMagic);
+            WarpControl_Old.nowMagic = Mathf.Clamp(WarpControl_Old.nowMagic - damage, 0, WarpControl_Old.maxMagic);
             GameObject collapseMP = (GameObject)Instantiate(CollapseCharge, transform.position, Quaternion.identity, GameObject.Find("Back Gage").transform);
             collapseMP.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
 

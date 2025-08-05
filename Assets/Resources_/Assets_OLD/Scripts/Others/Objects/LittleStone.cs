@@ -55,7 +55,7 @@ public class LittleStone : MonoBehaviour
         if (get == true)
         {
             if (timer == 0)
-                WarpControl.nowMagic = WarpControl.maxMagic;
+                WarpControl_Old.nowMagic = WarpControl_Old.maxMagic;
 
 
             timer += Time.deltaTime;

@@ -125,7 +125,7 @@ public class Player : MonoBehaviour
         }
 
         //Debug.Log("warpcool = " + WarpControl.cool + ", stop = " + stop);
-        if (GetComponent<WarpControl>().cool == false && stop == false && Life.over == false)//どちらかtrueならその場で停止
+        if (GetComponent<WarpControl_Old>().cool == false && stop == false && Life.over == false)//どちらかtrueならその場で停止
         {
             CalculateVelocity();
             //HandleWallSliding(); //壁キック

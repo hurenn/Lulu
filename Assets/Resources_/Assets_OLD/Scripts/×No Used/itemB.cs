@@ -77,7 +77,7 @@ public class itemB : MonoBehaviour
             grab = true;
             if (OnGround.jump == true)
             {
-                GameObject.Find("Player").GetComponent<WarpControl>().SetBan(true);
+                GameObject.Find("Player").GetComponent<WarpControl_Old>().SetBan(true);
                 Player.grabB = true;
                 RuruAnime.grabB = true;
             }
@@ -121,13 +121,13 @@ public class itemB : MonoBehaviour
     }
     void Throw()
     {
-        if (WarpControl.overHeat)
+        if (WarpControl_Old.overHeat)
         {
             Reset();
         }
         else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow))
         {
-            WarpControl warpControl = player.GetComponent<WarpControl>();
+            WarpControl_Old warpControl = player.GetComponent<WarpControl_Old>();
             warpControl.Cost();
             anim.Play("Warp Effect 0");
             GetComponent<Rigidbody2D>().gravityScale = 0;
@@ -193,7 +193,7 @@ public class itemB : MonoBehaviour
 
     void End()
     {
-        GameObject.Find("Player").GetComponent<WarpControl>().SetBan(false);
+        GameObject.Find("Player").GetComponent<WarpControl_Old>().SetBan(false);
         end = false;
         throwing = false;
         rightThrow = false;
@@ -211,7 +211,7 @@ public class itemB : MonoBehaviour
     {
         RuruAnime.freez = false;
         grab = false;
-        GameObject.Find("Player").GetComponent<WarpControl>().SetBan(false);
+        GameObject.Find("Player").GetComponent<WarpControl_Old>().SetBan(false);
         Player.grabB = false;
         Player.throwB = false;
         RuruAnime.grabB = false;

@@ -21,7 +21,7 @@ public class StageStart1 : MonoBehaviour
         Time.timeScale = 0.9f;
         player = GameObject.Find("Player");
         player.GetComponent<Lulu>().SetStop(true);
-        player.GetComponent<WarpControl>().SetBan(true);
+        player.GetComponent<WarpControl_Old>().SetBan(true);
         anim = player.GetComponent<Animator>();
         anim.Play("Fall");
     }
@@ -35,20 +35,20 @@ public class StageStart1 : MonoBehaviour
             //→キー押している間、操作制限解除
             if (Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow))
             {
-                player.GetComponent<WarpControl>().ZeroBan();
+                player.GetComponent<WarpControl_Old>().ZeroBan();
 
                 previewInput_Z.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
             }
             else
             {
-                player.GetComponent<WarpControl>().SetBan(true);
+                player.GetComponent<WarpControl_Old>().SetBan(true);
 
                 previewInput_Z.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.3f);
             }
         }
         else
         {
-            player.GetComponent<WarpControl>().SetBan(true);
+            player.GetComponent<WarpControl_Old>().SetBan(true);
         }
     }
 
@@ -69,7 +69,7 @@ public class StageStart1 : MonoBehaviour
             Time.timeScale = 1f;
             BGM.SetActive(true);
             player.GetComponent<Lulu>().SetStop(false);
-            player.GetComponent<WarpControl>().ZeroBan();
+            player.GetComponent<WarpControl_Old>().ZeroBan();
             GetComponent<BoxCollider2D>().isTrigger = false;
             Destroy(gameObject);
         }

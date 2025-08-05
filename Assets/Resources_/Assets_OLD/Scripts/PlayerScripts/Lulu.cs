@@ -135,7 +135,7 @@ public class Lulu : MonoBehaviour
         GetComponent<HPManager>().setInvince(true);
         xPlus = 0;
         yPlus = 0;
-        GetComponent<WarpControl>().SetBan(true);
+        GetComponent<WarpControl_Old>().SetBan(true);
         stop = 100;
     }
 
@@ -271,7 +271,7 @@ public class Lulu : MonoBehaviour
         x = 0;  //操作移動力リセット
 
         //移動入力
-        if (stop <= 0 && GetComponent<WarpControl>().GetTimer() == -1)
+        if (stop <= 0 && GetComponent<WarpControl_Old>().GetTimer() == -1)
         {
             //慣性移動力
             if (xPlus > 0 || xPlus < 0)
@@ -478,7 +478,7 @@ public class Lulu : MonoBehaviour
     {
         //操作禁止 ダッシュ解除 無敵
         SetStop(true);
-        GetComponent<WarpControl>().SetBan(true);
+        GetComponent<WarpControl_Old>().SetBan(true);
         GetComponent<PlayerInput>().SetDash(false);
         GetComponent<HPManager>().setInvince(true);
 
@@ -497,7 +497,7 @@ public class Lulu : MonoBehaviour
  
         //操作状態初期化
         SetStop(false);
-        GetComponent<WarpControl>().SetBan(false);
+        GetComponent<WarpControl_Old>().SetBan(false);
         yPlus = 0;
         anim.ResetTrigger("Attack");
         yield return new WaitForSeconds(0.3f); 
@@ -526,7 +526,7 @@ public class Lulu : MonoBehaviour
                 SE.playnum = 31;
                 Instantiate(Resources.Load("Flash"));
                 Instantiate(Resources.Load("Get Gem"), transform.position, Quaternion.identity);
-                WarpControl.maxMagic += 20;
+                WarpControl_Old.maxMagic += 20;
             }
         }
     }

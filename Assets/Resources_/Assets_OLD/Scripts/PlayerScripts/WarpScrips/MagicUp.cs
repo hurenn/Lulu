@@ -19,7 +19,7 @@ public class MagicUp : MonoBehaviour
         SE.playnum = 31;
         Instantiate(Resources.Load("Flash"));
         Instantiate(Resources.Load("Get Gem"), transform.position, Quaternion.identity);
-        WarpControl.maxMagic += WarpControl.warpCost;
+        WarpControl_Old.maxMagic += WarpControl_Old.warpCost;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -26,7 +26,7 @@ public class MPGage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (WarpControl.overHeat == true)
+        if (WarpControl_Old.overHeat == true)
         {
             realGage.color = new Color(1f, 0.4f, 0.4f, 0.9f);
             greenGage.color = new Color(1f, 0.4f, 0.4f, 0.9f);
@@ -39,16 +39,16 @@ public class MPGage : MonoBehaviour
             redGage.color = new Color(1f, 1f, 1f, 1f);
         }
 
-            realGage.fillAmount = WarpControl.nowMagic / DefaultMP;
-            greenGage.fillAmount = (WarpControl.nowMagic - DefaultMP) / DefaultMP;
-            redGage.fillAmount = (WarpControl.nowMagic - DefaultMP * 2) / DefaultMP;
+            realGage.fillAmount = WarpControl_Old.nowMagic / DefaultMP;
+            greenGage.fillAmount = (WarpControl_Old.nowMagic - DefaultMP) / DefaultMP;
+            redGage.fillAmount = (WarpControl_Old.nowMagic - DefaultMP * 2) / DefaultMP;
             //underGage.fillAmount = WarpControl.nowMagic / WarpControl.maxMagic;
     }
 
     public void GetGage()
     {
-        realGage.fillAmount = WarpControl.nowMagic / DefaultMP;
-        greenGage.fillAmount = (WarpControl.nowMagic - DefaultMP) / DefaultMP;
-        redGage.fillAmount = (WarpControl.nowMagic - DefaultMP * 2) / DefaultMP;
+        realGage.fillAmount = WarpControl_Old.nowMagic / DefaultMP;
+        greenGage.fillAmount = (WarpControl_Old.nowMagic - DefaultMP) / DefaultMP;
+        redGage.fillAmount = (WarpControl_Old.nowMagic - DefaultMP * 2) / DefaultMP;
     }
 }

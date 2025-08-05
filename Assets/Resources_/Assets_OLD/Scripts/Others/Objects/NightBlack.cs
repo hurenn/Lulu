@@ -24,7 +24,7 @@ public class NightBlack : MonoBehaviour
         if (!startFlag)
             return;
 
-        GetComponent<SpriteRenderer>().color = new Vector4(0, 0, 0, (WarpControl.defaultMagic / 100f) - (WarpControl.nowMagic / 100f));//(float)(255 - GameObject.Find("Player").GetComponent<Lulu>().GetPluspower()) / 255.0f - 0.025f);
+        GetComponent<SpriteRenderer>().color = new Vector4(0, 0, 0, (WarpControl_Old.defaultMagic / 100f) - (WarpControl_Old.nowMagic / 100f));//(float)(255 - GameObject.Find("Player").GetComponent<Lulu>().GetPluspower()) / 255.0f - 0.025f);
         /*
         timer += Time.deltaTime;
         if(timer > rimit)
@@ -48,6 +48,6 @@ public class NightBlack : MonoBehaviour
 
     public void power100()
     {
-        WarpControl.nowMagic = WarpControl.maxMagic;
+        WarpControl_Old.nowMagic = WarpControl_Old.maxMagic;
     }
 }

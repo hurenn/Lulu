@@ -87,7 +87,7 @@ public class StartAnimation : MonoBehaviour
         EffectUI = GameObject.Find("Effect UI");
 
         yield return new WaitForSeconds(0.1f);
-        GameObject.Find("Player").GetComponent<WarpControl>().SetBan(true);
+        GameObject.Find("Player").GetComponent<WarpControl_Old>().SetBan(true);
         GameObject hitEffect = (GameObject)Instantiate(Hit, transform.position, Quaternion.identity);
         hitEffect.transform.parent = EffectUI.transform;
         EffectUI.GetComponent<Canvas>().sortingOrder = -1;
@@ -108,7 +108,7 @@ public class StartAnimation : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         show();
         GameObject.Find("Player").GetComponent<Lulu>().SetStop(false);
-        GameObject.Find("Player").GetComponent<WarpControl>().SetBan(false);
+        GameObject.Find("Player").GetComponent<WarpControl_Old>().SetBan(false);
 
         if (Boss)
         {

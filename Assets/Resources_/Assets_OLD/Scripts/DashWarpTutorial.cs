@@ -25,7 +25,7 @@ public class DashWarpTutorial : MonoBehaviour
             return;
         }
 
-        int ans = player.GetComponent<WarpControl>().DashFlug();
+        int ans = player.GetComponent<WarpControl_Old>().DashFlug();
         switch (ans)
         {
             case 1:

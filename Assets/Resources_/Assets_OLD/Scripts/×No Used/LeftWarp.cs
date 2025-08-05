@@ -458,6 +458,6 @@ public class LeftWarp : MonoBehaviour
         transform.position = new Vector2(player.transform.position.x, GameObject.Find("Warp Default Right").transform.position.y);
         cool = true;
         Player.stop = true;
-        player.GetComponent<WarpControl>().cool = true;
+        player.GetComponent<WarpControl_Old>().cool = true;
     }
 }

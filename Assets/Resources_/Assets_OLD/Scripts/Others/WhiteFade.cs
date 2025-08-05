@@ -57,7 +57,7 @@ public class WhiteFade : MonoBehaviour
     {
         //Debug.Log("PlayerStopIn");
         GameObject.Find("Player").GetComponent<Lulu>().SetStop(true);
-        GameObject.Find("Player").GetComponent<WarpControl>().SetBan(true);
+        GameObject.Find("Player").GetComponent<WarpControl_Old>().SetBan(true);
     }
     public void PlayerStopOut()
     {
@@ -66,6 +66,6 @@ public class WhiteFade : MonoBehaviour
         {
             GameObject.Find("Player").GetComponent<Lulu>().SetStop(false);
         }
-        GameObject.Find("Player").GetComponent<WarpControl>().SetBan(false);
+        GameObject.Find("Player").GetComponent<WarpControl_Old>().SetBan(false);
     }
 }

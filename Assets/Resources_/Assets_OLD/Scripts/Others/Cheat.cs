@@ -33,7 +33,7 @@ public class Cheat : MonoBehaviour
         }
         if (Damage)
         {
-            WarpControl.nowMagic = 0;
+            WarpControl_Old.nowMagic = 0;
             Player.GetComponent<HPManager>().Damage(10);
         }
     }

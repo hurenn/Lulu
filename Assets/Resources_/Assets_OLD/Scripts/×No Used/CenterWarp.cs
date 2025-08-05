@@ -113,7 +113,7 @@ public class CenterWarp : MonoBehaviour
                 if (dash >= 2 && Input.GetKeyDown(KeyCode.DownArrow) && cool == false)
                 {
                     WarpStart();
-                    player.GetComponent<WarpControl>().cool = true;
+                    player.GetComponent<WarpControl_Old>().cool = true;
                     center = true;
 
                 }
@@ -175,6 +175,6 @@ public class CenterWarp : MonoBehaviour
         RuruAnime.WarpStart = true;
         cool = true;
         Player.stop = true;
-        player.GetComponent<WarpControl>().cool = true;
+        player.GetComponent<WarpControl_Old>().cool = true;
     }
 }

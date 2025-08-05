@@ -81,7 +81,7 @@ public class StoneUI : MonoBehaviour
         }
 
         Life.nowLife = Life.maxLife;
-        WarpControl.nowMagic = WarpControl.maxMagic;
+        WarpControl_Old.nowMagic = WarpControl_Old.maxMagic;
 
         timer += Time.deltaTime;
         if (timer > InvinceTime)

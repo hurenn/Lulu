@@ -66,7 +66,7 @@ public class UpWarp : MonoBehaviour
                     WarpStart();
                     if (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow))
                     {
-                        player.GetComponent<WarpControl>().cool = true;
+                        player.GetComponent<WarpControl_Old>().cool = true;
                         Goal = GameObject.Find("Warp Default Up").transform.position;
                         up = true;
                     }
@@ -87,7 +87,7 @@ public class UpWarp : MonoBehaviour
                 WarpStart();
                 if (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow))
                 {
-                    player.GetComponent<WarpControl>().cool = true;
+                    player.GetComponent<WarpControl_Old>().cool = true;
                     Goal = GameObject.Find("Warp Default Up").transform.position;
                     up = true;
                 }

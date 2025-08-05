@@ -96,8 +96,8 @@ public class Coin1 : MonoBehaviour
             GameObject getEffect = (GameObject)Instantiate(GetGem, transform.position, Quaternion.identity);
             SE.playnum = 4;
             CollectCoin.Collected += value;
-            if (!WarpControl.overHeat && !gem)
-                WarpControl.nowMagic = Mathf.Clamp(WarpControl.nowMagic + plusMagic, 0, WarpControl.maxMagic);
+            if (!WarpControl_Old.overHeat && !gem)
+                WarpControl_Old.nowMagic = Mathf.Clamp(WarpControl_Old.nowMagic + plusMagic, 0, WarpControl_Old.maxMagic);
             collision.gameObject.GetComponent<Lulu>().PowerUp(plusPower);
             Destroy(this.gameObject);
         }
@@ -110,8 +110,8 @@ public class Coin1 : MonoBehaviour
             GameObject getEffect = (GameObject)Instantiate(GetGem, transform.position, Quaternion.identity);
             SE.playnum = 4;
             CollectCoin.Collected += value;
-            if(!WarpControl.overHeat && !gem)
-                WarpControl.nowMagic = Mathf.Clamp(WarpControl.nowMagic + plusMagic, 0, WarpControl.maxMagic);
+            if(!WarpControl_Old.overHeat && !gem)
+                WarpControl_Old.nowMagic = Mathf.Clamp(WarpControl_Old.nowMagic + plusMagic, 0, WarpControl_Old.maxMagic);
             collision.gameObject.GetComponent<Lulu>().PowerUp(plusPower);
             Destroy(this.gameObject);
         }

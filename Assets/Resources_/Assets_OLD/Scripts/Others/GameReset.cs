@@ -86,7 +86,7 @@ public class GameReset : MonoBehaviour
     public static void NextStageParameter()
     {
         StartPoint.pos = Vector3.zero;
-        WarpControl.ResetMax();
+        WarpControl_Old.ResetMax();
         PlusScore.plusScore = 0;
         CommonReset();
     }
@@ -96,7 +96,7 @@ public class GameReset : MonoBehaviour
     {
         if (GameObject.Find("Life Gage"))
             GameObject.Find("Life Gage").GetComponent<Life>().stopCor();
-        WarpControl.nowMagic = WarpControl.maxMagic;
+        WarpControl_Old.nowMagic = WarpControl_Old.maxMagic;
         MessageList.MessageNow = false;
         Life.nowLife = Life.maxLife;
     }

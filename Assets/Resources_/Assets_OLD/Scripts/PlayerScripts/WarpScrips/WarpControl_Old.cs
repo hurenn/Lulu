@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WarpControl : MonoBehaviour
+public class WarpControl_Old : MonoBehaviour
 {
     //ワープ機能を管理するスクリプト
 

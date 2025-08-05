@@ -36,8 +36,8 @@ public class WarpPad : MonoBehaviour
         {
             if (Life.nowLife < Life.maxLife)
                 Life.nowLife = Life.maxLife;
-            if (WarpControl.nowMagic < WarpControl.maxMagic)
-                WarpControl.nowMagic = WarpControl.maxMagic;
+            if (WarpControl_Old.nowMagic < WarpControl_Old.maxMagic)
+                WarpControl_Old.nowMagic = WarpControl_Old.maxMagic;
 
             if (GetComponent<BlockTrigger>()) //イベントがあれば再生、なければステージ移動。
             {

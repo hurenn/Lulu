@@ -7,7 +7,7 @@ public class EventWarpTrigger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject.Find("Player").GetComponent<WarpControl>().EventWarp(transform.position);
+        GameObject.Find("Player").GetComponent<WarpControl_Old>().EventWarp(transform.position);
         GameObject.Find("Player").GetComponent<Lulu>().SetXplus(0);
     }
 
