@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Character_Base character;
 
     // コントローラー
-    private Controls _inputActions;
+    private InputActions _inputActions;
 
     // 方向入力
     private Vector2 _moveInputValue;
@@ -17,24 +17,24 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        _inputActions = new Controls();
+        _inputActions = new InputActions();
     }
 
     private void OnEnable()
     {
-        _inputActions.Character.Enable();
-        _inputActions.Character.Move.started += _OnMove;
-        _inputActions.Character.Move.canceled += _OnMove;
-        _inputActions.Character.Jump.performed += OnJump;
-        _inputActions.Character.Jump.canceled += OnJumpRelease;    }
+        _inputActions.Player.Enable();
+        _inputActions.Player.Move.performed += _OnMove;
+        _inputActions.Player.Move.canceled += _OnMove;
+        _inputActions.Player.Jump.performed += OnJump;
+        _inputActions.Player.Jump.canceled += OnJumpRelease;    }
 
     private void OnDisable()
     {
-        _inputActions.Character.Move.performed -= _OnMove;
-        _inputActions.Character.Move.canceled -= _OnMove;
-        _inputActions.Character.Jump.performed -= OnJump;
-        _inputActions.Character.Jump.canceled -= OnJumpRelease;
-        _inputActions.Character.Disable();
+        _inputActions.Player.Move.performed -= _OnMove;
+        _inputActions.Player.Move.canceled -= _OnMove;
+        _inputActions.Player.Jump.performed -= OnJump;
+        _inputActions.Player.Jump.canceled -= OnJumpRelease;
+        _inputActions.Player.Disable();
     }
 
     // Update is called once per frame
@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
         input.jumpHeld = _isJumpHeld;
 
         character.UpdateMotor(input);
+        character.Warp(input);
 
         _isJumpPressed = false;
     }
@@ -53,6 +54,7 @@ public class PlayerController : MonoBehaviour
     private void _OnMove(InputAction.CallbackContext context)
     {
         _moveInputValue = context.ReadValue<Vector2>();
+        Debug.Log(_moveInputValue);
     }
 
     private void OnJump(InputAction.CallbackContext context)

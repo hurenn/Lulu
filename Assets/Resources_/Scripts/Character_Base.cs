@@ -15,6 +15,9 @@ public class Character_Base : MonoBehaviour
     private bool _isGrounded;
     private bool _isJumping;
 
+    // ワープ管理
+    [SerializeField] private WarpControl _warpControl;
+
     // 現在のジャンプ時間
     private float _currentJumpTime = 0;
 
@@ -133,4 +136,33 @@ public class Character_Base : MonoBehaviour
         _rb.linearVelocity = velocity;
     }
 
+    public void Warp(CharacterInputData input)
+    {
+        //Debug.Log(input.move);
+
+        if (_warpControl == null)
+        {
+            return;
+        }
+
+        // ワープ入力
+        if (input.move.magnitude != 0 && !_isGrounded && input.jumpPressed)
+        {
+            WarpControl.eWarpDirection direction = WarpControl.eWarpDirection.Up;
+
+            direction = input.move switch
+            {
+                { x: > 0, y: > 0 } => WarpControl.eWarpDirection.UpRight,
+                { x: > 0, y: < 0 } => WarpControl.eWarpDirection.DownRight,
+                { x: < 0, y: > 0 } => WarpControl.eWarpDirection.UpLeft,
+                { x: < 0, y: < 0 } => WarpControl.eWarpDirection.DownLeft,
+                { x: 0, y: > 0 } => WarpControl.eWarpDirection.Up,
+                { x: 0, y: < 0 } => WarpControl.eWarpDirection.Down,
+                { x: > 0, y: 0 } => WarpControl.eWarpDirection.Right,
+                { x: < 0, y: 0 } => WarpControl.eWarpDirection.Left,
+                _ => direction
+            };
+            _warpControl.Warp(direction);
+        }
+    }
 }
