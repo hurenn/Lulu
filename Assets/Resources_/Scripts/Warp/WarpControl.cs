@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class WarpControl : MonoBehaviour
 {
-    // ワープチェック用のコンポーネント
-    [SerializeField] private WarpChecker[] warpCheckers;
-
     public enum eWarpDirection
     {
         Up,
@@ -17,28 +14,36 @@ public class WarpControl : MonoBehaviour
         UpLeft
     }
 
-    // 障害物のレイヤーマスク
-    [SerializeField] private LayerMask obstacleLayer;
-    // キャラクターのコライダー
-    [SerializeField] private Collider2D col;
+    // ワープチェック用のコンポーネント
+    [SerializeField] private WarpChecker[] warpCheckers;
 
+    /// <summary>
+    /// ワープチェッカーのセットアップ
+    /// </summary>
+    /// <param name="character_size">キャラクターサイズ</param>
+    /// <param name="obstacle_layer">対象レイヤー</param>
+    public void Setup(Vector2 character_size, LayerMask obstacle_layer)
+    {
+        foreach(var checker in warpCheckers)
+        {
+            // キャラクターサイズと障害物レイヤーを設定
+            checker.Setup(character_size, obstacle_layer);
+        }
+    }
+
+    /// <summary>
+    /// ワープ処理を実行
+    /// </summary>
+    /// <param name="direction">方向</param>
+    /// <param name="character_size">キャラクターサイズ</param>
     public void Warp(eWarpDirection direction)
     {
         Vector2 origin = transform.position;
         WarpChecker warp_checker = warpCheckers[(int)direction];
-        Vector2 cheracter_size = GetCharacterSize();
 
-        var safe_point = warp_checker.GetWarpPoint(origin, warp_checker.transform.position, cheracter_size, obstacleLayer);
+        var safe_point = warp_checker.GetWarpPoint(origin, warp_checker.transform.position);
 
         // ワープ先に移動
         transform.position = safe_point;
-    }
-
-    private Vector2 GetCharacterSize()
-    {
-        if(col == null) return new Vector2(0.5f, 1f); // デフォルトのキャラクターサイズ
-
-        // キャラクターのコライダーサイズを取得
-        return col.bounds.size;
     }
 }

@@ -6,14 +6,34 @@ public class Character_Base : MonoBehaviour
     private bool _isWalking;
     // ダッシュ中
     private bool _isDashing;
-
+    // 共通パラメータ
     [SerializeField] private CommonParameter _param;
-    [SerializeField] private Transform _groundCheck;
+    
+    // 地面チェッカー
     [SerializeField] private LayerMask _groundLayer;
+    // 壁チェッカー
+    [SerializeField] private LayerMask _wallLayer;
+    // 障害物チェッカー
+    [SerializeField] private LayerMask _obstacleLayer;
 
+    // チェッカーパラメータ
+    private Vector3 _groundCheckLocalPos = default;
+    private Vector3 _groundCheckScale = default;
+    private Vector3 _wallCheckLeftLocalPos = default;
+    private Vector3 _wallCheckRightLocalPos = default;
+    private Vector3 _wallCheckScale = default;
+    private const float _groundCheckHeight = 0.05f;
+    private const float _wallCheckWidth = 0.1f;
+    private const float _checkerBuffer = 0.1f;
+
+    [SerializeField] private Collider2D _col;
     [SerializeField] private Rigidbody2D _rb;
+
+    // キャラクター状態フラグ
     private bool _isGrounded;
     private bool _isJumping;
+    private bool _isTouchingLeft;
+    private bool _isTouchingRight;
 
     // ワープ管理
     [SerializeField] private WarpControl _warpControl;
@@ -31,11 +51,32 @@ public class Character_Base : MonoBehaviour
     private void Start()
     {
         _rb.gravityScale = 0;
+
+        // 地面チェックの初期化
+        _groundCheckLocalPos = Vector3.up * (-GetCharacterSize().y / 2 - _groundCheckHeight);
+        _groundCheckScale = new Vector3(GetCharacterSize().x - _checkerBuffer, _groundCheckHeight, 1);
+
+        // 壁チェックの初期化
+        var chara_size = GetCharacterSize();
+        _wallCheckLeftLocalPos = Vector3.right * (-chara_size.x / 2 - _wallCheckWidth);
+        _wallCheckRightLocalPos = Vector3.right * (chara_size.x / 2 + _wallCheckWidth);
+        _wallCheckScale = new Vector3(_wallCheckWidth, chara_size.y - _checkerBuffer, 1);
+
+        _warpControl.Setup(chara_size, _obstacleLayer);
     }
 
     private void FixedUpdate()
     {
+        _CheckTerrain();
         _ApplyGravity();
+    }
+
+    private void _CheckTerrain()
+    {
+        _isTouchingLeft = Physics2D.OverlapBox(transform.position + _wallCheckLeftLocalPos, _wallCheckScale, 0, _wallLayer);
+        _isTouchingRight = Physics2D.OverlapBox(transform.position + _wallCheckRightLocalPos, _wallCheckScale, 0, _wallLayer);
+
+        _isGrounded = Physics2D.OverlapBox(transform.position + _groundCheckLocalPos, _groundCheckScale, 0, _groundLayer);
     }
 
     private void _ApplyGravity()
@@ -106,14 +147,18 @@ public class Character_Base : MonoBehaviour
             }
         }
 
-        _isGrounded = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, _groundLayer);
-
         // 横移動
         Vector2 velocity = _rb.linearVelocity;
         velocity.x = input.move.x * (_isDashing ? _param.dashSpeed : _param.moveSpeed);
 
+        // 壁に接触している場合は横移動を0にする
+        if((_isTouchingLeft && input.move.x < 0) || (_isTouchingRight && input.move.x > 0))
+        {
+            velocity.x = 0;
+        }
+
         // ジャンプ
-        if(input.jumpPressed && _isGrounded)
+        if (input.jumpPressed && _isGrounded)
         {
             velocity.y = _param.jumpForce;
             _currentJumpTime = _param.maxJumpHoldTime;
@@ -138,8 +183,6 @@ public class Character_Base : MonoBehaviour
 
     public void Warp(CharacterInputData input)
     {
-        //Debug.Log(input.move);
-
         if (_warpControl == null)
         {
             return;
@@ -165,4 +208,28 @@ public class Character_Base : MonoBehaviour
             _warpControl.Warp(direction);
         }
     }
+
+    /// <summary>
+    /// キャラクターサイズを取得
+    /// </summary>
+    public Vector2 GetCharacterSize()
+    {
+        if (_col != null)
+        {
+            return _col.bounds.size; // キャラクターのコライダーサイズを返す
+        }
+        return new Vector2(0.5f, 1f); // デフォルトのキャラクターサイズ
+    }
+
+    //private void OnDrawGizmos()
+    //{
+    //    // 地面チェック位置
+    //    Gizmos.color = Color.green;
+    //    Gizmos.DrawWireCube(transform.position + _groundCheckLocalPos, _groundCheckScale);
+
+    //    // 壁チェック位置・サイズ
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireCube(transform.position + _wallCheckLeftLocalPos, _wallCheckScale);
+    //    Gizmos.DrawWireCube(transform.position + _wallCheckRightLocalPos, _wallCheckScale);
+    //}
 }
