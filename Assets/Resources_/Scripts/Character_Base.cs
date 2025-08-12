@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class Character_Base : MonoBehaviour
 {
-    // 歩行中
-    private bool _isWalking;
-    // ダッシュ中
-    private bool _isDashing;
     // 共通パラメータ
     [SerializeField] private CommonParameter _param;
     
@@ -30,6 +26,9 @@ public class Character_Base : MonoBehaviour
     [SerializeField] private Rigidbody2D _rb;
 
     // キャラクター状態フラグ
+    private bool _isWalking;
+    private bool _isDashing;
+    private bool _isSliding;
     private bool _isGrounded;
     private bool _isJumping;
     private bool _isTouchingLeft;
@@ -47,6 +46,13 @@ public class Character_Base : MonoBehaviour
     private float _currentStopMoveInputTime = 0;
     // 直前まで進んでいた方向
     private Vector2 _lastWalkDirection = Vector2.zero;
+    
+    // スライディング時間計測
+    private float _currentSlideTime = 0;
+    // スライディングの最大時間
+    private const float _maxSlideTime = 0.5f;
+    // スライディング方向
+    private WarpControl.eWarpDirection _slideDirection = WarpControl.eWarpDirection.Up;
 
     private void Start()
     {
@@ -69,6 +75,7 @@ public class Character_Base : MonoBehaviour
     {
         _CheckTerrain();
         _ApplyGravity();
+        _Sliding();
     }
 
     private void _CheckTerrain()
@@ -102,6 +109,22 @@ public class Character_Base : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// スライディング処理
+    /// </summary>
+    private void _Sliding()
+    {
+        if (_isSliding)
+        {
+            _currentSlideTime += Time.deltaTime;
+            if (_currentSlideTime >= _maxSlideTime)
+            {
+                _isSliding = false; // スライディング終了
+                _currentSlideTime = 0;
+            }
+        }
+    }
+
     public void UpdateMotor(CharacterInputData input)
     {
         // 移動入力
@@ -117,10 +140,7 @@ public class Character_Base : MonoBehaviour
                 {
                     _isDashing = true;
                 }
-                else
-                {
-                    _isDashing = false;
-                }
+
                 _isWalking = true;
             }
 
@@ -206,6 +226,10 @@ public class Character_Base : MonoBehaviour
                 _ => direction
             };
             _warpControl.Warp(direction);
+
+            // ワープ後はスライディング状態にする
+            _isSliding = true; 
+            _currentSlideTime = 0;
         }
     }
 

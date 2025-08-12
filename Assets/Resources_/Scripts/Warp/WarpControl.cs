@@ -17,6 +17,9 @@ public class WarpControl : MonoBehaviour
     // ワープチェック用のコンポーネント
     [SerializeField] private WarpChecker[] warpCheckers;
 
+    // カメラ
+    [SerializeField] private CameraFollow _cameraFollow = default;
+
     /// <summary>
     /// ワープチェッカーのセットアップ
     /// </summary>
@@ -45,5 +48,7 @@ public class WarpControl : MonoBehaviour
 
         // ワープ先に移動
         transform.position = safe_point;
+
+        _cameraFollow.SetWarpMode(true);
     }
 }
