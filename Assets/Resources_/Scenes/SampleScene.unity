@@ -613,8 +613,8 @@ MonoBehaviour:
   target: {fileID: 948386861}
   offset: {x: 2, y: 1}
   warpSmoothTime: 1
-  minPosition: {x: -20, y: -20}
-  maxPosition: {x: 20, y: 20}
+  minPosition: {x: -50, y: -50}
+  maxPosition: {x: 50, y: 50}
   _camera: {fileID: 519420031}
 --- !u!1 &584568611
 GameObject:
@@ -972,7 +972,8 @@ MonoBehaviour:
   _warpWaitTime: 0.1
   _maxWarpCoolTime: 0.1
   _maxWarpDashTime: 0.2
-  _warpDashSpeed: {x: 20, y: 6}
+  _warpDashSpeed: {x: 20, y: 4}
+  _maxSlideTime: 0.8
 --- !u!114 &948386868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1426,8 +1427,8 @@ Transform:
   m_GameObject: {fileID: 1253985656}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 12.0207, y: 1.6904, z: 0}
-  m_LocalScale: {x: 1.3730769, y: 4.10256, z: 1}
+  m_LocalPosition: {x: 15.1784, y: 1.0549, z: 0}
+  m_LocalScale: {x: 2.644134, y: 10.418041, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

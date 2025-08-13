@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Character_Base : MonoBehaviour
@@ -21,7 +22,7 @@ public class Character_Base : MonoBehaviour
     private Vector3 _wallCheckScale = default;
     private const float _groundCheckHeight = 0.05f;
     private const float _wallCheckWidth = 0.1f;
-    private const float _checkerBuffer = 0.1f;
+    private const float _checkerBuffer = 0.05f;
 
     [SerializeField] private Collider2D _col;
     [SerializeField] private Rigidbody2D _rb;
@@ -64,14 +65,13 @@ public class Character_Base : MonoBehaviour
     private Vector2 _warpDashDirection = Vector2.zero;
     // ワープダッシュの速度
     [SerializeField]
-    private Vector2 _warpDashSpeed = new Vector2(20f, 6f);
+    private Vector2 _warpDashSpeed = new Vector2(20f, 5f);
 
     // スライディング時間計測
     private float _currentSlideTime = 0;
     // スライディングの最大時間
-    private const float _maxSlideTime = 0.5f;
-    // スライディング方向
-    private WarpControl.eWarpDirection _slideDirection = WarpControl.eWarpDirection.Up;
+    [SerializeField]
+    private float _maxSlideTime = 1f;
 
     private void Start()
     {
@@ -94,8 +94,9 @@ public class Character_Base : MonoBehaviour
     {
         _CheckTerrain();
         _ApplyGravity();
+        _UpdateSliding();
 
-        if(_currentWarpCoolTime > 0)
+        if (_currentWarpCoolTime > 0)
         {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
         }
@@ -168,16 +169,43 @@ public class Character_Base : MonoBehaviour
         while (currentWarpDashTime < _maxWarpDashTime)
         {
             currentWarpDashTime += Time.deltaTime;
+            _WarpDashMove();
 
-            // ワープダッシュ中はキャラクターの位置を更新
-            Vector2 velocity = _rb.linearVelocity;
-            velocity = _warpDashDirection * _warpDashSpeed;
-            _rb.linearVelocity = velocity;
+            // 地面に接触しているかチェック
+            if(_isGrounded)
+            {
+                _isWarpDashing = false; // ワープダッシュ終了
+                _ExecuteSlide(); // スライディング実行
+                yield break; // コルーチン終了
+            }
 
             yield return null; // 次のフレームまで待機
         }
 
         _isWarpDashing = false; // ワープダッシュ終了
+    }
+
+    private void _WarpDashMove()
+    {
+        // ワープダッシュ中はキャラクターの位置を更新
+        Vector2 velocity = _rb.linearVelocity;
+        velocity = _warpDashDirection * _warpDashSpeed;
+        if ((_isTouchingLeft && _warpDashDirection.x < 0) ||
+            (_isTouchingRight && _warpDashDirection.x > 0))
+        {
+            velocity.x = 0; // 壁に接触している場合は横移動を0にする
+        }
+
+        _rb.linearVelocity = velocity;
+    }
+
+    /// <summary>
+    /// スライディング実行
+    /// </summary>
+    private void _ExecuteSlide()
+    {
+        _isSliding = true;
+        _currentSlideTime = 0;
     }
 
     /// <summary>
@@ -187,6 +215,8 @@ public class Character_Base : MonoBehaviour
     {
         if (_isSliding)
         {
+            _WarpDashMove();
+
             _currentSlideTime += Time.deltaTime;
             if (_currentSlideTime >= _maxSlideTime)
             {
@@ -198,7 +228,7 @@ public class Character_Base : MonoBehaviour
 
     public void UpdateMotor(CharacterInputData input)
     {
-        if (_isWarpDashing)
+        if (_isWarpDashing || _isSliding)
         {
             return;
         }
@@ -259,6 +289,12 @@ public class Character_Base : MonoBehaviour
             velocity.y = _param.jumpForce;
             _currentJumpTime = _param.maxJumpHoldTime;
             _isJumping = true;
+
+            if (_isSliding)
+            {
+                // スライディング中にジャンプした場合、y方向の慣性速度を0にする
+                _warpDashDirection *= Vector2.right;
+            }
         }
 
         // ジャンプリリース
@@ -306,6 +342,8 @@ public class Character_Base : MonoBehaviour
 
         IEnumerator WarpCoroutine(WarpControl.eWarpDirection direction)
         {
+            _isSliding = false; // スライディングリセット
+
             // ワープダッシュ実行準備
             _SetupWarpDash(direction);
 
@@ -335,16 +373,16 @@ public class Character_Base : MonoBehaviour
     }
 
     #region デバッグ用
-    //private void OnDrawGizmos()
-    //{
-    //    // 地面チェック位置
-    //    Gizmos.color = Color.green;
-    //    Gizmos.DrawWireCube(transform.position + _groundCheckLocalPos, _groundCheckScale);
+    private void OnDrawGizmos()
+    {
+        // 地面チェック位置
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(transform.position + _groundCheckLocalPos, _groundCheckScale);
 
-    //    // 壁チェック位置・サイズ
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireCube(transform.position + _wallCheckLeftLocalPos, _wallCheckScale);
-    //    Gizmos.DrawWireCube(transform.position + _wallCheckRightLocalPos, _wallCheckScale);
-    //}
+        // 壁チェック位置・サイズ
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position + _wallCheckLeftLocalPos, _wallCheckScale);
+        Gizmos.DrawWireCube(transform.position + _wallCheckRightLocalPos, _wallCheckScale);
+    }
     #endregion
 }
