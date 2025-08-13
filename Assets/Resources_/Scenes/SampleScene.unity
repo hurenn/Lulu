@@ -274,8 +274,8 @@ Transform:
   m_GameObject: {fileID: 212097197}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3.5, z: 0}
-  m_LocalScale: {x: 100, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -4.4326, z: 0}
+  m_LocalScale: {x: 100, y: 2.8652, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -969,6 +969,10 @@ MonoBehaviour:
   _col: {fileID: 948386864}
   _rb: {fileID: 948386866}
   _warpControl: {fileID: 948386868}
+  _warpWaitTime: 0.1
+  _maxWarpCoolTime: 0.1
+  _maxWarpDashTime: 0.2
+  _warpDashSpeed: {x: 20, y: 6}
 --- !u!114 &948386868
 MonoBehaviour:
   m_ObjectHideFlags: 0

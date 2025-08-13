@@ -9,6 +9,7 @@ public class CommonParameter : ScriptableObject
 
     [Header("ƒWƒƒƒ“ƒv—Í")]
     public float jumpForce = 5.0f;
+    public float maxJumpSpeed = 20.0f;
 
     [Header("d—Í")]
     public float gravity = -30.0f;

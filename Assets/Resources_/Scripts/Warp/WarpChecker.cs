@@ -88,6 +88,7 @@ public class WarpChecker : MonoBehaviour
         return _isValidWarpPoint ? point : (Vector2?)null;
     }
 
+    #region デバッグ用
     //private void OnDrawGizmos()
     //{
     //    Gizmos.color = _isValidWarpPoint && !_isUpperWarp
@@ -98,4 +99,5 @@ public class WarpChecker : MonoBehaviour
     //        ? UnityEngine.Color.green : UnityEngine.Color.gray;
     //    Gizmos.DrawWireCube(transform.position + Vector3.up * _upperOffset, _characterSize);
     //}
+    #endregion
 }
