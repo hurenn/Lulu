@@ -32,6 +32,7 @@ public class Character_Base : MonoBehaviour
     private bool _isDashing;
     private bool _isWarpDashing;
     private bool _isSliding;
+    private bool _isSlideJumping;
     private bool _isGrounded;
     private bool _isJumping;
     private bool _isTouchingLeft;
@@ -199,6 +200,14 @@ public class Character_Base : MonoBehaviour
         _rb.linearVelocity = velocity;
     }
 
+    private void _SlideDashMove()
+    {
+        // スライドダッシュ中はキャラクターの位置を更新
+        Vector2 velocity = _rb.linearVelocity;
+        velocity.x = _warpDashDirection.x * _warpDashSpeed.x;
+        _rb.linearVelocity = velocity;
+    }
+
     /// <summary>
     /// スライディング実行
     /// </summary>
@@ -213,9 +222,14 @@ public class Character_Base : MonoBehaviour
     /// </summary>
     private void _UpdateSliding()
     {
-        if (_isSliding)
+        if (_isSlideJumping && _isGrounded && _currentSlideTime > 0.1f)
         {
-            _WarpDashMove();
+            _isSlideJumping = false;
+        }
+
+        if (_isSliding || _isSlideJumping)
+        {
+            _SlideDashMove();
 
             _currentSlideTime += Time.deltaTime;
             if (_currentSlideTime >= _maxSlideTime)
@@ -228,8 +242,49 @@ public class Character_Base : MonoBehaviour
 
     public void UpdateMotor(CharacterInputData input)
     {
-        if (_isWarpDashing || _isSliding)
+        if (_isWarpDashing)
         {
+            return;
+        }
+
+        // 横移動
+        Vector2 velocity = _rb.linearVelocity;
+
+        // ジャンプ
+        if (input.jumpPressed && _isGrounded)
+        {
+            velocity.y = _param.jumpForce;
+            _currentJumpTime = _param.maxJumpHoldTime;
+            _isJumping = true;
+        }
+
+        // ジャンプリリース
+        if ((!input.jumpHeld && _isJumping) || _currentJumpTime <= 0)
+        {
+            _isJumping = false;
+        }
+
+        // 長押しジャンプ
+        if (input.jumpHeld && _isJumping)
+        {
+            velocity.y = _param.jumpForce;
+            _currentJumpTime -= Time.deltaTime;
+        }
+
+        // スライディングジャンプ
+        if (_isSliding && _isJumping)
+        {
+            _isSlideJumping = true;
+            _isSliding = false;
+
+            // y方向の加速を無視
+            _warpDashDirection.y = 0;
+
+            // スライディング時間リセット
+            _currentSlideTime = 0;
+
+            // ジャンプ力を適用
+            _rb.linearVelocity = velocity;
             return;
         }
 
@@ -273,41 +328,12 @@ public class Character_Base : MonoBehaviour
             }
         }
 
-        // 横移動
-        Vector2 velocity = _rb.linearVelocity;
         velocity.x = input.move.x * (_isDashing ? _param.dashSpeed : _param.moveSpeed);
 
         // 壁に接触している場合は横移動を0にする
         if ((_isTouchingLeft && input.move.x < 0) || (_isTouchingRight && input.move.x > 0))
         {
             velocity.x = 0;
-        }
-
-        // ジャンプ
-        if (input.jumpPressed && _isGrounded)
-        {
-            velocity.y = _param.jumpForce;
-            _currentJumpTime = _param.maxJumpHoldTime;
-            _isJumping = true;
-
-            if (_isSliding)
-            {
-                // スライディング中にジャンプした場合、y方向の慣性速度を0にする
-                _warpDashDirection *= Vector2.right;
-            }
-        }
-
-        // ジャンプリリース
-        if ((!input.jumpHeld && _isJumping) || _currentJumpTime <= 0)
-        {
-            _isJumping = false;
-        }
-
-        // 長押しジャンプ
-        if (input.jumpHeld && _isJumping)
-        {
-            velocity.y = _param.jumpForce;
-            _currentJumpTime -= Time.deltaTime;
         }
 
         _rb.linearVelocity = velocity;

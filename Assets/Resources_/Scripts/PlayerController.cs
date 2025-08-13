@@ -26,7 +26,8 @@ public class PlayerController : MonoBehaviour
         _inputActions.Player.Move.performed += _OnMove;
         _inputActions.Player.Move.canceled += _OnMove;
         _inputActions.Player.Jump.performed += OnJump;
-        _inputActions.Player.Jump.canceled += OnJumpRelease;    }
+        _inputActions.Player.Jump.canceled += OnJumpRelease;
+    }
 
     private void OnDisable()
     {
