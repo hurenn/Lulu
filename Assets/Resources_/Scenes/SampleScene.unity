@@ -612,7 +612,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 948386861}
   offset: {x: 2, y: 1}
-  warpSmoothTime: 1
+  warpSmoothTime: 2
   minPosition: {x: -50, y: -50}
   maxPosition: {x: 50, y: 50}
   _camera: {fileID: 519420031}
@@ -971,9 +971,10 @@ MonoBehaviour:
   _warpControl: {fileID: 948386868}
   _warpWaitTime: 0.1
   _maxWarpCoolTime: 0.1
-  _maxWarpDashTime: 0.2
+  _maxWarpDashTime: 0.25
   _warpDashSpeed: {x: 20, y: 4}
   _maxSlideTime: 0.8
+  _wallSlideSpeed: 2
 --- !u!114 &948386868
 MonoBehaviour:
   m_ObjectHideFlags: 0

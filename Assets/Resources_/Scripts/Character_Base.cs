@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Character_Base : MonoBehaviour
@@ -30,13 +31,22 @@ public class Character_Base : MonoBehaviour
     // キャラクター状態フラグ
     private bool _isWalking;
     private bool _isDashing;
+    private bool _isWarpDelay;
     private bool _isWarpDashing;
-    private bool _isSliding;
-    private bool _isSlideJumping;
+    private bool _isSliding;      // スライディング中かどうか
+    private bool _isSlideJumping; // スライディング中にジャンプしたかどうか
+    private bool _isGroundSticking; // 地面に張り付いている状態
+    private bool _isWallSliding;  // 壁に沿って滑っている状態
     private bool _isGrounded;
     private bool _isJumping;
     private bool _isTouchingLeft;
     private bool _isTouchingRight;
+
+    // 通常移動可能かどうか
+    private bool _CanMove => !_isWarpDashing && !_isSliding &&
+        !_isSlideJumping && !_isGroundSticking && !_isWallSliding;
+    // 重力を適用するかどうか
+    private bool _EnableGravity => !_isWarpDashing && !_isWallSliding && !_isWarpDelay;
 
     // ワープ管理
     [SerializeField] private WarpControl _warpControl;
@@ -62,6 +72,7 @@ public class Character_Base : MonoBehaviour
     // ワープダッシュの最大時間
     [SerializeField]
     private float _maxWarpDashTime = 0.5f;
+    private float _currentWarpDashTime = 0;
     // ワープダッシュの方向
     private Vector2 _warpDashDirection = Vector2.zero;
     // ワープダッシュの速度
@@ -73,6 +84,11 @@ public class Character_Base : MonoBehaviour
     // スライディングの最大時間
     [SerializeField]
     private float _maxSlideTime = 1f;
+
+    // 壁に沿って滑る速度
+    [SerializeField]
+    private float _wallSlideSpeed = 2.0f;
+    private float _currentWallSlideTime = 0;
 
     private void Start()
     {
@@ -95,7 +111,9 @@ public class Character_Base : MonoBehaviour
     {
         _CheckTerrain();
         _ApplyGravity();
+        _UpdateWarpDash();
         _UpdateSliding();
+        _UpdateWallSlideMove();
 
         if (_currentWarpCoolTime > 0)
         {
@@ -113,7 +131,7 @@ public class Character_Base : MonoBehaviour
 
     private void _ApplyGravity()
     {
-        if (_isWarpDashing)
+        if (!_EnableGravity)
         {
             return; // ワープダッシュ中は重力を適用しない
         }
@@ -143,61 +161,103 @@ public class Character_Base : MonoBehaviour
         }
     }
 
-    private void _SetupWarpDash(WarpControl.eWarpDirection direction)
-    {
-        _warpDashDirection = direction switch
-        {
-            WarpControl.eWarpDirection.Up => Vector2.up,
-            WarpControl.eWarpDirection.UpRight => new Vector2(1, 1).normalized,
-            WarpControl.eWarpDirection.Right => Vector2.right,
-            WarpControl.eWarpDirection.DownRight => new Vector2(1, -1).normalized,
-            WarpControl.eWarpDirection.Down => Vector2.down,
-            WarpControl.eWarpDirection.DownLeft => new Vector2(-1, -1).normalized,
-            WarpControl.eWarpDirection.Left => Vector2.left,
-            WarpControl.eWarpDirection.UpLeft => new Vector2(-1, 1).normalized,
-            _ => Vector2.zero
-        };
-        _isWarpDashing = true;
-        _rb.linearVelocity = Vector2.zero; // ワープダッシュ開始時に速度をリセット
-    }
-
     /// <summary>
     /// ワープダッシュの更新処理
     /// </summary>
-    private IEnumerator _UpdateWarpDash()
+    private void _UpdateWarpDash()
     {
-        float currentWarpDashTime = 0;
-        while (currentWarpDashTime < _maxWarpDashTime)
+        if (!_isWarpDashing)
         {
-            currentWarpDashTime += Time.deltaTime;
-            _WarpDashMove();
-
-            // 地面に接触しているかチェック
-            if(_isGrounded)
-            {
-                _isWarpDashing = false; // ワープダッシュ終了
-                _ExecuteSlide(); // スライディング実行
-                yield break; // コルーチン終了
-            }
-
-            yield return null; // 次のフレームまで待機
+            return; // ワープダッシュ中でない場合は何もしない
         }
 
-        _isWarpDashing = false; // ワープダッシュ終了
+        // ワープダッシュの最大時間を超えた場合は終了
+        if (_currentWarpDashTime > _maxWarpDashTime)
+        {
+            _isWarpDashing = false; // ワープダッシュ終了
+            return; // ワープダッシュのクールタイム中は何もしない
+        }
+        _currentWarpDashTime += Time.deltaTime;
+
+        // ワープダッシュ移動
+        var dash_velocity = _warpDashDirection * _warpDashSpeed;
+        _rb.linearVelocity = dash_velocity;
+
+        // 地面に接触しているかチェック
+        if (_isGrounded)
+        {
+            if (_warpDashDirection.x != 0)
+            {
+                // 地面に対して斜めに移動している場合はスライディングを実行
+                _ExecuteSlide(); // スライディング実行
+            }
+            else
+            {
+                // 地面に対して垂直に移動している場合は張り付き状態に移行
+                //_isGroundSticking = true;
+            }
+            _isWarpDashing = false; // ワープダッシュ終了
+            return;
+        }
+        // 壁に接触しているかチェック
+        if ((_isTouchingLeft && _warpDashDirection.x < 0) || (_isTouchingRight && _warpDashDirection.x > 0))
+        {
+            // 壁に接触している場合は壁に沿って滑る
+            _isWallSliding = true;
+            _currentWallSlideTime = 0;
+
+            _isWarpDashing = false; // ワープダッシュ終了
+            return;
+        }
     }
 
-    private void _WarpDashMove()
+    /// <summary>
+    /// 壁滑りの更新処理
+    /// </summary>
+    private void _UpdateWallSlideMove()
     {
-        // ワープダッシュ中はキャラクターの位置を更新
-        Vector2 velocity = _rb.linearVelocity;
-        velocity = _warpDashDirection * _warpDashSpeed;
-        if ((_isTouchingLeft && _warpDashDirection.x < 0) ||
-            (_isTouchingRight && _warpDashDirection.x > 0))
+        // 壁滑り中でない場合は何もしない
+        if (!_isWallSliding)
         {
-            velocity.x = 0; // 壁に接触している場合は横移動を0にする
+            return;
         }
 
+        if (_currentWallSlideTime >= _maxSlideTime)
+        {
+            _isWallSliding = false; // 壁滑り終了
+            return;
+        }
+        _currentWallSlideTime += Time.deltaTime;
+
+        // 壁に沿って滑る処理
+        Vector2 velocity = Vector2.zero;
+        if (_warpDashDirection.y < 0)
+        {
+            // 壁に沿って下方向に滑る
+            velocity.y = -_wallSlideSpeed;
+        }
+        else
+        {
+            // 壁に沿って上方向に滑る
+            velocity.y = _wallSlideSpeed;
+        }
         _rb.linearVelocity = velocity;
+
+        // 壁との接触が無くなった場合は壁滑りを終了してジャンプする
+        if (!_isTouchingLeft && !_isTouchingRight)
+        {
+            _isWallSliding = false; // 壁滑り終了
+            _isJumping = true;
+
+            velocity.y = _param.jumpForce;
+            _rb.linearVelocity = velocity; // ジャンプ力を適用
+        }
+
+        // 着地した場合は壁滑りを終了
+        if (_isGrounded)
+        {
+            _isWallSliding = false; // 壁滑り終了
+        }
     }
 
     private void _SlideDashMove()
@@ -242,7 +302,18 @@ public class Character_Base : MonoBehaviour
 
     public void UpdateMotor(CharacterInputData input)
     {
-        if (_isWarpDashing)
+        // 壁滑り中の入力
+        if (_isWallSliding)
+        {
+            // 壁と反対方向に移動しようとする入力があれば壁滑りを終了
+            if (input.move.x != 0 && Mathf.Sign(input.move.x) != Mathf.Sign(_warpDashDirection.x))
+            {
+                _isWallSliding = false; // 壁滑り終了
+                return;
+            }
+        }
+
+        if (!_CanMove)
         {
             return;
         }
@@ -368,10 +439,26 @@ public class Character_Base : MonoBehaviour
 
         IEnumerator WarpCoroutine(WarpControl.eWarpDirection direction)
         {
-            _isSliding = false; // スライディングリセット
+            // スライディングリセット
+            _isSliding = false;
+            // 重力を無効化
+            _isWarpDelay = true;
+            // 速度をリセット
+            _rb.linearVelocity = Vector2.zero;
 
-            // ワープダッシュ実行準備
-            _SetupWarpDash(direction);
+            // ワープダッシュの方向を設定
+            _warpDashDirection = direction switch
+            {
+                WarpControl.eWarpDirection.Up => Vector2.up,
+                WarpControl.eWarpDirection.UpRight => new Vector2(1, 1).normalized,
+                WarpControl.eWarpDirection.Right => Vector2.right,
+                WarpControl.eWarpDirection.DownRight => new Vector2(1, -1).normalized,
+                WarpControl.eWarpDirection.Down => Vector2.down,
+                WarpControl.eWarpDirection.DownLeft => new Vector2(-1, -1).normalized,
+                WarpControl.eWarpDirection.Left => Vector2.left,
+                WarpControl.eWarpDirection.UpLeft => new Vector2(-1, 1).normalized,
+                _ => Vector2.zero
+            };
 
             // 一瞬待機
             yield return new WaitForSeconds(_warpWaitTime);
@@ -379,9 +466,14 @@ public class Character_Base : MonoBehaviour
             // ワープ実行
             _warpControl.Warp(direction);
 
-            // ワープダッシュ実行
-            StartCoroutine(_UpdateWarpDash());
+            yield return null;
 
+            // ワープダッシュ実行
+            _isWarpDashing = true;
+            _isWarpDelay = false;
+            _currentWarpDashTime = 0;
+
+            // ワープダッシュのクールタイムをリセット
             _currentWarpCoolTime = _maxWarpCoolTime;
         }
     }
