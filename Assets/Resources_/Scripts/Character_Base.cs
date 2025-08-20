@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
@@ -34,7 +35,6 @@ public class Character_Base : MonoBehaviour
     private bool _isWarpDelay;
     private bool _isWarpDashing;
     private bool _isSliding;      // スライディング中かどうか
-    private bool _isSlideJumping; // スライディング中にジャンプしたかどうか
     private bool _isGroundSticking; // 地面に張り付いている状態
     private bool _isWallSliding;  // 壁に沿って滑っている状態
     private bool _isGrounded;
@@ -43,10 +43,13 @@ public class Character_Base : MonoBehaviour
     private bool _isTouchingRight;
 
     // 通常移動可能かどうか
-    private bool _CanMove => !_isWarpDashing && !_isSliding &&
-        !_isSlideJumping && !_isGroundSticking && !_isWallSliding;
+    private bool _CanMove => !_isWarpDashing;
     // 重力を適用するかどうか
     private bool _EnableGravity => !_isWarpDashing && !_isWallSliding && !_isWarpDelay;
+
+    // ジャンプ力を取得
+    private float _jumpForce => _isDashing ? _param.dashJumpForce :
+            _isSliding ? _param.slideJumpForce : _param.jumpForce;
 
     // ワープ管理
     [SerializeField] private WarpControl _warpControl;
@@ -69,21 +72,16 @@ public class Character_Base : MonoBehaviour
     private float _maxWarpCoolTime = 0.1f;
     private float _currentWarpCoolTime = 0;
 
-    // ワープダッシュの最大時間
-    [SerializeField]
-    private float _maxWarpDashTime = 0.5f;
+    // ワープダッシュ時間計測
     private float _currentWarpDashTime = 0;
     // ワープダッシュの方向
     private Vector2 _warpDashDirection = Vector2.zero;
-    // ワープダッシュの速度
-    [SerializeField]
-    private Vector2 _warpDashSpeed = new Vector2(20f, 5f);
 
     // スライディング時間計測
     private float _currentSlideTime = 0;
-    // スライディングの最大時間
-    [SerializeField]
-    private float _maxSlideTime = 1f;
+
+     // 着地ダッシュ時間計測
+    private float _currentLandingDashTime = 0;
 
     // 壁に沿って滑る速度
     [SerializeField]
@@ -118,6 +116,15 @@ public class Character_Base : MonoBehaviour
         if (_currentWarpCoolTime > 0)
         {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
+        }
+
+        // 地面張り付き状態計測
+        if(_currentLandingDashTime < _param.maxLandingDashTime && _isGroundSticking) {
+            _currentLandingDashTime += Time.fixedDeltaTime;
+            if (_currentLandingDashTime >= _param.maxLandingDashTime)
+            {
+                _isGroundSticking = false; // 張り付き状態を解除
+            }
         }
     }
 
@@ -172,7 +179,7 @@ public class Character_Base : MonoBehaviour
         }
 
         // ワープダッシュの最大時間を超えた場合は終了
-        if (_currentWarpDashTime > _maxWarpDashTime)
+        if (_currentWarpDashTime > _param.maxWarpDashTime)
         {
             _isWarpDashing = false; // ワープダッシュ終了
             return; // ワープダッシュのクールタイム中は何もしない
@@ -180,8 +187,14 @@ public class Character_Base : MonoBehaviour
         _currentWarpDashTime += Time.deltaTime;
 
         // ワープダッシュ移動
-        var dash_velocity = _warpDashDirection * _warpDashSpeed;
+        var dash_velocity = _warpDashDirection;
         _rb.linearVelocity = dash_velocity;
+        // ワープダッシュ力を減衰させる
+        _warpDashDirection *= _param.warpDashDamping;
+        if(_warpDashDirection.magnitude < 0.2f)
+        {
+            _warpDashDirection = Vector2.zero; // ダッシュ力が小さくなったらリセット
+        }
 
         // 地面に接触しているかチェック
         if (_isGrounded)
@@ -194,7 +207,8 @@ public class Character_Base : MonoBehaviour
             else
             {
                 // 地面に対して垂直に移動している場合は張り付き状態に移行
-                //_isGroundSticking = true;
+                _isGroundSticking = true;
+                _currentLandingDashTime = 0;
             }
             _isWarpDashing = false; // ワープダッシュ終了
             return;
@@ -222,7 +236,7 @@ public class Character_Base : MonoBehaviour
             return;
         }
 
-        if (_currentWallSlideTime >= _maxSlideTime)
+        if (_currentWallSlideTime >= _param.maxSlideTime)
         {
             _isWallSliding = false; // 壁滑り終了
             return;
@@ -260,19 +274,12 @@ public class Character_Base : MonoBehaviour
         }
     }
 
-    private void _SlideDashMove()
-    {
-        // スライドダッシュ中はキャラクターの位置を更新
-        Vector2 velocity = _rb.linearVelocity;
-        velocity.x = _warpDashDirection.x * _warpDashSpeed.x;
-        _rb.linearVelocity = velocity;
-    }
-
     /// <summary>
     /// スライディング実行
     /// </summary>
     private void _ExecuteSlide()
     {
+        _isDashing = true;
         _isSliding = true;
         _currentSlideTime = 0;
     }
@@ -282,17 +289,15 @@ public class Character_Base : MonoBehaviour
     /// </summary>
     private void _UpdateSliding()
     {
-        if (_isSlideJumping && _isGrounded && _currentSlideTime > 0.1f)
+        if (_isSliding)
         {
-            _isSlideJumping = false;
-        }
-
-        if (_isSliding || _isSlideJumping)
-        {
-            _SlideDashMove();
+            // スライドダッシュ中はキャラクターの位置を更新
+            Vector2 velocity = _rb.linearVelocity;
+            velocity.x = _warpDashDirection.x;
+            _rb.linearVelocity = velocity.normalized * _param.slideSpeed;
 
             _currentSlideTime += Time.deltaTime;
-            if (_currentSlideTime >= _maxSlideTime)
+            if (_currentSlideTime >= _param.maxSlideTime)
             {
                 _isSliding = false; // スライディング終了
                 _currentSlideTime = 0;
@@ -300,8 +305,10 @@ public class Character_Base : MonoBehaviour
         }
     }
 
-    public void UpdateMotor(CharacterInputData input)
-    {
+    public void UpdateMotor(CharacterInputData input) {
+
+        Vector2 velocity = _rb.linearVelocity;
+
         // 壁滑り中の入力
         if (_isWallSliding)
         {
@@ -313,50 +320,54 @@ public class Character_Base : MonoBehaviour
             }
         }
 
+        // 地面張り付き状態の入力
+        if (_isGroundSticking) {
+            if(input.move.x != 0)
+            {
+                // 張り付き状態で移動入力があれば張り付き状態を解除
+                _isGroundSticking = false;
+                _warpDashDirection = input.move.x > 0 ? _param.warpDashDownRight : _param.warpDashDownLeft;
+                _ExecuteSlide(); // スライディング実行
+            }
+            else if (input.jumpPressed)
+            {
+                // 張り付き状態でジャンプ入力があればジャンプ
+                _isGroundSticking = false;
+            }
+        }
+
         if (!_CanMove)
         {
             return;
         }
 
-        // 横移動
-        Vector2 velocity = _rb.linearVelocity;
-
         // ジャンプ
-        if (input.jumpPressed && _isGrounded)
-        {
-            velocity.y = _param.jumpForce;
+        if (input.jumpPressed && _isGrounded) {
+            // スライディングジャンプ
+            if (_isSliding) {
+                _isSliding = false;
+
+                // y方向の加速を無視
+                _warpDashDirection.y = 0;
+
+                // スライディング時間リセット
+                _currentSlideTime = 0;
+            }
+
+            velocity.y = _jumpForce;
             _currentJumpTime = _param.maxJumpHoldTime;
             _isJumping = true;
         }
-
         // ジャンプリリース
         if ((!input.jumpHeld && _isJumping) || _currentJumpTime <= 0)
         {
             _isJumping = false;
         }
-
         // 長押しジャンプ
         if (input.jumpHeld && _isJumping)
         {
-            velocity.y = _param.jumpForce;
+            velocity.y = _jumpForce;
             _currentJumpTime -= Time.deltaTime;
-        }
-
-        // スライディングジャンプ
-        if (_isSliding && _isJumping)
-        {
-            _isSlideJumping = true;
-            _isSliding = false;
-
-            // y方向の加速を無視
-            _warpDashDirection.y = 0;
-
-            // スライディング時間リセット
-            _currentSlideTime = 0;
-
-            // ジャンプ力を適用
-            _rb.linearVelocity = velocity;
-            return;
         }
 
         // 移動入力
@@ -399,7 +410,8 @@ public class Character_Base : MonoBehaviour
             }
         }
 
-        velocity.x = input.move.x * (_isDashing ? _param.dashSpeed : _param.moveSpeed);
+        velocity.x = input.move.x * (_isDashing ? _param.dashSpeed : 
+            _isSliding ? _param.slideSpeed : _param.moveSpeed);
 
         // 壁に接触している場合は横移動を0にする
         if ((_isTouchingLeft && input.move.x < 0) || (_isTouchingRight && input.move.x > 0))
@@ -447,16 +459,15 @@ public class Character_Base : MonoBehaviour
             _rb.linearVelocity = Vector2.zero;
 
             // ワープダッシュの方向を設定
-            _warpDashDirection = direction switch
-            {
-                WarpControl.eWarpDirection.Up => Vector2.up,
-                WarpControl.eWarpDirection.UpRight => new Vector2(1, 1).normalized,
-                WarpControl.eWarpDirection.Right => Vector2.right,
-                WarpControl.eWarpDirection.DownRight => new Vector2(1, -1).normalized,
-                WarpControl.eWarpDirection.Down => Vector2.down,
-                WarpControl.eWarpDirection.DownLeft => new Vector2(-1, -1).normalized,
-                WarpControl.eWarpDirection.Left => Vector2.left,
-                WarpControl.eWarpDirection.UpLeft => new Vector2(-1, 1).normalized,
+            _warpDashDirection = direction switch {
+                WarpControl.eWarpDirection.Up => _param.warpDashUp,
+                WarpControl.eWarpDirection.UpRight => _param.warpDashUpRight,
+                WarpControl.eWarpDirection.Right => _param.warpDashRight,
+                WarpControl.eWarpDirection.DownRight => _param.warpDashDownRight,
+                WarpControl.eWarpDirection.Down => _param.warpDashDown,
+                WarpControl.eWarpDirection.DownLeft => _param.warpDashDownLeft,
+                WarpControl.eWarpDirection.Left => _param.warpDashLeft,
+                WarpControl.eWarpDirection.UpLeft => _param.warpDashUpLeft,
                 _ => Vector2.zero
             };
 
@@ -469,6 +480,7 @@ public class Character_Base : MonoBehaviour
             yield return null;
 
             // ワープダッシュ実行
+            _isDashing = true;
             _isWarpDashing = true;
             _isWarpDelay = false;
             _currentWarpDashTime = 0;

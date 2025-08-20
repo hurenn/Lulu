@@ -171,6 +171,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DownLeftChecker
       objectReference: {fileID: 0}
+    - target: {fileID: 8882788843763819845, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
+      propertyPath: _isEnableUpperCheck
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -971,9 +975,6 @@ MonoBehaviour:
   _warpControl: {fileID: 948386868}
   _warpWaitTime: 0.1
   _maxWarpCoolTime: 0.1
-  _maxWarpDashTime: 0.25
-  _warpDashSpeed: {x: 20, y: 4}
-  _maxSlideTime: 0.8
   _wallSlideSpeed: 2
 --- !u!114 &948386868
 MonoBehaviour:
@@ -1087,6 +1088,10 @@ PrefabInstance:
     - target: {fileID: 7438328420936680346, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
       propertyPath: m_Name
       value: DownChecker
+      objectReference: {fileID: 0}
+    - target: {fileID: 8882788843763819845, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
+      propertyPath: _isEnableUpperCheck
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1974,6 +1979,10 @@ PrefabInstance:
     - target: {fileID: 7438328420936680346, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
       propertyPath: m_Name
       value: DownRightChecker
+      objectReference: {fileID: 0}
+    - target: {fileID: 8882788843763819845, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
+      propertyPath: _isEnableUpperCheck
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

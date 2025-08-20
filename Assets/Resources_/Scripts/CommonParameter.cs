@@ -6,9 +6,12 @@ public class CommonParameter : ScriptableObject
     [Header("移動力")]
     public float moveSpeed = 5.0f;
     public float dashSpeed = 10.0f;
+    public float slideSpeed = 12.0f; // スライディング速度
 
     [Header("ジャンプ力")]
     public float jumpForce = 5.0f;
+    public float dashJumpForce = 6.0f; // ダッシュジャンプの力
+    public float slideJumpForce = 8.0f; // スライディングジャンプの力
     public float maxJumpSpeed = 20.0f;
 
     [Header("重力")]
@@ -21,6 +24,26 @@ public class CommonParameter : ScriptableObject
 
     [Header("ジャンプ入力猶予")]
     public float jumpBufferTime = 0.1f;
+
+    [Header("ワープダッシュ速度")]
+    public Vector2 warpDashUpRight = new Vector2(5.0f, 15.0f);
+    public Vector2 warpDashRight = new Vector2(15.0f, 1.0f);
+    public Vector2 warpDashDownRight = new Vector2(20.0f, -10.0f);
+    public Vector2 warpDashDown = new Vector2(0.0f, -25.0f);
+    public Vector2 warpDashDownLeft => new Vector2(-warpDashDownRight.x, warpDashDownRight.y);
+    public Vector2 warpDashLeft => new Vector2(-warpDashRight.x, warpDashRight.y);
+    public Vector2 warpDashUpLeft => new Vector2(-warpDashUpRight.x, warpDashUpRight.y);
+    public Vector2 warpDashUp = new Vector2(0.0f, 10.0f);
+    public float warpDashDamping = 0.3f; // ワープダッシュの減衰率
+
+    [Header("ワープダッシュ時間")]
+    public float maxWarpDashTime = 0.5f; // ワープダッシュの最大時間
+
+    [Header("スライディング時間")]
+    public float maxSlideTime = 1f;
+
+    [Header("着地ダッシュ有効時間")]
+    public float maxLandingDashTime = 0.5f; // 着地ダッシュの有効時間
 }
 
 public struct CharacterInputData

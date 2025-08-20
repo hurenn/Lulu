@@ -13,8 +13,8 @@ public class WarpChecker : MonoBehaviour
 
     // 個別のワープチェック用のオフセット
     [SerializeField]
-    private float _upperOffsetLocal = 0f;
-    private float _upperOffset => _characterSize.y + _upperOffsetLocal;
+    private bool _isEnableUpperCheck = true;
+    private float _upperOffset => _characterSize.y;
 
     private bool _isValidWarpPoint = false;
     private bool _isUpperWarp = false;
@@ -64,12 +64,13 @@ public class WarpChecker : MonoBehaviour
             }
 
             // 少し上にずらしてチェック
-            check_pos.y += _upperOffset;
-            is_warp_point = IsValidWarpPoint(check_pos);
-            if (is_warp_point.HasValue)
-            {
-                _isUpperWarp = true;
-                return is_warp_point.Value; // ワープ可能な位置を返す
+            if (_isEnableUpperCheck) {
+                check_pos.y += _upperOffset;
+                is_warp_point = IsValidWarpPoint(check_pos);
+                if (is_warp_point.HasValue) {
+                    _isUpperWarp = true;
+                    return is_warp_point.Value; // ワープ可能な位置を返す
+                }
             }
         }
 

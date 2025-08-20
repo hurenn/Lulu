@@ -13,9 +13,19 @@ MonoBehaviour:
   m_Name: CommonParameter
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  dashSpeed: 10
   jumpForce: 8.5
+  maxJumpSpeed: 20
   gravity: -30
   fallMultiplier: 2
   maxFallSpeed: -20
   maxJumpHoldTime: 0.15
   jumpBufferTime: 0.1
+  warpDashUpRight: {x: 10, y: 15}
+  warpDashRight: {x: 25, y: 0}
+  warpDashDownRight: {x: 20, y: -10}
+  warpDashDown: {x: 0, y: -25}
+  warpDashUp: {x: 0, y: 10}
+  warpDashDamping: 0.975
+  maxWarpDashTime: 0.5
+  maxSlideTime: 0.2
