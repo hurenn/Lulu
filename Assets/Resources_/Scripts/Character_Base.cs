@@ -1,7 +1,4 @@
 using System.Collections;
-using System.Runtime.CompilerServices;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Character_Base : MonoBehaviour
@@ -16,18 +13,18 @@ public class Character_Base : MonoBehaviour
     // 障害物チェッカー
     [SerializeField] private LayerMask _obstacleLayer;
 
+    [SerializeField] private Collider2D _col;
+    [SerializeField] private Rigidbody2D _rb;
+
+    // ワープ管理
+    [SerializeField] private WarpControl _warpControl;
+
     // チェッカーパラメータ
     private Vector3 _groundCheckLocalPos = default;
     private Vector3 _groundCheckScale = default;
     private Vector3 _wallCheckLeftLocalPos = default;
     private Vector3 _wallCheckRightLocalPos = default;
     private Vector3 _wallCheckScale = default;
-    private const float _groundCheckHeight = 0.05f;
-    private const float _wallCheckWidth = 0.1f;
-    private const float _checkerBuffer = 0.05f;
-
-    [SerializeField] private Collider2D _col;
-    [SerializeField] private Rigidbody2D _rb;
 
     // キャラクター状態フラグ
     private bool _isWalking;
@@ -46,46 +43,27 @@ public class Character_Base : MonoBehaviour
     private bool _CanMove => !_isWarpDashing;
     // 重力を適用するかどうか
     private bool _EnableGravity => !_isWarpDashing && !_isWallSliding && !_isWarpDelay;
-
     // ジャンプ力を取得
     private float _jumpForce => _isDashing ? _param.dashJumpForce :
             _isSliding ? _param.slideJumpForce : _param.jumpForce;
 
-    // ワープ管理
-    [SerializeField] private WarpControl _warpControl;
-
-    // 現在のジャンプ時間
+    // 現在のジャンプ時間計測
     private float _currentJumpTime = 0;
-
-    // ダッシュ入力猶予
-    private readonly float _dashThreshold = 0.2f;
-    // 移動入力を止めてから経過した時間
+    // 移動入力を止めてから経過した時間計測
     private float _currentStopMoveInputTime = 0;
     // 直前まで進んでいた方向
     private Vector2 _lastWalkDirection = Vector2.zero;
-
-    // ワープ待機時間
-    [SerializeField]
-    private float _warpWaitTime = 0.1f;
-    // ワープのクールタイム
-    [SerializeField]
-    private float _maxWarpCoolTime = 0.1f;
+    // ワープのクールタイム計測
     private float _currentWarpCoolTime = 0;
-
     // ワープダッシュ時間計測
     private float _currentWarpDashTime = 0;
     // ワープダッシュの方向
     private Vector2 _warpDashDirection = Vector2.zero;
-
     // スライディング時間計測
     private float _currentSlideTime = 0;
-
      // 着地ダッシュ時間計測
     private float _currentLandingDashTime = 0;
-
     // 壁に沿って滑る速度
-    [SerializeField]
-    private float _wallSlideSpeed = 2.0f;
     private float _currentWallSlideTime = 0;
 
     private void Start()
@@ -93,14 +71,14 @@ public class Character_Base : MonoBehaviour
         _rb.gravityScale = 0;
 
         // 地面チェックの初期化
-        _groundCheckLocalPos = Vector3.up * (-GetCharacterSize().y / 2 - _groundCheckHeight);
-        _groundCheckScale = new Vector3(GetCharacterSize().x - _checkerBuffer, _groundCheckHeight, 1);
+        _groundCheckLocalPos = Vector3.up * (-GetCharacterSize().y / 2 - _param.groundCheckHeight);
+        _groundCheckScale = new Vector3(GetCharacterSize().x - _param.checkerBuffer, _param.groundCheckHeight, 1);
 
         // 壁チェックの初期化
         var chara_size = GetCharacterSize();
-        _wallCheckLeftLocalPos = Vector3.right * (-chara_size.x / 2 - _wallCheckWidth);
-        _wallCheckRightLocalPos = Vector3.right * (chara_size.x / 2 + _wallCheckWidth);
-        _wallCheckScale = new Vector3(_wallCheckWidth, chara_size.y - _checkerBuffer, 1);
+        _wallCheckLeftLocalPos = Vector3.right * (-chara_size.x / 2 - _param.wallCheckWidth);
+        _wallCheckRightLocalPos = Vector3.right * (chara_size.x / 2 + _param.wallCheckWidth);
+        _wallCheckScale = new Vector3(_param.wallCheckWidth, chara_size.y - _param.checkerBuffer, 1);
 
         _warpControl.Setup(chara_size, _obstacleLayer);
     }
@@ -248,12 +226,12 @@ public class Character_Base : MonoBehaviour
         if (_warpDashDirection.y < 0)
         {
             // 壁に沿って下方向に滑る
-            velocity.y = -_wallSlideSpeed;
+            velocity.y = -_param.wallSlideSpeed;
         }
         else
         {
             // 壁に沿って上方向に滑る
-            velocity.y = _wallSlideSpeed;
+            velocity.y = _param.wallSlideSpeed;
         }
         _rb.linearVelocity = velocity;
 
@@ -377,7 +355,7 @@ public class Character_Base : MonoBehaviour
             if (!_isWalking)
             {
                 // 同じ方向にすぐ再入力でダッシュ
-                if (_currentStopMoveInputTime < _dashThreshold && (
+                if (_currentStopMoveInputTime < _param.dashInputThreshold && (
                     (Mathf.Sign(input.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
                     (Mathf.Sign(input.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing)))
                 {
@@ -403,7 +381,7 @@ public class Character_Base : MonoBehaviour
             {
                 // 停止中はタイマー更新
                 _currentStopMoveInputTime += Time.deltaTime;
-                if (_currentStopMoveInputTime > _dashThreshold)
+                if (_currentStopMoveInputTime > _param.dashInputThreshold)
                 {
                     _isDashing = false;
                 }
@@ -472,7 +450,7 @@ public class Character_Base : MonoBehaviour
             };
 
             // 一瞬待機
-            yield return new WaitForSeconds(_warpWaitTime);
+            yield return new WaitForSeconds(_param.warpWaitTime);
 
             // ワープ実行
             _warpControl.Warp(direction);
@@ -486,7 +464,7 @@ public class Character_Base : MonoBehaviour
             _currentWarpDashTime = 0;
 
             // ワープダッシュのクールタイムをリセット
-            _currentWarpCoolTime = _maxWarpCoolTime;
+            _currentWarpCoolTime = _param.warpCoolTime;
         }
     }
 

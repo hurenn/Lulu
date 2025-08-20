@@ -22,6 +22,9 @@ public class CommonParameter : ScriptableObject
     [Header("最大ジャンプ時間")]
     public float maxJumpHoldTime = 0.2f;
 
+    [Header("ダッシュ入力猶予")]
+    public float dashInputThreshold = 0.2f;
+
     [Header("ジャンプ入力猶予")]
     public float jumpBufferTime = 0.1f;
 
@@ -36,14 +39,29 @@ public class CommonParameter : ScriptableObject
     public Vector2 warpDashUp = new Vector2(0.0f, 10.0f);
     public float warpDashDamping = 0.3f; // ワープダッシュの減衰率
 
+    [Header("ワープ実行までの待機時間")]
+    public float warpWaitTime = 0.1f;
+
+    [Header("ワープクールタイム")]
+    public float warpCoolTime = 0.1f;
+
     [Header("ワープダッシュ時間")]
     public float maxWarpDashTime = 0.5f; // ワープダッシュの最大時間
 
     [Header("スライディング時間")]
     public float maxSlideTime = 1f;
 
+    [Header("壁スライド速度")]
+    public float wallSlideSpeed = 2.0f;
+
     [Header("着地ダッシュ有効時間")]
     public float maxLandingDashTime = 0.5f; // 着地ダッシュの有効時間
+
+    [Header("地形チェック幅")]
+    public float groundCheckHeight = 0.05f;
+    public float wallCheckWidth = 0.1f;
+    public float checkerBuffer = 0.05f;
+
 }
 
 public struct CharacterInputData
