@@ -32,6 +32,7 @@ public class Character_Base : MonoBehaviour
     private bool _isWarpDelay;
     private bool _isWarpDashing;
     private bool _isSliding;      // スライディング中かどうか
+    private bool _isSlidingCanceling; // スライディングキャンセル中かどうか
     private bool _isGroundSticking; // 地面に張り付いている状態
     private bool _isWallSliding;  // 壁に沿って滑っている状態
     private bool _isGrounded;
@@ -40,7 +41,7 @@ public class Character_Base : MonoBehaviour
     private bool _isTouchingRight;
 
     // 通常移動可能かどうか
-    private bool _CanMove => !_isWarpDashing;
+    private bool _CanMove => !_isWarpDashing && !_isSlidingCanceling;
     // 重力を適用するかどうか
     private bool _EnableGravity => !_isWarpDashing && !_isWallSliding && !_isWarpDelay;
     // ジャンプ力を取得
@@ -280,6 +281,19 @@ public class Character_Base : MonoBehaviour
                 _isSliding = false; // スライディング終了
                 _currentSlideTime = 0;
             }
+        } 
+        if (_isSlidingCanceling) {
+            _isSliding = false;
+
+            Vector2 velocity = _rb.linearVelocity;
+            velocity.x *= _param.slideCancelDamping;
+            
+            // 一定以下になったら完全停止
+            if (Mathf.Abs(velocity.x) < 0.1f) {
+                velocity.x = 0;
+                _isSlidingCanceling = false;
+            }
+            _rb.linearVelocity = velocity;
         }
     }
 
@@ -296,6 +310,18 @@ public class Character_Base : MonoBehaviour
                 _isWallSliding = false; // 壁滑り終了
                 return;
             }
+        }
+
+        // スライディング中に逆方向入力でキャンセル
+        if (_isSliding && input.move.x != 0 && Mathf.Sign(input.move.x) != Mathf.Sign(_warpDashDirection.x)) {
+            _isSlidingCanceling = true; // スライディングキャンセル中フラグを立てる
+            _currentSlideTime = 0;
+            return;
+        }
+
+        // スライディングキャンセル中にジャンプでキャンセル
+        if (_isSlidingCanceling && input.jumpPressed) {
+            _isSlidingCanceling = false; // スライディングキャンセル終了
         }
 
         // 地面張り付き状態の入力

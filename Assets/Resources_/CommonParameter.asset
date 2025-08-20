@@ -14,18 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   dashSpeed: 10
+  slideSpeed: 12
   jumpForce: 8.5
+  dashJumpForce: 10
+  slideJumpForce: 12
   maxJumpSpeed: 20
   gravity: -30
   fallMultiplier: 2
   maxFallSpeed: -20
   maxJumpHoldTime: 0.15
+  dashInputThreshold: 0.2
   jumpBufferTime: 0.1
-  warpDashUpRight: {x: 10, y: 15}
+  warpDashUpRight: {x: 8, y: 10}
   warpDashRight: {x: 25, y: 0}
   warpDashDownRight: {x: 20, y: -10}
   warpDashDown: {x: 0, y: -25}
-  warpDashUp: {x: 0, y: 10}
+  warpDashUp: {x: 0, y: 7}
   warpDashDamping: 0.975
+  warpWaitTime: 0.1
+  warpCoolTime: 0.1
   maxWarpDashTime: 0.5
-  maxSlideTime: 0.2
+  maxSlideTime: 1
+  slideCancelDamping: 0.9
+  wallSlideSpeed: 2
+  maxLandingDashTime: 0.5
+  groundCheckHeight: 0.05
+  wallCheckWidth: 0.1
+  checkerBuffer: 0.05
