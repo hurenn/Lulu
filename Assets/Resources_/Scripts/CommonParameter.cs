@@ -53,6 +53,8 @@ public class CommonParameter : ScriptableObject
     [Header("スライディングキャンセル減衰力")]
     public float slideCancelDamping = 0.5f; // スライディングキャンセル減衰力
 
+    [Header("壁スライディング時間")]
+    public float maxWallSlideTime = 0.3f; // 壁スライディングの最大時間
     [Header("壁スライド速度")]
     public float wallSlideSpeed = 2.0f;
 

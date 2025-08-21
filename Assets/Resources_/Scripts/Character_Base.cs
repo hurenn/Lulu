@@ -70,6 +70,7 @@ public class Character_Base : MonoBehaviour
     private void Start()
     {
         _rb.gravityScale = 0;
+        _rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
         // 地面チェックの初期化
         _groundCheckLocalPos = Vector3.up * (-GetCharacterSize().y / 2 - _param.groundCheckHeight);
@@ -215,7 +216,7 @@ public class Character_Base : MonoBehaviour
             return;
         }
 
-        if (_currentWallSlideTime >= _param.maxSlideTime)
+        if (_currentWallSlideTime >= _param.maxWallSlideTime)
         {
             _isWallSliding = false; // 壁滑り終了
             return;
