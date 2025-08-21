@@ -46,8 +46,7 @@ public class PlayerController : MonoBehaviour
         input.jumpPressed = _isJumpPressed;
         input.jumpHeld = _isJumpHeld;
 
-        character.UpdateMotor(input);
-        character.Warp(input);
+        character.UpdateControl(input);
 
         _isJumpPressed = false;
     }
@@ -55,7 +54,7 @@ public class PlayerController : MonoBehaviour
     private void _OnMove(InputAction.CallbackContext context)
     {
         _moveInputValue = context.ReadValue<Vector2>();
-        Debug.Log(_moveInputValue);
+        //Debug.Log(_moveInputValue);
     }
 
     private void OnJump(InputAction.CallbackContext context)
