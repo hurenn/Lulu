@@ -19,6 +19,7 @@ MonoBehaviour:
   dashJumpForce: 10
   slideJumpForce: 12
   maxJumpSpeed: 20
+  slashRebound: 0.5
   gravity: -30
   fallMultiplier: 2
   maxFallSpeed: -20
@@ -35,9 +36,11 @@ MonoBehaviour:
   warpCoolTime: 0.1
   maxWarpDashTime: 0.5
   maxSlideTime: 1
-  slideCancelDamping: 0.9
-  wallSlideSpeed: 2
+  slideCancelDamping: 0.8
+  maxWallSlideTime: 0.3
+  wallSlideSpeed: 10
   maxLandingDashTime: 0.5
   groundCheckHeight: 0.05
   wallCheckWidth: 0.1
   checkerBuffer: 0.05
+  iceSlashInterval: 0.2

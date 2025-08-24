@@ -157,6 +157,11 @@ public class Player_Character : Character_Base {
                 _isSliding = false; // スライディング終了
                 _currentSlideTime = 0;
             }
+            // 壁に接触している場合はスライディング終了
+            if ((_isTouchingLeft && velocity.x < 0) || (_isTouchingRight && velocity.x > 0)) {
+                _isSliding = false; // スライディング終了
+                _currentSlideTime = 0;
+            }
         }
         if (_isSlidingCanceling) {
             _isSliding = false;
@@ -184,6 +189,10 @@ public class Player_Character : Character_Base {
     /// </summary>
     protected override void _UpdateMotor(CharacterInputData input) {
         Vector2 velocity = _rb.linearVelocity;
+
+        if(_damageReactionTimer > 0 || _intervalTimer > 0) {
+            return;
+        }
 
         // 壁滑り中の入力
         if (_isWallSliding) {

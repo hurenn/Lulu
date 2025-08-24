@@ -13,6 +13,14 @@ public class PlayerController : MonoBehaviour
     private bool _isJumpPressed = false;
     private bool _isJumpHeld = false;
 
+    // AbilityÉ{É^ÉìÇÃèÛë‘
+    private bool _isAbilityYPressed = false;
+    private bool _isAbilityYHeld = false;
+    private bool _isAbilityXPressed = false;
+    private bool _isAbilityXHeld = false;
+    private bool _isAbilityAPressed = false;
+    private bool _isAbilityAHeld = false;
+
     private CharacterInputData input;
 
     private void Awake()
@@ -27,6 +35,13 @@ public class PlayerController : MonoBehaviour
         _inputActions.Player.Move.canceled += _OnMove;
         _inputActions.Player.Jump.performed += OnJump;
         _inputActions.Player.Jump.canceled += OnJumpRelease;
+
+        _inputActions.Player.AbilityY.performed += OnAbilityY;
+        _inputActions.Player.AbilityY.canceled += OnAbilityYRelease;
+        _inputActions.Player.AbilityX.performed += OnAbilityX;
+        _inputActions.Player.AbilityX.canceled += OnAbilityXRelease;
+        _inputActions.Player.AbilityA.performed += OnAbilityA;
+        _inputActions.Player.AbilityA.canceled += OnAbilityARelease;
     }
 
     private void OnDisable()
@@ -35,6 +50,12 @@ public class PlayerController : MonoBehaviour
         _inputActions.Player.Move.canceled -= _OnMove;
         _inputActions.Player.Jump.performed -= OnJump;
         _inputActions.Player.Jump.canceled -= OnJumpRelease;
+        _inputActions.Player.AbilityY.performed -= OnAbilityY;
+        _inputActions.Player.AbilityY.canceled -= OnAbilityYRelease;
+        _inputActions.Player.AbilityX.performed -= OnAbilityX;
+        _inputActions.Player.AbilityX.canceled -= OnAbilityXRelease;
+        _inputActions.Player.AbilityA.performed -= OnAbilityA;
+        _inputActions.Player.AbilityA.canceled -= OnAbilityARelease;
         _inputActions.Player.Disable();
     }
 
@@ -45,10 +66,19 @@ public class PlayerController : MonoBehaviour
         input.move = _moveInputValue;
         input.jumpPressed = _isJumpPressed;
         input.jumpHeld = _isJumpHeld;
+        input.abilityYPressed = _isAbilityYPressed;
+        input.abilityYHeld = _isAbilityYHeld;
+        input.abilityXPressed = _isAbilityXPressed;
+        input.abilityXHeld = _isAbilityXHeld;
+        input.abilityAPressed = _isAbilityAPressed;
+        input.abilityAHeld = _isAbilityAHeld;
 
         character.UpdateControl(input);
 
         _isJumpPressed = false;
+        _isAbilityYPressed = false;
+        _isAbilityXPressed = false;
+        _isAbilityAPressed = false;
     }
 
     private void _OnMove(InputAction.CallbackContext context)
@@ -67,5 +97,38 @@ public class PlayerController : MonoBehaviour
     {
         _isJumpPressed = false;
         _isJumpHeld = false;
+    }
+
+    private void OnAbilityY(InputAction.CallbackContext context)
+    {
+        _isAbilityYPressed = true;
+        _isAbilityYHeld = true;
+    }
+    private void OnAbilityYRelease(InputAction.CallbackContext context)
+    {
+        _isAbilityYPressed = false;
+        _isAbilityYHeld = false;
+    }
+
+    private void OnAbilityX(InputAction.CallbackContext context)
+    {
+        _isAbilityXPressed = true;
+        _isAbilityXHeld = true;
+    }
+    private void OnAbilityXRelease(InputAction.CallbackContext context)
+    {
+        _isAbilityXPressed = false;
+        _isAbilityXHeld = false;
+    }
+
+    private void OnAbilityA(InputAction.CallbackContext context)
+    {
+        _isAbilityAPressed = true;
+        _isAbilityAHeld = true;
+    }
+    private void OnAbilityARelease(InputAction.CallbackContext context)
+    {
+        _isAbilityAPressed = false;
+        _isAbilityAHeld = false;
     }
 }

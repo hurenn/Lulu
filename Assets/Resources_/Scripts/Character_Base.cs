@@ -15,6 +15,11 @@ public class Character_Base : MonoBehaviour
     [SerializeField] protected Collider2D _col;
     [SerializeField] protected Rigidbody2D _rb;
 
+    // 能力スロット
+    [SerializeField] protected Ability_Base _abilityY;
+    [SerializeField] protected Ability_Base _abilityX;
+    [SerializeField] protected Ability_Base _abilityA;
+
     // チェッカーパラメータ
     protected Vector3 _groundCheckLocalPos = default;
     protected Vector3 _groundCheckScale = default;
@@ -51,6 +56,11 @@ public class Character_Base : MonoBehaviour
     // 直前まで進んでいた方向
     protected Vector2 _lastWalkDirection = Vector2.zero;
 
+    // 行動不能時間計測
+    protected float _intervalTimer = 0;
+    // ダメージリアクション時間計測
+    protected float _damageReactionTimer = 0;
+
     private void Start()
     {
         _Setup();
@@ -79,6 +89,13 @@ public class Character_Base : MonoBehaviour
         _CheckTerrain();
         _ApplyGravity();
         _UpdateSpecials();
+
+        if(_intervalTimer > 0) {
+            _intervalTimer -= Time.deltaTime; 
+        }
+        if(_damageReactionTimer > 0) {
+            _damageReactionTimer -= Time.deltaTime;
+        }
     }
 
     /// <summary>
@@ -86,12 +103,63 @@ public class Character_Base : MonoBehaviour
     /// </summary>
     public virtual void UpdateControl(CharacterInputData input) {
         _UpdateMotor(input);
+
+        _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld);
+        _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld);
+        _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld);
     }
 
+    /// <summary>
+    /// 能力の更新処理
+    /// </summary>
+    private void _UpdateAbility(Ability_Base ability, Vector2 dir_input, bool button_pressed, bool button_held) {
+        if(ability == null) {
+            return;
+        }
+
+        ability.DirectionInput(dir_input);
+        // 単押し使用
+        if (button_pressed) {
+            _AbilityResult(ability.ExecuteSimple());
+        }
+        // 長押し使用
+        if (button_held) {
+            _AbilityResult(ability.ExecuteLong());
+        }
+        // ボタンを離したときの処理
+        if (!button_held && !button_pressed) {
+            ability.ExecuteRelease();
+        }
+    }
+
+    private void _AbilityResult(eAbilityResult result) {
+        switch(result) {
+            case eAbilityResult.None:
+                break;
+            case eAbilityResult.IceSlash1:
+            case eAbilityResult.IceSlash2:
+            case eAbilityResult.IceSlash3:
+            case eAbilityResult.IceSeparate:
+                // 斬撃隙
+                _intervalTimer = _param.iceSlashInterval;
+                _rb.linearVelocity = Vector2.zero;
+                if (!_isGrounded) {
+                    _rb.linearVelocity = Vector2.up * _param.slashRebound;
+                    _currentJumpTime = 0;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// キャラクターごとに移動処理を実装
+    /// </summary>
     protected virtual void _UpdateMotor(CharacterInputData input) {
         Vector2 velocity = _rb.linearVelocity;
 
-        if (!_CanMove) {
+        if (!_CanMove || _damageReactionTimer > 0 || _intervalTimer > 0) {
             return;
         }
 
@@ -175,7 +243,7 @@ public class Character_Base : MonoBehaviour
     /// </summary>
     private void _ApplyGravity()
     {
-        if (!_EnableGravity)
+        if (!_EnableGravity || _intervalTimer > 0)
         {
             // 重力適用をスキップ
             return;

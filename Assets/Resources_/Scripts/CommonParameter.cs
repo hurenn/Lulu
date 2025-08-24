@@ -13,6 +13,7 @@ public class CommonParameter : ScriptableObject
     public float dashJumpForce = 6.0f; // ダッシュジャンプの力
     public float slideJumpForce = 8.0f; // スライディングジャンプの力
     public float maxJumpSpeed = 20.0f;
+    public float slashRebound = 2.0f;
 
     [Header("重力")]
     public float gravity = -30.0f;
@@ -66,6 +67,8 @@ public class CommonParameter : ScriptableObject
     public float wallCheckWidth = 0.1f;
     public float checkerBuffer = 0.05f;
 
+    [Header("能力隙")]
+    public float iceSlashInterval = 0.1f; // 氷刃の隙
 }
 
 public struct CharacterInputData
@@ -73,4 +76,11 @@ public struct CharacterInputData
     public Vector2 move;     // 入力
     public bool jumpPressed; // ジャンプボタンを押した瞬間
     public bool jumpHeld;    // ジャンプボタンを押し続ける
+
+    public bool abilityYPressed; // Yボタンを押した瞬間
+    public bool abilityYHeld;    // Yボタンを押し続ける
+    public bool abilityXPressed; // Xボタンを押した瞬間
+    public bool abilityXHeld;    // Xボタンを押し続ける
+    public bool abilityAPressed; // Aボタンを押した瞬間
+    public bool abilityAHeld;    // Aボタンを押し続ける
 }
