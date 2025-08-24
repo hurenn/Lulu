@@ -7,6 +7,7 @@ public enum eAbilityResult {
     IceSlash3,
     IceSeparate,
     FireShot,
+    LightParry,
     LightDome,
 }
 

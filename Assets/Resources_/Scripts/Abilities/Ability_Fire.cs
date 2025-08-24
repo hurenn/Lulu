@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Ability_FireShot : Ability_Base
+public class Ability_Fire : Ability_Base
 {
     // Å‘å’e”
     private int _maxShoot = 3;

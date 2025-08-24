@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Ability_IceBrade : Ability_Base {
+public class Ability_Ice : Ability_Base {
 
     private int _attackStep = 0; // 0:–¢UŒ‚, 1:1’i–Ú, 2:2’i–Ú, 3:3’i–Ú
 
