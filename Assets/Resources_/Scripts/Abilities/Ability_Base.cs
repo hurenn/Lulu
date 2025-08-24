@@ -6,6 +6,8 @@ public enum eAbilityResult {
     IceSlash2,
     IceSlash3,
     IceSeparate,
+    FireShot,
+    LightDome,
 }
 
 public class Ability_Base : MonoBehaviour {
