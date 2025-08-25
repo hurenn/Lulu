@@ -28,6 +28,7 @@ public class Ability_Fire : Ability_Base
 
         var bullet = Instantiate(_bulletObj, transform.position, Quaternion.identity);
         bullet.SetCallback(() => _currentShot--);
+        bullet.IsRight = _isRight;
 
         _currentShot++;
         return eAbilityResult.FireShot;

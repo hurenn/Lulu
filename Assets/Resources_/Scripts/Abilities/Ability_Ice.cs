@@ -105,4 +105,24 @@ public class Ability_Ice : Ability_Base {
         _pressHoldTime = 0f;
         _isHoldExecuted = false;
     }
+
+    public override void SetIsRight(bool isRight) {
+        base.SetIsRight(isRight);
+        // 向きに応じて攻撃エフェクトの向きを調整
+        if (_slash1 != null) {
+            var scale = _slash1.transform.localScale;
+            scale.x = isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+            _slash1.transform.localScale = scale;
+        }
+        if (_slash2 != null) {
+            var scale = _slash2.transform.localScale;
+            scale.x = isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+            _slash2.transform.localScale = scale;
+        }
+        if (_slash3 != null) {
+            var scale = _slash3.transform.localScale;
+            scale.x = isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+            _slash3.transform.localScale = scale;
+        }
+    }
 }

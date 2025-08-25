@@ -299,6 +299,12 @@ public class Player_Character : Character_Base {
             velocity.x = 0;
         }
 
+        if (input.move.x > 0) {
+            _isRight = true;
+        } else if (input.move.x < 0) {
+            _isRight = false;
+        }
+
         _rb.linearVelocity = velocity;
     }
 

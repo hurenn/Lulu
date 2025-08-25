@@ -13,11 +13,18 @@ public enum eAbilityResult {
 
 public class Ability_Base : MonoBehaviour {
 
-
     /// <summary>
     /// 地上にいるか確認
     /// </summary>
     public bool _isGround = true;
+
+    /// <summary>
+    /// 右向きか確認
+    /// </summary>
+    protected bool _isRight = true;
+    public virtual void SetIsRight(bool isRight) {
+        _isRight = isRight;
+    }
 
     /// <summary>
     /// 方向入力

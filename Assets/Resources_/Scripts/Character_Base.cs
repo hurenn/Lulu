@@ -14,6 +14,7 @@ public class Character_Base : MonoBehaviour
 
     [SerializeField] protected Collider2D _col;
     [SerializeField] protected Rigidbody2D _rb;
+    [SerializeField] protected SpriteRenderer _sprite;
 
     // 能力スロット
     [SerializeField] protected Ability_Base _abilityY;
@@ -28,6 +29,7 @@ public class Character_Base : MonoBehaviour
     protected Vector3 _wallCheckScale = default;
 
     // キャラクター状態フラグ
+    protected bool _isRight = true; // 右向きかどうか
     protected bool _isWalking;
     protected bool _isDashing;
     protected bool _isWarpDelay;
@@ -95,6 +97,14 @@ public class Character_Base : MonoBehaviour
         }
         if(_damageReactionTimer > 0) {
             _damageReactionTimer -= Time.deltaTime;
+        }
+
+        // 向きの更新
+        if (_sprite != null && _isRight == _sprite.flipX) {
+            _sprite.flipX = !_isRight;
+            _abilityX?.SetIsRight(_isRight);
+            _abilityY?.SetIsRight(_isRight);
+            _abilityA?.SetIsRight(_isRight);
         }
     }
 
@@ -196,6 +206,12 @@ public class Character_Base : MonoBehaviour
             // 移動中は常にフラグリセット
             _lastWalkDirection = input.move;
             _currentStopMoveInputTime = 0;
+
+            if( input.move.x > 0 ) {
+                _isRight = true;
+            } else if( input.move.x < 0 ) {
+                _isRight = false;
+            }
         } else // 入力停止
           {
             if (_isWalking) {
