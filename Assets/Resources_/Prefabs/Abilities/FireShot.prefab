@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9170762913304909346}
   - component: {fileID: 7438354895842127425}
+  - component: {fileID: 8170799513383298760}
   m_Layer: 0
   m_Name: Damage
   m_TagString: Untagged
@@ -78,6 +79,24 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
+--- !u!114 &8170799513383298760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3460501826139219253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17784af051f04fa4b80766340efacd60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: 1
+  _isPlayersAttack: 1
+  _isEnemysAttack: 0
+  _isNeutralAttack: 0
+  _isHitDestroy: 1
+  _parentObject: {fileID: 7444988537484354709}
 --- !u!1 &5234742805473229160
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,9 +31,12 @@ public class AutoDestroy : MonoBehaviour {
             yield return null;
         }
 
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy() {
         if (_destroyedCallback != null) {
             _destroyedCallback.Invoke();
         }
-        Destroy(gameObject);
     }
 }

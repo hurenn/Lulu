@@ -4,6 +4,9 @@ public class Character_Base : MonoBehaviour
 {
     // 共通パラメータ
     [SerializeField] protected CommonParameter _param;
+    // キャラクターパラメータ
+    [SerializeField] protected CharacterParameter _charaParam;
+    public bool isInvincible => _charaParam != null && _charaParam.isInvincible;
 
     // 地面チェッカー
     [SerializeField] protected LayerMask _groundLayer;
@@ -287,6 +290,21 @@ public class Character_Base : MonoBehaviour
             }
 
             _rb.linearVelocity = velocity;
+        }
+    }
+
+    /// <summary>
+    /// ダメージ処理
+    /// </summary>
+    /// <param name="damage">ダメージ数</param>
+    /// <param name="reactionTime">ダメージリアクション時間</param>
+    public void Damage(float damage, float reactionTime = 0.1f) {
+        if (_charaParam != null) {
+            _charaParam.ExecuteDamage(damage);
+
+            // ダメージリアクション
+            _damageReactionTimer = reactionTime;
+            _rb.linearVelocity = Vector2.zero;
         }
     }
 

@@ -4,10 +4,10 @@ public class Ability_Ice : Ability_Base {
 
     private int _attackStep = 0; // 0:未攻撃, 1:1段目, 2:2段目, 3:3段目
 
-    private const float _comboReceptionTime = 0.7f; // コンボ入力受付時間
+    [SerializeField] private float _comboReceptionTime = 0.7f; // コンボ入力受付時間
     private float _currentReceptionTime = 0f;
-    private const float _comboIntervalTime = 0.1f; // 1コンボインターバル時間
-    private const float _comboCoolTime = 0.2f; // コンボ終了後のクールタイム
+    [SerializeField] private float _comboIntervalTime = 0.15f; // 1コンボインターバル時間
+    [SerializeField] private float _comboCoolTime = 0.2f; // コンボ終了後のクールタイム
     // コンボ攻撃のクールタイム
     private float _currentComboCoolTime = 0f;
 

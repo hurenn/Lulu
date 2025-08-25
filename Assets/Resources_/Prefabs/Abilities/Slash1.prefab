@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 254120183998218709}
@@ -168,6 +168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 254120183998218709}
   - component: {fileID: 7713020010431232139}
+  - component: {fileID: 1337804875694684096}
   m_Layer: 0
   m_Name: Damage
   m_TagString: Untagged
@@ -236,3 +237,23 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.97, y: 1.93}
   m_EdgeRadius: 0
+--- !u!114 &1337804875694684096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8025624612849498861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17784af051f04fa4b80766340efacd60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: 3
+  _isPlayersAttack: 1
+  _isEnemysAttack: 0
+  _isNeutralAttack: 0
+  _isHitDestroy: 0
+  _parentObject: {fileID: 0}
+  _isOnceHit: 1
+  _delayTime: 0.5
