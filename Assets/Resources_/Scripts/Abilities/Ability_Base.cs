@@ -19,6 +19,15 @@ public class Ability_Base : MonoBehaviour {
     public bool _isGround = true;
 
     /// <summary>
+    /// 装備時のローカルポジション
+    /// </summary>
+    [SerializeField] protected Vector3 _localPosition = Vector3.zero;
+    /// <summary>
+    /// キャラクター表示
+    /// </summary>
+    [SerializeField] protected SpriteRenderer _rend = null;
+
+    /// <summary>
     /// 右向きか確認
     /// </summary>
     protected bool _isRight = true;
@@ -32,6 +41,11 @@ public class Ability_Base : MonoBehaviour {
     protected Vector2 _inputDir = Vector2.zero;
     public virtual void DirectionInput(Vector2 dir) {
         _inputDir = dir;
+        transform.localPosition = new Vector3(
+            _localPosition.x * (_isRight ? -1 : 1),
+            _localPosition.y,
+            _localPosition.z);
+        _rend.flipX = _isRight;
     }
 
     /// <summary>
