@@ -7,6 +7,8 @@ using UnityEngine;
 public class Player_Character : Character_Base {
     // ワープ管理
     [SerializeField] private WarpControl _warpControl;
+    // ワープエフェクト
+    [SerializeField] private GameObject _warpEffectPrefab;
     // ワープのクールタイム計測
     private float _currentWarpCoolTime = 0;
     // ワープダッシュ時間計測
@@ -365,11 +367,18 @@ public class Player_Character : Character_Base {
                 _ => Vector2.zero
             };
 
+            //アニメーション管理
+            _anim.SetBool("Warp", true);    // ワープアニメフラグ
+            _anim.SetBool("Fall", true);    // 空中アニメフラグ
+            _anim.Play("Warp_Enter");       // ワープアニメ再生
+            Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
+
             // 一瞬待機
             yield return new WaitForSeconds(_param.warpWaitTime);
 
             // ワープ実行
             _warpControl.Warp(direction);
+            _anim.SetBool("Warp", false);
 
             yield return null;
 
