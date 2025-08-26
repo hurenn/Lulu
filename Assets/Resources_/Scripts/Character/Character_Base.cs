@@ -18,6 +18,7 @@ public class Character_Base : MonoBehaviour
     [SerializeField] protected Collider2D _col;
     [SerializeField] protected Rigidbody2D _rb;
     [SerializeField] protected SpriteRenderer _sprite;
+    [SerializeField] protected Animator _anim;
 
     // 能力スロット
     [SerializeField] protected Ability_Base _abilityY;
@@ -170,6 +171,7 @@ public class Character_Base : MonoBehaviour
     /// キャラクターごとに移動処理を実装
     /// </summary>
     protected virtual void _UpdateMotor(CharacterInputData input) {
+        /*
         Vector2 velocity = _rb.linearVelocity;
 
         if (!_CanMove || _damageReactionTimer > 0 || _intervalTimer > 0) {
@@ -181,6 +183,8 @@ public class Character_Base : MonoBehaviour
             velocity.y = _jumpForce;
             _currentJumpTime = _param.maxJumpHoldTime;
             _isJumping = true;
+            _anim?.SetBool("Jump", true);
+            _anim?.Play("Jump");
         }
         // ジャンプリリース
         if ((!input.jumpHeld && _isJumping) || _currentJumpTime <= 0) {
@@ -192,6 +196,10 @@ public class Character_Base : MonoBehaviour
             _currentJumpTime -= Time.deltaTime;
         }
 
+        //状態に応じたフラグ管理
+        _anim?.SetBool("Jump", _isJumping);
+        _anim?.SetBool("Fall", !_isGrounded);
+
         // 移動入力
         if (input.move.x != 0) {
             // 直前まで入力なし
@@ -201,9 +209,10 @@ public class Character_Base : MonoBehaviour
                     (Mathf.Sign(input.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
                     (Mathf.Sign(input.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing))) {
                     _isDashing = true;
+                    _anim?.SetBool("Dash", true);
                 }
-
                 _isWalking = true;
+                _anim?.SetBool("Walk", true);
             }
 
             // 移動中は常にフラグリセット
@@ -221,6 +230,10 @@ public class Character_Base : MonoBehaviour
                 // 歩行から停止
                 _isWalking = false;
                 _currentStopMoveInputTime = 0;
+
+                //移動アニメーション停止
+                _anim?.SetBool("Walk", false);
+                _anim?.SetBool("Dash", false);
             } else {
                 // 停止中はタイマー更新
                 _currentStopMoveInputTime += Time.deltaTime;
@@ -239,6 +252,7 @@ public class Character_Base : MonoBehaviour
         }
 
         _rb.linearVelocity = velocity;
+        */
     }
 
     /// <summary>
@@ -255,6 +269,7 @@ public class Character_Base : MonoBehaviour
         _isTouchingRight = Physics2D.OverlapBox(transform.position + _wallCheckRightLocalPos, _wallCheckScale, 0, _wallLayer);
 
         _isGrounded = Physics2D.OverlapBox(transform.position + _groundCheckLocalPos, _groundCheckScale, 0, _groundLayer);
+        _anim?.SetBool("IsGround", _isGrounded); //接地フラグ
     }
 
     /// <summary>

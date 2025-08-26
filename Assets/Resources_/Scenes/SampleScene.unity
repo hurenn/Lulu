@@ -388,6 +388,7 @@ MonoBehaviour:
   _col: {fileID: 219018234}
   _rb: {fileID: 219018233}
   _sprite: {fileID: 934050636}
+  _anim: {fileID: 934050638}
   _abilityY: {fileID: 0}
   _abilityX: {fileID: 0}
   _abilityA: {fileID: 0}
@@ -926,6 +927,7 @@ GameObject:
   m_Component:
   - component: {fileID: 934050637}
   - component: {fileID: 934050636}
+  - component: {fileID: 934050638}
   m_Layer: 0
   m_Name: Graphic
   m_TagString: Untagged
@@ -1003,6 +1005,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 219018235}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &934050638
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934050635}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1117969849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 55256309869968232, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
+  m_PrefabInstance: {fileID: 1287300959}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1117969852
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1117969849}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1510c429c15545a46bfa96f35a96ccdd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1136389900
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,9 +1241,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1083621043273555400, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
+      propertyPath: _localPosition.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3369483877891161509, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 3818249128708569178, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
+      propertyPath: _localPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3964676193768643266, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
+      propertyPath: _localPosition.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5982370657201034246, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
       propertyPath: _cameraFollow
@@ -1238,10 +1301,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8369236169115220977, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
+      propertyPath: _anim
+      value: 
+      objectReference: {fileID: 1117969852}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 55256309869968232, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1117969852}
   m_SourcePrefab: {fileID: 100100000, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
 --- !u!114 &1287300960 stripped
 MonoBehaviour:

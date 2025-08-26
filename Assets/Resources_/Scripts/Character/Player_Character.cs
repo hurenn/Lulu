@@ -248,6 +248,8 @@ public class Player_Character : Character_Base {
             velocity.y = _jumpForce;
             _currentJumpTime = _param.maxJumpHoldTime;
             _isJumping = true;
+            _anim?.SetBool("Jump", true);
+            _anim?.Play("Jump");
         }
         // ジャンプリリース
         if ((!input.jumpHeld && _isJumping) || _currentJumpTime <= 0) {
@@ -259,6 +261,10 @@ public class Player_Character : Character_Base {
             _currentJumpTime -= Time.deltaTime;
         }
 
+        //状態に応じたフラグ管理
+        _anim?.SetBool("Jump", _isJumping);
+        _anim?.SetBool("Fall", !_isGrounded);
+
         // 移動入力
         if (input.move.x != 0) {
             // 直前まで入力なし
@@ -268,9 +274,10 @@ public class Player_Character : Character_Base {
                     (Mathf.Sign(input.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
                     (Mathf.Sign(input.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing))) {
                     _isDashing = true;
+                    _anim?.SetBool("Dash", true);
                 }
-
                 _isWalking = true;
+                _anim?.SetBool("Walk", true);
             }
 
             // 移動中は常にフラグリセット
@@ -282,6 +289,9 @@ public class Player_Character : Character_Base {
                 // 歩行から停止
                 _isWalking = false;
                 _currentStopMoveInputTime = 0;
+                //移動アニメーション停止
+                _anim?.SetBool("Walk", false);
+                _anim?.SetBool("Dash", false);
             } else {
                 // 停止中はタイマー更新
                 _currentStopMoveInputTime += Time.deltaTime;
