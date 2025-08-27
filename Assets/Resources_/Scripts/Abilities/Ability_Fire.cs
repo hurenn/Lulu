@@ -9,7 +9,7 @@ public class Ability_Fire : Ability_Base
     // 弾オブジェクト
     [SerializeField] private FireBullet _bulletObj;
 
-    public override eAbilityResult ExecuteSimple() {
+    public override eAbilityResult ExecuteSimple(Vector3 character_pos) {
         var ability_result = _SimpleShot();
         if(ability_result != eAbilityResult.None) {
             return ability_result;

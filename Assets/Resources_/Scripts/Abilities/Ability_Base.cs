@@ -26,6 +26,9 @@ public class Ability_Base : MonoBehaviour {
     /// キャラクター表示
     /// </summary>
     [SerializeField] protected SpriteRenderer _rend = null;
+    [SerializeField] protected Animator _anim = null;
+
+    [SerializeField] protected GameObject _warpAnimationPrefab = null;
 
     /// <summary>
     /// 右向きか確認
@@ -39,9 +42,9 @@ public class Ability_Base : MonoBehaviour {
     /// 方向入力
     /// </summary>
     protected Vector2 _inputDir = Vector2.zero;
-    public virtual void DirectionInput(Vector2 dir) {
+    public virtual void DirectionInput(Vector3 character_pos, Vector2 dir) {
         _inputDir = dir;
-        transform.localPosition = new Vector3(
+        transform.position = character_pos + new Vector3(
             _localPosition.x * (_isRight ? -1 : 1),
             _localPosition.y,
             _localPosition.z);
@@ -51,7 +54,7 @@ public class Ability_Base : MonoBehaviour {
     /// <summary>
     /// 単押し使用
     /// </summary>
-    public virtual eAbilityResult ExecuteSimple() { return eAbilityResult.None; }
+    public virtual eAbilityResult ExecuteSimple(Vector3 character_pos) { return eAbilityResult.None; }
 
     /// <summary>
     /// 長押し使用

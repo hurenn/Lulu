@@ -131,10 +131,9 @@ public class Character_Base : MonoBehaviour
             return;
         }
 
-        ability.DirectionInput(dir_input);
         // 単押し使用
         if (button_pressed) {
-            _AbilityResult(ability.ExecuteSimple());
+            _AbilityResult(ability.ExecuteSimple(transform.position));
         }
         // 長押し使用
         if (button_held) {
