@@ -18,7 +18,7 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     public bool _isGround = true;
 
-    protected Vector3 _characterPosition = Vector3.zero;
+    protected Transform _charaTransform = default;
     /// <summary>
     /// 装備時のローカルポジション
     /// </summary>
@@ -35,9 +35,9 @@ public class Ability_Base : MonoBehaviour {
     /// 右向きか確認
     /// </summary>
     protected bool _isRight = true;
-    public virtual void SetCharacterTransform(bool is_right, Vector3 character_pos) {
+    public virtual void SetCharacterTransform(bool is_right, Transform character_pos) {
         _isRight = is_right;
-        _characterPosition = character_pos;
+        _charaTransform = character_pos;
     }
 
     /// <summary>

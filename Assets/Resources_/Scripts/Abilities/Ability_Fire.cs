@@ -3,7 +3,7 @@ using UnityEngine;
 public class Ability_Fire : Ability_Base
 {
     // 射撃アニメーション
-    private const string _SHOT_ANIM = "Shot";
+    private const string _SHOT_ANIM = "Marlica_Shot";
 
     // 最大弾数
     private int _maxShoot = 3;
@@ -12,13 +12,13 @@ public class Ability_Fire : Ability_Base
     // 弾オブジェクト
     [SerializeField] private FireBullet _bulletObj;
 
-    public override void SetCharacterTransform(bool isRight, Vector3 character_pos) {
-        base.SetCharacterTransform(isRight, character_pos);
-        UpdateTransform(character_pos, _inputDir);
+    public override void SetCharacterTransform(bool is_right, Transform chara_transform) {
+        base.SetCharacterTransform(is_right, chara_transform);
+        UpdateTransform(chara_transform.position, _inputDir);
     }
 
     public override eAbilityResult ExecuteSimple() {
-        var ability_result = _SimpleShot(_characterPosition);
+        var ability_result = _SimpleShot(_charaTransform.position);
         if(ability_result != eAbilityResult.None) {
             return ability_result;
         }

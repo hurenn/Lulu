@@ -57,34 +57,34 @@ public class Ability_Ice : Ability_Base {
         if (_attackStep == 0) {
             // 1段目
             Debug.Log("Slash 1");
-            UpdateTransform(_characterPosition, _inputDir); // 位置更新
+            UpdateTransform(_charaTransform.position, _inputDir); // 位置更新
             Instantiate(_slash1, transform.position, Quaternion.identity);
             _attackStep = 1;
             _currentReceptionTime = _comboReceptionTime;
             _currentComboCoolTime = _comboIntervalTime;
             // アニメーション再生
-            _anim?.Play("Attack1", 0, 0.0f);
+            _anim?.Play("Node_Attack1", 0, 0.0f);
             Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);
             return eAbilityResult.IceSlash1;
         } else if (_attackStep == 1) {
             // 2段目
             Debug.Log("Slash 2");
-            UpdateTransform(_characterPosition, _inputDir); // 位置更新
+            UpdateTransform(_charaTransform.position, _inputDir); // 位置更新
             Instantiate(_slash2, transform.position, Quaternion.identity);
             _attackStep = 2;
             _currentReceptionTime = _comboReceptionTime;
             _currentComboCoolTime = _comboIntervalTime;
-            _anim?.Play("Attack2", 0, 0.0f);
+            _anim?.Play("Node_Attack2", 0, 0.0f);
             return eAbilityResult.IceSlash2;
         } else if (_attackStep == 2) {
             // 3段目
             Debug.Log("Slash 3");
-            UpdateTransform(_characterPosition, _inputDir); // 位置更新
+            UpdateTransform(_charaTransform.position, _inputDir); // 位置更新
             Instantiate(_slash3, transform.position, Quaternion.identity);
             _attackStep = 3;
             _currentReceptionTime = _comboReceptionTime;
             _currentComboCoolTime = _comboIntervalTime;
-            _anim?.Play("Attack3", 0, 0.0f);
+            _anim?.Play("Node_Attack3", 0, 0.0f);
             return eAbilityResult.IceSlash3;
         } else {
             // 3段目以降はリセット
@@ -114,22 +114,22 @@ public class Ability_Ice : Ability_Base {
         _isHoldExecuted = false;
     }
 
-    public override void SetCharacterTransform(bool isRight, Vector3 character_position) {
-        base.SetCharacterTransform(isRight, character_position);
+    public override void SetCharacterTransform(bool is_right, Transform chara_transform) {
+        base.SetCharacterTransform(is_right, chara_transform);
         // 向きに応じて攻撃エフェクトの向きを調整
         if (_slash1 != null) {
             var scale = _slash1.transform.localScale;
-            scale.x = isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+            scale.x = is_right ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
             _slash1.transform.localScale = scale;
         }
         if (_slash2 != null) {
             var scale = _slash2.transform.localScale;
-            scale.x = isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+            scale.x = is_right ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
             _slash2.transform.localScale = scale;
         }
         if (_slash3 != null) {
             var scale = _slash3.transform.localScale;
-            scale.x = isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+            scale.x = is_right ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
             _slash3.transform.localScale = scale;
         }
     }
