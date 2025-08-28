@@ -18,6 +18,7 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     public bool _isGround = true;
 
+    protected Vector3 _characterPosition = Vector3.zero;
     /// <summary>
     /// 装備時のローカルポジション
     /// </summary>
@@ -34,15 +35,16 @@ public class Ability_Base : MonoBehaviour {
     /// 右向きか確認
     /// </summary>
     protected bool _isRight = true;
-    public virtual void SetIsRight(bool isRight) {
-        _isRight = isRight;
+    public virtual void SetCharacterTransform(bool is_right, Vector3 character_pos) {
+        _isRight = is_right;
+        _characterPosition = character_pos;
     }
 
     /// <summary>
     /// 方向入力
     /// </summary>
     protected Vector2 _inputDir = Vector2.zero;
-    public virtual void DirectionInput(Vector3 character_pos, Vector2 dir) {
+    public virtual void UpdateTransform(Vector3 character_pos, Vector2 dir) {
         _inputDir = dir;
         transform.position = character_pos + new Vector3(
             _localPosition.x * (_isRight ? -1 : 1),
@@ -54,7 +56,7 @@ public class Ability_Base : MonoBehaviour {
     /// <summary>
     /// 単押し使用
     /// </summary>
-    public virtual eAbilityResult ExecuteSimple(Vector3 character_pos) { return eAbilityResult.None; }
+    public virtual eAbilityResult ExecuteSimple() { return eAbilityResult.None; }
 
     /// <summary>
     /// 長押し使用

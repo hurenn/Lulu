@@ -35,8 +35,8 @@ public class Ability_Ice : Ability_Base {
         }
     }
 
-    public override eAbilityResult ExecuteSimple(Vector3 character_pos) {
-        var slash_result = _ComboSlash(character_pos);
+    public override eAbilityResult ExecuteSimple() {
+        var slash_result = _ComboSlash();
         if (slash_result != eAbilityResult.None) {
             return slash_result;
         } 
@@ -47,7 +47,7 @@ public class Ability_Ice : Ability_Base {
     /// <summary>
     /// コンボ攻撃実行
     /// </summary>
-    private eAbilityResult _ComboSlash(Vector3 character_pos) {
+    private eAbilityResult _ComboSlash() {
 
         // クールタイム中は実行不可
         if (_currentComboCoolTime > 0f) {
@@ -57,34 +57,34 @@ public class Ability_Ice : Ability_Base {
         if (_attackStep == 0) {
             // 1段目
             Debug.Log("Slash 1");
-            DirectionInput(character_pos, _inputDir); // 方向更新
+            UpdateTransform(_characterPosition, _inputDir); // 位置更新
             Instantiate(_slash1, transform.position, Quaternion.identity);
             _attackStep = 1;
             _currentReceptionTime = _comboReceptionTime;
             _currentComboCoolTime = _comboIntervalTime;
             // アニメーション再生
-            _anim?.Play("Node_Attack1", 0, 0.0f);
+            _anim?.Play("Attack1", 0, 0.0f);
             Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);
             return eAbilityResult.IceSlash1;
         } else if (_attackStep == 1) {
             // 2段目
             Debug.Log("Slash 2");
-            DirectionInput(character_pos, _inputDir); // 方向更新
+            UpdateTransform(_characterPosition, _inputDir); // 位置更新
             Instantiate(_slash2, transform.position, Quaternion.identity);
             _attackStep = 2;
             _currentReceptionTime = _comboReceptionTime;
             _currentComboCoolTime = _comboIntervalTime;
-            _anim?.Play("Node_Attack2", 0, 0.0f);
+            _anim?.Play("Attack2", 0, 0.0f);
             return eAbilityResult.IceSlash2;
         } else if (_attackStep == 2) {
             // 3段目
             Debug.Log("Slash 3");
-            DirectionInput(character_pos, _inputDir); // 方向更新
+            UpdateTransform(_characterPosition, _inputDir); // 位置更新
             Instantiate(_slash3, transform.position, Quaternion.identity);
             _attackStep = 3;
             _currentReceptionTime = _comboReceptionTime;
             _currentComboCoolTime = _comboIntervalTime;
-            _anim?.Play("Node_Attack3", 0, 0.0f);
+            _anim?.Play("Attack3", 0, 0.0f);
             return eAbilityResult.IceSlash3;
         } else {
             // 3段目以降はリセット
@@ -114,8 +114,8 @@ public class Ability_Ice : Ability_Base {
         _isHoldExecuted = false;
     }
 
-    public override void SetIsRight(bool isRight) {
-        base.SetIsRight(isRight);
+    public override void SetCharacterTransform(bool isRight, Vector3 character_position) {
+        base.SetCharacterTransform(isRight, character_position);
         // 向きに応じて攻撃エフェクトの向きを調整
         if (_slash1 != null) {
             var scale = _slash1.transform.localScale;

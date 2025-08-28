@@ -104,11 +104,11 @@ public class Character_Base : MonoBehaviour
         }
 
         // 向きの更新
-        if (_sprite != null && _isRight != _sprite.flipX) {
+        if (_sprite != null) {
             _sprite.flipX = _isRight;
-            _abilityX?.SetIsRight(_isRight);
-            _abilityY?.SetIsRight(_isRight);
-            _abilityA?.SetIsRight(_isRight);
+            _abilityX?.SetCharacterTransform(_isRight, transform.position);
+            _abilityY?.SetCharacterTransform(_isRight, transform.position);
+            _abilityA?.SetCharacterTransform(_isRight, transform.position);
         }
     }
 
@@ -133,7 +133,7 @@ public class Character_Base : MonoBehaviour
 
         // 単押し使用
         if (button_pressed) {
-            _AbilityResult(ability.ExecuteSimple(transform.position));
+            _AbilityResult(ability.ExecuteSimple());
         }
         // 長押し使用
         if (button_held) {

@@ -6,7 +6,7 @@ public class Ability_Light : Ability_Base
     [SerializeField] private GameObject _lightDomePrefab;
     private GameObject _lightDomeInstance;
 
-    public override eAbilityResult ExecuteSimple(Vector3 character_pos) {
+    public override eAbilityResult ExecuteSimple() {
         if (_lightDomePrefab == null) {
             return eAbilityResult.None;
         }
