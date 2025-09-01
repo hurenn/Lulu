@@ -63,7 +63,7 @@ public class WarpChecker : MonoBehaviour
                 return is_warp_point.Value; // ワープ可能な位置を返す
             }
 
-            // 少し上にずらしてチェック
+            /*// 少し上にずらしてチェック
             if (_isEnableUpperCheck) {
                 check_pos.y += _upperOffset;
                 is_warp_point = IsValidWarpPoint(check_pos);
@@ -71,7 +71,7 @@ public class WarpChecker : MonoBehaviour
                     _isUpperWarp = true;
                     return is_warp_point.Value; // ワープ可能な位置を返す
                 }
-            }
+            }*/
         }
 
         return origin; // どの方向にもワープできない場合は元の位置を返す

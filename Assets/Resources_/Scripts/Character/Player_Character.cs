@@ -37,6 +37,11 @@ public class Player_Character : Character_Base {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
         }
 
+        // 着地時MP回復
+        if (_isGrounded && !_charaParam.isMaxMP) {
+            _charaParam.RecoverMP();
+        }
+
         // 地面張り付き状態計測
         if (_currentLandingDashTime < _param.maxLandingDashTime && _isGroundSticking) {
             _currentLandingDashTime += Time.fixedDeltaTime;
@@ -347,6 +352,14 @@ public class Player_Character : Character_Base {
         }
 
         IEnumerator WarpCoroutine(WarpControl.eWarpDirection direction) {
+            
+            // MP消費
+            var is_success = _charaParam.ConsumeMP(CharacterParameter.eAbilityType.Warp);
+
+            if (!is_success) {
+                yield break; // MP不足でワープキャンセル
+            }
+
             // スライディングリセット
             _isSliding = false;
             // 重力を無効化
