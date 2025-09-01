@@ -24,6 +24,9 @@ public class CharacterParameter : MonoBehaviour
     private float _maxMP = 100.0f;
     // MPが最大かどうか
     public bool isMaxMP => _currentMP >= _maxMP;
+    // オーバーヒートからの回復時間
+    private float _overheatRecoverTime => _maxMP / 100.0f * 3.0f;
+    private float _currentOverheatTimer = 0.0f;
 
     public float attackPower = 1.0f;
     public float damageInvincibilityTime = 0.1f; // ダメージ無敵時間
@@ -57,6 +60,19 @@ public class CharacterParameter : MonoBehaviour
         } else if (_rend.color != Color.white) {
             _rend.color = Color.white;
         }
+        // オーバーヒートタイマーの更新
+        _UpdateOverheatTimer();
+    }
+
+    /// <summary>
+    /// オーバーヒートタイマーの更新
+    /// </summary>
+    private void _UpdateOverheatTimer() {
+        if (_currentOverheatTimer > 0) {
+            _currentOverheatTimer -= Time.deltaTime;
+            _currentMP = _maxMP * (1.0f - _currentOverheatTimer / _overheatRecoverTime);
+            _UpdateMPUI();
+        }
     }
 
     /// <summary>
@@ -86,45 +102,45 @@ public class CharacterParameter : MonoBehaviour
     /// <param name="ability_type"></param>
     /// <returns></returns>
     public bool ConsumeMP(eAbilityType ability_type) {
+        if (_currentOverheatTimer > 0) {
+            // オーバーヒート中は使用不可
+            return false;
+        }
+
         switch (ability_type) {
             case eAbilityType.Warp:
-                if (_currentMP >= _warpCost) {
-                    DecreaseMP(_warpCost);
-                    return true;
-                }
+                DecreaseMP(_warpCost);
                 break;
             case eAbilityType.Ice:
-                if (_currentMP >= _iceCost) {
-                    DecreaseMP(_iceCost);
-                    return true;
-                }
+                DecreaseMP(_iceCost);
                 break;
             case eAbilityType.Fire:
-                if (_currentMP >= _fireCost) {
-                    DecreaseMP(_fireCost);
-                    return true;
-                }
+                DecreaseMP(_fireCost);
                 break;
             case eAbilityType.Light:
-                if (_currentMP >= _lightCost) {
-                    DecreaseMP(_lightCost);
-                    return true;
-                }
+                DecreaseMP(_lightCost);
                 break;
         }
-        return false;
+        return true;
     }
     
     public void DecreaseMP(float amount)
     {
         _currentMP -= amount;
-        if (_currentMP < 0) _currentMP = 0;
+        if (_currentMP < 0) {
+            // オーバーヒート処理
+            _currentMP = 0;
+            _currentOverheatTimer = _overheatRecoverTime;
+        }
 
         // MPゲージの更新
         _UpdateMPUI();
     }
-    public void IncreaseMP(float amount)
-    {
+    public void IncreaseMP(float amount) {
+        if (_currentOverheatTimer > 0) {
+            // オーバーヒート中は使用不可
+            return;
+        }
         _currentMP += amount;
         if (_currentMP > _maxMP) _currentMP = _maxMP; // Assuming 100 is the max MP
 
@@ -134,6 +150,9 @@ public class CharacterParameter : MonoBehaviour
     public void RecoverMP() {
         IncreaseMP(_maxMP);
     }
+    public void OnRecoverOverheat() {
+        _currentOverheatTimer = 0;
+    }
     public void AddMaxMP(float amount) {
         _maxMP += amount;
     }
@@ -142,8 +161,6 @@ public class CharacterParameter : MonoBehaviour
     /// MP UIの更新
     /// </summary>
     private void _UpdateMPUI() {
-        // MP非表示コルーチンを止める
-
         // MPが最大でない場合はゲージを表示
         if (_mpBackground != null && _currentMP < _maxMP) {
             _mpBackground.SetActive(true);
@@ -152,6 +169,13 @@ public class CharacterParameter : MonoBehaviour
         // MPゲージの更新
         if (_mpImage != null) {
             _mpImage.fillAmount = _currentMP / _maxMP;
+
+            // ゲージの色変更（オーバーヒート中は赤、それ以外は白）
+            if (_currentOverheatTimer > 0 && _mpImage.color != Color.red) {
+                _mpImage.color = Color.red;
+            } else if (_currentOverheatTimer <= 0 && _mpImage.color != Color.white) {
+                _mpImage.color = Color.white;
+            }
         }
         // MPが最大になった場合のアニメーション再生
         if (_mpFilled != null) {

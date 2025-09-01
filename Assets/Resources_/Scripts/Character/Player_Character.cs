@@ -85,6 +85,7 @@ public class Player_Character : Character_Base {
                 _isGroundSticking = true;
                 _currentLandingDashTime = 0;
             }
+            _charaParam.OnRecoverOverheat(); // オーバーヒート回復
             _isWarpDashing = false; // ワープダッシュ終了
             return;
         }
