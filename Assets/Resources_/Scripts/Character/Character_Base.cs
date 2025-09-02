@@ -106,9 +106,9 @@ public class Character_Base : MonoBehaviour
         // Œü‚«‚ÌXV
         if (_sprite != null) {
             _sprite.flipX = _isRight;
-            _abilityX?.SetCharacterTransform(_isRight, transform);
-            _abilityY?.SetCharacterTransform(_isRight, transform);
-            _abilityA?.SetCharacterTransform(_isRight, transform);
+            _abilityX?.SetCharacterTransform(_isRight, transform, _charaParam);
+            _abilityY?.SetCharacterTransform(_isRight, transform, _charaParam);
+            _abilityA?.SetCharacterTransform(_isRight, transform, _charaParam);
         }
     }
 

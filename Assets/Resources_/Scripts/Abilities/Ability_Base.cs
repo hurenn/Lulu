@@ -18,7 +18,21 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     public bool _isGround = true;
 
+    [SerializeField]
+    protected float _returnTime = 1.0f;
+    /// <summary>
+    /// 帰還までの時間計測
+    /// </summary>
+    protected float _currentReturnTime = 0f;
+    /// <summary>
+    /// まだ出現中
+    /// </summary>
+    protected bool _isAppearing { get { return _currentReturnTime > 0f; } }
+
+    // キャラクター情報
     protected Transform _charaTransform = default;
+    protected CharacterParameter _charaParam = null;
+
     /// <summary>
     /// 装備時のローカルポジション
     /// </summary>
@@ -35,9 +49,10 @@ public class Ability_Base : MonoBehaviour {
     /// 右向きか確認
     /// </summary>
     protected bool _isRight = true;
-    public virtual void SetCharacterTransform(bool is_right, Transform character_pos) {
+    public virtual void SetCharacterTransform(bool is_right, Transform chara_pos, CharacterParameter chara_param) {
         _isRight = is_right;
-        _charaTransform = character_pos;
+        _charaTransform = chara_pos;
+        _charaParam = chara_param;
     }
 
     /// <summary>
@@ -67,4 +82,9 @@ public class Ability_Base : MonoBehaviour {
     /// ボタンを離したときの処理
     /// </summary>
     public virtual void ExecuteRelease() { }
+
+    /// <summary>
+    /// ワープ実行時の処理
+    /// </summary>
+    public virtual void OnWarp() { }
 }

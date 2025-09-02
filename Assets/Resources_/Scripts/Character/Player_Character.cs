@@ -393,6 +393,9 @@ public class Player_Character : Character_Base {
             // ÉèÅ[Évé¿çs
             _warpControl.Warp(direction);
             _anim.SetBool("Warp", false);
+            _abilityA.OnWarp();
+            _abilityX.OnWarp();
+            _abilityY.OnWarp();
 
             yield return null;
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Ability_Ice : Ability_Base {
@@ -5,9 +6,10 @@ public class Ability_Ice : Ability_Base {
     private int _attackStep = 0; // 0:未攻撃, 1:1段目, 2:2段目, 3:3段目
 
     [SerializeField] private float _comboReceptionTime = 0.7f; // コンボ入力受付時間
-    private float _currentReceptionTime = 0f;
+    private float _currentComboTime = 0f;
     [SerializeField] private float _comboIntervalTime = 0.15f; // 1コンボインターバル時間
     [SerializeField] private float _comboCoolTime = 0.2f; // コンボ終了後のクールタイム
+    [SerializeField] private float _moveDuration = 0.05f; // 移動にかける時間
     // コンボ攻撃のクールタイム
     private float _currentComboCoolTime = 0f;
 
@@ -25,21 +27,50 @@ public class Ability_Ice : Ability_Base {
     private void Update() {
         // タイマー減少
         if (_attackStep > 0) {
-            _currentReceptionTime -= Time.deltaTime;
-            if (_currentReceptionTime <= 0f) {
+            _currentComboTime -= Time.deltaTime;
+            if (_currentComboTime <= 0f) {
                 _attackStep = 0; // コンボリセット
             }
         }
+        // コンボタイマー
         if (_currentComboCoolTime > 0f) {
             _currentComboCoolTime -= Time.deltaTime;
+        }
+        // 帰還タイマー
+        if (_isAppearing) {
+            _currentReturnTime -= Time.deltaTime;
+            if (_currentReturnTime <= 0f) {
+                // 帰還
+                _anim.Play("ToHide");
+            }
         }
     }
 
     public override eAbilityResult ExecuteSimple() {
-        var slash_result = _ComboSlash();
-        if (slash_result != eAbilityResult.None) {
-            return slash_result;
-        } 
+        // オーバーヒート中は使用不可
+        if (_charaParam.isOverheat && !_isAppearing) {
+            return eAbilityResult.None;
+        }
+
+        // コンボ攻撃判定
+        var attack_result = _ComboSlash();
+        // 切り離し攻撃判定
+        // if(attack_result == eAbilityResult.None) attack_result = _SeparateSlash();
+
+        // 攻撃実行
+        if (attack_result != eAbilityResult.None) {
+            // 召喚エフェクト判定
+            if (!_isAppearing) {
+                // MP消費
+                _charaParam.AddUnRecoverableTime_MP(0.5f);
+                _charaParam.ConsumeMP(CharacterParameter.eAbilityType.Ice);
+                // 召喚エフェクト再生
+                Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);
+            }
+            // 帰還タイマーリセット
+            _currentReturnTime = _returnTime;
+            return attack_result;
+        }
 
         return eAbilityResult.None;
     }
@@ -54,45 +85,60 @@ public class Ability_Ice : Ability_Base {
             return eAbilityResult.None;
         }
 
+        System.Action<GameObject, string> callback = (GameObject attack_effect, string anim_name) => {
+            UpdateTransform(_charaTransform.position, _inputDir);
+            Instantiate(attack_effect, transform.position, Quaternion.identity); // エフェクト生成
+            _anim?.Play(anim_name, 0, 0.0f);       // アニメーション再生
+        };
+
         if (_attackStep == 0) {
             // 1段目
             Debug.Log("Slash 1");
-            UpdateTransform(_charaTransform.position, _inputDir); // 位置更新
-            Instantiate(_slash1, transform.position, Quaternion.identity);
-            _attackStep = 1;
-            _currentReceptionTime = _comboReceptionTime;
-            _currentComboCoolTime = _comboIntervalTime;
-            // アニメーション再生
-            _anim?.Play("Node_Attack1", 0, 0.0f);
-            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);
-            return eAbilityResult.IceSlash1;
+            StartCoroutine(_UpdateTransformEasing(_slash1, "Node_Attack1"));
+            _attackStep = 1;                            // 次の攻撃へ
+            _currentComboTime = _comboReceptionTime;    // 次のコンボ受付時間
+            _currentComboCoolTime = _comboIntervalTime; // クールタイムセット
+            return eAbilityResult.IceSlash1;            // 実行結果返却
         } else if (_attackStep == 1) {
             // 2段目
             Debug.Log("Slash 2");
-            UpdateTransform(_charaTransform.position, _inputDir); // 位置更新
-            Instantiate(_slash2, transform.position, Quaternion.identity);
-            _attackStep = 2;
-            _currentReceptionTime = _comboReceptionTime;
-            _currentComboCoolTime = _comboIntervalTime;
-            _anim?.Play("Node_Attack2", 0, 0.0f);
-            return eAbilityResult.IceSlash2;
+            StartCoroutine(_UpdateTransformEasing(_slash2, "Node_Attack2"));
+            _attackStep = 2;                            // 次の攻撃へ
+            _currentComboTime = _comboReceptionTime;    // 次のコンボ受付時間
+            _currentComboCoolTime = _comboIntervalTime; // クールタイムセット
+            return eAbilityResult.IceSlash2;            // 実行結果返却
         } else if (_attackStep == 2) {
             // 3段目
             Debug.Log("Slash 3");
-            UpdateTransform(_charaTransform.position, _inputDir); // 位置更新
-            Instantiate(_slash3, transform.position, Quaternion.identity);
-            _attackStep = 3;
-            _currentReceptionTime = _comboReceptionTime;
-            _currentComboCoolTime = _comboIntervalTime;
-            _anim?.Play("Node_Attack3", 0, 0.0f);
-            return eAbilityResult.IceSlash3;
-        } else {
-            // 3段目以降はリセット
-            _attackStep = 0;
-            _currentComboCoolTime = _comboCoolTime;
+            StartCoroutine(_UpdateTransformEasing(_slash3, "Node_Attack3"));
+            _attackStep = 0;                            // コンボリセット
+            _currentComboTime = _comboReceptionTime;    // 次のコンボ受付時間
+            _currentComboCoolTime = _comboCoolTime;     // クールタイムセット
+            return eAbilityResult.IceSlash3;            // 実行結果返却
         }
 
         return eAbilityResult.None;
+    }
+
+    private IEnumerator _UpdateTransformEasing(GameObject effect, string anim_name) {
+        if (_isAppearing) {
+            // イージングで位置を更新
+            float elapsedTime = 0f;
+            Vector3 startPos = transform.position;
+            Vector3 targetPos = _charaTransform.position + new Vector3(
+                _localPosition.x * (_isRight ? -1 : 1),
+                _localPosition.y,
+                _localPosition.z);
+            while (elapsedTime < _moveDuration) {
+                transform.position = Vector3.Lerp(startPos, targetPos, elapsedTime / _moveDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
+        
+        UpdateTransform(_charaTransform.position, _inputDir);   // 最終的な位置を設定
+        Instantiate(effect, transform.position, Quaternion.identity);  // エフェクト生成
+        _anim?.Play(anim_name, 0, 0.0f);   // アニメーション再生
     }
 
     public override eAbilityResult ExecuteLong() {
@@ -114,8 +160,8 @@ public class Ability_Ice : Ability_Base {
         _isHoldExecuted = false;
     }
 
-    public override void SetCharacterTransform(bool is_right, Transform chara_transform) {
-        base.SetCharacterTransform(is_right, chara_transform);
+    public override void SetCharacterTransform(bool is_right, Transform chara_transform, CharacterParameter chara_param) {
+        base.SetCharacterTransform(is_right, chara_transform, chara_param);
         // 向きに応じて攻撃エフェクトの向きを調整
         if (_slash1 != null) {
             var scale = _slash1.transform.localScale;
@@ -131,6 +177,13 @@ public class Ability_Ice : Ability_Base {
             var scale = _slash3.transform.localScale;
             scale.x = is_right ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
             _slash3.transform.localScale = scale;
+        }
+    }
+
+    public override void OnWarp() {
+        // 即座に帰還
+        if (_isAppearing) {
+            _currentReturnTime = 0.01f;
         }
     }
 }

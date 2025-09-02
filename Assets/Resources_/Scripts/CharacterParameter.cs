@@ -27,6 +27,8 @@ public class CharacterParameter : MonoBehaviour
     // オーバーヒートからの回復時間
     private float _overheatRecoverTime => _maxMP / 100.0f * 3.0f;
     private float _currentOverheatTimer = 0.0f;
+    // オーバーヒート中かどうか
+    public bool isOverheat => _currentOverheatTimer > 0;
 
     public float attackPower = 1.0f;
     public float damageInvincibilityTime = 0.1f; // ダメージ無敵時間
@@ -34,6 +36,12 @@ public class CharacterParameter : MonoBehaviour
     private float _currentHP = 10;
     private float _currentInvincibilityTimer = 0;
     public bool isInvincible => _currentInvincibilityTimer > 0;
+
+    // MP回復不可タイマー
+    private float _currentUnRecoverableTime_MP = 0.0f;
+    public void AddUnRecoverableTime_MP(float time) {
+        _currentUnRecoverableTime_MP += time;
+    }
 
     // キャラクター表示
     [SerializeField] private SpriteRenderer _rend;
@@ -62,13 +70,17 @@ public class CharacterParameter : MonoBehaviour
         }
         // オーバーヒートタイマーの更新
         _UpdateOverheatTimer();
+        // MP回復不可タイマーの更新
+        if (_currentUnRecoverableTime_MP > 0) {
+            _currentUnRecoverableTime_MP -= Time.deltaTime;
+        }
     }
 
     /// <summary>
     /// オーバーヒートタイマーの更新
     /// </summary>
     private void _UpdateOverheatTimer() {
-        if (_currentOverheatTimer > 0) {
+        if (isOverheat) {
             _currentOverheatTimer -= Time.deltaTime;
             _currentMP = _maxMP * (1.0f - _currentOverheatTimer / _overheatRecoverTime);
             _UpdateMPUI();
@@ -102,7 +114,7 @@ public class CharacterParameter : MonoBehaviour
     /// <param name="ability_type"></param>
     /// <returns></returns>
     public bool ConsumeMP(eAbilityType ability_type) {
-        if (_currentOverheatTimer > 0) {
+        if (isOverheat) {
             // オーバーヒート中は使用不可
             return false;
         }
@@ -136,9 +148,9 @@ public class CharacterParameter : MonoBehaviour
         // MPゲージの更新
         _UpdateMPUI();
     }
-    public void IncreaseMP(float amount) {
-        if (_currentOverheatTimer > 0) {
-            // オーバーヒート中は使用不可
+    public void RecoverMP(float amount) {
+        if (isOverheat || _currentUnRecoverableTime_MP > 0) {
+            // 回復不可判定
             return;
         }
         _currentMP += amount;
@@ -148,7 +160,7 @@ public class CharacterParameter : MonoBehaviour
         _UpdateMPUI();
     }
     public void RecoverMP() {
-        IncreaseMP(_maxMP);
+        RecoverMP(_maxMP);
     }
     public void OnRecoverOverheat() {
         _currentOverheatTimer = 0;
@@ -171,7 +183,7 @@ public class CharacterParameter : MonoBehaviour
             _mpImage.fillAmount = _currentMP / _maxMP;
 
             // ゲージの色変更（オーバーヒート中は赤、それ以外は白）
-            if (_currentOverheatTimer > 0 && _mpImage.color != Color.red) {
+            if (isOverheat && _mpImage.color != Color.red) {
                 _mpImage.color = Color.red;
             } else if (_currentOverheatTimer <= 0 && _mpImage.color != Color.white) {
                 _mpImage.color = Color.white;

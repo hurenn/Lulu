@@ -12,8 +12,8 @@ public class Ability_Fire : Ability_Base
     // 弾オブジェクト
     [SerializeField] private FireBullet _bulletObj;
 
-    public override void SetCharacterTransform(bool is_right, Transform chara_transform) {
-        base.SetCharacterTransform(is_right, chara_transform);
+    public override void SetCharacterTransform(bool is_right, Transform chara_transform, CharacterParameter chara_param) {
+        base.SetCharacterTransform(is_right, chara_transform, chara_param);
         UpdateTransform(chara_transform.position, _inputDir);
     }
 
