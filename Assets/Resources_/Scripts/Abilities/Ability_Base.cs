@@ -120,7 +120,7 @@ public class Ability_Base : MonoBehaviour {
         // 召喚エフェクト判定
         if (!_isAppearing) {
             // MP消費
-            _charaParam.AddUnRecoverableTime_MP(un_recover_time);
+            _charaParam.SetUnRecoverTime_MP(un_recover_time);
             _charaParam.ConsumeMP(ability_type);
             // 召喚エフェクト再生
             Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);

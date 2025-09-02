@@ -39,8 +39,8 @@ public class CharacterParameter : MonoBehaviour
 
     // MP回復不可タイマー
     private float _currentUnRecoverableTime_MP = 0.0f;
-    public void AddUnRecoverableTime_MP(float time) {
-        _currentUnRecoverableTime_MP += time;
+    public void SetUnRecoverTime_MP(float time) {
+        _currentUnRecoverableTime_MP = time;
     }
 
     // キャラクター表示
@@ -109,10 +109,9 @@ public class CharacterParameter : MonoBehaviour
     }
 
     /// <summary>
-    /// MPが足りているか確認
+    /// MP消費
     /// </summary>
     /// <param name="ability_type"></param>
-    /// <returns></returns>
     public bool ConsumeMP(eAbilityType ability_type) {
         if (isOverheat) {
             // オーバーヒート中は使用不可
