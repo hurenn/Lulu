@@ -19,15 +19,24 @@ public class Ability_Base : MonoBehaviour {
     public bool _isGround = true;
 
     [SerializeField]
-    protected float _returnTime = 1.0f;
+    private float _returnTime = 1.0f;
     /// <summary>
     /// 帰還までの時間計測
     /// </summary>
-    protected float _currentReturnTime = 0f;
+    private float _currentReturnTime = 0f;
     /// <summary>
     /// まだ出現中
     /// </summary>
     protected bool _isAppearing { get { return _currentReturnTime > 0f; } }
+    /// <summary>
+    /// 帰還タイマーセット
+    /// </summary>
+    protected void _ResetReturnTimer() {
+        _currentReturnTime = _returnTime;
+    }
+    protected void _ResetReturnTimer(float time) {
+        _currentReturnTime = time;
+    }
 
     // キャラクター情報
     protected Transform _charaTransform = default;
@@ -54,6 +63,20 @@ public class Ability_Base : MonoBehaviour {
         _charaTransform = chara_pos;
         _charaParam = chara_param;
     }
+
+    private void Update() {
+        // 帰還タイマー
+        if (_isAppearing) {
+            _currentReturnTime -= Time.deltaTime;
+            if (_currentReturnTime <= 0f) {
+                // 帰還
+                _anim.Play("ToHide");
+            }
+        }
+        _Update();
+    }
+
+    protected virtual void _Update() { }
 
     /// <summary>
     /// 方向入力
@@ -87,4 +110,22 @@ public class Ability_Base : MonoBehaviour {
     /// ワープ実行時の処理
     /// </summary>
     public virtual void OnWarp() { }
+
+    /// <summary>
+    /// 召喚エフェクトとMP消費チェック
+    /// </summary>
+    /// <param name="ability_type">能力タイプ</param>
+    /// <param name="un_recover_time">MP回復開始までのクールタイム</param>
+    protected void _AppearCheck(CharacterParameter.eAbilityType ability_type, float un_recover_time = 0.5f) {
+        // 召喚エフェクト判定
+        if (!_isAppearing) {
+            // MP消費
+            _charaParam.AddUnRecoverableTime_MP(un_recover_time);
+            _charaParam.ConsumeMP(ability_type);
+            // 召喚エフェクト再生
+            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);
+        }
+        // 帰還タイマーリセット
+        _ResetReturnTimer();
+    }
 }

@@ -18,8 +18,16 @@ public class Ability_Fire : Ability_Base
     }
 
     public override eAbilityResult ExecuteSimple() {
+        // オーバーヒート中は使用不可
+        if (_charaParam.isOverheat && !_isAppearing) {
+            return eAbilityResult.None;
+        }
+
         var ability_result = _SimpleShot(_charaTransform.position);
-        if(ability_result != eAbilityResult.None) {
+
+        // 攻撃実行
+        if (ability_result != eAbilityResult.None) {
+            _AppearCheck(CharacterParameter.eAbilityType.Fire);
             return ability_result;
         }
 
@@ -35,9 +43,6 @@ public class Ability_Fire : Ability_Base
         }
 
         // アニメーション再生
-        if (!_anim.GetCurrentAnimatorStateInfo(0).IsName(_SHOT_ANIM)) {
-            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);
-        }
         _anim?.Play(_SHOT_ANIM, 0, 0.0f);
 
         var bullet = Instantiate(_bulletObj, transform.position, Quaternion.identity);

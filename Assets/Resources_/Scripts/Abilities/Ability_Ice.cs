@@ -24,7 +24,7 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private GameObject _slash2;
     [SerializeField] private GameObject _slash3;
 
-    private void Update() {
+    protected override void _Update() {
         // タイマー減少
         if (_attackStep > 0) {
             _currentComboTime -= Time.deltaTime;
@@ -35,14 +35,6 @@ public class Ability_Ice : Ability_Base {
         // コンボタイマー
         if (_currentComboCoolTime > 0f) {
             _currentComboCoolTime -= Time.deltaTime;
-        }
-        // 帰還タイマー
-        if (_isAppearing) {
-            _currentReturnTime -= Time.deltaTime;
-            if (_currentReturnTime <= 0f) {
-                // 帰還
-                _anim.Play("ToHide");
-            }
         }
     }
 
@@ -59,16 +51,7 @@ public class Ability_Ice : Ability_Base {
 
         // 攻撃実行
         if (attack_result != eAbilityResult.None) {
-            // 召喚エフェクト判定
-            if (!_isAppearing) {
-                // MP消費
-                _charaParam.AddUnRecoverableTime_MP(0.5f);
-                _charaParam.ConsumeMP(CharacterParameter.eAbilityType.Ice);
-                // 召喚エフェクト再生
-                Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);
-            }
-            // 帰還タイマーリセット
-            _currentReturnTime = _returnTime;
+            _AppearCheck(CharacterParameter.eAbilityType.Ice);
             return attack_result;
         }
 
@@ -183,7 +166,7 @@ public class Ability_Ice : Ability_Base {
     public override void OnWarp() {
         // 即座に帰還
         if (_isAppearing) {
-            _currentReturnTime = 0.01f;
+            _ResetReturnTimer(0.01f);
         }
     }
 }

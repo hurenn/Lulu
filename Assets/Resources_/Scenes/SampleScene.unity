@@ -2944,6 +2944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isGround: 1
+  _returnTime: 1
   _localPosition: {x: 0, y: 0, z: 1}
   _rend: {fileID: 6185420993607095206}
   _anim: {fileID: 7184895629469277566}
@@ -3434,6 +3435,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isGround: 1
+  _returnTime: 1
   _localPosition: {x: 0.8, y: 0.25, z: 1}
   _rend: {fileID: 6753606205956162366}
   _anim: {fileID: 7636673744357096709}
@@ -3484,6 +3486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isGround: 1
+  _returnTime: 0.5
   _localPosition: {x: -0.4, y: -0.15, z: 1}
   _rend: {fileID: 7742228007742891}
   _anim: {fileID: 1386092255576162279}
@@ -3491,6 +3494,7 @@ MonoBehaviour:
   _comboReceptionTime: 0.7
   _comboIntervalTime: 0.2
   _comboCoolTime: 0.5
+  _moveDuration: 0.05
   _slash1: {fileID: 3568965013177453205, guid: c3339261c4be5664f824c36464bf3793, type: 3}
   _slash2: {fileID: 3568965013177453205, guid: 4b72e1cb41d4c294fb83b45a2d17c16f, type: 3}
   _slash3: {fileID: 3568965013177453205, guid: 09088dd8cbcea0c41bce9975dc2537cd, type: 3}
