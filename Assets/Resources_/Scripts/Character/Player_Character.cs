@@ -19,6 +19,8 @@ public class Player_Character : Character_Base {
     private float _currentSlideTime = 0;
     // 着地ダッシュ時間計測
     private float _currentLandingDashTime = 0;
+    // スライドジャンプ時間計測
+    private float _currentSlideJumpTime = 0;
     // 壁に沿って滑る速度
     private float _currentWallSlideTime = 0;
 
@@ -32,6 +34,7 @@ public class Player_Character : Character_Base {
         _UpdateWarpDash();
         _UpdateSliding();
         _UpdateWallSlideMove();
+        _UpdateSlideJump();
 
         if (_currentWarpCoolTime > 0) {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
@@ -91,11 +94,7 @@ public class Player_Character : Character_Base {
         }
         // 壁に接触しているかチェック
         if ((_isTouchingLeft && _warpDashDirection.x < 0) || (_isTouchingRight && _warpDashDirection.x > 0)) {
-            // 壁に接触している場合は壁に沿って滑る
-            _isWallSliding = true;
-            _currentWallSlideTime = 0;
-
-            _isWarpDashing = false; // ワープダッシュ終了
+            _ExecuteWallSlide(); // 壁滑り実行
             return;
         }
     }
@@ -151,6 +150,16 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
+    /// 壁ダッシュ実行
+    /// </summary>
+    private void _ExecuteWallSlide() {
+        _isWallSliding = true;
+        _currentWallSlideTime = 0;
+        _isSlidingJump = false;
+        _isWarpDashing = false;
+    }
+
+    /// <summary>
     /// スライディング処理
     /// </summary>
     private void _UpdateSliding() {
@@ -184,6 +193,26 @@ public class Player_Character : Character_Base {
                 _isSlidingCanceling = false;
             }
             _rb.linearVelocity = velocity;
+        }
+    }
+
+    private void _UpdateSlideJump() {
+        // スライドジャンプ時間計測
+        if (!_isSlidingJump) {
+            return;
+        }
+
+        // 着地した場合はスライドジャンプ終了
+        if (_isGrounded && _currentSlideJumpTime > 0.1f) {
+            _isSlidingJump = false;
+            return;
+        }
+        _currentSlideJumpTime += Time.fixedDeltaTime;
+
+        // 壁に当たった場合は壁ダッシュに移行
+        if ((_isTouchingLeft && _warpDashDirection.x < 0) || (_isTouchingRight && _warpDashDirection.x > 0)) {
+            _ExecuteWallSlide();
+            return;
         }
     }
 
@@ -246,12 +275,14 @@ public class Player_Character : Character_Base {
             // スライディングジャンプ
             if (_isSliding) {
                 _isSliding = false;
+                _isSlidingJump = true;
 
                 // y方向の加速を無視
                 _warpDashDirection.y = 0;
 
                 // スライディング時間リセット
                 _currentSlideTime = 0;
+                _currentSlideJumpTime = 0;
             }
 
             velocity.y = _jumpForce;
@@ -310,8 +341,10 @@ public class Player_Character : Character_Base {
             }
         }
 
-        velocity.x = input.move.x * (_isDashing ? _param.dashSpeed :
-            _isSliding ? _param.slideSpeed : _param.moveSpeed);
+        velocity.x = input.move.x * (
+            _isSlidingJump ? _param.slideJumpSpeed :
+            _isSliding ? _param.slideSpeed :
+            _isDashing ? _param.dashSpeed : _param.moveSpeed);
 
         // 壁に接触している場合は横移動を0にする
         if ((_isTouchingLeft && input.move.x < 0) || (_isTouchingRight && input.move.x > 0)) {
@@ -323,12 +356,6 @@ public class Player_Character : Character_Base {
         } else if (input.move.x < 0) {
             _isRight = false;
         }
-
-        // スライド移動補正
-        //if (_isSliding) {
-        //    var slide_dir = _warpDashDirection.normalized;
-        //    velocity.x += slide_dir.x * _param.slideSpeed;
-        //}
 
         _rb.linearVelocity = velocity;
     }
@@ -414,6 +441,8 @@ public class Player_Character : Character_Base {
 
             // ワープダッシュのクールタイムをリセット
             _currentWarpCoolTime = _param.warpCoolTime;
+            // スライドジャンプリセット
+            _isSlidingJump = false;
         }
     }
 }

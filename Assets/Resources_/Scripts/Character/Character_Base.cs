@@ -40,6 +40,7 @@ public class Character_Base : MonoBehaviour
     protected bool _isWarpDashing;
     protected bool _isSliding;      // スライディング中かどうか
     protected bool _isSlidingCanceling; // スライディングキャンセル中かどうか
+    protected bool _isSlidingJump;  // スライディングジャンプ中かどうか
     protected bool _isGroundSticking; // 地面に張り付いている状態
     protected bool _isWallSliding;  // 壁に沿って滑っている状態
     protected bool _isGrounded;

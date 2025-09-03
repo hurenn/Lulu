@@ -6,7 +6,8 @@ public class CommonParameter : ScriptableObject
     [Header("移動力")]
     public float moveSpeed = 5.0f;
     public float dashSpeed = 10.0f;
-    public float slideSpeed = 12.0f; // スライディング速度
+    public float slideJumpSpeed = 14.0f;
+    public float slideSpeed = 15.0f; // スライディング速度
 
     [Header("ジャンプ力")]
     public float jumpForce = 5.0f;
