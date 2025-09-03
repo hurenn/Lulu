@@ -19,7 +19,6 @@ MonoBehaviour:
   dashJumpForce: 10
   slideJumpForce: 12
   maxJumpSpeed: 20
-  slashRebound: 0.5
   gravity: -30
   fallMultiplier: 2
   maxFallSpeed: -20
@@ -44,3 +43,9 @@ MonoBehaviour:
   wallCheckWidth: 0.1
   checkerBuffer: 0.05
   iceSlashInterval: 0.2
+  slashRebound: 2
+  slashMoveForce: 2
+  comboReceptionTime: 0.5
+  comboIntervalTime: 0.2
+  comboCoolTime: 0.5
+  moveDuration: 0.05

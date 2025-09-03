@@ -5,11 +5,7 @@ public class Ability_Ice : Ability_Base {
 
     private int _attackStep = 0; // 0:未攻撃, 1:1段目, 2:2段目, 3:3段目
 
-    [SerializeField] private float _comboReceptionTime = 0.7f; // コンボ入力受付時間
     private float _currentComboTime = 0f;
-    [SerializeField] private float _comboIntervalTime = 0.15f; // 1コンボインターバル時間
-    [SerializeField] private float _comboCoolTime = 0.2f; // コンボ終了後のクールタイム
-    [SerializeField] private float _moveDuration = 0.05f; // 移動にかける時間
     // コンボ攻撃のクールタイム
     private float _currentComboCoolTime = 0f;
 
@@ -79,24 +75,24 @@ public class Ability_Ice : Ability_Base {
             Debug.Log("Slash 1");
             StartCoroutine(_UpdateTransformEasing(_slash1, "Node_Attack1"));
             _attackStep = 1;                            // 次の攻撃へ
-            _currentComboTime = _comboReceptionTime;    // 次のコンボ受付時間
-            _currentComboCoolTime = _comboIntervalTime; // クールタイムセット
+            _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
+            _currentComboCoolTime = _param.comboIntervalTime; // クールタイムセット
             return eAbilityResult.IceSlash1;            // 実行結果返却
         } else if (_attackStep == 1) {
             // 2段目
             Debug.Log("Slash 2");
             StartCoroutine(_UpdateTransformEasing(_slash2, "Node_Attack2"));
             _attackStep = 2;                            // 次の攻撃へ
-            _currentComboTime = _comboReceptionTime;    // 次のコンボ受付時間
-            _currentComboCoolTime = _comboIntervalTime; // クールタイムセット
+            _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
+            _currentComboCoolTime = _param.comboIntervalTime; // クールタイムセット
             return eAbilityResult.IceSlash2;            // 実行結果返却
         } else if (_attackStep == 2) {
             // 3段目
             Debug.Log("Slash 3");
             StartCoroutine(_UpdateTransformEasing(_slash3, "Node_Attack3"));
             _attackStep = 0;                            // コンボリセット
-            _currentComboTime = _comboReceptionTime;    // 次のコンボ受付時間
-            _currentComboCoolTime = _comboCoolTime;     // クールタイムセット
+            _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
+            _currentComboCoolTime = _param.comboCoolTime;     // クールタイムセット
             return eAbilityResult.IceSlash3;            // 実行結果返却
         }
 
@@ -112,8 +108,8 @@ public class Ability_Ice : Ability_Base {
                 _localPosition.x * (_isRight ? -1 : 1),
                 _localPosition.y,
                 _localPosition.z);
-            while (elapsedTime < _moveDuration) {
-                transform.position = Vector3.Lerp(startPos, targetPos, elapsedTime / _moveDuration);
+            while (elapsedTime < _param.moveDuration) {
+                transform.position = Vector3.Lerp(startPos, targetPos, elapsedTime / _param.moveDuration);
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
@@ -143,8 +139,8 @@ public class Ability_Ice : Ability_Base {
         _isHoldExecuted = false;
     }
 
-    public override void SetCharacterTransform(bool is_right, Transform chara_transform, CharacterParameter chara_param) {
-        base.SetCharacterTransform(is_right, chara_transform, chara_param);
+    public override void SetCharacterTransform(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter chara_param) {
+        base.SetCharacterTransform(is_right, chara_transform, param, chara_param);
         // 向きに応じて攻撃エフェクトの向きを調整
         if (_slash1 != null) {
             var scale = _slash1.transform.localScale;

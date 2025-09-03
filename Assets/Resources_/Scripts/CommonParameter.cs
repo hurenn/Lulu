@@ -13,7 +13,6 @@ public class CommonParameter : ScriptableObject
     public float dashJumpForce = 6.0f; // ダッシュジャンプの力
     public float slideJumpForce = 8.0f; // スライディングジャンプの力
     public float maxJumpSpeed = 20.0f;
-    public float slashRebound = 2.0f;
 
     [Header("重力")]
     public float gravity = -30.0f;
@@ -67,8 +66,14 @@ public class CommonParameter : ScriptableObject
     public float wallCheckWidth = 0.1f;
     public float checkerBuffer = 0.05f;
 
-    [Header("能力隙")]
-    public float iceSlashInterval = 0.1f; // 氷刃の隙
+    [Header("氷能力")]
+    public float iceSlashInterval = 0.1f;   // 攻撃の隙
+    public float slashRebound = 2.0f;       // 空中攻撃の反動ジャンプ力
+    public float slashMoveForce = 2.0f;     // 空中攻撃の移動力
+    public float comboReceptionTime = 0.7f; // コンボ入力受付時間
+    public float comboIntervalTime = 0.2f;  // 1コンボインターバル時間
+    public float comboCoolTime = 0.5f;     // コンボ終了後のクールタイム
+    public float moveDuration = 0.05f;     // 移動にかける時間
 }
 
 public struct CharacterInputData

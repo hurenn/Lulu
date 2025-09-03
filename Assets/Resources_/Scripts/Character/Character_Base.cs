@@ -106,9 +106,9 @@ public class Character_Base : MonoBehaviour
         // 向きの更新
         if (_sprite != null) {
             _sprite.flipX = _isRight;
-            _abilityX?.SetCharacterTransform(_isRight, transform, _charaParam);
-            _abilityY?.SetCharacterTransform(_isRight, transform, _charaParam);
-            _abilityA?.SetCharacterTransform(_isRight, transform, _charaParam);
+            _abilityX?.SetCharacterTransform(_isRight, transform, _param, _charaParam);
+            _abilityY?.SetCharacterTransform(_isRight, transform, _param, _charaParam);
+            _abilityA?.SetCharacterTransform(_isRight, transform, _param, _charaParam);
         }
     }
 
@@ -133,11 +133,11 @@ public class Character_Base : MonoBehaviour
 
         // 単押し使用
         if (button_pressed) {
-            _AbilityResult(ability.ExecuteSimple());
+            _AbilityResult(ability.ExecuteSimple(), dir_input);
         }
         // 長押し使用
         if (button_held) {
-            _AbilityResult(ability.ExecuteLong());
+            _AbilityResult(ability.ExecuteLong(), dir_input);
         }
         // ボタンを離したときの処理
         if (!button_held && !button_pressed) {
@@ -145,8 +145,8 @@ public class Character_Base : MonoBehaviour
         }
     }
 
-    private void _AbilityResult(eAbilityResult result) {
-        switch(result) {
+    private void _AbilityResult(eAbilityResult result, Vector2 dir_input) {
+        switch (result) {
             case eAbilityResult.None:
                 break;
             case eAbilityResult.IceSlash1:
@@ -156,10 +156,12 @@ public class Character_Base : MonoBehaviour
                 // 斬撃隙
                 _intervalTimer = _param.iceSlashInterval;
                 _rb.linearVelocity = Vector2.zero;
+                Vector2 slash_bounce_move = Vector2.right * dir_input.x * _param.slashMoveForce;
                 if (!_isGrounded) {
-                    _rb.linearVelocity = Vector2.up * _param.slashRebound;
+                    slash_bounce_move.y = _param.slashRebound;
                     _currentJumpTime = 0;
                 }
+                _rb.linearVelocity = slash_bounce_move;
                 break;
             default:
                 break;

@@ -41,6 +41,7 @@ public class Ability_Base : MonoBehaviour {
     // キャラクター情報
     protected Transform _charaTransform = default;
     protected CharacterParameter _charaParam = null;
+    protected CommonParameter _param = null;
 
     /// <summary>
     /// 装備時のローカルポジション
@@ -58,9 +59,10 @@ public class Ability_Base : MonoBehaviour {
     /// 右向きか確認
     /// </summary>
     protected bool _isRight = true;
-    public virtual void SetCharacterTransform(bool is_right, Transform chara_pos, CharacterParameter chara_param) {
+    public virtual void SetCharacterTransform(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter chara_param) {
         _isRight = is_right;
         _charaTransform = chara_pos;
+        _param = common_param;
         _charaParam = chara_param;
     }
 
