@@ -157,8 +157,9 @@ public class Player_Character : Character_Base {
         if (_isSliding) {
             // スライドダッシュ中はキャラクターの位置を更新
             Vector2 velocity = _rb.linearVelocity;
-            velocity.x = _warpDashDirection.x;
-            _rb.linearVelocity = velocity.normalized * _param.slideSpeed;
+            var dash_dir = _warpDashDirection.normalized;
+            velocity.x = dash_dir.x * _param.slideSpeed;
+            _rb.linearVelocity = velocity;
 
             _currentSlideTime += Time.deltaTime;
             if (_currentSlideTime >= _param.maxSlideTime) {
@@ -198,7 +199,7 @@ public class Player_Character : Character_Base {
     protected override void _UpdateMotor(CharacterInputData input) {
         Vector2 velocity = _rb.linearVelocity;
 
-        if(_damageReactionTimer > 0 || _intervalTimer > 0) {
+        if (_damageReactionTimer > 0 || _intervalTimer > 0) {
             return;
         }
 
@@ -322,6 +323,12 @@ public class Player_Character : Character_Base {
         } else if (input.move.x < 0) {
             _isRight = false;
         }
+
+        // スライド移動補正
+        //if (_isSliding) {
+        //    var slide_dir = _warpDashDirection.normalized;
+        //    velocity.x += slide_dir.x * _param.slideSpeed;
+        //}
 
         _rb.linearVelocity = velocity;
     }

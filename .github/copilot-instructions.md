@@ -2,7 +2,7 @@
 - Project name: Lulu
 - Unity version: Unity 6000.0.40f1
 - Active game object:
-  - Name: Ability_Light
+  - Name: Player
   - Tag: Untagged
-  - Layer: Default
+  - Layer: Player
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
