@@ -249,11 +249,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17784af051f04fa4b80766340efacd60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 3
-  _isPlayersAttack: 1
-  _isEnemysAttack: 0
-  _isNeutralAttack: 0
+  _damageToPlayer: 0
+  _damageToEnemy: 0
+  _invincibleTime: 0
+  _blowPowerRight: {x: 0, y: 0}
+  _damageReactionTime: 0.2
   _isHitDestroy: 0
-  _parentObject: {fileID: 0}
+  _destroyObject: {fileID: 0}
   _isOnceHit: 1
   _delayTime: 0.5

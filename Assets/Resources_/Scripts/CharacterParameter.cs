@@ -18,10 +18,19 @@ public class CharacterParameter : MonoBehaviour
     private const float _fireCost = 5.0f; // 炎の能力に必要なMP
     private const float _lightCost = 30.0f; // 光の能力に必要なMP
 
-    private float _maxHP = 3.0f;
-    private float _currentMP = 100.0f;
+    // HP
+    [SerializeField]
+    private int _maxHP = 3;
+    private int _currentHP = 3;
+    
+    // 無敵時間
+    private float _currentInvincibilityTimer = 0;
+    public bool isInvincible => _currentInvincibilityTimer > 0;
+
+    // MP
     [SerializeField]
     private float _maxMP = 100.0f;
+    private float _currentMP = 100.0f;
     // MPが最大かどうか
     public bool isMaxMP => _currentMP >= _maxMP;
     // オーバーヒートからの回復時間
@@ -29,13 +38,6 @@ public class CharacterParameter : MonoBehaviour
     private float _currentOverheatTimer = 0.0f;
     // オーバーヒート中かどうか
     public bool isOverheat => _currentOverheatTimer > 0;
-
-    public float attackPower = 1.0f;
-    public float damageInvincibilityTime = 0.1f; // ダメージ無敵時間
-
-    private float _currentHP = 10;
-    private float _currentInvincibilityTimer = 0;
-    public bool isInvincible => _currentInvincibilityTimer > 0;
 
     // MP回復不可タイマー
     private float _currentUnRecoverableTime_MP = 0.0f;
@@ -51,6 +53,7 @@ public class CharacterParameter : MonoBehaviour
     [SerializeField] private Image _mpImage;
     // MPゲージアニメーション
     [SerializeField] private Animator _mpFilled;
+    // MPゲージ非表示コルーチン
     private IEnumerator _mpHideCoroutine = null;
 
     private void Start()
@@ -90,12 +93,10 @@ public class CharacterParameter : MonoBehaviour
     /// <summary>
     /// ダメージ発生
     /// </summary>
-    public void ExecuteDamage(float damage)
-    {
+    public void ExecuteDamage(int damage, float invincibility_time) {
         _currentHP -= damage;
-        _currentInvincibilityTimer = damageInvincibilityTime;
-        if (_currentHP <= 0)
-        {
+        _currentInvincibilityTimer = invincibility_time;
+        if (_currentHP <= 0) {
             Die();
         }
     }

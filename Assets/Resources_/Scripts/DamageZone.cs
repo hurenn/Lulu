@@ -3,14 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DamageZone : MonoBehaviour {
-    [SerializeField] private float _damage = 1.0f;
-    [SerializeField] private bool _isPlayersAttack = false;
-    [SerializeField] private bool _isEnemysAttack = false;
-    [SerializeField] private bool _isNeutralAttack = false;
+    // プレイヤーに与えるダメージ
+    [SerializeField] private int _damageToPlayer = 0;
+    // 敵に与えるダメージ
+    [SerializeField] private int _damageToEnemy = 0;
+
+    // 無敵時間
+    [SerializeField] private int _invincibleTime = 0;
+
+    // 吹っ飛ばす力（右向き）
+    [SerializeField] private Vector2 _blowPowerRight = Vector2.zero;
+
+    // 行動不能時間
+    [SerializeField] private float _damageReactionTime = 0.2f;
 
     // ヒットしたら消えるかどうか
     [SerializeField] private bool _isHitDestroy = false;
-    [SerializeField] private GameObject _parentObject = null;
+    [SerializeField] private GameObject _destroyObject = null;
 
     // 一度だけダメージを与えるかどうか
     [SerializeField] private bool _isOnceHit = true;
@@ -37,8 +46,16 @@ public class DamageZone : MonoBehaviour {
     }
 
     private void OnTriggerStay2D(Collider2D other) {
-        if ((_isPlayersAttack && other.gameObject.layer == LayerMask.NameToLayer("Player")) ||
-            (_isEnemysAttack && other.gameObject.layer == LayerMask.NameToLayer("Enemy"))) {
+        int damage = 0;
+
+        // ダメージ量取得
+        if (_damageToPlayer > 0 && other.gameObject.layer == LayerMask.NameToLayer("Player")) {
+            damage = _damageToPlayer;
+        }
+        if (_damageToEnemy > 0 && other.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+            damage = _damageToEnemy;
+        }
+        if (damage == 0) {
             return;
         }
 
@@ -55,11 +72,16 @@ public class DamageZone : MonoBehaviour {
             _hitObjects.Add(other.gameObject);
         }
 
-        character.Damage(_damage);
+        var blow_power = _blowPowerRight;
+        if (other.transform.position.x < transform.position.x) {
+            blow_power.x = -blow_power.x;
+        }
+
+        character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime);
         _currentDelayTimer = _delayTime;
         _isAttakable = false;
-        if (_isHitDestroy && _parentObject != null) {
-            Destroy(_parentObject);
+        if (_isHitDestroy && _destroyObject != null) {
+            Destroy(_destroyObject);
         }
     }
 

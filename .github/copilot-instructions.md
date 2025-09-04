@@ -2,7 +2,7 @@
 - Project name: Lulu
 - Unity version: Unity 6000.0.40f1
 - Active game object:
-  - Name: Player
+  - Name: Enemy
   - Tag: Untagged
-  - Layer: Player
+  - Layer: Enemy
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

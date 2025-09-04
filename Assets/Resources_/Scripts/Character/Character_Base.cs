@@ -314,14 +314,22 @@ public class Character_Base : MonoBehaviour
     /// ダメージ処理
     /// </summary>
     /// <param name="damage">ダメージ数</param>
-    /// <param name="reactionTime">ダメージリアクション時間</param>
-    public void Damage(float damage, float reactionTime = 0.1f) {
+    /// <param name="blow_power_right">右向きで吹っ飛ぶ力</param>
+    /// <param name="invincible_time">無敵時間</param>
+    /// <param name="damage_reaction_time">動けない時間</param>
+    public virtual void Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
         if (_charaParam != null) {
-            _charaParam.ExecuteDamage(damage);
+            // ダメージ実行
+            _charaParam.ExecuteDamage(damage, invincible_time);
+
+            // アニメーション
+            _anim.Play("Damage");
 
             // ダメージリアクション
-            _damageReactionTimer = reactionTime;
-            _rb.linearVelocity = Vector2.zero;
+            _damageReactionTimer = damage_reaction_time;
+
+            // 吹っ飛び
+            _rb.linearVelocity = blow_power_right;
         }
     }
 
