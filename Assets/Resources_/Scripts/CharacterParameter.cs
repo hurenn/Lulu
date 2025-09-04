@@ -93,20 +93,11 @@ public class CharacterParameter : MonoBehaviour
     /// <summary>
     /// ダメージ発生
     /// </summary>
-    public void ExecuteDamage(int damage, float invincibility_time) {
+    public void ExecuteDamage(int damage, float invincibility_time, ref bool is_die) {
         _currentHP -= damage;
         _currentInvincibilityTimer = invincibility_time;
-        if (_currentHP <= 0) {
-            Die();
-        }
-    }
 
-    private void Die()
-    {
-        // キャラクターが死亡したときの処理
-        Debug.Log("Character died.");
-        // 例: ゲームオブジェクトを非アクティブにする
-        gameObject.SetActive(false);
+        is_die = _currentHP <= 0;
     }
 
     /// <summary>

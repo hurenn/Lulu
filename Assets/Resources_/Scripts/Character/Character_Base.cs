@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Character_Base : MonoBehaviour
@@ -68,6 +70,9 @@ public class Character_Base : MonoBehaviour
     // ダメージリアクション時間計測
     protected float _damageReactionTimer = 0;
 
+    // 死亡フラグ
+    protected bool _isDie = false;
+
     private void Start()
     {
         _Setup();
@@ -117,6 +122,18 @@ public class Character_Base : MonoBehaviour
     /// コントローラ入力
     /// </summary>
     public virtual void UpdateControl(CharacterInputData input) {
+        if( _isDie ) {
+            input.move = Vector2.zero;
+            input.jumpHeld = false;
+            input.jumpPressed = false;
+            input.abilityXHeld = false;
+            input.abilityXPressed = false;
+            input.abilityYHeld = false;
+            input.abilityYPressed = false;
+            input.abilityAHeld = false;
+            input.abilityAPressed = false;
+        }
+
         _UpdateMotor(input);
 
         _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld);
@@ -318,9 +335,18 @@ public class Character_Base : MonoBehaviour
     /// <param name="invincible_time">無敵時間</param>
     /// <param name="damage_reaction_time">動けない時間</param>
     public virtual void Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
+        if (isInvincible || _isDie) {
+            return;
+        }
+
         if (_charaParam != null) {
             // ダメージ実行
-            _charaParam.ExecuteDamage(damage, invincible_time);
+            _charaParam.ExecuteDamage(damage, invincible_time, ref _isDie);
+
+            if (_isDie) {
+                StartCoroutine(Die());
+                return;
+            }
 
             // アニメーション
             _anim.Play("Damage");
@@ -331,6 +357,25 @@ public class Character_Base : MonoBehaviour
             // 吹っ飛び
             _rb.linearVelocity = blow_power_right;
         }
+    }
+
+    /// <summary>
+    /// 死亡処理
+    /// </summary>
+    /// <param name="blow_power_right"></param>
+    protected virtual IEnumerator Die() {
+        // 死亡処理
+        _anim.Play("Die");
+
+        // アニメーションの長さを取得してから削除
+        float destroy_time = 0;
+        var clip_info = _anim.GetCurrentAnimatorClipInfo(0);
+        if (clip_info.Length > 0) {
+            destroy_time = clip_info[0].clip.length;
+        }
+
+        Destroy(gameObject, destroy_time);
+        yield break;
     }
 
     /// <summary>
