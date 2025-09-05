@@ -46,6 +46,8 @@ public class Ability_Light : Ability_Base
 
         // MP‰ñ•œ•s‰Â
         _charaParam.SetUnRecoverTime_MP(1.0f);
+        // –³“G‰»
+        _charaParam.isLightInvincible = true;
 
         return eAbilityResult.LightDome;
     }
@@ -58,6 +60,8 @@ public class Ability_Light : Ability_Base
         if (_isNotHide) {
             _anim?.Play("Pepe_ToHide");
         }
+        // –³“G‰ğœ
+        _charaParam.isLightInvincible = false;
     }
 
     /// <summary>

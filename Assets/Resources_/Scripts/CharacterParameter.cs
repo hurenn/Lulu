@@ -34,7 +34,9 @@ public class CharacterParameter : MonoBehaviour
 
     // –³“GŽžŠÔ
     private float _currentInvincibilityTimer = 0;
-    public bool isInvincible => _currentInvincibilityTimer > 0;
+    // Œõ”\—Í‚É‚æ‚é–³“Gƒtƒ‰ƒO
+    public bool isLightInvincible = false;
+    public bool isInvincible => _currentInvincibilityTimer > 0 || isLightInvincible;
 
     // MP
     [SerializeField]
