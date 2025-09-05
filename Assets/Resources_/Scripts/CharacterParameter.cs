@@ -21,8 +21,17 @@ public class CharacterParameter : MonoBehaviour
     // HP
     [SerializeField]
     private int _maxHP = 3;
+    public int MaxHP => _maxHP;
     private int _currentHP = 3;
-    
+    public int CurrentHP {
+        get => _currentHP;
+        private set {
+            _currentHP = Mathf.Clamp(value, 0, _maxHP);
+            OnHPChanged?.Invoke(_currentHP);
+        }
+    }
+    public System.Action<int> OnHPChanged;
+
     // ñ≥ìGéûä‘
     private float _currentInvincibilityTimer = 0;
     public bool isInvincible => _currentInvincibilityTimer > 0;
@@ -58,7 +67,7 @@ public class CharacterParameter : MonoBehaviour
 
     private void Start()
     {
-        _currentHP = _maxHP;
+        CurrentHP = _maxHP;
     }
 
     private void Update() {
@@ -94,10 +103,10 @@ public class CharacterParameter : MonoBehaviour
     /// É_ÉÅÅ[ÉWî≠ê∂
     /// </summary>
     public void ExecuteDamage(int damage, float invincibility_time, ref bool is_die) {
-        _currentHP -= damage;
+        CurrentHP -= damage;
         _currentInvincibilityTimer = invincibility_time;
 
-        is_die = _currentHP <= 0;
+        is_die = CurrentHP <= 0;
     }
 
     /// <summary>
