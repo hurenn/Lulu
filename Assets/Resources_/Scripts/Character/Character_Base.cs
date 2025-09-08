@@ -328,6 +328,46 @@ public class Character_Base : MonoBehaviour
     }
 
     /// <summary>
+    /// レベルアップ実行
+    /// </summary>
+    /// <param name="level_type"></param>
+    public void Levelup(PlayerParameter.eLevelType level_type) {
+        // 対応するレベルを上げる
+        var player_param = PlayerParameter.Instance;
+        if (player_param != null) {
+            switch (level_type) {
+                case PlayerParameter.eLevelType.HP:
+                    player_param.levelParameter.hpLevel++;
+                    break;
+                case PlayerParameter.eLevelType.MP:
+                    player_param.levelParameter.mpLevel++;
+                    break;
+                case PlayerParameter.eLevelType.Attack:
+                    player_param.levelParameter.attackLevel++;
+                    break;
+                default:
+                    break;
+            }
+        }
+        Debug.Log($"Levelup:{level_type.ToString()}");
+
+        // レベルに応じたパラメータを適用
+        ApplyPlayerParameter();
+    }
+
+    /// <summary>
+    /// レベルに応じたパラメータを適用
+    /// </summary>
+    public void ApplyPlayerParameter() {
+        var player_param = PlayerParameter.Instance;
+        if (player_param != null && _charaParam != null) {
+            _charaParam.SetMaxHP(_charaParam.defaultMaxHP + player_param.levelParameter.hpLevel);
+            _charaParam.SetMaxMP(_charaParam.defaultMaxMP + player_param.levelParameter.mpLevel * 10.0f);
+            _charaParam.attackPower = _charaParam.attackPower + player_param.levelParameter.attackLevel;
+        }
+    }
+
+    /// <summary>
     /// ダメージ処理
     /// </summary>
     /// <param name="damage">ダメージ数</param>

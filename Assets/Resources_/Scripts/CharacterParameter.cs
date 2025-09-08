@@ -19,9 +19,17 @@ public class CharacterParameter : MonoBehaviour
     private const float _lightCost = 30.0f; // 光の能力に必要なMP
 
     // HP
-    [SerializeField]
+    public int defaultMaxHP = 3;
     private int _maxHP = 3;
     public int MaxHP => _maxHP;
+    public void SetMaxHP(int max_hp, bool recover = true) {
+        _maxHP = max_hp;
+        OnMaxHPChanged?.Invoke(_maxHP);
+
+        if (recover) {
+            CurrentHP = _maxHP;
+        }
+    }
     private int _currentHP = 3;
     public int CurrentHP {
         get => _currentHP;
@@ -31,6 +39,7 @@ public class CharacterParameter : MonoBehaviour
         }
     }
     public System.Action<int> OnHPChanged;
+    public System.Action<int> OnMaxHPChanged;
 
     // 無敵時間
     private float _currentInvincibilityTimer = 0;
@@ -39,8 +48,15 @@ public class CharacterParameter : MonoBehaviour
     public bool isInvincible => _currentInvincibilityTimer > 0 || isLightInvincible;
 
     // MP
-    [SerializeField]
+    public float defaultMaxMP = 100.0f;
     private float _maxMP = 100.0f;
+    public void SetMaxMP(float max_mp, bool recover = true) {
+        _maxMP = max_mp;
+        if (recover) {
+            _currentMP = _maxMP;
+            _UpdateMPUI();
+        }
+    }
     private float _currentMP = 100.0f;
     // MPが最大かどうか
     public bool isMaxMP => _currentMP >= _maxMP;
@@ -55,6 +71,9 @@ public class CharacterParameter : MonoBehaviour
     public void SetUnRecoverTime_MP(float time) {
         _currentUnRecoverableTime_MP = time;
     }
+
+    // 攻撃力
+    public int attackPower = 1;
 
     // キャラクター表示
     [SerializeField] private SpriteRenderer _rend;

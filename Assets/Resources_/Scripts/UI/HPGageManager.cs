@@ -18,11 +18,13 @@ public class HPGageManager : MonoBehaviour {
     private void Start() {
         // 初期化
         if (_characterParameter != null) {
-            Setup(_characterParameter.MaxHP);
+            UpdateMaxHP(_characterParameter.MaxHP);
             // HP更新イベントに登録
             _characterParameter.OnHPChanged += UpdateHPGage;
             // 初期表示
             UpdateHPGage(_characterParameter.CurrentHP);
+
+            _characterParameter.OnMaxHPChanged += UpdateMaxHP;
         }
     }
 
@@ -30,7 +32,7 @@ public class HPGageManager : MonoBehaviour {
     /// HPゲージの初期化
     /// </summary>
     /// <param name="max_hp">最大HP</param>
-    public void Setup(int max_hp) {
+    public void UpdateMaxHP(int max_hp) {
         var childCount = _heartParent.childCount;
         for (int i = 0; i < childCount; i++) {
             // 初期化のために既存の子オブジェクトを削除
