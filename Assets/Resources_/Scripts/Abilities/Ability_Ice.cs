@@ -36,7 +36,7 @@ public class Ability_Ice : Ability_Base {
 
     public override eAbilityResult ExecuteSimple() {
         // オーバーヒート中は使用不可
-        if (_charaParam.isOverheat && !_isAppearing) {
+        if (_cancelByOverheat) {
             return eAbilityResult.None;
         }
 
@@ -47,7 +47,7 @@ public class Ability_Ice : Ability_Base {
 
         // 攻撃実行
         if (attack_result != eAbilityResult.None) {
-            _AppearCheck(CharacterParameter.eAbilityType.Ice);
+            _AppearCheck(eAbilityType.Ice);
             return attack_result;
         }
 

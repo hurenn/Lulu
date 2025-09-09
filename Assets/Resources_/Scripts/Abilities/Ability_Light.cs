@@ -40,7 +40,7 @@ public class Ability_Light : Ability_Base
 
     public override eAbilityResult ExecuteLong() {
         // オーバーヒート中は使用不可
-        if ((_charaParam.isOverheat && !_isAppearing) || _lightDomePrefab == null) {
+        if (_cancelByOverheat || _lightDomePrefab == null) {
             return eAbilityResult.None;
         }
 
@@ -53,6 +53,10 @@ public class Ability_Light : Ability_Base
     }
 
     public override void ExecuteRelease() {
+        if (_charaParam == null) {
+            return;
+        }
+
         if (_lightDomeInstance != null) {
             _lightDomeInstance.SetActive(false);
         }

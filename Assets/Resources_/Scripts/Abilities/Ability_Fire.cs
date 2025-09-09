@@ -19,7 +19,7 @@ public class Ability_Fire : Ability_Base
 
     public override eAbilityResult ExecuteSimple() {
         // オーバーヒート中は使用不可
-        if (_charaParam.isOverheat && !_isAppearing) {
+        if (_cancelByOverheat) {
             return eAbilityResult.None;
         }
 
@@ -27,7 +27,7 @@ public class Ability_Fire : Ability_Base
 
         // 攻撃実行
         if (ability_result != eAbilityResult.None) {
-            _AppearCheck(CharacterParameter.eAbilityType.Fire);
+            _AppearCheck(eAbilityType.Fire);
             return ability_result;
         }
 

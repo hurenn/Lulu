@@ -38,6 +38,9 @@ public class Ability_Base : MonoBehaviour {
         _currentReturnTime = time;
     }
 
+    // オーバーヒートによるキャンセル
+    protected bool _cancelByOverheat => _charaParam == null || (_charaParam.isOverheat && !_isAppearing);
+
     // キャラクター情報
     protected Transform _charaTransform = default;
     protected CharacterParameter _charaParam = null;
@@ -53,6 +56,7 @@ public class Ability_Base : MonoBehaviour {
     [SerializeField] protected SpriteRenderer _rend = null;
     [SerializeField] protected Animator _anim = null;
 
+    // ワープエフェクト
     [SerializeField] protected GameObject _warpAnimationPrefab = null;
 
     /// <summary>
@@ -118,7 +122,7 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     /// <param name="ability_type">能力タイプ</param>
     /// <param name="un_recover_time">MP回復開始までのクールタイム</param>
-    protected void _AppearCheck(CharacterParameter.eAbilityType ability_type, float un_recover_time = 0.5f) {
+    protected void _AppearCheck(eAbilityType ability_type, float un_recover_time = 0.5f) {
         // 召喚エフェクト判定
         if (!_isAppearing) {
             // MP消費

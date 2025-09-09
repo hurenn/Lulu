@@ -389,7 +389,7 @@ public class Player_Character : Character_Base {
         IEnumerator WarpCoroutine(WarpControl.eWarpDirection direction) {
             
             // MP消費
-            var is_success = _charaParam.ConsumeMP(CharacterParameter.eAbilityType.Warp);
+            var is_success = _charaParam.ConsumeMP(eAbilityType.Warp);
 
             if (!is_success) {
                 yield break; // MP不足でワープキャンセル

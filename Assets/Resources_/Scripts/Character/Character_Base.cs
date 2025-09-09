@@ -141,6 +141,29 @@ public class Character_Base : MonoBehaviour
         _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld);
     }
 
+    public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot) {
+        var ability = AbilityFactory.CreateAbility(ability_type, transform, ability_slot);
+        if (ability == null) {
+            Debug.LogError("能力生成失敗: " + ability_type);
+            return;
+        }
+
+        // スロットにセット
+        switch (ability_slot) {
+            case eAbilitySlot.Y:
+                _abilityY = ability;
+                break;
+            case eAbilitySlot.X:
+                _abilityX = ability;
+                break;
+            case eAbilitySlot.A:
+                _abilityA = ability;
+                break;
+            default:
+                break;
+        }
+    }
+
     /// <summary>
     /// 能力の更新処理
     /// </summary>
