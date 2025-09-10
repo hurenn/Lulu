@@ -311,7 +311,10 @@ public class Character_Base : MonoBehaviour
         _isTouchingRight = Physics2D.OverlapBox(transform.position + _wallCheckRightLocalPos, _wallCheckScale, 0, _wallLayer);
 
         _isGrounded = Physics2D.OverlapBox(transform.position + _groundCheckLocalPos, _groundCheckScale, 0, _groundLayer);
-        _anim?.SetBool("IsGround", _isGrounded); //接地フラグ
+        // AnimatorControllerがセットされている場合のみ実行
+        if (_anim != null && _anim.runtimeAnimatorController != null) {
+            _anim.SetBool("IsGround", _isGrounded); //接地フラグ
+        }
     }
 
     /// <summary>

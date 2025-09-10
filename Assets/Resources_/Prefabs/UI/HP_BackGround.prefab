@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 6708073389501671415}
   - component: {fileID: 5691372467283164998}
   - component: {fileID: 5932002634137376906}
+  - component: {fileID: 8945502467902550296}
   m_Layer: 5
   m_Name: HP_BackGround
   m_TagString: Untagged
@@ -165,3 +166,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hpFill: {fileID: 4018449554311216964}
+--- !u!225 &8945502467902550296
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6676324843903907857}
+  m_Enabled: 1
+  m_Alpha: 0.8
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
