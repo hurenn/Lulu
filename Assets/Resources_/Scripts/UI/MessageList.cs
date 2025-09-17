@@ -25,6 +25,8 @@ public class MessageData {
 public class MessageList : MonoBehaviour {
     public static MessageList Instance { get; private set; }
 
+    public event System.Action OnForceMessage;  // 強制メッセージ開始イベント
+
     // メッセージキュー
     private Queue<MessageData> _messageQueue = new Queue<MessageData>();
 
@@ -32,6 +34,12 @@ public class MessageList : MonoBehaviour {
     public void Enqueue(MessageData messageData) => _messageQueue.Enqueue(messageData);
     // メッセージを取得して削除する
     public MessageData Dequeue() => _messageQueue.Dequeue();
+
+    public void ClearAndEnqueue(MessageData messageData) {
+        _messageQueue.Clear();
+        _messageQueue.Enqueue(messageData);
+        OnForceMessage?.Invoke();  // 強制メッセージ開始イベントを発火
+    }
 
     // 表示待ちメッセージがあるか確認する
     public bool HasMessages() {

@@ -12,6 +12,7 @@ public class MessageViewer : MonoBehaviour {
     private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
     private const float _CHARACTER_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間
     private const float _COOL_TIME = 0.5f;  // メッセージ表示クールタイム
+    private const float _FORCE_COOL_TIME = 0.1f; // 強制メッセージ表示クールタイム
 
     [SerializeField] private MessageList _messageListScript;    // メッセージリスト管理
     [SerializeField] private TMP_Text _messageText;                 // メッセージ表示用テキスト
@@ -24,6 +25,19 @@ public class MessageViewer : MonoBehaviour {
     private bool _isShowing;    // メッセージ表示中フラグ
     private bool _isSeries;     // 一連のメッセージフラグ
     private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
+
+    private void OnEnable() {
+        // メッセージリストの強制メッセージ開始イベントに登録
+        if (_messageListScript != null) {
+            _messageListScript.OnForceMessage += _ForceReset;
+        }
+    }
+    private void OnDisable() {
+        // メッセージリストの強制メッセージ開始イベントから解除
+        if (_messageListScript != null) {
+            _messageListScript.OnForceMessage -= _ForceReset;
+        }
+    }
 
     private void Update() {
         if (_currentCoolTime > 0) {
@@ -66,6 +80,13 @@ public class MessageViewer : MonoBehaviour {
             _messagePanel.SetActive(false); // パネルを非表示
             _currentCoolTime = _COOL_TIME;  // クールタイム設定
         }
+    }
+
+    private void _ForceReset() {
+        // 強制メッセージが来たら即座に表示をリセット
+        _messagePanel.SetActive(false);
+        _isShowing = false;
+        _currentCoolTime = _FORCE_COOL_TIME;
     }
 
     //public List<string> messageList = new List<string>();   // メッセージリスト

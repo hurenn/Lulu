@@ -14,6 +14,11 @@ public class MessageTrigger : MonoBehaviour {
     // メッセージを追加する
     private void _AddMessage() {
         foreach (MessageData message in _messageDatas) {
+            if(message.isForced) {
+                //強制メッセージの場合、他のメッセージをクリアしてから追加
+                _messageListScript.ClearAndEnqueue(message);
+                continue;
+            }
             _messageListScript.Enqueue(message);
         }
         gameObject.SetActive(false);
