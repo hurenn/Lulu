@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
 /// <summary>
 /// メッセージ表示クラス
@@ -10,29 +11,37 @@ using DG.Tweening;
 public class MessageViewer : MonoBehaviour {
     private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
     private const float _CHARACTER_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間
+    private const float _COOL_TIME = 0.5f;  // メッセージ表示クールタイム
 
     [SerializeField] private MessageList _messageListScript;    // メッセージリスト管理
-    [SerializeField] private Text _messageText;                 // メッセージ表示用テキスト
-    [SerializeField] private Text _characterText;               // キャラクター名表示用テキスト
+    [SerializeField] private TMP_Text _messageText;                 // メッセージ表示用テキスト
+    [SerializeField] private TMP_Text _characterText;               // キャラクター名表示用テキスト
     [SerializeField] private Image _iconImage;                  // キャラクターアイコン表示用イメージ
     [SerializeField] private GameObject _messagePanel;          // メッセージパネル
 
     private MessageData _currentMessage;  // 現在表示中のメッセージ
     private float _currentShowTime;   // 現在の表示時間
-    private bool _isShowing;  // メッセージ表示中フラグ
+    private bool _isShowing;    // メッセージ表示中フラグ
+    private bool _isSeries;     // 一連のメッセージフラグ
+    private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
 
     private void Update() {
+        if (_currentCoolTime > 0) {
+            _currentCoolTime -= Time.deltaTime;
+            return;
+        }
+
         // 次のメッセージを表示
         if(!_isShowing && _messageListScript.HasMessages()) {
             _ShowNext();
         }
 
         // メッセージ表示中なら時間をカウントダウン
-        if (_isShowing) {
+        if (_isShowing && _currentShowTime > 0) {
             _currentShowTime -= Time.deltaTime;
             if(_currentShowTime <= 0f) {
                 // 表示時間終了
-                _Hide();
+                _HideOrNext();
             }
         }
     }
@@ -42,15 +51,21 @@ public class MessageViewer : MonoBehaviour {
         _messageText.text = _currentMessage.text;       // メッセージをセット
         _characterText.text = _currentMessage.characterName; // キャラクター名をセット
         _iconImage.sprite = _currentMessage.characterIcon;   // キャラクターアイコンをセット
+        _isSeries = _currentMessage.isSeries;   // 一連メッセージフラグをセット
 
         _messagePanel.SetActive(true);                  // パネルを表示
         _currentShowTime = _BASE_SHOW_TIME + (_currentMessage.text.Length * _CHARACTER_SHOW_TIME); // 基本3秒 + 文字数に応じた追加時間
         _isShowing = true;
     }
 
-    private void _Hide() {
-        _messagePanel.SetActive(false); // パネルを非表示
+    private void _HideOrNext() {
         _isShowing = false;
+
+        // 一連のメッセージ表示中で無ければ一旦パネルを消す
+        if (!_isSeries) {
+            _messagePanel.SetActive(false); // パネルを非表示
+            _currentCoolTime = _COOL_TIME;  // クールタイム設定
+        }
     }
 
     //public List<string> messageList = new List<string>();   // メッセージリスト

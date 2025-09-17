@@ -9,15 +9,13 @@ public class MessageData {
     public string characterName;    // キャラクター名
     public bool isForced;         // 強制メッセージかどうか
     public bool isSeries;         // 連続メッセージかどうか
-    public bool isSeriesEnd;      // 連続メッセージの最終メッセージかどうか
 
-    public MessageData(string text, Sprite characterIcon, string characterName, bool isForced, bool isSeries, bool isSeriesEnd) {
+    public MessageData(string text, Sprite characterIcon, string characterName, bool isForced, bool isSeries) {
         this.text = text;
         this.characterIcon = characterIcon;
         this.characterName = characterName;
         this.isForced = isForced;
         this.isSeries = isSeries;
-        this.isSeriesEnd = isSeriesEnd;
     }
 }
 
