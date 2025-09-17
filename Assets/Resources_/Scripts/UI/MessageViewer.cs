@@ -19,6 +19,7 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private TMP_Text _characterText;               // キャラクター名表示用テキスト
     [SerializeField] private Image _iconImage;                  // キャラクターアイコン表示用イメージ
     [SerializeField] private GameObject _messagePanel;          // メッセージパネル
+    [SerializeField] private Image _nextIcon;                 // 次のメッセージを促すアイコン
 
     private MessageData _currentMessage;  // 現在表示中のメッセージ
     private float _currentShowTime;   // 現在の表示時間
@@ -31,6 +32,7 @@ public class MessageViewer : MonoBehaviour {
         if (_messageListScript != null) {
             _messageListScript.OnForceMessage += _ForceReset;
         }
+        _messagePanel.SetActive(false); // パネルを非表示
     }
     private void OnDisable() {
         // メッセージリストの強制メッセージ開始イベントから解除
@@ -53,7 +55,9 @@ public class MessageViewer : MonoBehaviour {
         // メッセージ表示中なら時間をカウントダウン
         if (_isShowing && _currentShowTime > 0) {
             _currentShowTime -= Time.deltaTime;
-            if(_currentShowTime <= 0f) {
+            // メッセージ表示の残り時間表示
+            _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentMessage.text.Length * _CHARACTER_SHOW_TIME));
+            if (_currentShowTime <= 0f) {
                 // 表示時間終了
                 _HideOrNext();
             }
@@ -62,7 +66,7 @@ public class MessageViewer : MonoBehaviour {
 
     private void _ShowNext() {
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
-        _messageText.text = _currentMessage.text;       // メッセージをセット
+        StartCoroutine(_TypeText(_currentMessage.text)); // メッセージを1文字ずつ表示するコルーチン開始
         _characterText.text = _currentMessage.characterName; // キャラクター名をセット
         _iconImage.sprite = _currentMessage.characterIcon;   // キャラクターアイコンをセット
         _isSeries = _currentMessage.isSeries;   // 一連メッセージフラグをセット
@@ -70,6 +74,15 @@ public class MessageViewer : MonoBehaviour {
         _messagePanel.SetActive(true);                  // パネルを表示
         _currentShowTime = _BASE_SHOW_TIME + (_currentMessage.text.Length * _CHARACTER_SHOW_TIME); // 基本3秒 + 文字数に応じた追加時間
         _isShowing = true;
+    }
+
+    // 1文字ずつ表示する場合のコルーチン
+    private IEnumerator _TypeText(string message) {
+        _messageText.text = "";
+        foreach (char c in message) {
+            _messageText.text += c;
+            yield return new WaitForSeconds(_CHARACTER_SHOW_TIME); // 文字表示速度
+        }
     }
 
     private void _HideOrNext() {

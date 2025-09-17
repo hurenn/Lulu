@@ -7,15 +7,15 @@ public class MessageData {
     public string text;   // メッセージ
     public Sprite characterIcon;    // キャラクターアイコン
     public string characterName;    // キャラクター名
-    public bool isForced;         // 強制メッセージかどうか
     public bool isSeries;         // 連続メッセージかどうか
+    public bool isForced;         // 強制メッセージかどうか
 
-    public MessageData(string text, Sprite characterIcon, string characterName, bool isForced, bool isSeries) {
+    public MessageData(string text, Sprite characterIcon, string characterName, bool isSeries, bool isForced) {
         this.text = text;
         this.characterIcon = characterIcon;
         this.characterName = characterName;
-        this.isForced = isForced;
         this.isSeries = isSeries;
+        this.isForced = isForced;
     }
 }
 
