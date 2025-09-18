@@ -24,21 +24,12 @@ public class MessageViewer : MonoBehaviour {
     private MessageData _currentMessage;  // 現在表示中のメッセージ
     private float _currentShowTime;   // 現在の表示時間
     private bool _isShowing;    // メッセージ表示中フラグ
+    public bool IsShowing => _isShowing; // メッセージ表示中フラグの公開用
     private bool _isSeries;     // 一連のメッセージフラグ
     private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
 
     private void OnEnable() {
-        // メッセージリストの強制メッセージ開始イベントに登録
-        if (_messageListScript != null) {
-            _messageListScript.OnForceMessage += _ForceReset;
-        }
         _messagePanel.SetActive(false); // パネルを非表示
-    }
-    private void OnDisable() {
-        // メッセージリストの強制メッセージ開始イベントから解除
-        if (_messageListScript != null) {
-            _messageListScript.OnForceMessage -= _ForceReset;
-        }
     }
 
     private void Update() {
@@ -69,7 +60,7 @@ public class MessageViewer : MonoBehaviour {
         StartCoroutine(_TypeText(_currentMessage.text)); // メッセージを1文字ずつ表示するコルーチン開始
         _characterText.text = _currentMessage.characterName; // キャラクター名をセット
         _iconImage.sprite = _currentMessage.characterIcon;   // キャラクターアイコンをセット
-        _isSeries = _currentMessage.isSeries;   // 一連メッセージフラグをセット
+        _isSeries = _messageListScript.HasMessages();   // 次のメッセージがあるかどうか
 
         _messagePanel.SetActive(true);                  // パネルを表示
         _currentShowTime = _BASE_SHOW_TIME + (_currentMessage.text.Length * _CHARACTER_SHOW_TIME); // 基本3秒 + 文字数に応じた追加時間
@@ -95,7 +86,7 @@ public class MessageViewer : MonoBehaviour {
         }
     }
 
-    private void _ForceReset() {
+    public void ForceReset() {
         // 強制メッセージが来たら即座に表示をリセット
         _messagePanel.SetActive(false);
         _isShowing = false;

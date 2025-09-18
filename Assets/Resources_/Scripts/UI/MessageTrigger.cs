@@ -6,19 +6,38 @@ using UnityEngine;
 /// </summary>
 public class MessageTrigger : MonoBehaviour {
     [SerializeField] private MessageList _messageListScript; // メッセージリスト管理
-    [SerializeField] private MessageData[] _messageDatas;  //メッセージデータ配列
+    [SerializeField] private MessageDataList _messageDatas;  //メッセージデータ配列
 
-    // メッセージ表示待機フラグ(他のメッセージ表示中にトリガーオブジェクトを抜けた時、メッセージ表示を行わないようにするためのフラグ)
-    private bool _messageAddWait = false;
+    private MessageViewer _messageViewer; // メッセージビューア
+    private bool _isPlayerInside = false; // プレイヤーがトリガー内にいるかどうか
 
     // メッセージを追加する
-    private void _AddMessage() {
-        foreach (MessageData message in _messageDatas) {
-            if(message.isForced) {
-                //強制メッセージの場合、他のメッセージをクリアしてから追加
-                _messageListScript.ClearAndEnqueue(message);
-                continue;
+    private IEnumerator _AddMessage() {
+
+        // メッセージ表示機能を探す (WIP)
+        if(_messageViewer == null)
+            _messageViewer = FindAnyObjectByType<MessageViewer>();
+
+        // メッセージ表示中は待機
+        if (!_messageDatas.isForced) {
+            while (_messageListScript.HasMessages() || _messageViewer.IsShowing) {
+                yield return null;
+
+                if (!_isPlayerInside) {
+                    // プレイヤーがトリガー外に出た場合、メッセージ追加を中止
+                    yield break;
+                }
             }
+        }
+
+        if(_messageDatas.isForced) {
+            // 強制メッセージの場合、他のメッセージをクリア
+            _messageListScript.Clear();
+            _messageViewer.ForceReset();
+        }
+
+        // メッセージを追加
+        foreach (MessageData message in _messageDatas.messageDatas) {
             _messageListScript.Enqueue(message);
         }
         gameObject.SetActive(false);
@@ -26,13 +45,14 @@ public class MessageTrigger : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.tag == "Player") {
-            _AddMessage();
+            _isPlayerInside = true;
+            StartCoroutine(_AddMessage());
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
         if (collision.gameObject.tag == "Player") {
-            //_messageAddWait = false;  //プレイヤーが離れた時（他のメッセージ表示中に、このトリガーオブジェクトを抜けた時）開始フラグを戻す
+            _isPlayerInside = false;
         }
     }
 

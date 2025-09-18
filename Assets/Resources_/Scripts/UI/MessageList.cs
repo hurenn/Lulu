@@ -3,20 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
+public class MessageDataList {
+    public MessageData[] messageDatas;
+    public bool isForced;         // 強制メッセージかどうか
+}
+
+[System.Serializable]
 public class MessageData {
     public string text;   // メッセージ
     public Sprite characterIcon;    // キャラクターアイコン
     public string characterName;    // キャラクター名
-    public bool isSeries;         // 連続メッセージかどうか
-    public bool isForced;         // 強制メッセージかどうか
-
-    public MessageData(string text, Sprite characterIcon, string characterName, bool isSeries, bool isForced) {
-        this.text = text;
-        this.characterIcon = characterIcon;
-        this.characterName = characterName;
-        this.isSeries = isSeries;
-        this.isForced = isForced;
-    }
 }
 
 /// <summary>
@@ -35,11 +31,7 @@ public class MessageList : MonoBehaviour {
     // メッセージを取得して削除する
     public MessageData Dequeue() => _messageQueue.Dequeue();
 
-    public void ClearAndEnqueue(MessageData messageData) {
-        _messageQueue.Clear();
-        _messageQueue.Enqueue(messageData);
-        OnForceMessage?.Invoke();  // 強制メッセージ開始イベントを発火
-    }
+    public void Clear() => _messageQueue.Clear();
 
     // 表示待ちメッセージがあるか確認する
     public bool HasMessages() {
