@@ -9,6 +9,10 @@ public class PlayerParameter : MonoBehaviour
     private int _exp = 0; // 経験値
     [SerializeField]
     private int _expToNextLevel = 100; // 次のレベルまでの経験値
+    [SerializeField]
+    private int _score = 0; // 現在のスコア
+    // スコアが変化したときに呼び出されるイベント
+    public System.Action<int> OnScoreChanged;
 
     public enum eLevelType
     {
@@ -55,5 +59,13 @@ public class PlayerParameter : MonoBehaviour
     }
     public int GetExpToNextLevel() {
         return _expToNextLevel;
+    }
+
+    public void AddScore(int amount) {
+        _score += amount;
+        OnScoreChanged?.Invoke(_score);
+    }
+    public int GetScore() {
+        return _score;
     }
 }
