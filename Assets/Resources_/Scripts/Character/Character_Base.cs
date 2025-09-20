@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Character_Base : MonoBehaviour
@@ -9,6 +8,9 @@ public class Character_Base : MonoBehaviour
     // キャラクターパラメータ
     [SerializeField] protected CharacterParameter _charaParam;
     public bool isInvincible => _charaParam != null && _charaParam.isInvincible;
+
+    // 入力データ
+    protected CharacterInputData _inputData = new CharacterInputData();
 
     // 地面チェッカー
     [SerializeField] protected LayerMask _groundLayer;
@@ -133,8 +135,10 @@ public class Character_Base : MonoBehaviour
             input.abilityAHeld = false;
             input.abilityAPressed = false;
         }
+        // 入力データ保存
+        _inputData = input;
 
-        _UpdateMotor(input);
+        _UpdateMotor();
 
         _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld);
         _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld);
@@ -212,7 +216,7 @@ public class Character_Base : MonoBehaviour
     /// <summary>
     /// キャラクターごとに移動処理を実装
     /// </summary>
-    protected virtual void _UpdateMotor(CharacterInputData input) {
+    protected virtual void _UpdateMotor() {
         /*
         Vector2 velocity = _rb.linearVelocity;
 

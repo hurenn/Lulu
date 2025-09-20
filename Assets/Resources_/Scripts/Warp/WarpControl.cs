@@ -5,6 +5,7 @@ public class WarpControl : MonoBehaviour
 {
     public enum eWarpDirection
     {
+        Neutral = -1,
         Up,
         UpRight,
         Right,
@@ -52,9 +53,12 @@ public class WarpControl : MonoBehaviour
     public IEnumerator Warp(eWarpDirection direction)
     {
         Vector2 origin = transform.position;
-        WarpChecker warp_checker = warpCheckers[(int)direction];
+        Vector2 safe_point = origin;
 
-        var safe_point = warp_checker.GetWarpPoint(origin, warp_checker.transform.position);
+        if (0 <= direction && (int)direction < warpCheckers.Length) {
+            WarpChecker warp_checker = warpCheckers[(int)direction];
+            safe_point = warp_checker.GetWarpPoint(origin, warp_checker.transform.position);
+        }
 
         // ƒ[ƒvæ‚ÉˆÚ“®
         transform.position = safe_point;

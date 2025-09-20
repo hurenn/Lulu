@@ -219,13 +219,13 @@ public class Player_Character : Character_Base {
     public override void UpdateControl(CharacterInputData input) {
         base.UpdateControl(input);
 
-        _Warp(input);
+        _Warp();
     }
 
     /// <summary>
     /// 移動入力
     /// </summary>
-    protected override void _UpdateMotor(CharacterInputData input) {
+    protected override void _UpdateMotor() {
         Vector2 velocity = _rb.linearVelocity;
 
         if (_damageReactionTimer > 0 || _intervalTimer > 0) {
@@ -235,32 +235,32 @@ public class Player_Character : Character_Base {
         // 壁滑り中の入力
         if (_isWallSliding) {
             // 壁と反対方向に移動しようとする入力があれば壁滑りを終了
-            if (input.move.x != 0 && Mathf.Sign(input.move.x) != Mathf.Sign(_warpDashDirection.x)) {
+            if (_inputData.move.x != 0 && Mathf.Sign(_inputData.move.x) != Mathf.Sign(_warpDashDirection.x)) {
                 _isWallSliding = false; // 壁滑り終了
                 return;
             }
         }
 
         // スライディング中に逆方向入力でキャンセル
-        if (_isSliding && input.move.x != 0 && Mathf.Sign(input.move.x) != Mathf.Sign(_warpDashDirection.x)) {
+        if (_isSliding && _inputData.move.x != 0 && Mathf.Sign(_inputData.move.x) != Mathf.Sign(_warpDashDirection.x)) {
             _isSlidingCanceling = true; // スライディングキャンセル中フラグを立てる
             _currentSlideTime = 0;
             return;
         }
 
         // スライディングキャンセル中にジャンプでキャンセル
-        if (_isSlidingCanceling && input.jumpPressed) {
+        if (_isSlidingCanceling && _inputData.jumpPressed) {
             _isSlidingCanceling = false; // スライディングキャンセル終了
         }
 
         // 地面張り付き状態の入力
         if (_isGroundSticking) {
-            if (input.move.x != 0) {
+            if (_inputData.move.x != 0) {
                 // 張り付き状態で移動入力があれば張り付き状態を解除
                 _isGroundSticking = false;
-                _warpDashDirection = input.move.x > 0 ? _param.warpDashDownRight : _param.warpDashDownLeft;
+                _warpDashDirection = _inputData.move.x > 0 ? _param.warpDashDownRight : _param.warpDashDownLeft;
                 _ExecuteSlide(); // スライディング実行
-            } else if (input.jumpPressed) {
+            } else if (_inputData.jumpPressed) {
                 // 張り付き状態でジャンプ入力があればジャンプ
                 _isGroundSticking = false;
             }
@@ -271,7 +271,7 @@ public class Player_Character : Character_Base {
         }
 
         // ジャンプ
-        if (input.jumpPressed && _isGrounded) {
+        if (_inputData.jumpPressed && _isGrounded) {
             // スライディングジャンプ
             if (_isSliding) {
                 _isSliding = false;
@@ -292,11 +292,11 @@ public class Player_Character : Character_Base {
             _anim?.Play("Jump");
         }
         // ジャンプリリース
-        if ((!input.jumpHeld && _isJumping) || _currentJumpTime <= 0) {
+        if ((!_inputData.jumpHeld && _isJumping) || _currentJumpTime <= 0) {
             _isJumping = false;
         }
         // 長押しジャンプ
-        if (input.jumpHeld && _isJumping) {
+        if (_inputData.jumpHeld && _isJumping) {
             velocity.y = _jumpForce;
             _currentJumpTime -= Time.deltaTime;
         }
@@ -306,13 +306,13 @@ public class Player_Character : Character_Base {
         _anim?.SetBool("Fall", !_isGrounded);
 
         // 移動入力
-        if (input.move.x != 0) {
+        if (_inputData.move.x != 0) {
             // 直前まで入力なし
             if (!_isWalking) {
                 // 同じ方向にすぐ再入力でダッシュ
                 if (_currentStopMoveInputTime < _param.dashInputThreshold && (
-                    (Mathf.Sign(input.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
-                    (Mathf.Sign(input.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing))) {
+                    (Mathf.Sign(_inputData.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
+                    (Mathf.Sign(_inputData.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing))) {
                     _isDashing = true;
                     _anim?.SetBool("Dash", true);
                 }
@@ -321,7 +321,7 @@ public class Player_Character : Character_Base {
             }
 
             // 移動中は常にフラグリセット
-            _lastWalkDirection = input.move;
+            _lastWalkDirection = _inputData.move;
             _currentStopMoveInputTime = 0;
         } else // 入力停止
           {
@@ -341,20 +341,20 @@ public class Player_Character : Character_Base {
             }
         }
 
-        velocity.x = input.move.x * (
+        velocity.x = _inputData.move.x * (
             _isSlidingJump ? _param.slideJumpSpeed :
             _isSliding ? _param.slideSpeed :
             _isDashing ? _param.dashSpeed : _param.moveSpeed);
 
         // 壁に接触している場合は横移動を0にする
-        if ((_isTouchingLeft && input.move.x < 0) || (_isTouchingRight && input.move.x > 0)) {
+        if ((_isTouchingLeft && _inputData.move.x < 0) || (_isTouchingRight && _inputData.move.x > 0)) {
             velocity.x = 0;
         }
 
         // 向きの更新
-        if (input.move.x > 0) {
+        if (_inputData.move.x > 0) {
             _isRight = true;
-        } else if (input.move.x < 0) {
+        } else if (_inputData.move.x < 0) {
             _isRight = false;
         }
         _warpControl.isRight = _isRight;
@@ -365,31 +365,19 @@ public class Player_Character : Character_Base {
     /// <summary>
     /// ワープ能力
     /// </summary>
-    private void _Warp(CharacterInputData input) {
+    private void _Warp() {
         if (_warpControl == null || _currentWarpCoolTime > 0) {
             return;
         }
 
         // ワープ入力
-        if (input.move.magnitude != 0 && !_isGrounded && input.jumpPressed) {
-            WarpControl.eWarpDirection direction = WarpControl.eWarpDirection.Up;
-
-            direction = input.move switch {
-                { x: > 0, y: > 0 } => WarpControl.eWarpDirection.UpRight,
-                { x: > 0, y: < 0 } => WarpControl.eWarpDirection.DownRight,
-                { x: < 0, y: > 0 } => WarpControl.eWarpDirection.UpLeft,
-                { x: < 0, y: < 0 } => WarpControl.eWarpDirection.DownLeft,
-                { x: 0, y: > 0 } => WarpControl.eWarpDirection.Up,
-                { x: 0, y: < 0 } => WarpControl.eWarpDirection.Down,
-                { x: > 0, y: 0 } => WarpControl.eWarpDirection.Right,
-                { x: < 0, y: 0 } => WarpControl.eWarpDirection.Left,
-                _ => direction
-            };
-            StartCoroutine(WarpCoroutine(direction));
+        if (_inputData.move.magnitude != 0 && !_isGrounded && _inputData.jumpPressed) {
+            StartCoroutine(WarpCoroutine());
         }
 
-        IEnumerator WarpCoroutine(WarpControl.eWarpDirection direction) {
-            
+        IEnumerator WarpCoroutine() {
+            var tmp_direction = _warpDirection;
+
             // MP消費
             var is_success = _charaParam.ConsumeMP(eAbilityType.Warp);
 
@@ -404,8 +392,25 @@ public class Player_Character : Character_Base {
             // 速度をリセット
             _rb.linearVelocity = Vector2.zero;
 
+            //アニメーション管理
+            _anim.SetBool("Warp", true);    // ワープアニメフラグ
+            _anim.SetBool("Fall", true);    // 空中アニメフラグ
+            _anim.Play("Warp_Enter");       // ワープアニメ再生
+            Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
+
+            // 一瞬待機
+            yield return new WaitForSeconds(_param.warpWaitTime);
+
+            // ワープ実行（入力が無ければ直前に入力していた方向にワープ）
+            yield return _warpControl.Warp(
+                _warpDirection != WarpControl.eWarpDirection.Neutral ? _warpDirection : tmp_direction );
+            _anim.SetBool("Warp", false);
+
+            // 入力が無い場合、ワープ前に入力していた方向に移動
+            var dash_direction = 
+                _warpDirection != WarpControl.eWarpDirection.Neutral ? _warpDirection : tmp_direction;
             // ワープダッシュの方向を設定
-            _warpDashDirection = direction switch {
+            _warpDashDirection = dash_direction switch {
                 WarpControl.eWarpDirection.Up => _param.warpDashUp,
                 WarpControl.eWarpDirection.UpRight => _param.warpDashUpRight,
                 WarpControl.eWarpDirection.Right => _param.warpDashRight,
@@ -416,19 +421,6 @@ public class Player_Character : Character_Base {
                 WarpControl.eWarpDirection.UpLeft => _param.warpDashUpLeft,
                 _ => Vector2.zero
             };
-
-            //アニメーション管理
-            _anim.SetBool("Warp", true);    // ワープアニメフラグ
-            _anim.SetBool("Fall", true);    // 空中アニメフラグ
-            _anim.Play("Warp_Enter");       // ワープアニメ再生
-            Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
-
-            // 一瞬待機
-            yield return new WaitForSeconds(_param.warpWaitTime);
-
-            // ワープ実行
-            yield return _warpControl.Warp(direction);
-            _anim.SetBool("Warp", false);
 
             // ワープスキル実行
             _abilityA?.OnWarp();
@@ -449,4 +441,16 @@ public class Player_Character : Character_Base {
             _isSlidingJump = false;
         }
     }
+
+    private WarpControl.eWarpDirection _warpDirection => _inputData.move switch {
+        { x: > 0, y: > 0 } => WarpControl.eWarpDirection.UpRight,
+        { x: > 0, y: < 0 } => WarpControl.eWarpDirection.DownRight,
+        { x: < 0, y: > 0 } => WarpControl.eWarpDirection.UpLeft,
+        { x: < 0, y: < 0 } => WarpControl.eWarpDirection.DownLeft,
+        { x: 0, y: > 0 } => WarpControl.eWarpDirection.Up,
+        { x: 0, y: < 0 } => WarpControl.eWarpDirection.Down,
+        { x: > 0, y: 0 } => WarpControl.eWarpDirection.Right,
+        { x: < 0, y: 0 } => WarpControl.eWarpDirection.Left,
+        _ => WarpControl.eWarpDirection.Neutral
+    };
 }
