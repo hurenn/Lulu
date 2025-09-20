@@ -52,9 +52,11 @@ public class WarpControl : MonoBehaviour
     /// <param name="character_size">キャラクターサイズ</param>
     public IEnumerator Warp(eWarpDirection direction)
     {
+        // ワープ前の位置保存
         Vector2 origin = transform.position;
-        Vector2 safe_point = origin;
 
+        // ワープ先の決定
+        Vector2 safe_point = origin;
         if (0 <= direction && (int)direction < warpCheckers.Length) {
             WarpChecker warp_checker = warpCheckers[(int)direction];
             safe_point = warp_checker.GetWarpPoint(origin, warp_checker.transform.position);
@@ -64,35 +66,43 @@ public class WarpControl : MonoBehaviour
         transform.position = safe_point;
         _cameraFollow.SetWarpMode(true);
 
-        yield return _CoinWarpRoutine();
+        yield return CoinWarpRoutine();
     }
 
     /// <summary>
     /// コインワープ
     /// </summary>
-    private IEnumerator _CoinWarpRoutine() {
+    public IEnumerator CoinWarpRoutine() {
         int count = 0;
         int max_count = 100;
 
         while (count < max_count) {
-            // 前方チェック
-            Vector3? coin_pos = _GetNearestCoin(_coinCheckSize, _forward, _coinCheckSize.x / 2);
-            // 後方チェック
-            if(!coin_pos.HasValue)
-                coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, -_forward, _coinCheckSize.x * _otherCheckRate / 2);
-            // 上方チェック
-            if(!coin_pos.HasValue)
-                coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.up, _coinCheckSize.y * _otherCheckRate / 2);
-            // 下方チェック
-            if(!coin_pos.HasValue)
-                coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.down, _coinCheckSize.y * _otherCheckRate / 2);
-
+            // ワープ先取得
+            var coin_pos = GetCoinWarpCheck();
             if (!coin_pos.HasValue) break;
 
             transform.position = coin_pos.Value;
 
             yield return new WaitForSeconds(_coinWarpInterval);
         }
+    }
+
+    /// <summary>
+    /// コインワープが出来るか確認
+    /// </summary>
+    public Vector3? GetCoinWarpCheck() {
+        // 前方チェック
+        Vector3? coin_pos = _GetNearestCoin(_coinCheckSize, _forward, _coinCheckSize.x / 2);
+        // 後方チェック
+        if (!coin_pos.HasValue)
+            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, -_forward, _coinCheckSize.x * _otherCheckRate / 2);
+        // 上方チェック
+        if (!coin_pos.HasValue)
+            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.up, _coinCheckSize.y * _otherCheckRate / 2);
+        // 下方チェック
+        if (!coin_pos.HasValue)
+            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.down, _coinCheckSize.y * _otherCheckRate / 2);
+        return coin_pos;
     }
     
     /// <summary>

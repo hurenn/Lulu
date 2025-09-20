@@ -371,12 +371,26 @@ public class Player_Character : Character_Base {
         }
 
         // ワープ入力
-        if (_inputData.move.magnitude != 0 && !_isGrounded && _inputData.jumpPressed) {
-            StartCoroutine(WarpCoroutine());
+        if (!_isGrounded && _inputData.jumpPressed) {
+            Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
+            if (_inputData.move.magnitude != 0) {
+                // 入力方向にワープ
+                var tmp_direction = _warpDirection;
+                StartCoroutine(WarpCoroutine(
+                    _warpDirection,
+                    _warpControl.Warp(
+                    _warpDirection != WarpControl.eWarpDirection.Neutral ? _warpDirection : tmp_direction)
+                    ));
+            } else if (_warpControl.GetCoinWarpCheck().HasValue) {
+                // コインワープ
+                StartCoroutine(WarpCoroutine(
+                    _isRight ? WarpControl.eWarpDirection.Right : WarpControl.eWarpDirection.Left,
+                    _warpControl.CoinWarpRoutine()));
+            }
         }
 
-        IEnumerator WarpCoroutine() {
-            var tmp_direction = _warpDirection;
+        IEnumerator WarpCoroutine(
+            WarpControl.eWarpDirection tmp_direction, IEnumerator warp_coroutine) {
 
             // MP消費
             var is_success = _charaParam.ConsumeMP(eAbilityType.Warp);
@@ -396,18 +410,16 @@ public class Player_Character : Character_Base {
             _anim.SetBool("Warp", true);    // ワープアニメフラグ
             _anim.SetBool("Fall", true);    // 空中アニメフラグ
             _anim.Play("Warp_Enter");       // ワープアニメ再生
-            Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
 
             // 一瞬待機
             yield return new WaitForSeconds(_param.warpWaitTime);
 
-            // ワープ実行（入力が無ければ直前に入力していた方向にワープ）
-            yield return _warpControl.Warp(
-                _warpDirection != WarpControl.eWarpDirection.Neutral ? _warpDirection : tmp_direction );
+            // ワープ実行
+            yield return warp_coroutine;
             _anim.SetBool("Warp", false);
 
             // 入力が無い場合、ワープ前に入力していた方向に移動
-            var dash_direction = 
+            var dash_direction =
                 _warpDirection != WarpControl.eWarpDirection.Neutral ? _warpDirection : tmp_direction;
             // ワープダッシュの方向を設定
             _warpDashDirection = dash_direction switch {
@@ -421,11 +433,6 @@ public class Player_Character : Character_Base {
                 WarpControl.eWarpDirection.UpLeft => _param.warpDashUpLeft,
                 _ => Vector2.zero
             };
-
-            // ワープスキル実行
-            _abilityA?.OnWarp();
-            _abilityX?.OnWarp();
-            _abilityY?.OnWarp();
 
             yield return null;
 
