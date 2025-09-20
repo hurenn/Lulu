@@ -456,6 +456,17 @@ public class Character_Base : MonoBehaviour
         return new Vector2(0.5f, 1f); // デフォルトのキャラクターサイズ
     }
 
+    /// <summary>
+    /// MP回復
+    /// </summary>
+    /// <param name="amount">回復値</param>
+    /// <param name="force">強制回復</param>
+    public void RecoverMP(float amount, bool force) {
+        if (_charaParam != null) {
+            _charaParam.RecoverMP(amount, force);
+        }
+    }
+
     #region デバッグ用
     private void OnDrawGizmos()
     {

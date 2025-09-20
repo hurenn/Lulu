@@ -351,11 +351,13 @@ public class Player_Character : Character_Base {
             velocity.x = 0;
         }
 
+        // 向きの更新
         if (input.move.x > 0) {
             _isRight = true;
         } else if (input.move.x < 0) {
             _isRight = false;
         }
+        _warpControl.isRight = _isRight;
 
         _rb.linearVelocity = velocity;
     }
@@ -392,7 +394,7 @@ public class Player_Character : Character_Base {
             var is_success = _charaParam.ConsumeMP(eAbilityType.Warp);
 
             if (!is_success) {
-                yield break; // MP不足でワープキャンセル
+                yield break; // 失敗
             }
 
             // スライディングリセット
@@ -425,8 +427,10 @@ public class Player_Character : Character_Base {
             yield return new WaitForSeconds(_param.warpWaitTime);
 
             // ワープ実行
-            _warpControl.Warp(direction);
+            yield return _warpControl.Warp(direction);
             _anim.SetBool("Warp", false);
+
+            // ワープスキル実行
             _abilityA?.OnWarp();
             _abilityX?.OnWarp();
             _abilityY?.OnWarp();

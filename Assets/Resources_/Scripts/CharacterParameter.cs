@@ -162,8 +162,14 @@ public class CharacterParameter : MonoBehaviour
         // MPゲージの更新
         _UpdateMPUI();
     }
-    public void RecoverMP(float amount) {
-        if (isOverheat || _currentUnRecoverableTime_MP > 0) {
+
+    /// <summary>
+    /// MP回復
+    /// </summary>
+    /// <param name="amount">回復値</param>
+    /// <param name="force">強制回復フラグ</param>
+    public void RecoverMP(float amount, bool force = false) {
+        if (!force && (isOverheat || _currentUnRecoverableTime_MP > 0)) {
             // 回復不可判定
             return;
         }
