@@ -26,7 +26,6 @@ public class Player_Character : Character_Base {
 
     protected override void _Setup() {
         base._Setup();
-        _warpControl.Setup(GetCharacterSize(), _obstacleLayer);
     }
 
     protected override void _UpdateSpecials() {

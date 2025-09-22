@@ -32,24 +32,9 @@ public class WarpControl : MonoBehaviour
     private float _otherCheckRate = 0.7f;
 
     /// <summary>
-    /// ワープチェッカーのセットアップ
-    /// </summary>
-    /// <param name="character_size">キャラクターサイズ</param>
-    /// <param name="obstacle_layer">対象レイヤー</param>
-    public void Setup(Vector2 character_size, LayerMask obstacle_layer)
-    {
-        foreach(var checker in warpCheckers)
-        {
-            // キャラクターサイズと障害物レイヤーを設定
-            checker.Setup(character_size, obstacle_layer);
-        }
-    }
-
-    /// <summary>
     /// ワープ処理を実行
     /// </summary>
     /// <param name="direction">方向</param>
-    /// <param name="character_size">キャラクターサイズ</param>
     public IEnumerator Warp(eWarpDirection direction)
     {
         // ワープ前の位置保存
@@ -59,7 +44,7 @@ public class WarpControl : MonoBehaviour
         Vector2 safe_point = origin;
         if (0 <= direction && (int)direction < warpCheckers.Length) {
             WarpChecker warp_checker = warpCheckers[(int)direction];
-            safe_point = warp_checker.GetWarpPoint(origin, warp_checker.transform.position);
+            safe_point = warp_checker.GetWarpDestination(origin, warp_checker.transform.position);
         }
 
         // ワープ先に移動

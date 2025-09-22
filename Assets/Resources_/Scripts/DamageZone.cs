@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,6 +32,17 @@ public class DamageZone : MonoBehaviour {
 
     // ダメージ判定の有効無効
     private bool _isEnable = true;
+
+    // ヒット時のコールバック
+    private System.Action<Character_Base> _hitCallback = default;
+
+    /// <summary>
+    /// セットアップ
+    /// </summary>
+    /// <param name="callback">ヒット時のコールバック設定</param>
+    public void Setup(System.Action<Character_Base> callback) {
+        _hitCallback = callback;
+    }
 
     // Update is called once per frame
     void Update() {
@@ -77,6 +87,9 @@ public class DamageZone : MonoBehaviour {
             blow_power.x = -blow_power.x;
         }
 
+        // ヒット時のコールバック実行
+        _hitCallback?.Invoke(character);
+
         character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime);
         _currentDelayTimer = _delayTime;
         _isAttakable = false;
@@ -84,78 +97,4 @@ public class DamageZone : MonoBehaviour {
             Destroy(_destroyObject);
         }
     }
-
-    //private void OnTriggerStay2D(Collider2D Collider)//Trigger版ダメージ判定
-    //{
-    //    if (Stay == false) {
-    //        /*
-    //        if (HitDebug)
-    //        {
-    //            if (Collider.gameObject.layer.Equals(16))
-    //                Debug.Log(Collider.gameObject.GetComponent<Enemy>().invinceTime + " >?" + Collider.gameObject.GetComponent<Enemy>().GetMaxInvince());
-    //            else
-    //                Debug.Log(Collider.gameObject.layer);
-    //        }*/
-
-    //        if (EnemysAtack == true || NeutralAtack == true)    //プレイヤーダメージ判定
-    //            if (Collider.gameObject.tag.Contains("Player")) {
-    //                if (HitDebug)
-    //                    Debug.Log("TriggerHit Player");
-
-    //                //プレイヤーダメージ
-    //                PlayerHit(PlayerDamage, Collider.gameObject);
-    //            }
-
-    //        if (PlayersAtack == true || NeutralAtack == true)   //敵ダメージ判定
-    //            if (Collider.gameObject.layer.Equals(16)    //レイヤーネーム「エネミー」
-    //                && Collider.gameObject.GetComponent<Enemy>().invinceTime >= Collider.gameObject.GetComponent<Enemy>().GetMaxInvince()) {
-    //                if (HitDebug)
-    //                    Debug.Log("TriggerHit Enemy");
-
-    //                //Collider.gameObject.GetComponent<Enemy>().HP -= EnemyDamage;
-
-    //                //敵ダメージ
-    //                Collider.GetComponent<Enemy>().Damage(EnemyDamage, 0);
-    //                if (invinceTimeSpecific) {
-    //                    Collider.gameObject.GetComponent<Enemy>().invinceTime = SpecialInvinceTime;
-    //                } else {
-    //                    Collider.gameObject.GetComponent<Enemy>().invinceTime = 0;
-    //                }
-    //                if (Disappear)
-    //                    Destroy(this.gameObject);
-    //            }
-    //    }
-    //}
-    //private void OnCollisionStay2D(Collision2D Collider)    //Collision版ダメージ判定
-    //{
-    //    if (Stay == false) {
-    //        if (EnemysAtack == true || NeutralAtack == true)
-    //            if (Collider.gameObject.tag == "Player") {
-    //                if (HitDebug)
-    //                    Debug.Log("TriggerHit Player");
-    //                PlayerHit(PlayerDamage, Collider.gameObject);
-    //            }
-
-    //        if (PlayersAtack == true || NeutralAtack == true)
-    //            if (Collider.gameObject.layer.Equals(16)    //レイヤーネーム「エネミー」
-    //                && Collider.gameObject.GetComponent<Enemy>().invinceTime >= Collider.gameObject.GetComponent<Enemy>().GetMaxInvince()) {
-    //                if (HitDebug)
-    //                    Debug.Log("TriggerHit Enemy");
-    //                //Collider.gameObject.GetComponent<Enemy>().HP -= EnemyDamage;
-    //                Collider.gameObject.GetComponent<Enemy>().Damage(EnemyDamage, 0);
-    //                if (invinceTimeSpecific) {
-    //                    Collider.gameObject.GetComponent<Enemy>().invinceTime = SpecialInvinceTime;
-    //                } else {
-    //                    Collider.gameObject.GetComponent<Enemy>().invinceTime = 0;
-    //                }
-    //                if (Disappear)
-    //                    Destroy(this.gameObject);
-    //            }
-    //    }
-    //}
-    //void PlayerHit(int PlayerDamage, GameObject player) //プレイヤーダメージ処理
-    //{
-    //    if (Attakable)
-    //        player.GetComponent<HPManager>().Damage(PlayerDamage);
-    //}
 }

@@ -74,6 +74,7 @@ public class Character_Base : MonoBehaviour
 
     // Ž€–Sƒtƒ‰ƒO
     protected bool _isDie = false;
+    public bool isDead => _isDie;
 
     private void Start()
     {

@@ -91,12 +91,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17784af051f04fa4b80766340efacd60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 1
-  _isPlayersAttack: 1
-  _isEnemysAttack: 0
-  _isNeutralAttack: 0
+  _damageToPlayer: 0
+  _damageToEnemy: 1
+  _invincibleTime: 0
+  _blowPowerRight: {x: 0, y: 0}
+  _damageReactionTime: 0.2
   _isHitDestroy: 1
-  _parentObject: {fileID: 7444988537484354709}
+  _destroyObject: {fileID: 0}
+  _isOnceHit: 1
+  _delayTime: 0.5
 --- !u!1 &5234742805473229160
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +198,7 @@ GameObject:
   - component: {fileID: 8808934566716058842}
   - component: {fileID: 8805051577573701789}
   m_Layer: 0
-  m_Name: FireShot
+  m_Name: FireBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -233,3 +236,4 @@ MonoBehaviour:
   _lifetime: 0.6
   _animator: {fileID: 0}
   _speed: 0.4
+  _damageZone: {fileID: 8170799513383298760}
