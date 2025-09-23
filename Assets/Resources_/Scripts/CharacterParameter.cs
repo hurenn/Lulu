@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,7 +37,7 @@ public class CharacterParameter : MonoBehaviour
     private float _currentInvincibilityTimer = 0;
     // Œõ”\—Í‚É‚æ‚é–³“Gƒtƒ‰ƒO
     public bool isLightInvincible = false;
-    public bool isInvincible => _currentInvincibilityTimer > 0 || isLightInvincible;
+    public bool isInvincible => _currentInvincibilityTimer > 0;
 
     // MP
     public float defaultMaxMP = 100.0f;

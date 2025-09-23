@@ -1,5 +1,4 @@
 using UnityEngine;
-using static CharacterParameter;
 
 public class Ability_Light : Ability_Base
 {

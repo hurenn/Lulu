@@ -25,6 +25,7 @@ public class WarpControl : MonoBehaviour
     [SerializeField] private Vector2 _coinCheckSize = new Vector2(5,3);   // コインチェックの半径
     [SerializeField] private LayerMask _coinLayer;          // コインのレイヤー
     [SerializeField] private float _coinWarpInterval = 0.1f;
+    [SerializeField] private float _avoidWarpInterval = 0.5f;
     private bool _isRight = true;   // 右向きか確認
     public bool isRight { get { return _isRight; } set { _isRight = value; } }
     private Vector3 _forward => _isRight ? Vector3.right : Vector3.left;
@@ -53,7 +54,7 @@ public class WarpControl : MonoBehaviour
     private IEnumerator _ExecuteWarpCommon(
         Vector2 safe_point, 
         bool is_warp_camera = true,
-        IEnumerator on_pre_end = null
+        float end_delay = 0.0f
         ) {
         if (_onPreWarpCommon != null) {
             _onPreWarpCommon();
@@ -77,9 +78,8 @@ public class WarpControl : MonoBehaviour
             lastWarpDir = (eWarpDirection)System.Array.IndexOf(warpCheckers, nearest_checker);
         }
 
-        if(on_pre_end != null) {
-            yield return on_pre_end;
-        }
+        if (end_delay > 0.0f)
+            yield return new WaitForSeconds(end_delay);
 
         if (_onWarpEndCommon != null)
             _onWarpEndCommon();
@@ -104,26 +104,26 @@ public class WarpControl : MonoBehaviour
         // ワープ先に移動
         yield return _ExecuteWarpCommon(safe_point);
 
-        yield return CoinWarpRoutine();
+        yield return CoinWarp();
     }
 
     /// <summary>
     /// ワープチェッカーを指定してワープ
     /// </summary>
-    public IEnumerator TargetWarp(WarpChecker warp_checker) {
+    public IEnumerator TargetWarp(WarpChecker warp_checker, float end_delay = 0.0f) {
         // ワープ先の決定
         var safe_point = warp_checker.GetWarpPoint();
 
         // ワープ先に移動
         if (safe_point.HasValue) {
-            yield return _ExecuteWarpCommon(safe_point.Value);
+            yield return _ExecuteWarpCommon(safe_point.Value, end_delay:end_delay);
         }
     }
 
     /// <summary>
     /// コインワープ
     /// </summary>
-    public IEnumerator CoinWarpRoutine() {
+    public IEnumerator CoinWarp() {
         int count = 0;
         int max_count = 100;
 
@@ -136,12 +136,8 @@ public class WarpControl : MonoBehaviour
             yield return _ExecuteWarpCommon(
                 coin_pos.Value, 
                 is_warp_camera:false, 
-                on_pre_end: wait_routine()
+                end_delay: _coinWarpInterval
                 );
-
-            IEnumerator wait_routine() {
-                yield return new WaitForSeconds(_coinWarpInterval);
-            }
         }
     }
 
@@ -187,6 +183,27 @@ public class WarpControl : MonoBehaviour
             return best_pos;
         }
         return null;
+    }
+
+    /// <summary>
+    /// ワープ可能なチェッカーからランダムにワープ
+    /// </summary>
+    public IEnumerator RandomWarp() {
+        // 全てのチェッカーでワープ可能な方向を調べる
+        WarpChecker[] valid_checkers =
+        System.Array.FindAll(warpCheckers, (checker) => {
+            var safe_point = checker.GetWarpPoint(true);
+            return safe_point.HasValue;
+        });
+
+        // ワープ可能なチェッカーが無ければキャンセル
+        if (valid_checkers.Length == 0) {
+            yield break;
+        }
+
+        // チェッカーからランダムに選んでワープ
+        var random_checker = valid_checkers[Random.Range(0, valid_checkers.Length)];
+        yield return TargetWarp(random_checker, _avoidWarpInterval);
     }
 
     private void OnDrawGizmosSelected() {

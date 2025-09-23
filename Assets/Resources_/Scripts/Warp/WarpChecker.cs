@@ -14,6 +14,8 @@ public class WarpChecker : MonoBehaviour
 
     [SerializeField]
     private LayerMask _obstacleLayer = default;
+    [SerializeField]
+    private LayerMask _damageZoneLayer = default;
 
     // 個別のワープチェック用のオフセット
     [SerializeField]
@@ -75,17 +77,17 @@ public class WarpChecker : MonoBehaviour
     /// </summary>
     /// <param name="point">チェック地点</param>
     /// <returns></returns>
-    public Vector2? GetWarpPoint(Vector2 point)
+    public Vector2? GetWarpPoint(Vector2 point, LayerMask add_layer_mask = default)
     {
-        RaycastHit2D warpCheck = Physics2D.BoxCast(point, _characterSize, 0, Vector2.zero, 0f, _obstacleLayer);
+        RaycastHit2D warpCheck = Physics2D.BoxCast(point, _characterSize, 0, Vector2.zero, 0f, _obstacleLayer | add_layer_mask);
 
         // 衝突していなければワープ可能
         _isValidWarpPoint = warpCheck.collider == null;
         return _isValidWarpPoint ? point : null;
     }
-    public Vector2? GetWarpPoint()
+    public Vector2? GetWarpPoint(bool is_damage_avoid = false)
     {
-        return GetWarpPoint(transform.position);
+        return GetWarpPoint(transform.position, is_damage_avoid ? _damageZoneLayer : default);
     }
 
     #region デバッグ用

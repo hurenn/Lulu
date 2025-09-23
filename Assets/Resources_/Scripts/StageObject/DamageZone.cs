@@ -8,7 +8,7 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private int _damageToEnemy = 0;
 
     // –³“GŠÔ
-    [SerializeField] private int _invincibleTime = 0;
+    [SerializeField] private float _invincibleTime = 0;
 
     // ‚Á”ò‚Î‚·—Íi‰EŒü‚«j
     [SerializeField] private Vector2 _blowPowerRight = Vector2.zero;

@@ -333,6 +333,18 @@ public class Player_Character : Character_Base {
         }
     }
 
+    public override void Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
+        // 光の能力で無敵回避
+        if(_charaParam.isLightInvincible) {
+            // エフェクト生成
+            Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
+            StartCoroutine(_warpControl.RandomWarp());
+            return;
+        }
+
+        base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
+    }
+
     /// <summary>
     /// 移動入力
     /// </summary>
@@ -509,7 +521,7 @@ public class Player_Character : Character_Base {
                 yield return _warpControl.DirectionWarp(_warpDirection);
             } else if (_warpControl.GetCoinWarpCheck().HasValue) {
                 // コインワープ
-                yield return _warpControl.CoinWarpRoutine();
+                yield return _warpControl.CoinWarp();
             }
 
             // 入力がある場合はその方向に移動
@@ -567,9 +579,6 @@ public class Player_Character : Character_Base {
         _anim.SetBool("Warp", true);    // ワープアニメフラグ
         _anim.SetBool("Fall", true);    // 空中アニメフラグ
         _anim.Play("Warp_Enter");       // ワープアニメ再生
-
-        //// 一瞬待機
-        //yield return new WaitForSeconds(_param.warpWaitTime);
     }
     void _OnWarpEndCommon() {
         _anim.SetBool("Warp", false);
