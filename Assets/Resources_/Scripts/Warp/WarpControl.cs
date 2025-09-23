@@ -29,8 +29,12 @@ public class WarpControl : MonoBehaviour
     private bool _isRight = true;   // 右向きか確認
     public bool isRight { get { return _isRight; } set { _isRight = value; } }
     private Vector3 _forward => _isRight ? Vector3.right : Vector3.left;
-
+    // コインワープ用の前方以外のチェック率
     private float _otherCheckRate = 0.7f;
+
+    // 回避ワープ用のエフェクト間隔タイマー
+    private float _avoidEffectInterval = 0.5f;
+    private float _currentAvoidEffectInterval = 0.1f;
 
     // ワープ共通処理
     System.Action _onPreWarpCommon = null;
@@ -45,6 +49,12 @@ public class WarpControl : MonoBehaviour
     public void Setup(System.Action on_pre_warp, System.Action on_warp_end) {
         _onPreWarpCommon = on_pre_warp;
         _onWarpEndCommon = on_warp_end;
+    }
+
+    private void Update() {
+        if (_currentAvoidEffectInterval > 0) {
+            _currentAvoidEffectInterval -= Time.deltaTime;
+        }
     }
 
     /// <summary>
@@ -186,9 +196,9 @@ public class WarpControl : MonoBehaviour
     }
 
     /// <summary>
-    /// ワープ可能なチェッカーからランダムにワープ
+    /// 回避ワープ
     /// </summary>
-    public IEnumerator RandomWarp() {
+    public IEnumerator AvoidWarp(System.Action avoid_effect) {
         // 全てのチェッカーでワープ可能な方向を調べる
         WarpChecker[] valid_checkers =
         System.Array.FindAll(warpCheckers, (checker) => {
@@ -196,8 +206,17 @@ public class WarpControl : MonoBehaviour
             return safe_point.HasValue;
         });
 
+        if (_currentAvoidEffectInterval <= 0) {
+            if (avoid_effect != null) {
+                avoid_effect();
+            }
+        }
+
         // ワープ可能なチェッカーが無ければキャンセル
         if (valid_checkers.Length == 0) {
+            if (_currentAvoidEffectInterval <= 0) {
+                _currentAvoidEffectInterval = _avoidEffectInterval;
+            }
             yield break;
         }
 

@@ -335,10 +335,11 @@ public class Player_Character : Character_Base {
 
     public override void Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
         // 光の能力で無敵回避
-        if(_charaParam.isLightInvincible) {
-            // エフェクト生成
-            Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
-            StartCoroutine(_warpControl.RandomWarp());
+        if (_charaParam.isLightInvincible) {
+            StartCoroutine(_warpControl.AvoidWarp(
+                () => {
+                    Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
+                }));
             return;
         }
 
