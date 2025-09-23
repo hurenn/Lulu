@@ -78,8 +78,14 @@ public class WarpChecker : MonoBehaviour
     public Vector2? GetWarpPoint(Vector2 point)
     {
         RaycastHit2D warpCheck = Physics2D.BoxCast(point, _characterSize, 0, Vector2.zero, 0f, _obstacleLayer);
+
+        // 衝突していなければワープ可能
         _isValidWarpPoint = warpCheck.collider == null;
         return _isValidWarpPoint ? point : null;
+    }
+    public Vector2? GetWarpPoint()
+    {
+        return GetWarpPoint(transform.position);
     }
 
     #region デバッグ用

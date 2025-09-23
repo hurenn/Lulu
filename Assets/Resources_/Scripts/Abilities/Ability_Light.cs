@@ -23,7 +23,7 @@ public class Ability_Light : Ability_Base
 
         // アニメーション再生
         _anim?.Play("Pepe_Appear", 0, 0.0f);
-        UpdateTransform(_charaTransform.position, _inputDir); // 位置更新
+        UpdatePartnerTransform(); // 位置更新
 
         // MP消費
         _charaParam.ConsumeMP(eAbilityType.Light);

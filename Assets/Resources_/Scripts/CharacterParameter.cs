@@ -81,6 +81,7 @@ public class CharacterParameter : MonoBehaviour
 
     private void Start()
     {
+        _maxHP = defaultMaxHP;
         CurrentHP = _maxHP;
     }
 

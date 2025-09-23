@@ -24,11 +24,11 @@ public class Enemy_Base : Character_Base
     /// ワープ地点取得
     /// </summary>
     /// <param name="warp_direction">ワープの向き</param>
-    public Vector2? GetWarpPoint(WarpControl.eWarpDirection warp_direction) {
+    public WarpChecker? GetWarpChecker(WarpControl.eWarpDirection warp_direction) {
         if (warp_direction == WarpControl.eWarpDirection.Left) {
-            return _leftWarpChecker.GetWarpPoint(_leftWarpChecker.transform.position);
+            return _leftWarpChecker;
         } else if (warp_direction == WarpControl.eWarpDirection.Right) {
-            return _rightWarpChecker.GetWarpPoint(_rightWarpChecker.transform.position);
+            return _rightWarpChecker;
         }
         return null;
     }

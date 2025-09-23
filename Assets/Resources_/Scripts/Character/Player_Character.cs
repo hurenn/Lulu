@@ -24,6 +24,12 @@ public class Player_Character : Character_Base {
     // 壁に沿って滑る速度
     private float _currentWallSlideTime = 0;
 
+    // 能力スロット
+    [SerializeField] protected Ability_Base _abilityY;
+    [SerializeField] protected Ability_Base _abilityX;
+    [SerializeField] protected Ability_Base _abilityA;
+
+
     protected override void _Setup() {
         base._Setup();
     }
@@ -34,6 +40,10 @@ public class Player_Character : Character_Base {
         _UpdateSliding();
         _UpdateWallSlideMove();
         _UpdateSlideJump();
+
+        _abilityX?.Setup(_isRight, transform, _param, _charaParam, _warpControl);
+        _abilityY?.Setup(_isRight, transform, _param, _charaParam, _warpControl);
+        _abilityA?.Setup(_isRight, transform, _param, _charaParam, _warpControl);
 
         if (_currentWarpCoolTime > 0) {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
@@ -216,9 +226,108 @@ public class Player_Character : Character_Base {
     }
 
     public override void UpdateControl(CharacterInputData input) {
+        if (_isDie) {
+            input.abilityXHeld = false;
+            input.abilityXPressed = false;
+            input.abilityYHeld = false;
+            input.abilityYPressed = false;
+            input.abilityAHeld = false;
+            input.abilityAPressed = false;
+        }
         base.UpdateControl(input);
 
+        _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld);
+        _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld);
+        _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld);
+
         _Warp();
+    }
+
+    /// <summary>
+    /// 能力スロットにセット
+    /// </summary>
+    public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot) {
+        var ability = AbilityFactory.CreateAbility(ability_type, transform, ability_slot);
+        if (ability == null) {
+            Debug.LogError("能力生成失敗: " + ability_type);
+            return;
+        }
+
+        // スロットにセット
+        switch (ability_slot) {
+            case eAbilitySlot.Y:
+                _abilityY = ability;
+                break;
+            case eAbilitySlot.X:
+                _abilityX = ability;
+                break;
+            case eAbilitySlot.A:
+                _abilityA = ability;
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 能力の更新処理
+    /// </summary>
+    private void _UpdateAbility(Ability_Base ability, Vector2 dir_input, bool button_pressed, bool button_held) {
+        if (ability == null) {
+            return;
+        }
+
+        // 単押し使用
+        if (button_pressed) {
+            _AbilityResult(ability.ExecuteSimple(), dir_input);
+        }
+        // 長押し使用
+        if (button_held) {
+            _AbilityResult(ability.ExecuteLong(), dir_input);
+        }
+        // ボタンを離したときの処理
+        if (!button_held && !button_pressed) {
+            ability.ExecuteRelease();
+        }
+    }
+
+    /// <summary>
+    /// 能力の実行結果処理
+    /// </summary>
+    private void _AbilityResult(eAbilityResult result, Vector2 dir_input) {
+        switch (result) {
+            case eAbilityResult.None:
+                break;
+            case eAbilityResult.IceSlash1:
+            case eAbilityResult.IceSlash2:
+            case eAbilityResult.IceSlash3:
+            case eAbilityResult.IceSeparate:
+                // 斬撃隙
+                _intervalTimer = _param.iceSlashInterval;
+                _rb.linearVelocity = Vector2.zero;
+                Vector2 slash_bounce_move = Vector2.right * dir_input.x * _param.slashMoveForce;
+                if (!_isGrounded) {
+                    slash_bounce_move.y = _param.slashRebound;
+                    _currentJumpTime = 0;
+                }
+                _rb.linearVelocity = slash_bounce_move;
+                break;
+            case eAbilityResult.IceLockonSlash:
+                // 斬撃隙
+                _intervalTimer = _param.iceSlashInterval;
+                _rb.linearVelocity = Vector2.zero;
+
+                // ロックオン対象の方向を向く
+                var lockon = LockonManager.Instance;
+                Vector3 to_target = lockon.targetTransform.position - transform.position;
+                to_target.y = 0; // 水平成分のみ
+                _isRight = to_target.x > 0;
+
+                LockonManager.Instance.ClearTarget(); // ロックオン解除
+                break;
+            default:
+                break;
+        }
     }
 
     /// <summary>

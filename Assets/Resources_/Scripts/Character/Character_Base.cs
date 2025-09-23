@@ -24,11 +24,6 @@ public class Character_Base : MonoBehaviour
     [SerializeField] protected SpriteRenderer _sprite;
     [SerializeField] protected Animator _anim;
 
-    // 能力スロット
-    [SerializeField] protected Ability_Base _abilityY;
-    [SerializeField] protected Ability_Base _abilityX;
-    [SerializeField] protected Ability_Base _abilityA;
-
     // チェッカーパラメータ
     protected Vector3 _groundCheckLocalPos = default;
     protected Vector3 _groundCheckScale = default;
@@ -99,25 +94,21 @@ public class Character_Base : MonoBehaviour
         _wallCheckScale = new Vector3(_param.wallCheckWidth, chara_size.y - _param.checkerBuffer, 1);
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         _CheckTerrain();
         _ApplyGravity();
         _UpdateSpecials();
 
-        if(_intervalTimer > 0) {
-            _intervalTimer -= Time.deltaTime; 
+        if (_intervalTimer > 0) {
+            _intervalTimer -= Time.deltaTime;
         }
-        if(_damageReactionTimer > 0) {
+        if (_damageReactionTimer > 0) {
             _damageReactionTimer -= Time.deltaTime;
         }
 
         // 向きの更新
         if (_sprite != null) {
             _sprite.flipX = _isRight;
-            _abilityX?.SetCharacterTransform(_isRight, transform, _param, _charaParam);
-            _abilityY?.SetCharacterTransform(_isRight, transform, _param, _charaParam);
-            _abilityA?.SetCharacterTransform(_isRight, transform, _param, _charaParam);
         }
     }
 
@@ -129,89 +120,11 @@ public class Character_Base : MonoBehaviour
             input.move = Vector2.zero;
             input.jumpHeld = false;
             input.jumpPressed = false;
-            input.abilityXHeld = false;
-            input.abilityXPressed = false;
-            input.abilityYHeld = false;
-            input.abilityYPressed = false;
-            input.abilityAHeld = false;
-            input.abilityAPressed = false;
         }
         // 入力データ保存
         _inputData = input;
 
         _UpdateMotor();
-
-        _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld);
-        _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld);
-        _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld);
-    }
-
-    public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot) {
-        var ability = AbilityFactory.CreateAbility(ability_type, transform, ability_slot);
-        if (ability == null) {
-            Debug.LogError("能力生成失敗: " + ability_type);
-            return;
-        }
-
-        // スロットにセット
-        switch (ability_slot) {
-            case eAbilitySlot.Y:
-                _abilityY = ability;
-                break;
-            case eAbilitySlot.X:
-                _abilityX = ability;
-                break;
-            case eAbilitySlot.A:
-                _abilityA = ability;
-                break;
-            default:
-                break;
-        }
-    }
-
-    /// <summary>
-    /// 能力の更新処理
-    /// </summary>
-    private void _UpdateAbility(Ability_Base ability, Vector2 dir_input, bool button_pressed, bool button_held) {
-        if(ability == null) {
-            return;
-        }
-
-        // 単押し使用
-        if (button_pressed) {
-            _AbilityResult(ability.ExecuteSimple(), dir_input);
-        }
-        // 長押し使用
-        if (button_held) {
-            _AbilityResult(ability.ExecuteLong(), dir_input);
-        }
-        // ボタンを離したときの処理
-        if (!button_held && !button_pressed) {
-            ability.ExecuteRelease();
-        }
-    }
-
-    private void _AbilityResult(eAbilityResult result, Vector2 dir_input) {
-        switch (result) {
-            case eAbilityResult.None:
-                break;
-            case eAbilityResult.IceSlash1:
-            case eAbilityResult.IceSlash2:
-            case eAbilityResult.IceSlash3:
-            case eAbilityResult.IceSeparate:
-                // 斬撃隙
-                _intervalTimer = _param.iceSlashInterval;
-                _rb.linearVelocity = Vector2.zero;
-                Vector2 slash_bounce_move = Vector2.right * dir_input.x * _param.slashMoveForce;
-                if (!_isGrounded) {
-                    slash_bounce_move.y = _param.slashRebound;
-                    _currentJumpTime = 0;
-                }
-                _rb.linearVelocity = slash_bounce_move;
-                break;
-            default:
-                break;
-        }
     }
 
     /// <summary>

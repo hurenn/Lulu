@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static WarpControl;
 
 public class WarpControl : MonoBehaviour
 {
@@ -53,6 +54,50 @@ public class WarpControl : MonoBehaviour
 
         yield return CoinWarpRoutine();
     }
+
+    /// <summary>
+    /// ワープチェッカーを指定してワープ
+    /// </summary>
+    public void TargetWarp(WarpChecker warp_checker) {
+        // ワープ先の決定
+        var safe_point = warp_checker.GetWarpPoint();
+
+        // ワープ先に移動
+        if (safe_point.HasValue) {
+            transform.position = safe_point.Value;
+            _cameraFollow.SetWarpMode(true);
+        }
+    }
+
+    //IEnumerator WarpCommonAction(
+    //    WarpControl.eWarpDirection tmp_direction, IEnumerator warp_coroutine) {
+
+    //    // スライディングリセット
+    //    _isSliding = false;
+    //    // 重力を無効化
+    //    _isWarpDelay = true;
+    //    // 速度をリセット
+    //    _rb.linearVelocity = Vector2.zero;
+
+    //    //アニメーション管理
+    //    _anim.SetBool("Warp", true);    // ワープアニメフラグ
+    //    _anim.SetBool("Fall", true);    // 空中アニメフラグ
+    //    _anim.Play("Warp_Enter");       // ワープアニメ再生
+
+    //    // 一瞬待機
+    //    yield return new WaitForSeconds(_param.warpWaitTime);
+
+    //    // ワープ実行
+    //    yield return warp_coroutine;
+    //    _anim.SetBool("Warp", false);
+
+    //    // Note: ワープダッシュはカット
+
+    //    // ワープダッシュのクールタイムをリセット
+    //    _currentWarpCoolTime = _param.warpCoolTime;
+    //    // スライドジャンプリセット
+    //    _isSlidingJump = false;
+    //}
 
     /// <summary>
     /// コインワープ

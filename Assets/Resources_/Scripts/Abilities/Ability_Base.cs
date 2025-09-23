@@ -6,6 +6,7 @@ public enum eAbilityResult {
     IceSlash2,
     IceSlash3,
     IceSeparate,
+    IceLockonSlash,
     FireShot,
     LightParry,
     LightDome,
@@ -45,6 +46,7 @@ public class Ability_Base : MonoBehaviour {
     protected Transform _charaTransform = default;
     protected CharacterParameter _charaParam = null;
     protected CommonParameter _param = null;
+    protected WarpControl _warpControl = null;
 
     /// <summary>
     /// 装備時のローカルポジション
@@ -63,11 +65,17 @@ public class Ability_Base : MonoBehaviour {
     /// 右向きか確認
     /// </summary>
     protected bool _isRight = true;
-    public virtual void SetCharacterTransform(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter chara_param) {
+    public virtual void Setup(
+        bool is_right, 
+        Transform chara_pos, 
+        CommonParameter common_param, 
+        CharacterParameter chara_param,
+        WarpControl warp_control) {
         _isRight = is_right;
         _charaTransform = chara_pos;
         _param = common_param;
         _charaParam = chara_param;
+        _warpControl = warp_control;
     }
 
     private void Update() {
@@ -85,12 +93,10 @@ public class Ability_Base : MonoBehaviour {
     protected virtual void _Update() { }
 
     /// <summary>
-    /// 方向入力
+    /// 仲間キャラクターの位置を更新
     /// </summary>
-    protected Vector2 _inputDir = Vector2.zero;
-    public virtual void UpdateTransform(Vector3 character_pos, Vector2 dir) {
-        _inputDir = dir;
-        transform.position = character_pos + new Vector3(
+    public virtual void UpdatePartnerTransform() {
+        transform.position = _charaTransform.position + new Vector3(
             _localPosition.x * (_isRight ? -1 : 1),
             _localPosition.y,
             _localPosition.z);

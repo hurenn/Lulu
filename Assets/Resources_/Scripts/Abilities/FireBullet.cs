@@ -18,7 +18,7 @@ public class FireBullet : AutoDestroy
         _damageZone.Setup((character) => {
             // “–‚½‚Á‚½“G‚ğƒƒbƒNƒIƒ“
             Enemy_Base enemy = character as Enemy_Base;
-            LockonManager.Instance.SetTarget(enemy);
+            LockonManager.SetTargetStatic(enemy);
         });
     }
 

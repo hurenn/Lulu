@@ -19,6 +19,7 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private GameObject _slash1;
     [SerializeField] private GameObject _slash2;
     [SerializeField] private GameObject _slash3;
+    [SerializeField] private GameObject _lockonSlash;
 
     protected override void _Update() {
         // タイマー減少
@@ -40,6 +41,14 @@ public class Ability_Ice : Ability_Base {
             return eAbilityResult.None;
         }
 
+        // ロックオン攻撃判定
+        if (LockonManager.Instance.HasTarget) {
+            _LockonSlash();
+
+            // ロックオン中の攻撃
+            return eAbilityResult.IceLockonSlash;
+        }
+
         // コンボ攻撃判定
         var attack_result = _ComboSlash();
         // 切り離し攻撃判定
@@ -55,6 +64,49 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
+    /// ロックオン攻撃実行
+    /// </summary>
+    private void _LockonSlash() {
+        if (_lockonSlash == null) {
+            Debug.Log("ロックオン攻撃エフェクトが見つかりません");
+            return;
+        }
+        Debug.Log("Lockon Slash");
+
+        // ロックオン対象の方向を向く
+        var lockon = LockonManager.Instance;
+        Vector3 to_target = lockon.targetTransform.position - _charaTransform.position;
+        to_target.y = 0; // 水平成分のみ
+
+        // ロックオン対象の近くにワープ
+        WarpChecker warp_checker = null;
+        // ワープチェッカー取得
+        if (to_target.x > 0) {
+            warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Left);
+        } else if (to_target.x < 0) {
+            warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Right);
+        };
+        _warpControl?.TargetWarp(warp_checker);
+
+         // キャラクター位置を更新
+        _isRight = to_target.x > 0; 
+        UpdatePartnerTransform();
+
+        // エフェクトの向きを調整
+        _AttackEffectSetup(_lockonSlash);
+
+        // エフェクト生成
+        Instantiate(_lockonSlash, transform.position, Quaternion.identity);
+        // アニメーション再生
+        _anim?.Play("Node_Attack2", 0, 0.0f);
+
+        // コンボリセット
+        _attackStep = 0;
+        _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
+        _currentComboCoolTime = _param.comboIntervalTime; // クールタイムセット
+    }
+
+    /// <summary>
     /// コンボ攻撃実行
     /// </summary>
     private eAbilityResult _ComboSlash() {
@@ -63,12 +115,6 @@ public class Ability_Ice : Ability_Base {
         if (_currentComboCoolTime > 0f) {
             return eAbilityResult.None;
         }
-
-        System.Action<GameObject, string> callback = (GameObject attack_effect, string anim_name) => {
-            UpdateTransform(_charaTransform.position, _inputDir);
-            Instantiate(attack_effect, transform.position, Quaternion.identity); // エフェクト生成
-            _anim?.Play(anim_name, 0, 0.0f);       // アニメーション再生
-        };
 
         if (_attackStep == 0) {
             // 1段目
@@ -115,7 +161,8 @@ public class Ability_Ice : Ability_Base {
             }
         }
         
-        UpdateTransform(_charaTransform.position, _inputDir);   // 最終的な位置を設定
+        UpdatePartnerTransform();   // キャラクター位置を更新
+
         Instantiate(effect, transform.position, Quaternion.identity);  // エフェクト生成
         _anim?.Play(anim_name, 0, 0.0f);   // アニメーション再生
     }
@@ -139,24 +186,25 @@ public class Ability_Ice : Ability_Base {
         _isHoldExecuted = false;
     }
 
-    public override void SetCharacterTransform(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter chara_param) {
-        base.SetCharacterTransform(is_right, chara_transform, param, chara_param);
+    public override void Setup(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter chara_param, WarpControl warp_control) {
+        base.Setup(is_right, chara_transform, param, chara_param, warp_control);
         // 向きに応じて攻撃エフェクトの向きを調整
-        if (_slash1 != null) {
-            var scale = _slash1.transform.localScale;
-            scale.x = is_right ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
-            _slash1.transform.localScale = scale;
+        _AttackEffectSetup(_slash1);
+        _AttackEffectSetup(_slash2);
+        _AttackEffectSetup(_slash3);
+    }
+
+    /// <summary>
+    /// 攻撃エフェクトの向きを調整
+    /// </summary>
+    private void _AttackEffectSetup(GameObject effect) {
+        if (effect == null) {
+            Debug.Log($"{effect}が登録されていません");
+            return;
         }
-        if (_slash2 != null) {
-            var scale = _slash2.transform.localScale;
-            scale.x = is_right ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
-            _slash2.transform.localScale = scale;
-        }
-        if (_slash3 != null) {
-            var scale = _slash3.transform.localScale;
-            scale.x = is_right ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
-            _slash3.transform.localScale = scale;
-        }
+        var scale = effect.transform.localScale;
+        scale.x = _isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+        effect.transform.localScale = scale;
     }
 
     public override void OnWarp() {
