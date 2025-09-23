@@ -23,7 +23,7 @@ public class Ability_Fire : Ability_Base
             return eAbilityResult.None;
         }
 
-        var ability_result = _SimpleShot(_charaTransform.position);
+        var ability_result = _SimpleShot(_playerTransform.position);
 
         // çUåÇé¿çs
         if (ability_result != eAbilityResult.None) {

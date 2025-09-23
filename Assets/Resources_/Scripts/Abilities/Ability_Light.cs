@@ -30,7 +30,7 @@ public class Ability_Light : Ability_Base
         _charaParam.SetUnRecoverTime_MP(1.0f);
 
         if (_lightDomeInstance == null) {
-            _lightDomeInstance = Instantiate(_lightDomePrefab, _charaTransform);
+            _lightDomeInstance = Instantiate(_lightDomePrefab, _playerTransform);
         }
         _lightDomeInstance.SetActive(true);
 

@@ -75,7 +75,7 @@ public class Ability_Ice : Ability_Base {
 
         // ロックオン対象の方向を向く
         var lockon = LockonManager.Instance;
-        Vector3 to_target = lockon.targetTransform.position - _charaTransform.position;
+        Vector3 to_target = lockon.targetTransform.position - _playerTransform.position;
         to_target.y = 0; // 水平成分のみ
 
         // ロックオン対象の近くにワープ
@@ -154,7 +154,7 @@ public class Ability_Ice : Ability_Base {
             // イージングで位置を更新
             float elapsedTime = 0f;
             Vector3 startPos = transform.position;
-            Vector3 targetPos = _charaTransform.position + new Vector3(
+            Vector3 targetPos = _playerTransform.position + new Vector3(
                 _localPosition.x * (_isRight ? -1 : 1),
                 _localPosition.y,
                 _localPosition.z);

@@ -38,12 +38,14 @@ public class Ability_Base : MonoBehaviour {
     protected void _ResetReturnTimer(float time) {
         _currentReturnTime = time;
     }
+    // 強制帰還距離
+    private float _forceReturnDistance = 5.0f;
 
     // オーバーヒートによるキャンセル
     protected bool _cancelByOverheat => _charaParam == null || (_charaParam.isOverheat && !_isAppearing);
 
     // キャラクター情報
-    protected Transform _charaTransform = default;
+    protected Transform _playerTransform = default;
     protected CharacterParameter _charaParam = null;
     protected CommonParameter _param = null;
     protected WarpControl _warpControl = null;
@@ -72,7 +74,7 @@ public class Ability_Base : MonoBehaviour {
         CharacterParameter chara_param,
         WarpControl warp_control) {
         _isRight = is_right;
-        _charaTransform = chara_pos;
+        _playerTransform = chara_pos;
         _param = common_param;
         _charaParam = chara_param;
         _warpControl = warp_control;
@@ -82,6 +84,10 @@ public class Ability_Base : MonoBehaviour {
         // 帰還タイマー
         if (_isAppearing) {
             _currentReturnTime -= Time.deltaTime;
+            // 強制帰還距離チェック
+            if (Vector3.Distance(transform.position, _playerTransform.position) > _forceReturnDistance) {
+                _currentReturnTime = 0f;
+            }
             if (_currentReturnTime <= 0f) {
                 // 帰還
                 _anim.Play("ToHide");
@@ -96,7 +102,7 @@ public class Ability_Base : MonoBehaviour {
     /// 仲間キャラクターの位置を更新
     /// </summary>
     public virtual void UpdatePartnerTransform() {
-        transform.position = _charaTransform.position + new Vector3(
+        transform.position = _playerTransform.position + new Vector3(
             _localPosition.x * (_isRight ? -1 : 1),
             _localPosition.y,
             _localPosition.z);
