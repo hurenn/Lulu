@@ -21,7 +21,7 @@ public class AbilityUI_Base : MonoBehaviour
     /// 能力UIの設定
     /// </summary>
     /// <param name="ability_type">能力タイプ</param>
-    public void SetAbilityUI(eAbilityType ability_type, Vector3 world_pos) {
+    public void SetAbilityUI(eAbilityType ability_type) {
         StartCoroutine(_JoinEffect(ability_type));
     }
 

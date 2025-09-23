@@ -32,6 +32,9 @@ public class Player_Character : Character_Base {
 
     protected override void _Setup() {
         base._Setup();
+        if (_warpControl != null) {
+            _warpControl.Setup(_OnPreWarpCommon, _OnWarpEndCommon);
+        }
     }
 
     protected override void _UpdateSpecials() {
@@ -247,7 +250,7 @@ public class Player_Character : Character_Base {
     /// 能力スロットにセット
     /// </summary>
     public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot) {
-        var ability = AbilityFactory.CreateAbility(ability_type, transform, ability_slot);
+        var ability = AbilityFactory.CreateAbility(ability_type, ability_slot);
         if (ability == null) {
             Debug.LogError("能力生成失敗: " + ability_type);
             return;
@@ -480,55 +483,42 @@ public class Player_Character : Character_Base {
 
         // ワープ入力
         if (!_isGrounded && _inputData.jumpPressed) {
+            // エフェクト生成
             Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
-            if (_inputData.move.magnitude != 0) {
-                // 入力方向にワープ
-                var tmp_direction = _warpDirection;
-                StartCoroutine(WarpCoroutine(
-                    _warpDirection,
-                    _warpControl.Warp(
-                    _warpDirection != WarpControl.eWarpDirection.Neutral ? _warpDirection : tmp_direction)
-                    ));
-            } else if (_warpControl.GetCoinWarpCheck().HasValue) {
-                // コインワープ
-                StartCoroutine(WarpCoroutine(
-                    _isRight ? WarpControl.eWarpDirection.Right : WarpControl.eWarpDirection.Left,
-                    _warpControl.CoinWarpRoutine()));
+
+            if (_inputData.move.magnitude == 0 && !_warpControl.GetCoinWarpCheck().HasValue) {
+                // 入力が無く、コインワープもできない場合はワープしない
+                return;
             }
+
+            // ワープ処理開始
+            StartCoroutine(WarpStart());
         }
 
-        IEnumerator WarpCoroutine(
-            WarpControl.eWarpDirection tmp_direction, IEnumerator warp_coroutine) {
-
+        IEnumerator WarpStart() {
             // MP消費
             var is_success = _charaParam.ConsumeMP(eAbilityType.Warp);
 
             if (!is_success) {
                 yield break; // 失敗
             }
+            WarpControl.eWarpDirection dash_direction = _warpDirection;
 
-            // スライディングリセット
-            _isSliding = false;
-            // 重力を無効化
-            _isWarpDelay = true;
-            // 速度をリセット
-            _rb.linearVelocity = Vector2.zero;
+            if (_inputData.move.magnitude != 0) {
+                // 入力方向にワープ
+                yield return _warpControl.DirectionWarp(_warpDirection);
+            } else if (_warpControl.GetCoinWarpCheck().HasValue) {
+                // コインワープ
+                yield return _warpControl.CoinWarpRoutine();
+            }
 
-            //アニメーション管理
-            _anim.SetBool("Warp", true);    // ワープアニメフラグ
-            _anim.SetBool("Fall", true);    // 空中アニメフラグ
-            _anim.Play("Warp_Enter");       // ワープアニメ再生
+            // 入力がある場合はその方向に移動
+            if (_warpDirection != WarpControl.eWarpDirection.Neutral) {
+                dash_direction = _warpDirection;
+            } else {
+                dash_direction = _warpControl.lastWarpDir; // 入力が無い場合は最後にワープした方向
+            }
 
-            // 一瞬待機
-            yield return new WaitForSeconds(_param.warpWaitTime);
-
-            // ワープ実行
-            yield return warp_coroutine;
-            _anim.SetBool("Warp", false);
-
-            // 入力が無い場合、ワープ前に入力していた方向に移動
-            var dash_direction =
-                _warpDirection != WarpControl.eWarpDirection.Neutral ? _warpDirection : tmp_direction;
             // ワープダッシュの方向を設定
             _warpDashDirection = dash_direction switch {
                 WarpControl.eWarpDirection.Up => _param.warpDashUp,
@@ -547,13 +537,7 @@ public class Player_Character : Character_Base {
             // ワープダッシュ実行
             _isDashing = true;
             _isWarpDashing = true;
-            _isWarpDelay = false;
             _currentWarpDashTime = 0;
-
-            // ワープダッシュのクールタイムをリセット
-            _currentWarpCoolTime = _param.warpCoolTime;
-            // スライドジャンプリセット
-            _isSlidingJump = false;
         }
     }
 
@@ -568,4 +552,33 @@ public class Player_Character : Character_Base {
         { x: < 0, y: 0 } => WarpControl.eWarpDirection.Left,
         _ => WarpControl.eWarpDirection.Neutral
     };
+
+    void _OnPreWarpCommon() {
+        // スライディングリセット
+        _isSliding = false;
+        // 重力を無効化
+        _isWarpDelay = true;
+        // 速度をリセット
+        _rb.linearVelocity = Vector2.zero;
+        // ワープダッシュの方向リセット
+        _warpDashDirection = Vector2.zero;
+
+        //アニメーション管理
+        _anim.SetBool("Warp", true);    // ワープアニメフラグ
+        _anim.SetBool("Fall", true);    // 空中アニメフラグ
+        _anim.Play("Warp_Enter");       // ワープアニメ再生
+
+        //// 一瞬待機
+        //yield return new WaitForSeconds(_param.warpWaitTime);
+    }
+    void _OnWarpEndCommon() {
+        _anim.SetBool("Warp", false);
+
+        // ワープダッシュのクールタイムをリセット
+        _currentWarpCoolTime = _param.warpCoolTime;
+        // スライドジャンプリセット
+        _isSlidingJump = false;
+        // 重力を有効化
+        _isWarpDelay = false;
+    }
 }

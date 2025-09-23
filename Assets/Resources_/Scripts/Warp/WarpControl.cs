@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static WarpControl;
 
 public class WarpControl : MonoBehaviour
 {
@@ -32,11 +31,65 @@ public class WarpControl : MonoBehaviour
 
     private float _otherCheckRate = 0.7f;
 
+    // ワープ共通処理
+    System.Action _onPreWarpCommon = null;
+    System.Action _onWarpEndCommon = null;
+
+    // 最後にワープした方向
+    public eWarpDirection lastWarpDir { get; private set; } = eWarpDirection.Right;
+
+    /// <summary>
+    /// セットアップ
+    /// </summary>
+    public void Setup(System.Action on_pre_warp, System.Action on_warp_end) {
+        _onPreWarpCommon = on_pre_warp;
+        _onWarpEndCommon = on_warp_end;
+    }
+
+    /// <summary>
+    /// 共通ワープ処理
+    /// </summary>
+    /// <param name="safe_point">ワープ先</param>
+    private IEnumerator _ExecuteWarpCommon(
+        Vector2 safe_point, 
+        bool is_warp_camera = true,
+        IEnumerator on_pre_end = null
+        ) {
+        if (_onPreWarpCommon != null) {
+            _onPreWarpCommon();
+            yield return 0.1f; // 一瞬待機
+        }
+
+        transform.position = safe_point;
+        _cameraFollow.SetWarpMode(is_warp_camera);
+
+        // 最後にワープした方向を保存
+        WarpChecker nearest_checker = null;
+        float nearest_dist = Mathf.Infinity;
+        foreach (var checker in warpCheckers) {
+            float dist = Vector2.Distance(checker.transform.position, safe_point);
+            if (dist < nearest_dist) {
+                nearest_dist = dist;
+                nearest_checker = checker;
+            }
+        }
+        if(nearest_checker != null) {
+            lastWarpDir = (eWarpDirection)System.Array.IndexOf(warpCheckers, nearest_checker);
+        }
+
+        if(on_pre_end != null) {
+            yield return on_pre_end;
+        }
+
+        if (_onWarpEndCommon != null)
+            _onWarpEndCommon();
+    }
+
     /// <summary>
     /// ワープ処理を実行
     /// </summary>
     /// <param name="direction">方向</param>
-    public IEnumerator Warp(eWarpDirection direction)
+    public IEnumerator DirectionWarp(eWarpDirection direction)
     {
         // ワープ前の位置保存
         Vector2 origin = transform.position;
@@ -49,8 +102,7 @@ public class WarpControl : MonoBehaviour
         }
 
         // ワープ先に移動
-        transform.position = safe_point;
-        _cameraFollow.SetWarpMode(true);
+        yield return _ExecuteWarpCommon(safe_point);
 
         yield return CoinWarpRoutine();
     }
@@ -58,46 +110,15 @@ public class WarpControl : MonoBehaviour
     /// <summary>
     /// ワープチェッカーを指定してワープ
     /// </summary>
-    public void TargetWarp(WarpChecker warp_checker) {
+    public IEnumerator TargetWarp(WarpChecker warp_checker) {
         // ワープ先の決定
         var safe_point = warp_checker.GetWarpPoint();
 
         // ワープ先に移動
         if (safe_point.HasValue) {
-            transform.position = safe_point.Value;
-            _cameraFollow.SetWarpMode(true);
+            yield return _ExecuteWarpCommon(safe_point.Value);
         }
     }
-
-    //IEnumerator WarpCommonAction(
-    //    WarpControl.eWarpDirection tmp_direction, IEnumerator warp_coroutine) {
-
-    //    // スライディングリセット
-    //    _isSliding = false;
-    //    // 重力を無効化
-    //    _isWarpDelay = true;
-    //    // 速度をリセット
-    //    _rb.linearVelocity = Vector2.zero;
-
-    //    //アニメーション管理
-    //    _anim.SetBool("Warp", true);    // ワープアニメフラグ
-    //    _anim.SetBool("Fall", true);    // 空中アニメフラグ
-    //    _anim.Play("Warp_Enter");       // ワープアニメ再生
-
-    //    // 一瞬待機
-    //    yield return new WaitForSeconds(_param.warpWaitTime);
-
-    //    // ワープ実行
-    //    yield return warp_coroutine;
-    //    _anim.SetBool("Warp", false);
-
-    //    // Note: ワープダッシュはカット
-
-    //    // ワープダッシュのクールタイムをリセット
-    //    _currentWarpCoolTime = _param.warpCoolTime;
-    //    // スライドジャンプリセット
-    //    _isSlidingJump = false;
-    //}
 
     /// <summary>
     /// コインワープ
@@ -111,9 +132,16 @@ public class WarpControl : MonoBehaviour
             var coin_pos = GetCoinWarpCheck();
             if (!coin_pos.HasValue) break;
 
-            transform.position = coin_pos.Value;
+            // ワープ先に移動
+            yield return _ExecuteWarpCommon(
+                coin_pos.Value, 
+                is_warp_camera:false, 
+                on_pre_end: wait_routine()
+                );
 
-            yield return new WaitForSeconds(_coinWarpInterval);
+            IEnumerator wait_routine() {
+                yield return new WaitForSeconds(_coinWarpInterval);
+            }
         }
     }
 
@@ -122,16 +150,16 @@ public class WarpControl : MonoBehaviour
     /// </summary>
     public Vector3? GetCoinWarpCheck() {
         // 前方チェック
-        Vector3? coin_pos = _GetNearestCoin(_coinCheckSize, _forward, _coinCheckSize.x / 2);
+        Vector3? coin_pos = _GetNearestCoin(_coinCheckSize, _forward, _coinCheckSize.x * 0.5f);
         // 後方チェック
         if (!coin_pos.HasValue)
-            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, -_forward, _coinCheckSize.x * _otherCheckRate / 2);
+            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, -_forward, _coinCheckSize.x * _otherCheckRate * 0.5f);
         // 上方チェック
         if (!coin_pos.HasValue)
-            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.up, _coinCheckSize.y * _otherCheckRate / 2);
+            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.up, _coinCheckSize.y * _otherCheckRate * 0.5f);
         // 下方チェック
         if (!coin_pos.HasValue)
-            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.down, _coinCheckSize.y * _otherCheckRate / 2);
+            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.down, _coinCheckSize.y * _otherCheckRate * 0.5f);
         return coin_pos;
     }
     
@@ -163,15 +191,15 @@ public class WarpControl : MonoBehaviour
 
     private void OnDrawGizmosSelected() {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position + _forward * _coinCheckSize.x / 2, _coinCheckSize);
+        Gizmos.DrawWireCube(transform.position + _forward * _coinCheckSize.x * 0.5f, _coinCheckSize);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position - _forward * _coinCheckSize.x * _otherCheckRate / 2, _coinCheckSize * _otherCheckRate);
+        Gizmos.DrawWireCube(transform.position - _forward * _coinCheckSize.x * _otherCheckRate * 0.5f, _coinCheckSize * _otherCheckRate);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(transform.position + Vector3.up * _coinCheckSize.y * _otherCheckRate / 2, _coinCheckSize * _otherCheckRate);
+        Gizmos.DrawWireCube(transform.position + Vector3.up * _coinCheckSize.y * _otherCheckRate * 0.5f, _coinCheckSize * _otherCheckRate);
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.position + Vector3.down * _coinCheckSize.y * _otherCheckRate / 2, _coinCheckSize * _otherCheckRate);
+        Gizmos.DrawWireCube(transform.position + Vector3.down * _coinCheckSize.y * _otherCheckRate * 0.5f, _coinCheckSize * _otherCheckRate);
     }
 }

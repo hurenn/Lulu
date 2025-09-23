@@ -85,25 +85,29 @@ public class Ability_Ice : Ability_Base {
             warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Left);
         } else if (to_target.x < 0) {
             warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Right);
-        };
-        _warpControl?.TargetWarp(warp_checker);
+        }
 
-         // キャラクター位置を更新
-        _isRight = to_target.x > 0; 
-        UpdatePartnerTransform();
+        IEnumerator attack_routine() {
+            yield return _warpControl?.TargetWarp(warp_checker);
 
-        // エフェクトの向きを調整
-        _AttackEffectSetup(_lockonSlash);
+            // キャラクター位置を更新
+            _isRight = to_target.x > 0;
+            UpdatePartnerTransform();
 
-        // エフェクト生成
-        Instantiate(_lockonSlash, transform.position, Quaternion.identity);
-        // アニメーション再生
-        _anim?.Play("Node_Attack2", 0, 0.0f);
+            // エフェクトの向きを調整
+            _AttackEffectSetup(_lockonSlash);
 
-        // コンボリセット
-        _attackStep = 0;
-        _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
-        _currentComboCoolTime = _param.comboIntervalTime; // クールタイムセット
+            // エフェクト生成
+            Instantiate(_lockonSlash, transform.position, Quaternion.identity);
+            // アニメーション再生
+            _anim?.Play("Node_Attack2", 0, 0.0f);
+
+            // コンボリセット
+            _attackStep = 0;
+            _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
+            _currentComboCoolTime = _param.comboIntervalTime; // クールタイムセット
+        }
+        StartCoroutine(attack_routine());
     }
 
     /// <summary>

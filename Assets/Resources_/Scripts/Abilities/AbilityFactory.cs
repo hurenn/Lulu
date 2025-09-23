@@ -18,10 +18,9 @@ public static class AbilityFactory {
     /// 能力生成
     /// </summary>
     /// <param name="type">能力の種類</param>
-    /// <param name="parent">主人公</param>
     /// <returns>生成した能力</returns>
     public static Ability_Base CreateAbility(
-        eAbilityType type, Transform parent, eAbilitySlot slot) {
+        eAbilityType type, eAbilitySlot slot) {
         if (type == eAbilityType.None) {
             Debug.LogError("Ability type is None");
             return null;
@@ -31,13 +30,13 @@ public static class AbilityFactory {
         Ability_Base ability = null;
         switch (type) {
             case eAbilityType.Ice:
-                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Ice>("Prefabs/Abilities/Ability_Ice"), parent);
+                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Ice>("Prefabs/Abilities/Ability_Ice"));
                 break;
             case eAbilityType.Fire:
-                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Fire>("Prefabs/Abilities/Ability_Fire"), parent);
+                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Fire>("Prefabs/Abilities/Ability_Fire"));
                 break;
             case eAbilityType.Light:
-                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Light>("Prefabs/Abilities/Ability_Light"), parent);
+                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Light>("Prefabs/Abilities/Ability_Light"));
                 break;
             default:
                 Debug.LogError("能力タイプが見つかりませんでした");
@@ -56,7 +55,7 @@ public static class AbilityFactory {
                 return ability;
             }
         }
-        _abilityUIManager.SetAbilityUI(slot, type, parent.position);
+        _abilityUIManager.SetAbilityUI(slot, type);
 
         return ability;
     }
