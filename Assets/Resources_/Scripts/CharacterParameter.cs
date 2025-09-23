@@ -8,7 +8,7 @@ public class CharacterParameter : MonoBehaviour
     private const float _warpCost = 30.0f; // ワープに必要なMP
     private const float _iceCost = 10.0f; // 氷の能力に必要なMP
     private const float _fireCost = 5.0f; // 炎の能力に必要なMP
-    private const float _lightCost = 30.0f; // 光の能力に必要なMP
+    private const float _lightCost = 10.0f; // 光の能力に必要なMP
 
     // HP
     public int defaultMaxHP = 3;
