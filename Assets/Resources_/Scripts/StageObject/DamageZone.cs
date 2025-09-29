@@ -104,12 +104,16 @@ public class DamageZone : MonoBehaviour {
         // ヒット時のコールバック実行
         _hitCallback?.Invoke(character);
 
-        // ヒットエフェクト生成
-        _SpawnHitEffect(other.transform.position, _hitEffectType);
-        // ヒットストップ
-        StartCoroutine(_HitStopCoroutine());
+        var damage_result = character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime);
 
-        character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime);
+        // ダメージ演出
+        if (damage_result) {
+            // ヒットエフェクト生成
+            _SpawnHitEffect(other.transform.position, _hitEffectType);
+            // ヒットストップ
+            StartCoroutine(_HitStopCoroutine());
+        }
+
         _currentDelayTimer = _delayTime;
         _isAttakable = false;
         if (_isHitDestroy && _destroyObject != null) {

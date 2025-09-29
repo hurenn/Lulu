@@ -333,17 +333,17 @@ public class Player_Character : Character_Base {
         }
     }
 
-    public override void Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
+    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
         // Œõ‚Ì”\—Í‚Å–³“G‰ñ”ð
         if (_charaParam.isLightInvincible) {
             StartCoroutine(_warpControl.AvoidWarp(
                 () => {
                     Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
                 }));
-            return;
+            return false;
         }
 
-        base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
+        return base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
     }
 
     /// <summary>

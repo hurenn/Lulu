@@ -318,9 +318,9 @@ public class Character_Base : MonoBehaviour
     /// <param name="blow_power_right">右向きで吹っ飛ぶ力</param>
     /// <param name="invincible_time">無敵時間</param>
     /// <param name="damage_reaction_time">動けない時間</param>
-    public virtual void Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
+    public virtual bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
         if (isInvincible || _isDie) {
-            return;
+            return false;
         }
 
         if (_charaParam != null) {
@@ -329,7 +329,7 @@ public class Character_Base : MonoBehaviour
 
             if (_isDie) {
                 StartCoroutine(Die());
-                return;
+                return true;
             }
 
             // アニメーション
@@ -340,7 +340,9 @@ public class Character_Base : MonoBehaviour
 
             // 吹っ飛び
             _rb.linearVelocity = blow_power_right;
+            return true;
         }
+        return false;
     }
 
     /// <summary>
