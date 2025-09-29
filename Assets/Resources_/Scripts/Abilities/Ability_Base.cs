@@ -40,6 +40,7 @@ public class Ability_Base : MonoBehaviour {
     }
     // 強制帰還距離
     private float _forceReturnDistance = 5.0f;
+    protected bool _canForceReturn = true;
 
     // オーバーヒートによるキャンセル
     protected bool _cancelByOverheat => _charaParam == null || (_charaParam.isOverheat && !_isAppearing);
@@ -85,8 +86,9 @@ public class Ability_Base : MonoBehaviour {
         if (_isAppearing) {
             _currentReturnTime -= Time.deltaTime;
             // 強制帰還距離チェック
-            if (Vector3.Distance(transform.position, _playerTransform.position) > _forceReturnDistance) {
-                _currentReturnTime = 0f;
+            if (_canForceReturn &&
+                Vector3.Distance(transform.position, _playerTransform.position) > _forceReturnDistance) {
+                _ForceReturn();
             }
             if (_currentReturnTime <= 0f) {
                 // 帰還
@@ -94,6 +96,13 @@ public class Ability_Base : MonoBehaviour {
             }
         }
         _Update();
+    }
+
+    /// <summary>
+    /// 強制帰還
+    /// </summary>
+    protected virtual void _ForceReturn() {
+        _currentReturnTime = 0f;
     }
 
     protected virtual void _Update() { }

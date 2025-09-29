@@ -10,16 +10,19 @@ public class Ability_Ice : Ability_Base {
     private float _currentComboCoolTime = 0f;
 
     // 長押し判定時間
-    private float _longPressThreshold = 0.5f;
+    private float _longPressThreshold = 0.3f;
     private float _pressHoldTime = 0f;
 
     // 長押し実行済みフラグ
     private bool _isHoldExecuted = false;
+    // 攻撃方向ロックフラグ
+    private bool _isAttackDirectionLocked = false;
 
     [SerializeField] private GameObject _slash1;
     [SerializeField] private GameObject _slash2;
     [SerializeField] private GameObject _slash3;
     [SerializeField] private GameObject _lockonSlash;
+    private IEnumerator _separateRoutine = null;
 
     protected override void _Update() {
         // タイマー減少
@@ -40,6 +43,8 @@ public class Ability_Ice : Ability_Base {
         if (_cancelByOverheat) {
             return eAbilityResult.None;
         }
+        // 切り離し攻撃終了
+        _EndSeparate();
 
         // ロックオン攻撃判定
         if (LockonManager.Instance.HasTarget) {
@@ -171,14 +176,62 @@ public class Ability_Ice : Ability_Base {
         _anim?.Play(anim_name, 0, 0.0f);   // アニメーション再生
     }
 
+    /// <summary>
+    /// 切り離し連続攻撃
+    /// </summary>
+    private IEnumerator _SeparateRoutine() {
+        _anim?.SetBool("SeparateEnd", false);
+        _anim?.Play("Node_SeparateAttack", 0, 0.0f);   // アニメーション再生
+        _isHoldExecuted = true;
+        _isAttackDirectionLocked = true; // 攻撃方向ロック
+        _canForceReturn = false;      // 強制帰還無効化
+        _attackStep = 0; // コンボリセット
+        UpdatePartnerTransform();   // キャラクター位置を更新
+
+        float separate_time = 5.5f;
+        float current_time = 0f;
+        float attack_delay = 0.3f; // 攻撃エフェクト発生までの遅延時間
+        float current_delay = 0f;
+        _ResetReturnTimer(separate_time); // 帰還タイマーリセット
+        while (current_time < separate_time) {
+            current_time += Time.deltaTime;
+            if (current_delay < attack_delay) {
+                current_delay += Time.deltaTime;
+            } else {
+                // 一定時間ごとに攻撃エフェクト発生
+                current_delay = 0f;
+                Instantiate(_slash1, transform.position, Quaternion.identity);  // エフェクト生成
+            }
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(separate_time);
+        _anim?.SetBool("SeparateEnd", true);
+    }
+
+    // 切り離し攻撃終了
+    private void _EndSeparate() {
+        // 実行中の連続攻撃コルーチンがあれば停止
+        if (_separateRoutine != null) {
+            StopCoroutine(_separateRoutine);
+            _separateRoutine = null;
+        }
+        _isAttackDirectionLocked = false;
+        _canForceReturn = true;      // 強制帰還有効化
+
+        _anim?.SetBool("SeparateEnd", true);
+    }
+
     public override eAbilityResult ExecuteLong() {
         // 切り離し
         if (!_isHoldExecuted) {
             _pressHoldTime += Time.deltaTime;
             if (_pressHoldTime >= _longPressThreshold) {
+                _EndSeparate();
+
                 Debug.Log("Ice Separate");
-                _isHoldExecuted = true;
-                _attackStep = 0; // コンボリセット
+                _separateRoutine = _SeparateRoutine();
+                StartCoroutine(_separateRoutine);
                 return eAbilityResult.IceSeparate;
             }
         }
@@ -207,7 +260,9 @@ public class Ability_Ice : Ability_Base {
             return;
         }
         var scale = effect.transform.localScale;
-        scale.x = _isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+        if (!_isAttackDirectionLocked) {
+            scale.x = _isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+        }
         effect.transform.localScale = scale;
     }
 
@@ -216,5 +271,11 @@ public class Ability_Ice : Ability_Base {
         if (_isAppearing) {
             _ResetReturnTimer(0.01f);
         }
+    }
+
+    protected override void _ForceReturn() {
+        base._ForceReturn();
+        // 切り離し攻撃終了
+        _EndSeparate();
     }
 }
