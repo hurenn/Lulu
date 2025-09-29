@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,6 +28,19 @@ public class DamageZone : MonoBehaviour {
     // 連続ダメージ判定のディレイ時間
     [SerializeField] private float _delayTime = 0.5f;
     private float _currentDelayTimer = 0;
+
+    // ヒットエフェクト生成用
+    [SerializeField] private HitEffect _hitEffectPrefab = null;
+    [SerializeField] private HitEffect.eType _hitEffectType = HitEffect.eType.Normal;
+    [SerializeField] private float _hitEffectSize = 1.0f;
+
+    // ヒットストップ時間
+    [SerializeField] private float _hitStopTime = 0.05f;
+    // ヒットストップまでの遅延時間
+    [SerializeField] private float _hitStopDelay = 0.01f;
+    // ヒットストップの重さ（0.0f:完全停止、1.0f:通常速度）
+    [SerializeField] private float _hitStop_Heavy = 0.0f;
+
     // 攻撃可能かどうか
     private bool _isAttakable = true;
 
@@ -90,6 +104,11 @@ public class DamageZone : MonoBehaviour {
         // ヒット時のコールバック実行
         _hitCallback?.Invoke(character);
 
+        // ヒットエフェクト生成
+        _SpawnHitEffect(other.transform.position, _hitEffectType);
+        // ヒットストップ
+        StartCoroutine(_HitStopCoroutine());
+
         character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime);
         _currentDelayTimer = _delayTime;
         _isAttakable = false;
@@ -97,4 +116,21 @@ public class DamageZone : MonoBehaviour {
             Destroy(_destroyObject);
         }
     }
+
+    private void _SpawnHitEffect(Vector3 position, HitEffect.eType type) {
+        if (_hitEffectPrefab == null) return;
+
+        var effect = Instantiate(_hitEffectPrefab, position, Quaternion.identity);
+        effect.Setup(type, _hitEffectSize);
+    }
+
+    private IEnumerator _HitStopCoroutine() {
+        yield return new WaitForSeconds(_hitStopDelay); // 遅延時間待つ
+
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = _hitStop_Heavy; // ストップ
+        yield return new WaitForSecondsRealtime(_hitStopTime); // 実時間で待つ
+        Time.timeScale = originalTimeScale; // 元に戻す
+    }
+
 }

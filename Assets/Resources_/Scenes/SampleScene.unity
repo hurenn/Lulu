@@ -3428,13 +3428,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageToPlayer: 1
   _damageToEnemy: 0
-  _invincibleTime: 1
+  _invincibleTime: 2.5
   _blowPowerRight: {x: 5, y: 5}
   _damageReactionTime: 0.2
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
   _delayTime: 0.5
+  _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
+  _hitEffectType: 1
 --- !u!61 &445964558
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4903,13 +4905,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageToPlayer: 1
   _damageToEnemy: 0
-  _invincibleTime: 1
+  _invincibleTime: 2.5
   _blowPowerRight: {x: 5, y: 5}
   _damageReactionTime: 0.2
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
   _delayTime: 0.5
+  _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
+  _hitEffectType: 1
 --- !u!61 &613628868
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6429,6 +6433,8 @@ MonoBehaviour:
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
   _delayTime: 1
+  _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
+  _hitEffectType: 0
 --- !u!1 &854213200
 GameObject:
   m_ObjectHideFlags: 0
@@ -11983,13 +11989,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageToPlayer: 1
   _damageToEnemy: 0
-  _invincibleTime: 1
+  _invincibleTime: 2.5
   _blowPowerRight: {x: 5, y: 5}
   _damageReactionTime: 0.2
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
   _delayTime: 0.5
+  _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
+  _hitEffectType: 1
 --- !u!61 &1661474876
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -12365,13 +12373,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageToPlayer: 1
   _damageToEnemy: 0
-  _invincibleTime: 1
+  _invincibleTime: 2.5
   _blowPowerRight: {x: 5, y: 5}
   _damageReactionTime: 0.2
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
   _delayTime: 0.5
+  _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
+  _hitEffectType: 1
 --- !u!61 &1681267746
 BoxCollider2D:
   m_ObjectHideFlags: 0
