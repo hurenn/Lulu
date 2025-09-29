@@ -346,6 +346,13 @@ public class Player_Character : Character_Base {
             return false;
         }
 
+        _isWarpDashing = false; // ワープダッシュ終了
+        _isSliding = false; // スライディング終了
+        _isSlidingJump = false; // スライディングジャンプ終了
+        _isWallSliding = false; // 壁滑り終了
+        _isGroundSticking = false; // 地面張り付き状態終了
+        _isJumping = false; // ジャンプ終了
+
         return base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
     }
 
