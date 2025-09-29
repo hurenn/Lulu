@@ -9,6 +9,7 @@ public class CharacterParameter : MonoBehaviour
     private const float _iceCost = 10.0f; // 氷の能力に必要なMP
     private const float _fireCost = 5.0f; // 炎の能力に必要なMP
     private const float _lightCost = 10.0f; // 光の能力に必要なMP
+    private const float _lightAvoidCost = 20.0f; // 回避時に必要なMP
 
     // HP
     public int defaultMaxHP = 3;
@@ -145,6 +146,9 @@ public class CharacterParameter : MonoBehaviour
                 break;
             case eAbilityType.Light:
                 DecreaseMP(_lightCost);
+                break;
+            case eAbilityType.LightAvoid:
+                DecreaseMP(_lightAvoidCost);
                 break;
         }
         return true;

@@ -44,7 +44,8 @@ public class Ability_Light : Ability_Base
         }
 
         // MP‰ñ•œ•s‰Â
-        _charaParam.SetUnRecoverTime_MP(1.0f);
+        //_charaParam.SetUnRecoverTime_MP(1.0f);
+
         // –³“G‰»
         _charaParam.isLightInvincible = true;
 

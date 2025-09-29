@@ -335,7 +335,10 @@ public class Player_Character : Character_Base {
 
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
         // Œõ‚Ì”\—Í‚Å–³“G‰ñ”ð
-        if (_charaParam.isLightInvincible) {
+        if (_charaParam.isLightInvincible && !_charaParam.isOverheat) {
+            // MPÁ”ï
+            _charaParam.ConsumeMP(eAbilityType.LightAvoid);
+
             StartCoroutine(_warpControl.AvoidWarp(
                 () => {
                     Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);

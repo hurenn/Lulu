@@ -7,6 +7,7 @@ public enum eAbilityType {
     Ice,
     Fire,
     Light,
+    LightAvoid,
     Warp,
 }
 
