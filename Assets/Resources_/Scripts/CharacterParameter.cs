@@ -67,6 +67,7 @@ public class CharacterParameter : MonoBehaviour
 
     // 攻撃力
     public int attackPower = 1;
+    public int defaultAttackPower { get; private set; } = 1;
 
     // キャラクター表示
     [SerializeField] private SpriteRenderer _rend;

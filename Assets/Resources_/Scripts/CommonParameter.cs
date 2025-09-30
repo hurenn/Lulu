@@ -76,6 +76,10 @@ public class CommonParameter : ScriptableObject
     public float comboIntervalTime = 0.2f;  // 1コンボインターバル時間
     public float comboCoolTime = 0.5f;     // コンボ終了後のクールタイム
     public float moveDuration = 0.05f;     // 移動にかける時間
+
+    [Header("レベル関連")]
+    public float mpUpPerLevel = 30.0f;    // レベルアップ毎の最大MP増加量
+    public int attackUpPerLevel = 5; // レベルアップ毎の攻撃力増加量
 }
 
 public struct CharacterInputData

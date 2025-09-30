@@ -306,8 +306,8 @@ public class Character_Base : MonoBehaviour
         var player_param = PlayerParameter.Instance;
         if (player_param != null && _charaParam != null) {
             _charaParam.SetMaxHP(_charaParam.defaultMaxHP + player_param.levelParameter.hpLevel);
-            _charaParam.SetMaxMP(_charaParam.defaultMaxMP + player_param.levelParameter.mpLevel * 10.0f);
-            _charaParam.attackPower = _charaParam.attackPower + player_param.levelParameter.attackLevel;
+            _charaParam.SetMaxMP(_charaParam.defaultMaxMP + player_param.levelParameter.mpLevel * _param.mpUpPerLevel);
+            _charaParam.attackPower = _charaParam.defaultAttackPower + player_param.levelParameter.attackLevel * _param.attackUpPerLevel;
         }
     }
 
