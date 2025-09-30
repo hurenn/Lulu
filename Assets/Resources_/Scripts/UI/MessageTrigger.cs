@@ -55,34 +55,4 @@ public class MessageTrigger : MonoBehaviour {
             _isPlayerInside = false;
         }
     }
-
-    //IEnumerator endMessage() {
-    //    _messageListScript.isForceMessageViewing = true;
-    //    yield return new WaitForSeconds(0.2f);
-    //    _messageListScript.isForceMessageViewing = false;
-    //    _MessageStart();
-    //}
-
-    //// Update is called once per frame
-    //void Update() {
-    //    if (_messageListScript.isForceMessageViewing) {
-    //        _messageStartWait = false;
-    //    }
-
-    //    if (_messageStartWait == true)  //メッセージ開始フラグが設定されているとき
-    //    {
-    //        if (!_messageListScript.isMessageViewing)  //かつ、他のメッセージが表示されていないとき
-    //        {
-    //            _MessageStart();
-    //        }
-    //    }
-    //}
-
-    ////メッセージ開始処理
-    //private void _MessageStart() {
-    //    messageList.SetActive(true);  //メッセージリストをアクティブ化
-
-    //    gameObject.SetActive(false);
-    //    //Destroy(gameObject, 1f);  //このトリガーオブジェクトを消す
-    //}
 }

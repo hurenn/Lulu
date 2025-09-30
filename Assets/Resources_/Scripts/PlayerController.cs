@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     private bool _isAbilityAHeld = false;
 
     private CharacterInputData input;
+    public CharacterInputData Input => input;
 
     private void Awake()
     {

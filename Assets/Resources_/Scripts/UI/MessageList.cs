@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class MessageDataList {
     public MessageData[] messageDatas;
-    public bool isForced;         // 強制メッセージかどうか
+    public bool isForced;        // 強制メッセージかどうか
 }
 
 [System.Serializable]
@@ -13,6 +13,7 @@ public class MessageData {
     public string text;   // メッセージ
     public Sprite characterIcon;    // キャラクターアイコン
     public string characterName;    // キャラクター名
+    public bool isEventMessage;  // イベントメッセージかどうか
 }
 
 /// <summary>
