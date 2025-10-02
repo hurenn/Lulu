@@ -26,6 +26,7 @@ public class MessageViewer : MonoBehaviour {
     private bool _isShowing;        // メッセージ表示中フラグ
     public bool IsShowing => _isShowing; // メッセージ表示中フラグの公開用
     private bool _isSeries;         // 一連のメッセージフラグ
+    private bool _isEventMessage;    // イベントメッセージフラグ
     private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
 
     private void OnEnable() {
@@ -41,6 +42,12 @@ public class MessageViewer : MonoBehaviour {
             return;
         }
 
+        if (!_isShowing && _isEventMessage && !_messageListScript.HasMessages()) {
+            // イベントメッセージが終わったらキャラクター操作を有効化
+            _playerController.isEnabledCharacterInput = true;
+            _isEventMessage = false;
+        }
+
         // 次のメッセージを表示
         if (!_isShowing && _messageListScript.HasMessages()) {
             _ShowNext();
@@ -49,7 +56,7 @@ public class MessageViewer : MonoBehaviour {
 
         if (_currentMessage.isEventMessage) {
             // イベントメッセージの場合、ユーザー入力待ち
-            if (_isShowing && _playerController.Input.jumpPressed) {
+            if (_isShowing && _playerController.Input.messageNextPressed) {
                 _HideOrNext();
             }
         } else if (_currentShowTime > 0) {
@@ -64,8 +71,12 @@ public class MessageViewer : MonoBehaviour {
     }
 
     private void _ShowNext() {
+        _messagePanel.SetActive(true);                  // パネルを表示
+
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
         if (_currentMessage.isEventMessage) {
+            _playerController.isEnabledCharacterInput = false; // キャラクター操作無効化
+            _isEventMessage = true;
             // メッセージを一気に表示
             StartCoroutine(_TypeText(_currentMessage.text, _EVENT_MESSAGE_SHOW_TIME));
         } else {
@@ -77,7 +88,6 @@ public class MessageViewer : MonoBehaviour {
         _isSeries = _messageListScript.HasMessages();   // 次のメッセージがあるかどうか
         _nextIcon.fillAmount = 1.0f; // 次のメッセージアイコンをリセット
 
-        _messagePanel.SetActive(true);                  // パネルを表示
         _currentShowTime = _BASE_SHOW_TIME + (_currentMessage.text.Length * _AUTO_MESSAGE_SHOW_TIME); // 基本3秒 + 文字数に応じた追加時間
         _isShowing = true;
     }

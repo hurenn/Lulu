@@ -21,6 +21,12 @@ public class PlayerController : MonoBehaviour
     private bool _isAbilityAPressed = false;
     private bool _isAbilityAHeld = false;
 
+    // メッセージ送り入力
+    private bool _isMessageNextPressed = false;
+
+     // キャラクター操作入力受付フラグ
+    public bool isEnabledCharacterInput { get; set; } = true;
+
     private CharacterInputData input;
     public CharacterInputData Input => input;
 
@@ -63,6 +69,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        input.messageNextPressed = _isMessageNextPressed;// メッセージ送りボタンはジャンプボタンと同じ
+        _isMessageNextPressed = false;
+
+        if (!isEnabledCharacterInput) return;// 入力受付不可なら処理しない
+
         // 入力取得
         input.move = _moveInputValue;
         input.jumpPressed = _isJumpPressed;
@@ -90,12 +101,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnJump(InputAction.CallbackContext context)
     {
+        _isMessageNextPressed = true;
         _isJumpPressed = true;
         _isJumpHeld = true;
     }
 
     private void OnJumpRelease(InputAction.CallbackContext context)
     {
+        _isMessageNextPressed = false;
         _isJumpPressed = false;
         _isJumpHeld = false;
     }

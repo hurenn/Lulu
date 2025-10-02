@@ -84,7 +84,7 @@ public class CommonParameter : ScriptableObject
 
 public struct CharacterInputData
 {
-    public Vector2 move;     // 入力
+    public Vector2 move;     // 方向入力
     public bool jumpPressed; // ジャンプボタンを押した瞬間
     public bool jumpHeld;    // ジャンプボタンを押し続ける
 
@@ -94,4 +94,6 @@ public struct CharacterInputData
     public bool abilityXHeld;    // Xボタンを押し続ける
     public bool abilityAPressed; // Aボタンを押した瞬間
     public bool abilityAHeld;    // Aボタンを押し続ける
+
+    public bool messageNextPressed; // メッセージ送りボタンを押した瞬間
 }
