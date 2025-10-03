@@ -405,7 +405,7 @@ public class Player_Character : Character_Base {
         }
 
         // ジャンプ
-        if (_inputData.jumpPressed && _isGrounded) {
+        if (_inputData.jumpPressed && _isGrounded && !(_inputData.move.y < -0.5f && _inputData.move.x == 0)) {
             // スライディングジャンプ
             if (_isSliding) {
                 _isSliding = false;
@@ -505,7 +505,8 @@ public class Player_Character : Character_Base {
         }
 
         // ワープ入力
-        if (!_isGrounded && _inputData.jumpPressed) {
+        if ((!_isGrounded && _inputData.jumpPressed) ||
+            (_isGrounded && _inputData.move.y < -0.5f && _inputData.move.x == 0 && _inputData.jumpPressed)) {
             // エフェクト生成
             Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
 
