@@ -10,10 +10,11 @@ public class MessageDataList {
 
 [System.Serializable]
 public class MessageData {
+    [TextArea(1, 5)]
     public string text;   // メッセージ
     public Sprite characterIcon;    // キャラクターアイコン
-    public string characterName;    // キャラクター名
     public bool isEventMessage;  // イベントメッセージかどうか
+    public float addShowTime;      // 追加表示時間
 }
 
 /// <summary>

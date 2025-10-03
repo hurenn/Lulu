@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -15,8 +16,10 @@ public class MessageTrigger : MonoBehaviour {
     private IEnumerator _AddMessage() {
 
         // メッセージ表示機能を探す (WIP)
-        if(_messageViewer == null)
+        while(_messageViewer == null) {
             _messageViewer = FindAnyObjectByType<MessageViewer>();
+            yield return null;
+        }
 
         // メッセージ表示中は待機
         if (!_messageDatas.isForced) {

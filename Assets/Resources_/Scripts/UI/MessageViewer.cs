@@ -1,12 +1,20 @@
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 /// <summary>
 /// メッセージ表示クラス
 /// </summary>
 public class MessageViewer : MonoBehaviour {
+    // キャラクター名の辞書
+    private Dictionary<string, string> _CHARACTER_NAME_DIC = new Dictionary<string, string>() {
+        {"Lulu", "ルル"},
+        {"Marlica", "マルリカ"},
+        {"Nord", "ノード"},
+        {"Pepe", "ペペ"},
+    };
     private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
     private const float _AUTO_MESSAGE_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間
     private const float _EVENT_MESSAGE_SHOW_TIME = 0.01f; // 1文字あたりの追加表示時間
@@ -83,12 +91,28 @@ public class MessageViewer : MonoBehaviour {
             // メッセージを1文字ずつ表示するコルーチン開始
             StartCoroutine(_TypeText(_currentMessage.text, _AUTO_MESSAGE_SHOW_TIME));
         }
-        _characterText.text = _currentMessage.characterName; // キャラクター名をセット
+
+        var character_name = _currentMessage.characterIcon.name;
+        // 最初のアンダーラインまでをキャラクター名として辞書から取得
+        character_name = character_name.Split('_')[0];
+        // キャラクター名をセット
+        if (_CHARACTER_NAME_DIC.ContainsKey(character_name)) {
+            _characterText.text = _CHARACTER_NAME_DIC[character_name];
+        } else {
+            _characterText.text = string.Empty;
+        }
         _iconImage.sprite = _currentMessage.characterIcon;   // キャラクターアイコンをセット
         _isSeries = _messageListScript.HasMessages();   // 次のメッセージがあるかどうか
-        _nextIcon.fillAmount = 1.0f; // 次のメッセージアイコンをリセット
 
-        _currentShowTime = _BASE_SHOW_TIME + (_currentMessage.text.Length * _AUTO_MESSAGE_SHOW_TIME); // 基本3秒 + 文字数に応じた追加時間
+        _currentShowTime = _BASE_SHOW_TIME + (_currentMessage.text.Length * _AUTO_MESSAGE_SHOW_TIME) + _currentMessage.addShowTime; // 基本3秒 + 文字数に応じた追加時間 + メッセージ固有の追加時間
+
+        if (_currentShowTime < 0) {
+            _nextIcon.gameObject.SetActive(false); // 次のメッセージアイコンを非表示
+        } else {
+            _nextIcon.gameObject.SetActive(true);  // 次のメッセージアイコンを表示
+            _nextIcon.fillAmount = 1.0f; // 次のメッセージアイコンをリセット
+        }
+
         _isShowing = true;
     }
 
