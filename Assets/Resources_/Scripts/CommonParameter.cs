@@ -84,6 +84,20 @@ public class CommonParameter : ScriptableObject
 
 public struct CharacterInputData
 {
+    public void Clear()
+    {
+        move = Vector2.zero;
+        jumpPressed = false;
+        jumpHeld = false;
+        abilityYPressed = false;
+        abilityYHeld = false;
+        abilityXPressed = false;
+        abilityXHeld = false;
+        abilityAPressed = false;
+        abilityAHeld = false;
+        messageNextPressed = false;
+    }
+
     public Vector2 move;     // 方向入力
     public bool jumpPressed; // ジャンプボタンを押した瞬間
     public bool jumpHeld;    // ジャンプボタンを押し続ける

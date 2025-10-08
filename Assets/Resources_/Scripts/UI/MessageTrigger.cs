@@ -14,7 +14,6 @@ public class MessageTrigger : MonoBehaviour {
 
     // メッセージを追加する
     private IEnumerator _AddMessage() {
-
         // メッセージ表示機能を探す (WIP)
         while(_messageViewer == null) {
             _messageViewer = FindAnyObjectByType<MessageViewer>();
@@ -33,7 +32,7 @@ public class MessageTrigger : MonoBehaviour {
             }
         }
 
-        if(_messageDatas.isForced) {
+        if (_messageDatas.isForced) {
             // 強制メッセージの場合、他のメッセージをクリア
             _messageListScript.Clear();
             _messageViewer.ForceReset();

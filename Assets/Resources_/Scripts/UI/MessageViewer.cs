@@ -36,6 +36,7 @@ public class MessageViewer : MonoBehaviour {
     private bool _isSeries;         // 一連のメッセージフラグ
     private bool _isEventMessage;    // イベントメッセージフラグ
     private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
+    private IEnumerator _typingCoroutine; // 文字を1つずつ表示するコルーチン
 
     private void OnEnable() {
         _messagePanel.SetActive(false); // パネルを非表示
@@ -62,7 +63,7 @@ public class MessageViewer : MonoBehaviour {
         }
         if (!_isShowing) return;
 
-        if (_currentMessage.isEventMessage) {
+        if (_currentMessage.playableDirector != null) {
             // イベントメッセージの場合、ユーザー入力待ち
             if (_isShowing && _playerController.Input.messageNextPressed) {
                 _HideOrNext();
@@ -82,14 +83,18 @@ public class MessageViewer : MonoBehaviour {
         _messagePanel.SetActive(true);                  // パネルを表示
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
-        if (_currentMessage.isEventMessage) {
+        if (_currentMessage.playableDirector != null) {
             _playerController.isEnabledCharacterInput = false; // キャラクター操作無効化
+            _currentMessage.playableDirector.Pause(); // Timelineを一時停止
+
             _isEventMessage = true;
             // メッセージを一気に表示
-            StartCoroutine(_TypeText(_currentMessage.text, _EVENT_MESSAGE_SHOW_TIME));
+            _typingCoroutine = _TypeText(_currentMessage.text, _EVENT_MESSAGE_SHOW_TIME);
+            StartCoroutine(_typingCoroutine);
         } else {
             // メッセージを1文字ずつ表示するコルーチン開始
-            StartCoroutine(_TypeText(_currentMessage.text, _AUTO_MESSAGE_SHOW_TIME));
+            _typingCoroutine = _TypeText(_currentMessage.text, _AUTO_MESSAGE_SHOW_TIME);
+            StartCoroutine(_typingCoroutine);
         }
 
         var character_name = _currentMessage.characterIcon.name;
@@ -130,6 +135,9 @@ public class MessageViewer : MonoBehaviour {
 
         // 一連のメッセージ表示中で無ければ一旦パネルを消す
         if (!_isSeries) {
+            if(_currentMessage.playableDirector != null) {
+                _currentMessage.playableDirector.Resume(); // Timelineを再開
+            }
             _messagePanel.SetActive(false); // パネルを非表示
             _currentCoolTime = _COOL_TIME;  // クールタイム設定
         }
@@ -139,6 +147,8 @@ public class MessageViewer : MonoBehaviour {
         // 強制メッセージが来たら即座に表示をリセット
         _messagePanel.SetActive(false);
         _isShowing = false;
+        if(_typingCoroutine != null)
+            StopCoroutine(_typingCoroutine);
         _currentCoolTime = _FORCE_COOL_TIME;
     }
 }

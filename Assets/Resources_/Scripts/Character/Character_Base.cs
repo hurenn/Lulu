@@ -43,6 +43,7 @@ public class Character_Base : MonoBehaviour
     protected bool _isGroundSticking; // ’n–Ê‚É’£‚è•t‚¢‚Ä‚¢‚éó‘Ô
     protected bool _isWallSliding;  // •Ç‚É‰ˆ‚Á‚ÄŠŠ‚Á‚Ä‚¢‚éó‘Ô
     protected bool _isGrounded;
+    public bool isGrounded => _isGrounded;
     protected bool _isJumping;
     protected bool _isTouchingLeft;
     protected bool _isTouchingRight;

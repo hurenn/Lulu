@@ -69,11 +69,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        input.messageNextPressed = _isMessageNextPressed;// メッセージ送りボタンはジャンプボタンと同じ
-        _isMessageNextPressed = false;
-
-        if (!isEnabledCharacterInput) return;// 入力受付不可なら処理しない
-
         // 入力取得
         input.move = _moveInputValue;
         input.jumpPressed = _isJumpPressed;
@@ -84,6 +79,14 @@ public class PlayerController : MonoBehaviour
         input.abilityXHeld = _isAbilityXHeld;
         input.abilityAPressed = _isAbilityAPressed;
         input.abilityAHeld = _isAbilityAHeld;
+
+        if (!isEnabledCharacterInput) {
+            input.Clear();
+        }
+
+        // メッセージ送り入力
+        input.messageNextPressed = _isMessageNextPressed;
+        _isMessageNextPressed = false;
 
         character.UpdateControl(input);
 

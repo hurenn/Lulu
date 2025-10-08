@@ -29,7 +29,6 @@ public class Player_Character : Character_Base {
     [SerializeField] protected Ability_Base _abilityX;
     [SerializeField] protected Ability_Base _abilityA;
 
-
     protected override void _Setup() {
         base._Setup();
         if (_warpControl != null) {
@@ -165,6 +164,11 @@ public class Player_Character : Character_Base {
     /// 壁ダッシュ実行
     /// </summary>
     private void _ExecuteWallSlide() {
+        // 壁方向への入力が無ければキャンセル
+        if (!((_isTouchingLeft && _inputData.move.x < 0) || (_isTouchingRight && _inputData.move.x > 0))) {
+            return;
+        }
+
         _isWallSliding = true;
         _currentWallSlideTime = 0;
         _isSlidingJump = false;

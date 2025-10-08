@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 [System.Serializable]
 public class MessageDataList {
@@ -13,8 +14,13 @@ public class MessageData {
     [TextArea(1, 5)]
     public string text;   // メッセージ
     public Sprite characterIcon;    // キャラクターアイコン
-    public bool isEventMessage;  // イベントメッセージかどうか
     public float addShowTime;      // 追加表示時間
+
+    private PlayableDirector _playableDirector = null;  // イベントメッセージ用のタイムライン
+    public PlayableDirector playableDirector {
+        get { return _playableDirector; }
+        set { _playableDirector = value; }
+    }
 }
 
 /// <summary>
