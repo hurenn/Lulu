@@ -23,8 +23,9 @@ public class MessageViewer : MonoBehaviour {
 
     [SerializeField] private PlayerController _playerController; // プレイヤーコントローラー
     [SerializeField] private MessageList _messageListScript;    // メッセージリスト管理
-    [SerializeField] private TMP_Text _messageText;                 // メッセージ表示用テキスト
-    [SerializeField] private TMP_Text _characterText;               // キャラクター名表示用テキスト
+    [SerializeField] private TMP_Text _messageText;             // メッセージ表示用テキスト
+    [SerializeField] private GameObject _namePanel;             // キャラクター名パネル
+    [SerializeField] private TMP_Text _characterText;           // キャラクター名表示用テキスト
     [SerializeField] private Image _iconImage;                  // キャラクターアイコン表示用イメージ
     [SerializeField] private GameObject _messagePanel;          // メッセージパネル
     [SerializeField] private Image _nextIcon;                   // 次のメッセージを促すアイコン
@@ -107,8 +108,10 @@ public class MessageViewer : MonoBehaviour {
         // キャラクター名をセット
         if (_CHARACTER_NAME_DIC.ContainsKey(character_name)) {
             _characterText.text = _CHARACTER_NAME_DIC[character_name];
+            _namePanel?.SetActive(true); // 名前パネルを表示
         } else {
             _characterText.text = string.Empty;
+            _namePanel?.SetActive(false); // 名前パネルを非表示
         }
 
         _iconImage.sprite = chara_icon;   // キャラクターアイコンをセット
