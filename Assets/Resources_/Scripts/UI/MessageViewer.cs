@@ -85,7 +85,7 @@ public class MessageViewer : MonoBehaviour {
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
         if (_currentMessage.playableDirector != null) {
             _playerController.isEnabledCharacterInput = false; // キャラクター操作無効化
-            _currentMessage.playableDirector.Pause(); // Timelineを一時停止
+            //_currentMessage.playableDirector.Pause(); // Timelineを一時停止
 
             _isEventMessage = true;
             // メッセージを一気に表示
@@ -97,16 +97,21 @@ public class MessageViewer : MonoBehaviour {
             StartCoroutine(_typingCoroutine);
         }
 
-        var character_name = _currentMessage.characterIcon.name;
+        // キャラクター名とアイコンの設定
+        Sprite chara_icon = _currentMessage.characterIcon;
+        var character_name = chara_icon ? chara_icon.name : string.Empty;
+
         // 最初のアンダーラインまでをキャラクター名として辞書から取得
         character_name = character_name.Split('_')[0];
+
         // キャラクター名をセット
         if (_CHARACTER_NAME_DIC.ContainsKey(character_name)) {
             _characterText.text = _CHARACTER_NAME_DIC[character_name];
         } else {
             _characterText.text = string.Empty;
         }
-        _iconImage.sprite = _currentMessage.characterIcon;   // キャラクターアイコンをセット
+
+        _iconImage.sprite = chara_icon;   // キャラクターアイコンをセット
         _isSeries = _messageListScript.HasMessages();   // 次のメッセージがあるかどうか
 
         _currentShowTime = _BASE_SHOW_TIME + (_currentMessage.text.Length * _AUTO_MESSAGE_SHOW_TIME) + _currentMessage.addShowTime; // 基本3秒 + 文字数に応じた追加時間 + メッセージ固有の追加時間

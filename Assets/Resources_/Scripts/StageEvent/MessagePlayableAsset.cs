@@ -12,6 +12,7 @@ public class MessagePlayableAsset : PlayableAsset {
             foreach (var data in messageDatas) {
                 data.playableDirector = director;
             }
+            behaviour.director = director;
         }
         behaviour.messageDatas = messageDatas;
         return playable;
@@ -20,11 +21,14 @@ public class MessagePlayableAsset : PlayableAsset {
 
 public class MessagePlayableBehaviour : PlayableBehaviour {
     public MessageData[] messageDatas;
+    public PlayableDirector director;
     private bool shown = false;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info) {
         if (shown) return;
         shown = true;
+
+        director.Pause();
 
         _AddMessage();
     }
