@@ -53,8 +53,6 @@ public class MessageViewer : MonoBehaviour {
         }
 
         if (!_isShowing && _isEventMessage && !_messageListScript.HasMessages()) {
-            // イベントメッセージが終わったらキャラクター操作を有効化
-            _playerController.isEnabledCharacterInput = true;
             _isEventMessage = false;
         }
 
@@ -85,7 +83,6 @@ public class MessageViewer : MonoBehaviour {
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
         if (_currentMessage.playableDirector != null) {
-            _playerController.isEnabledCharacterInput = false; // キャラクター操作無効化
             //_currentMessage.playableDirector.Pause(); // Timelineを一時停止
 
             _isEventMessage = true;
