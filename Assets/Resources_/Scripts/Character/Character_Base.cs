@@ -354,15 +354,7 @@ public class Character_Base : MonoBehaviour
         // 死亡処理
         _anim.Play("Die");
 
-        // アニメーションの長さを取得してから削除
-        float destroy_time = 0;
-        var clip_info = _anim.GetCurrentAnimatorClipInfo(0);
-        if (clip_info.Length > 0) {
-            destroy_time = clip_info[0].clip.length;
-        }
-
-        Destroy(gameObject, destroy_time);
-        yield break;
+        yield return null;
     }
 
     /// <summary>

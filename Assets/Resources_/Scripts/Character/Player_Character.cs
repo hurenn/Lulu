@@ -159,6 +159,13 @@ public class Player_Character : Character_Base {
         _isSliding = true;
         _currentSlideTime = 0;
     }
+    /// <summary>
+    /// ダッシュ実行
+    /// </summary>
+    private void _ExecuteDash() {
+        _isDashing = true;
+        _anim?.SetBool("Dash", true);
+    }
 
     /// <summary>
     /// 壁ダッシュ実行
@@ -397,7 +404,7 @@ public class Player_Character : Character_Base {
                 // 張り付き状態で移動入力があれば張り付き状態を解除
                 _isGroundSticking = false;
                 _warpDashDirection = _inputData.move.x > 0 ? _param.warpDashDownRight : _param.warpDashDownLeft;
-                _ExecuteSlide(); // スライディング実行
+                _ExecuteDash(); // ダッシュ実行
             } else if (_inputData.jumpPressed) {
                 // 張り付き状態でジャンプ入力があればジャンプ
                 _isGroundSticking = false;
@@ -451,8 +458,7 @@ public class Player_Character : Character_Base {
                 if (_currentStopMoveInputTime < _param.dashInputThreshold && (
                     (Mathf.Sign(_inputData.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
                     (Mathf.Sign(_inputData.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing))) {
-                    _isDashing = true;
-                    _anim?.SetBool("Dash", true);
+                    _ExecuteDash(); // ダッシュ実行
                 }
                 _isWalking = true;
                 _anim?.SetBool("Walk", true);

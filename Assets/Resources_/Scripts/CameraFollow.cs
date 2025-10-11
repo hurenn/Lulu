@@ -4,6 +4,7 @@ public class CameraFollow : MonoBehaviour
 {
     [Header("追従対象")]
     public Transform target;
+    public bool isEnableFollow = true;
 
     [Header("カメラの位置オフセット")]
     public Vector2 offset = new Vector2(2f, 1f);
@@ -29,7 +30,7 @@ public class CameraFollow : MonoBehaviour
 
     void LateUpdate()
     {
-        if (target == null) return;
+        if (target == null || !isEnableFollow) return;
 
         // 追従位置の計算
         Vector2 targetPosition = (Vector2)target.position + offset;

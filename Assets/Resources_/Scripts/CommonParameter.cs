@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "CommonParameter", menuName = "Game/CommonStatus", order = 1)]
+[CreateAssetMenu(fileName = "CommonParameter", menuName = "Lulu/CommonStatus", order = 1)]
 public class CommonParameter : ScriptableObject
 {
     [Header("ˆÚ“®—Í")]

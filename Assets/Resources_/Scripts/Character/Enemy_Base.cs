@@ -13,11 +13,24 @@ public class Enemy_Base : Character_Base
     // ロックオンマーカー
     [SerializeField] private GameObject _lockonMarker;
 
+    public System.Action OnDied = null;
+
     protected override IEnumerator Die() {
+        yield return base.Die();
+
         // 経験値取得
         PlayerParameter.Instance.AddExp(_exp);
 
-        return base.Die();
+        // アニメーションの長さを取得してから削除
+        float destroy_time = 0;
+        var clip_info = _anim.GetCurrentAnimatorClipInfo(0);
+        if (clip_info.Length > 0) {
+            destroy_time = clip_info[0].clip.length;
+        }
+
+        OnDied?.Invoke();
+
+        Destroy(gameObject, destroy_time);
     }
 
     /// <summary>
