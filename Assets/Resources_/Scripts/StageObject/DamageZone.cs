@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class DamageZone : MonoBehaviour {
     // プレイヤーに与えるダメージ
-    [SerializeField] private int _damageToPlayer = 0;
+    [SerializeField] private int _damageToPlayer = 1;
     // 敵に与えるダメージ
-    [SerializeField] private int _damageToEnemy = 0;
+    [SerializeField] private int _damageToEnemy = 100;
 
     // 無敵時間
-    [SerializeField] private float _invincibleTime = 0;
+    [SerializeField] private float _invincibleTime = 5;
 
     // 吹っ飛ばす力（右向き）
-    [SerializeField] private Vector2 _blowPowerRight = Vector2.zero;
+    [SerializeField] private Vector2 _blowPowerRight = new Vector2(10.0f, 5.0f);
 
     // 行動不能時間
     [SerializeField] private float _damageReactionTime = 0.2f;
@@ -50,6 +50,10 @@ public class DamageZone : MonoBehaviour {
     // ヒット時のコールバック
     private System.Action<Character_Base> _hitCallback = default;
 
+    private void Reset() {
+        _hitEffectPrefab = Resources.Load<HitEffect>("Prefabs/Effects/HitEffect");
+    }
+
     /// <summary>
     /// セットアップ
     /// </summary>
@@ -70,6 +74,21 @@ public class DamageZone : MonoBehaviour {
     }
 
     private void OnTriggerStay2D(Collider2D other) {
+        if (!_isEnable || !_isAttakable) {
+            return;
+        }
+        _OnDamage(other);
+    }
+
+    private void OnCollisionStay2D(Collision2D collision) {
+        if (!_isEnable || !_isAttakable) {
+            return;
+        }
+
+        _OnDamage(collision.collider);
+    }
+
+    private void _OnDamage(Collider2D other) {
         int damage = 0;
 
         // ダメージ量取得

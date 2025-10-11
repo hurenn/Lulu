@@ -16,9 +16,9 @@ MonoBehaviour:
   dashSpeed: 10
   slideJumpSpeed: 14
   slideSpeed: 15
-  jumpForce: 8.5
-  dashJumpForce: 10
-  slideJumpForce: 12
+  jumpForce: 10
+  dashJumpForce: 12
+  slideJumpForce: 15
   maxJumpSpeed: 20
   gravity: -30
   fallMultiplier: 2
@@ -34,10 +34,11 @@ MonoBehaviour:
   warpDashDamping: 0.975
   warpWaitTime: 0.1
   warpCoolTime: 0.1
+  coinWarpInterval: 0.1
   maxWarpDashTime: 0.5
   maxSlideTime: 1
   slideCancelDamping: 0.8
-  maxWallSlideTime: 0.3
+  maxWallSlideTime: 0.5
   wallSlideSpeed: 10
   maxLandingDashTime: 0.5
   groundCheckHeight: 0.05
@@ -50,3 +51,5 @@ MonoBehaviour:
   comboIntervalTime: 0.2
   comboCoolTime: 0.5
   moveDuration: 0.05
+  mpUpPerLevel: 30
+  attackUpPerLevel: 5

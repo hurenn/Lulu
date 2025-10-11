@@ -4,23 +4,20 @@ public class StageObject_Base : MonoBehaviour
 {
     [SerializeField] protected bool _isAlwaysAnimated = false; // 常にアニメーションするかどうか
     [SerializeField] protected Animator _animator;
-    [SerializeField] protected Renderer _renderer;
 
     private void Reset() {
         _animator = GetComponent<Animator>();
-        _renderer = GetComponent<Renderer>();
+        if (_animator != null) _animator.enabled = false;
     }
 
-    private void Update() {
-        if(_isAlwaysAnimated == true || _animator == null || _renderer == null) {
-            return;
-        }
-
-        // オブジェクトが画面内にある場合のみアニメーションを有効にする
-        if(_renderer.isVisible && !_animator.enabled) {
-            _animator.enabled = true;
-        } else if(!_renderer.isVisible && _animator.enabled) {
+    private void OnBecameInvisible() {
+        if (!_isAlwaysAnimated && _animator != null) {
             _animator.enabled = false;
+        }
+    }
+    private void OnBecameVisible() {
+        if (_animator != null) {
+            _animator.enabled = true;
         }
     }
 
@@ -43,5 +40,16 @@ public class StageObject_Base : MonoBehaviour
     protected virtual void _HitPlayer(Player_Character player)
     {
         Debug.Log("StageObject_Base: HitPlayer called on " + gameObject.name);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player")) {
+            var player = collision.gameObject.GetComponent<Player_Character>();
+            _ExitPlayer(player);
+        }
+    }
+
+    protected virtual void _ExitPlayer(Player_Character player) {
+        Debug.Log("StageObject_Base: ExitPlayer called on " + gameObject.name);
     }
 }
