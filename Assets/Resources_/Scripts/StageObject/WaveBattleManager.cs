@@ -68,6 +68,10 @@ public class WaveBattleManager : MonoBehaviour
                     enemy_base.OnDied += () => {
                         spawnedEnemies.Remove(enemy_base);
                     };
+                    // スポーン地点が空くまで待機
+                    while (spawnPoint.childCount > spawnPoints.Length) {
+                        yield return null;
+                    }
                 }
                 // 全ての敵が倒されるまで待機
                 while (spawnedEnemies.Count > 0) {

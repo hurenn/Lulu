@@ -32,7 +32,7 @@ public class Character_Base : MonoBehaviour
     protected Vector3 _wallCheckScale = default;
 
     // キャラクター状態フラグ
-    protected bool _isRight = true; // 右向きかどうか
+    [SerializeField] protected bool _isRight = true; // 右向きかどうか
     protected bool _isWalking;
     protected bool _isDashing;
     protected bool _isWarpDelay;
@@ -51,7 +51,8 @@ public class Character_Base : MonoBehaviour
     // 通常移動可能かどうか
     protected bool _CanMove => !_isWarpDashing && !_isSlidingCanceling;
     // 重力を適用するかどうか
-    protected bool _EnableGravity => !_isWarpDashing && !_isWallSliding && !_isWarpDelay;
+    protected bool _EnableGravity => !_isWarpDashing && !_isWallSliding && !_isWarpDelay && enableGravity;
+    public bool enableGravity = true;
     // ジャンプ力を取得
     protected float _jumpForce => _isDashing ? _param.dashJumpForce :
             _isSliding ? _param.slideJumpForce : _param.jumpForce;

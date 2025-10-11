@@ -12,11 +12,16 @@ public class Enemy_Base : Character_Base
 
     // ロックオンマーカー
     [SerializeField] private GameObject _lockonMarker;
+    [SerializeField] private DamageZone _damageZone;
 
     public System.Action OnDied = null;
 
     protected override IEnumerator Die() {
         yield return base.Die();
+        // ダメージゾーン無効化
+        if (_damageZone != null) {
+            _damageZone.gameObject.SetActive(false);
+        }
 
         // 経験値取得
         PlayerParameter.Instance.AddExp(_exp);
