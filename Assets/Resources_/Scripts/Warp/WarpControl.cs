@@ -66,6 +66,15 @@ public class WarpControl : MonoBehaviour
         bool is_warp_camera = true,
         float end_delay = 0.0f
         ) {
+
+        // safe_pointとの間に"WarpProhibitedArea"がある場合は手前で止める
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, safe_point, LayerMask.GetMask("WarpProhibitedArea"));
+        if (hit.collider != null) {
+            // 少し手前で止める
+            safe_point = hit.point - (safe_point - (Vector2)transform.position).normalized * 0.1f;
+        }
+
+        // ワープ前の共通処理
         if (_onPreWarpCommon != null) {
             _onPreWarpCommon();
             yield return 0.1f; // 一瞬待機
