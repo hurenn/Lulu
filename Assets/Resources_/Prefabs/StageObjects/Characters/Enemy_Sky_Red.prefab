@@ -63,7 +63,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -422,7 +422,7 @@ GameObject:
   - component: {fileID: 1607945895412373313}
   - component: {fileID: 8305622127809740856}
   m_Layer: 6
-  m_Name: Enemy_Sky
+  m_Name: Enemy_Sky_Red
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -438,8 +438,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 25.93, y: 40.15, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7592985953834961690}
   - {fileID: 2633974678683151106}
@@ -633,6 +633,7 @@ MonoBehaviour:
   _rightWarpChecker: {fileID: 3141748920434146761}
   _lockonMarker: {fileID: 6327048222348729855}
   _damageZone: {fileID: 4826585712373585586}
+  _dieExplosion: {fileID: 2517521421506470330, guid: 9060e6478a2e9d34fb759aef4adceb21, type: 3}
 --- !u!114 &8305622127809740856
 MonoBehaviour:
   m_ObjectHideFlags: 0

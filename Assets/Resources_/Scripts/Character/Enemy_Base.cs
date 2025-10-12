@@ -14,6 +14,7 @@ public class Enemy_Base : Character_Base
     [SerializeField] private GameObject _lockonMarker;
     [SerializeField] private DamageZone _damageZone;
 
+    [SerializeField] private GameObject _dieExplosion = null;
     public System.Action OnDied = null;
 
     protected override IEnumerator Die() {
@@ -22,6 +23,7 @@ public class Enemy_Base : Character_Base
         if (_damageZone != null) {
             _damageZone.gameObject.SetActive(false);
         }
+        _col.enabled = false;
 
         // 経験値取得
         PlayerParameter.Instance.AddExp(_exp);
@@ -35,7 +37,15 @@ public class Enemy_Base : Character_Base
 
         OnDied?.Invoke();
 
-        Destroy(gameObject, destroy_time);
+        while(destroy_time > 0 ) {
+            destroy_time -= Time.deltaTime;
+            yield return null;
+        }
+        if (_dieExplosion != null) {
+            // 爆発エフェクト生成
+            Instantiate(_dieExplosion, transform.position, Quaternion.identity);
+        }
+        Destroy(gameObject);
     }
 
     /// <summary>
