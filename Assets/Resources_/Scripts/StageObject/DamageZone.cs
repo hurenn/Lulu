@@ -26,7 +26,7 @@ public class DamageZone : MonoBehaviour {
     private List<GameObject> _hitObjects = new List<GameObject>();
 
     // 連続ダメージ判定のディレイ時間
-    [SerializeField] private float _delayTime = 0.5f;
+    private float _delayTime = 0.01f;
     private float _currentDelayTimer = 0;
 
     // ヒットエフェクト生成用

@@ -17,7 +17,6 @@ public class MessageViewer : MonoBehaviour {
     };
     private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
     private const float _AUTO_MESSAGE_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間
-    private const float _EVENT_MESSAGE_SHOW_TIME = 0.001f; // 1文字あたりの追加表示時間
     private const float _COOL_TIME = 0.5f;  // メッセージ表示クールタイム
     private const float _FORCE_COOL_TIME = 0.1f; // 強制メッセージ表示クールタイム
 
@@ -105,7 +104,7 @@ public class MessageViewer : MonoBehaviour {
 
             _isEventMessage = true;
             // メッセージを一気に表示
-            _typingCoroutine = _TypeText(_currentText, _EVENT_MESSAGE_SHOW_TIME);
+            _typingCoroutine = _TypeText(_currentText, 0);
             StartCoroutine(_typingCoroutine);
         } else {
             // メッセージを1文字ずつ表示するコルーチン開始
@@ -152,9 +151,16 @@ public class MessageViewer : MonoBehaviour {
     // 1文字ずつ表示する場合のコルーチン
     private IEnumerator _TypeText(string message, float message_show_time) {
         _messageText.text = "";
-        foreach (char c in message) {
-            _messageText.text += c;
-            yield return new WaitForSeconds(message_show_time); // 文字表示速度
+        if (message_show_time <= 0) { // 一気に表示
+            var half_message = message.Length / 2;
+            _messageText.text = message.Substring(0, half_message);
+            yield return new WaitForSeconds(0.1f);
+            _messageText.text = message;
+        } else {
+            foreach (char c in message) { // 1文字ずつ表示
+                _messageText.text += c;
+                yield return new WaitForSeconds(message_show_time);
+            }
         }
         _typingCoroutine = null;
     }
