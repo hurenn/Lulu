@@ -17,7 +17,7 @@ public class MessageViewer : MonoBehaviour {
     };
     private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
     private const float _AUTO_MESSAGE_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間
-    private const float _EVENT_MESSAGE_SHOW_TIME = 0.01f; // 1文字あたりの追加表示時間
+    private const float _EVENT_MESSAGE_SHOW_TIME = 0.001f; // 1文字あたりの追加表示時間
     private const float _COOL_TIME = 0.5f;  // メッセージ表示クールタイム
     private const float _FORCE_COOL_TIME = 0.1f; // 強制メッセージ表示クールタイム
 
@@ -95,6 +95,8 @@ public class MessageViewer : MonoBehaviour {
 
     private void _ShowNext() {
         _messagePanel.SetActive(true);                  // パネルを表示
+        if (_typingCoroutine != null)
+            StopCoroutine(_typingCoroutine);            // 表示中のコルーチンを停止
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
         _currentText = _language == eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
@@ -154,6 +156,7 @@ public class MessageViewer : MonoBehaviour {
             _messageText.text += c;
             yield return new WaitForSeconds(message_show_time); // 文字表示速度
         }
+        _typingCoroutine = null;
     }
 
     private void _HideOrNext() {
