@@ -152,9 +152,11 @@ public class MessageViewer : MonoBehaviour {
     private IEnumerator _TypeText(string message, float message_show_time) {
         _messageText.text = "";
         if (message_show_time <= 0) { // ˆê‹C‚É•\Ž¦
-            var half_message = message.Length / 2;
-            _messageText.text = message.Substring(0, half_message);
-            yield return new WaitForSeconds(0.1f);
+            var view_message = message.Length / 3;
+            _messageText.text = message.Substring(0, view_message);
+            yield return new WaitForSeconds(0.01f);
+            _messageText.text = message.Substring(0, view_message * 2);
+            yield return new WaitForSeconds(0.01f);
             _messageText.text = message;
         } else {
             foreach (char c in message) { // 1•¶Žš‚¸‚Â•\Ž¦

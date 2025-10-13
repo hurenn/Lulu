@@ -16,8 +16,9 @@ public class WaveBattleManager : MonoBehaviour
     [Header("道封鎖設定")]
     [SerializeField] private GameObject[] walls; // 道を封鎖するオブジェクト
 
+    private GameObject _appearEffect;
     private bool hasTriggered = false;
-
+    private float _spawnInterval = 0.3f;
     private void Start() {
         // 道を封鎖するオブジェクトを非表示にする
         foreach (var wall in walls) {
@@ -35,6 +36,9 @@ public class WaveBattleManager : MonoBehaviour
     }
 
     public void StartWaves() {
+        if (_appearEffect == null) {
+            _appearEffect = Resources.Load("Prefabs/Effects/AppearEffect") as GameObject;
+        }
         StartCoroutine(_RunWaves());
     }
 
@@ -47,15 +51,20 @@ public class WaveBattleManager : MonoBehaviour
         // カメラをロック
         cameraFollow.CameraLock(cameraLockPos.position);
 
+        // 出現させた敵を管理するリスト
+        List<Enemy_Base> spawnedEnemies = new List<Enemy_Base>();
+        int nextSpawnIndex = 0;
         // 各Waveを順番に実行
         foreach (var wave in waveData) {
-            // 出現させた敵を管理するリスト
-            List<Enemy_Base> spawnedEnemies = new List<Enemy_Base>();
-            int nextSpawnIndex = 0;
-            yield return new WaitForSeconds(wave.spawnInterval);
 
             foreach (var enemyInfo in wave.enemies) {
                 for (int i = 0; i < enemyInfo.count; i++) {
+                    // 出現エフェクトを表示
+                    if (_appearEffect != null) {
+                        var effect = Instantiate(_appearEffect, spawnPoints[nextSpawnIndex].position, Quaternion.identity);
+                        Destroy(effect, 1.0f); // エフェクトを1秒後に削除
+                    }
+                    yield return new WaitForSeconds(_spawnInterval + wave.spawnInterval);
                     // 出現ポイントを順番に選択
                     var spawnPoint = spawnPoints[nextSpawnIndex];
                     nextSpawnIndex = (nextSpawnIndex + 1) % spawnPoints.Length;

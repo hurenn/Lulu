@@ -23,11 +23,10 @@ public class DamageZone : MonoBehaviour {
 
     // 一度だけダメージを与えるかどうか
     [SerializeField] private bool _isOnceHit = true;
-    private List<GameObject> _hitObjects = new List<GameObject>();
 
-    // 連続ダメージ判定のディレイ時間
-    private float _delayTime = 0.01f;
-    private float _currentDelayTimer = 0;
+    // ヒット済みキャラの管理
+    Dictionary<Character_Base, float> _hitCharacters = new Dictionary<Character_Base, float>();
+    private const float _hitInterval = 0.5f; // 同じキャラに連続ヒットさせない時間
 
     // ヒットエフェクト生成用
     [SerializeField] private HitEffect _hitEffectPrefab = null;
@@ -40,9 +39,6 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private float _hitStopDelay = 0.01f;
     // ヒットストップの重さ（0.0f:完全停止、1.0f:通常速度）
     [SerializeField] private float _hitStop_Heavy = 0.0f;
-
-    // 攻撃可能かどうか
-    private bool _isAttakable = true;
 
     // ダメージ判定の有効無効
     private bool _isEnable = true;
@@ -64,24 +60,30 @@ public class DamageZone : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        // 連続ダメージ判定のディレイ処理
-        if (_currentDelayTimer > 0 && _isAttakable == false) {
-            _currentDelayTimer -= Time.deltaTime;
-        }
-        if (_currentDelayTimer < 0 && _isAttakable == false) {
-            _isAttakable = true;
+        if(_hitCharacters.Count > 0) {
+            var keys = new List<Character_Base>(_hitCharacters.Keys);
+            foreach(var key in keys) {
+                if(_hitCharacters[key] > 0) {
+                    _hitCharacters[key] -= Time.deltaTime;
+                    if(_hitCharacters[key] <= 0) {
+                        _hitCharacters.Remove(key);
+                    }
+                } else if(_hitCharacters[key] < 0) {
+                    // 一度だけヒットの場合はタイマーを更新しない
+                }
+            }
         }
     }
 
     private void OnTriggerStay2D(Collider2D other) {
-        if (!_isEnable || !_isAttakable) {
+        if (!_isEnable) {
             return;
         }
         _OnDamage(other);
     }
 
     private void OnCollisionStay2D(Collision2D collision) {
-        if (!_isEnable || !_isAttakable) {
+        if (!_isEnable) {
             return;
         }
 
@@ -106,14 +108,11 @@ public class DamageZone : MonoBehaviour {
         if (character == null) {
             return;
         }
-        if (character.isInvincible || _hitObjects.Contains(other.gameObject)) {
+        if (character.isInvincible || _hitCharacters.ContainsKey(character)) {
             return;
         }
-
-        if (_isOnceHit) {
-            // ヒットした相手を記録しておく
-            _hitObjects.Add(other.gameObject);
-        }
+        // ヒット済みキャラのタイマー更新
+        _hitCharacters.Add(character, _isOnceHit ? -1 : _hitInterval);
 
         var blow_power = _blowPowerRight;
         if (other.transform.position.x < transform.position.x) {
@@ -130,11 +129,9 @@ public class DamageZone : MonoBehaviour {
             // ヒットエフェクト生成
             _SpawnHitEffect(other.transform.position, _hitEffectType);
             // ヒットストップ
-            StartCoroutine(_HitStopCoroutine());
+            //StartCoroutine(_HitStopCoroutine());
         }
 
-        _currentDelayTimer = _delayTime;
-        _isAttakable = false;
         if (_isHitDestroy && _destroyObject != null) {
             Destroy(_destroyObject);
         }
