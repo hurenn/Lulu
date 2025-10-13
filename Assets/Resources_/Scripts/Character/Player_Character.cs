@@ -612,4 +612,11 @@ public class Player_Character : Character_Base {
         // d—Í‚ğ—LŒø‰»
         _isWarpDelay = false;
     }
+
+    public void AddExp(int exp) {
+        if (exp <= 0) {
+            return;
+        }
+        _charaParam.AddExp(exp);
+    }
 }

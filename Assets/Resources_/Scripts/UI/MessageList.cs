@@ -13,6 +13,8 @@ public class MessageDataList {
 public class MessageData {
     [TextArea(1, 5)]
     public string text;   // メッセージ
+    [TextArea(1, 5)]
+    public string englishText; // 英語メッセージ
     public Sprite characterIcon;    // キャラクターアイコン
     public float addShowTime;      // 追加表示時間
 

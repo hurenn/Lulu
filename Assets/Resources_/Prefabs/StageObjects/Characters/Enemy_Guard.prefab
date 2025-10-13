@@ -514,6 +514,7 @@ MonoBehaviour:
   _rightWarpChecker: {fileID: 6445688323294802556}
   _lockonMarker: {fileID: 4132797384308099191}
   _damageZone: {fileID: 2881627885021399523}
+  _dieExplosion: {fileID: 0}
 --- !u!114 &4485327489052798882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,7 +527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f5d22f392f9bc4783351c9001c6734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultMaxHP: 10
+  defaultMaxHP: 15
   isLightInvincible: 0
   defaultMaxMP: 100
   attackPower: 1

@@ -19,7 +19,7 @@ public class PlayerParameter : MonoBehaviour
         HP,
         MP,
         Attack,
-        Max
+        All,
     }
     [Serializable]
     public class LevelParameter

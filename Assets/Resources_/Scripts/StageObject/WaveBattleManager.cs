@@ -45,8 +45,7 @@ public class WaveBattleManager : MonoBehaviour
             if (!wall.activeSelf) wall.SetActive(true);
         }
         // カメラをロック
-        cameraFollow.isEnableFollow = false;
-        cameraFollow.transform.position = cameraLockPos.position;
+        cameraFollow.CameraLock(cameraLockPos.position);
 
         // 各Waveを順番に実行
         foreach (var wave in waveData) {
@@ -85,7 +84,7 @@ public class WaveBattleManager : MonoBehaviour
             if (wall.activeSelf) wall.SetActive(false);
         }
         // カメラの追従を元に戻す
-        cameraFollow.isEnableFollow = true;
+        cameraFollow.ReleaseCameraLock();
         gameObject.SetActive(false);
     }
 }

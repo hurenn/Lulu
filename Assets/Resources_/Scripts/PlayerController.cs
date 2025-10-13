@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour {
     [SerializeField] private Character_Base character;
+    public Character_Base Character => character;
 
     // コントローラー
     private InputActions _inputActions;

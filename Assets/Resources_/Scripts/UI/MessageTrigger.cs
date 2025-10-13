@@ -12,6 +12,11 @@ public class MessageTrigger : MonoBehaviour {
     private MessageViewer _messageViewer; // メッセージビューア
     private bool _isPlayerInside = false; // プレイヤーがトリガー内にいるかどうか
 
+    private void Reset() {
+        // リセット時にメッセージリストを自動設定
+        _messageListScript = FindAnyObjectByType<MessageList>();
+    }
+
     // メッセージを追加する
     private IEnumerator _AddMessage() {
         // メッセージ表示機能を探す (WIP)
@@ -42,7 +47,7 @@ public class MessageTrigger : MonoBehaviour {
         foreach (MessageData message in _messageDatas.messageDatas) {
             _messageListScript.Enqueue(message);
         }
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {

@@ -14,7 +14,7 @@ public class Coin_Object : StageObject_Base
         if (player != null)
         {
             player.RecoverMP(_MpRecoverAmount, true); // ƒRƒCƒ“Žæ“¾‚ÅMP‚ð‰ñ•œ
-            PlayerParameter.Instance.AddScore(_coinValue);
+            player.AddExp(_coinValue);
             if (_collectSound != null)
             {
                 AudioSource.PlayClipAtPoint(_collectSound, transform.position);

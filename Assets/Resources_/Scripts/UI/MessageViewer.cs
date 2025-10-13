@@ -12,7 +12,7 @@ public class MessageViewer : MonoBehaviour {
     private Dictionary<string, string> _CHARACTER_NAME_DIC = new Dictionary<string, string>() {
         {"Lulu", "ルル"},
         {"Marlica", "マルリカ"},
-        {"Nord", "ノード"},
+        {"Node", "ノード"},
         {"Pepe", "ペペ"},
     };
     private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
@@ -29,7 +29,13 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private Image _iconImage;                  // キャラクターアイコン表示用イメージ
     [SerializeField] private GameObject _messagePanel;          // メッセージパネル
     [SerializeField] private Image _nextIcon;                   // 次のメッセージを促すアイコン
+    [SerializeField] private Image[] _messageWindows;         // メッセージパネルのCanvasGroup
+    [SerializeField] private float _fadeAlpha = 0.3f;      // フェード時の透明度
+    [SerializeField] private float _normalAlpha = 0.9f;    // 通常時の透明度
+    private RectTransform _messagePanelRect; // メッセージパネルのRectTransform
+    private RectTransform _iconRect;         // キャラクターアイコンのRectTransform
 
+    private string _currentText = string.Empty;
     private MessageData _currentMessage;  // 現在表示中のメッセージ
     private float _currentShowTime; // 現在の表示時間
     private bool _isShowing;        // メッセージ表示中フラグ
@@ -39,6 +45,13 @@ public class MessageViewer : MonoBehaviour {
     private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
     private IEnumerator _typingCoroutine; // 文字を1つずつ表示するコルーチン
 
+    private enum eLanguage {
+        English,
+        Japanese,
+    }
+    // 言語設定
+    [SerializeField] private eLanguage _language = eLanguage.Japanese;
+
     private void OnEnable() {
         _messagePanel.SetActive(false); // パネルを非表示
         if(_playerController == null) {
@@ -47,6 +60,8 @@ public class MessageViewer : MonoBehaviour {
     }
 
     private void Update() {
+        UpdateWindowAlpha();
+
         if (_currentCoolTime > 0) {
             _currentCoolTime -= Time.deltaTime;
             return;
@@ -70,7 +85,7 @@ public class MessageViewer : MonoBehaviour {
         } else if (_currentShowTime > 0) {
             // メッセージ表示の残り時間表示
             _currentShowTime -= Time.deltaTime;
-            _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentMessage.text.Length * _AUTO_MESSAGE_SHOW_TIME));
+            _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentText.Length * _AUTO_MESSAGE_SHOW_TIME));
             if (_currentShowTime <= 0f) {
                 // 表示時間終了
                 _HideOrNext();
@@ -82,16 +97,17 @@ public class MessageViewer : MonoBehaviour {
         _messagePanel.SetActive(true);                  // パネルを表示
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
+        _currentText = _language == eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
         if (_currentMessage.playableDirector != null) {
             //_currentMessage.playableDirector.Pause(); // Timelineを一時停止
 
             _isEventMessage = true;
             // メッセージを一気に表示
-            _typingCoroutine = _TypeText(_currentMessage.text, _EVENT_MESSAGE_SHOW_TIME);
+            _typingCoroutine = _TypeText(_currentText, _EVENT_MESSAGE_SHOW_TIME);
             StartCoroutine(_typingCoroutine);
         } else {
             // メッセージを1文字ずつ表示するコルーチン開始
-            _typingCoroutine = _TypeText(_currentMessage.text, _AUTO_MESSAGE_SHOW_TIME);
+            _typingCoroutine = _TypeText(_currentText, _AUTO_MESSAGE_SHOW_TIME);
             StartCoroutine(_typingCoroutine);
         }
 
@@ -103,18 +119,23 @@ public class MessageViewer : MonoBehaviour {
         character_name = character_name.Split('_')[0];
 
         // キャラクター名をセット
-        if (_CHARACTER_NAME_DIC.ContainsKey(character_name)) {
-            _characterText.text = _CHARACTER_NAME_DIC[character_name];
-            _namePanel?.SetActive(true); // 名前パネルを表示
+        if(_language == eLanguage.English) {
+            _characterText.text = character_name;
+            _namePanel.SetActive(!string.IsNullOrEmpty(character_name));
         } else {
-            _characterText.text = string.Empty;
-            _namePanel?.SetActive(false); // 名前パネルを非表示
+            if (_CHARACTER_NAME_DIC.ContainsKey(character_name)) {
+                _characterText.text = _CHARACTER_NAME_DIC[character_name];
+                _namePanel?.SetActive(true); // 名前パネルを表示
+            } else {
+                _characterText.text = string.Empty;
+                _namePanel?.SetActive(false); // 名前パネルを非表示
+            }
         }
 
         _iconImage.sprite = chara_icon;   // キャラクターアイコンをセット
         _isSeries = _messageListScript.HasMessages();   // 次のメッセージがあるかどうか
 
-        _currentShowTime = _BASE_SHOW_TIME + (_currentMessage.text.Length * _AUTO_MESSAGE_SHOW_TIME) + _currentMessage.addShowTime; // 基本3秒 + 文字数に応じた追加時間 + メッセージ固有の追加時間
+        _currentShowTime = _BASE_SHOW_TIME + (_currentText.Length * _AUTO_MESSAGE_SHOW_TIME) + _currentMessage.addShowTime; // 基本3秒 + 文字数に応じた追加時間 + メッセージ固有の追加時間
 
         if (_currentShowTime < 0) {
             _nextIcon.gameObject.SetActive(false); // 次のメッセージアイコンを非表示
@@ -155,5 +176,46 @@ public class MessageViewer : MonoBehaviour {
         if(_typingCoroutine != null)
             StopCoroutine(_typingCoroutine);
         _currentCoolTime = _FORCE_COOL_TIME;
+    }
+
+    private void UpdateWindowAlpha() {
+        if (_IsIconOverlapping()) {
+            // プレイヤーがメッセージウィンドウと重なっている場合、透明度を下げる
+            foreach (var window in _messageWindows) {
+                if (window == null) continue;
+                var color = window.color;
+                color.a = Mathf.Lerp(color.a, _fadeAlpha, Time.deltaTime * 5f);
+                window.color = color;
+            }
+        } else {
+            // 通常の透明度に戻す
+            foreach (var window in _messageWindows) {
+                if (window == null) continue;
+                var color = window.color;
+                color.a = Mathf.Lerp(color.a, _normalAlpha, Time.deltaTime * 5f);
+                window.color = color;
+            }
+        }
+    }
+
+    Camera mainCamera => Camera.main;
+    Character_Base player => _playerController.Character;
+    private bool _IsIconOverlapping() {
+        // プレイヤーがメッセージウィンドウと重なっているかどうかを判定
+        if (player == null) return false;
+        var playerPos = mainCamera.WorldToScreenPoint(player.transform.position);
+
+        // RectTransformの取得
+        if (_iconRect == null) {
+            _iconRect = _iconImage.GetComponent<RectTransform>();
+        }
+        if (_messagePanelRect == null) {
+            _messagePanelRect = _messagePanel.GetComponent<RectTransform>();
+        }
+
+        var is_icon_overlap = RectTransformUtility.RectangleContainsScreenPoint(_iconRect, playerPos, null);
+        var is_window_overlap = RectTransformUtility.RectangleContainsScreenPoint(_messagePanelRect, playerPos, null);
+
+        return is_icon_overlap || is_window_overlap;
     }
 }
