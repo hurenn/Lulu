@@ -5,6 +5,7 @@ public class Enemy_Base : Character_Base
 {
     // 経験値
     [SerializeField] private int _exp = 1;
+    [SerializeField] private GameObject _coinPrefab;
 
     // ワープチェック用のコンポーネント
     [SerializeField] private WarpChecker _leftWarpChecker;
@@ -27,6 +28,16 @@ public class Enemy_Base : Character_Base
 
         // 経験値取得
         PlayerParameter.Instance.AddExp(_exp);
+        // コイン生成
+        if (_coinPrefab != null) {
+            for (int i = 0; i < _exp; i++) {
+                var coin_obj = Instantiate(_coinPrefab, transform.position, Quaternion.identity);
+                var coin = coin_obj.GetComponent<Coin_Object>();
+                if (coin != null) {
+                    coin.InitializeAutoCollect();
+                }
+            }
+        }
 
         // アニメーションの長さを取得してから削除
         float destroy_time = 0;
