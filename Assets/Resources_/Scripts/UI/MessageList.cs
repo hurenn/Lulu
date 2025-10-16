@@ -23,6 +23,7 @@ public class MessageData {
         get { return _playableDirector; }
         set { _playableDirector = value; }
     }
+    public bool isAutoForce = false;
 }
 
 /// <summary>

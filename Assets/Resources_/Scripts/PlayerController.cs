@@ -29,19 +29,28 @@ public class PlayerController : MonoBehaviour {
 
     // --- Inspector用コントローラー ---
     [Header("Character Controls")]
-    [SerializeField] private bool _inspectMoveLeft = false;
-    [SerializeField] private bool _inspectMoveRight = false;
-    [SerializeField] private bool _inspectMoveUp = false;
-    [SerializeField] private bool _inspectMoveDown = false;
+    public bool insertMoveLeft = false;
+    public bool insertMoveRight = false;
+    public bool insertMoveUp = false;
+    public bool insertMoveDown = false;
     [Space]
-    private bool _inspectJumpPressed = false;
-    [SerializeField] private bool _inspectJumpHeld = false;
-    private bool _inspectJumpReleased = true;
+    private bool _insertJumpButtonPressed = false;
+    public bool insertJumpHeld = false;
+    private bool _insertJumpReleased = true;
     [Space]
-    [SerializeField] private bool _inspectMessageNext = false;
+    public bool insertMessageNext = false;
 
     private CharacterInputData input;
     public CharacterInputData Input => input;
+
+    // 特定入力完了コールバック
+    System.Action _inputCompletedCallback = null;
+    // 特定入力記憶
+    CharacterInputData _specificInput = new CharacterInputData();
+    public void SetSpecificInput(CharacterInputData specific_input, System.Action input_completed) {
+        _specificInput = specific_input;
+        _inputCompletedCallback = input_completed;
+    }
 
     private void Awake() {
         _inputActions = new InputActions();
@@ -89,11 +98,18 @@ public class PlayerController : MonoBehaviour {
         input.abilityAPressed = _isAbilityAPressed;
         input.abilityAHeld = _isAbilityAHeld;
 
+        // 特定入力のチェック
+        if (_inputCompletedCallback != null) {
+            GetSpecificInput(input, _specificInput);
+        }
+
+        // キャラクター操作入力が無効な場合、入力をクリア
         if (!isEnabledCharacterInput) {
             input.Clear();
+
+            // Insert用入力の処理
+            _ProcessInspectorInputs();
         }
-        // Inspector用入力の処理
-        _ProcessInspectorInputs();
 
         // メッセージ送り入力
         input.messageNextPressed = _isMessageNextPressed;
@@ -115,14 +131,12 @@ public class PlayerController : MonoBehaviour {
         _isMessageNextPressed = true;
         _isJumpPressed = true;
         _isJumpHeld = true;
-        _inspectJumpHeld = true;
     }
 
     private void OnJumpRelease(InputAction.CallbackContext context) {
         _isMessageNextPressed = false;
         _isJumpPressed = false;
         _isJumpHeld = false;
-        _inspectJumpHeld = false;
     }
 
     private void OnAbilityY(InputAction.CallbackContext context) {
@@ -153,32 +167,32 @@ public class PlayerController : MonoBehaviour {
         _isAbilityAHeld = false;
     }
 
-    bool _inspectMoveMode = false;
+    bool _insertMoveMode = false;
     /// <summary>
-    /// Inspector用入力の処理
+    /// Insert用入力の処理
     /// </summary>
     private void _ProcessInspectorInputs() {
         // 移動入力
-        Vector2 inspectMove = Vector2.zero;
-        if (_inspectMoveLeft) inspectMove.x = -1f;
-        if (_inspectMoveRight) inspectMove.x = 1f;
-        if (_inspectMoveUp) inspectMove.y = 1f;
-        if (_inspectMoveDown) inspectMove.y = -1f;
+        Vector2 insertMove = Vector2.zero;
+        if (insertMoveLeft) insertMove.x = -1f;
+        if (insertMoveRight) insertMove.x = 1f;
+        if (insertMoveUp) insertMove.y = 1f;
+        if (insertMoveDown) insertMove.y = -1f;
 
-        if (inspectMove.magnitude > 0.5f || _inspectMoveMode) {
-            _moveInputValue = inspectMove;
+        if (insertMove.magnitude > 0.5f || _insertMoveMode) {
+            _moveInputValue = insertMove;
             input.move = _moveInputValue;
         }
-        _inspectMoveMode = inspectMove.magnitude > 0.5f;
+        _insertMoveMode = insertMove.magnitude > 0.5f;
 
         // ジャンプ入力
-        if (_inspectJumpHeld && !_isJumpHeld) {
+        if (insertJumpHeld && !_isJumpHeld) {
             _isJumpPressed = true;
             _isJumpHeld = true;
             input.jumpPressed = _isJumpPressed;
             input.jumpHeld = _isJumpHeld;
         }
-        if (!_inspectJumpHeld && _isJumpHeld) {
+        if (!insertJumpHeld && _isJumpHeld) {
             _isJumpPressed = false;
             _isJumpHeld = false;
             input.jumpPressed = _isJumpPressed;
@@ -186,9 +200,42 @@ public class PlayerController : MonoBehaviour {
         }
 
         // メッセージ送り入力
-        if (_inspectMessageNext) {
+        if (insertMessageNext) {
             _isMessageNextPressed = true;
-            _inspectMessageNext = false;
+            insertMessageNext = false;
+        }
+    }
+
+    /// <summary>
+    /// 特定の入力だけ受け付ける
+    /// </summary>
+    /// <param name="dir_input"></param>
+    /// <param name="jump_input"></param>
+    /// <returns></returns>
+    public void GetSpecificInput(CharacterInputData input, CharacterInputData specific_input) {
+        bool isInputReceived = true;
+        // 方向入力のチェック
+        if (specific_input.move.magnitude > 0.1f) {
+            if (!(Vector2.Dot(input.move, specific_input.move.normalized) > 0.8f)) {
+                isInputReceived = false;
+            }
+        } else {
+            isInputReceived = true; // 方向入力が無い場合は常にtrue
+        }
+        // ジャンプ入力のチェック
+        if (specific_input.jumpPressed && isInputReceived == true) {
+            if (input.jumpPressed) {
+                isInputReceived = true;
+            } else {
+                isInputReceived = false;
+            }
+        }
+
+        // 入力完了コールバックの呼び出し
+        if (isInputReceived && _inputCompletedCallback != null) {
+            _inputCompletedCallback.Invoke();
+            _inputCompletedCallback = null;
+            _specificInput = new CharacterInputData();
         }
     }
 
@@ -198,13 +245,13 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     [ContextMenu("Reset All Inspect Inputs")]
     public void ResetAllInspectInputs() {
-        _inspectMoveLeft = false;
-        _inspectMoveRight = false;
-        _inspectMoveUp = false;
-        _inspectMoveDown = false;
-        _inspectJumpPressed = false;
-        _inspectJumpHeld = false;
-        _inspectMessageNext = false;
+        insertMoveLeft = false;
+        insertMoveRight = false;
+        insertMoveUp = false;
+        insertMoveDown = false;
+        _insertJumpButtonPressed = false;
+        insertJumpHeld = false;
+        insertMessageNext = false;
 
         // 実際の入力状態もリセット
         _moveInputValue = Vector2.zero;
@@ -224,7 +271,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     [ContextMenu("Inspect Jump Press")]
     public void InspectJumpPress() {
-        _inspectJumpPressed = true;
+        _insertJumpButtonPressed = true;
     }
 
     /// <summary>
@@ -232,7 +279,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     [ContextMenu("Inspect Message Next")]
     public void InspectMessageNext() {
-        _inspectMessageNext = true;
+        insertMessageNext = true;
     }
     #endregion
 }

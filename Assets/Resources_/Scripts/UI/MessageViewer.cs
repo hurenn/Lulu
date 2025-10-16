@@ -76,7 +76,7 @@ public class MessageViewer : MonoBehaviour {
         }
         if (!_isShowing) return;
 
-        if (_currentMessage.playableDirector != null) {
+        if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
             // イベントメッセージの場合、ユーザー入力待ち
             if (_isShowing && _playerController.Input.messageNextPressed) {
                 _HideOrNext();
@@ -99,7 +99,7 @@ public class MessageViewer : MonoBehaviour {
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
         _currentText = _language == eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
-        if (_currentMessage.playableDirector != null) {
+        if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
             //_currentMessage.playableDirector.Pause(); // Timelineを一時停止
 
             _isEventMessage = true;
