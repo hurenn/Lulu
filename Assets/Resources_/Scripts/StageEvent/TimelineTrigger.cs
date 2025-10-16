@@ -9,10 +9,11 @@ public class TimelineTrigger : StageObject_Base
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);
         if (playableDirector == null) {
-            playableDirector = gameObject.AddComponent<PlayableDirector>();
+            return;
         }
 
         playableDirector.time = 0;
+        playableDirector.Evaluate();
         playableDirector.Play();
     }
 }

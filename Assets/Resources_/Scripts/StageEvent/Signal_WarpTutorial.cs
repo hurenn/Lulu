@@ -21,7 +21,7 @@ public class Signal_WarpTutorial : MonoBehaviour
     private void Update() {
         if (_isTutorialActive) {
             // âÊñ ÉXÉçÅ[
-            Time.timeScale = Mathf.Clamp(Time.timeScale * 0.95f, 0f, 1f);
+            Time.timeScale = 0f;
         }
     }
 
