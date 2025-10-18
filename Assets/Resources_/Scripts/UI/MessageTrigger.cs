@@ -10,6 +10,7 @@ public class MessageTrigger : MonoBehaviour {
     [SerializeField] private MessageDataList _messageDatas;  //メッセージデータ配列
 
     private MessageViewer _messageViewer; // メッセージビューア
+    private PlayerController _playerController; // プレイヤーコントローラー
     private bool _isPlayerInside = false; // プレイヤーがトリガー内にいるかどうか
 
     private void Reset() {
@@ -24,10 +25,15 @@ public class MessageTrigger : MonoBehaviour {
             _messageViewer = FindAnyObjectByType<MessageViewer>();
             yield return null;
         }
+        // プレイヤーコントローラーを探す (WIP)
+        while(_playerController == null) {
+            _playerController = FindAnyObjectByType<PlayerController>();
+            yield return null;
+        }
 
         // メッセージ表示中は待機
         if (!_messageDatas.isForced) {
-            while (_messageListScript.HasMessages() || _messageViewer.IsShowing) {
+            while (_messageListScript.HasMessages() || _messageViewer.IsShowing || !_playerController.isEnabledCharacterInput) {
                 yield return null;
 
                 if (!_isPlayerInside) {

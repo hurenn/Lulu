@@ -15,5 +15,8 @@ public class TimelineTrigger : StageObject_Base
         playableDirector.time = 0;
         playableDirector.Evaluate();
         playableDirector.Play();
+
+        // Ä¶Œã‚É–³Œø‰»‚µ‚ÄÄ“xƒgƒŠƒK[‚³‚ê‚È‚¢‚æ‚¤‚É‚·‚é
+        this.enabled = false;
     }
 }
