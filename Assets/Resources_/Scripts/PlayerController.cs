@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour {
     // 特定入力記憶
     CharacterInputData _specificInput = new CharacterInputData();
     public void SetSpecificInput(CharacterInputData specific_input, System.Action input_completed) {
+        _ResetInput();
         _specificInput = specific_input;
         _inputCompletedCallback = input_completed;
     }
@@ -252,8 +253,12 @@ public class PlayerController : MonoBehaviour {
         _insertJumpButtonPressed = false;
         insertJumpHeld = false;
         insertMessageNext = false;
+    }
 
-        // 実際の入力状態もリセット
+    /// <summary>
+    /// 入力状態をリセット
+    /// </summary>
+    private void _ResetInput() {
         _moveInputValue = Vector2.zero;
         _isJumpPressed = false;
         _isJumpHeld = false;
