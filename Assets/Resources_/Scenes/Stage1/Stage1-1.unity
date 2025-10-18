@@ -872,9 +872,6 @@ GameObject:
   - component: {fileID: 388321745}
   - component: {fileID: 388321747}
   - component: {fileID: 388321751}
-  - component: {fileID: 388321750}
-  - component: {fileID: 388321749}
-  - component: {fileID: 388321752}
   - component: {fileID: 388321746}
   - component: {fileID: 388321748}
   - component: {fileID: 388321754}
@@ -895,7 +892,7 @@ Transform:
   m_GameObject: {fileID: 388321744}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -48.08, y: 7.54, z: -0.121447824}
+  m_LocalPosition: {x: -48.08, y: 7.86, z: -0.121447824}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -967,70 +964,10 @@ PlayableDirector:
     value: {fileID: 1899072781}
   - key: {fileID: 753827312867516237, guid: f114c53d804b7c646a4e5eb861eea0de, type: 2}
     value: {fileID: 1519988072}
-  - key: {fileID: 2050416925824411379, guid: f114c53d804b7c646a4e5eb861eea0de, type: 2}
+  - key: {fileID: 0}
     value: {fileID: 6509519756776246318}
   m_ExposedReferences:
     m_References: []
---- !u!114 &388321749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388321744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Events:
-    m_Signals:
-    - {fileID: 11400000, guid: 24eb2b95aa26a9d4eac91aae53a0043f, type: 2}
-    m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 388321746}
-          m_TargetAssemblyTypeName: Signal_WarpTutorial, Assembly-CSharp
-          m_MethodName: WarpTutorial_Fourth
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
---- !u!114 &388321750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388321744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Events:
-    m_Signals:
-    - {fileID: 11400000, guid: 643d9ffefec966348bb5e37798f14185, type: 2}
-    m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 388321746}
-          m_TargetAssemblyTypeName: Signal_WarpTutorial, Assembly-CSharp
-          m_MethodName: WarpTutorial_Third
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &388321751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1052,36 +989,6 @@ MonoBehaviour:
         - m_Target: {fileID: 388321746}
           m_TargetAssemblyTypeName: Signal_WarpTutorial, Assembly-CSharp
           m_MethodName: WarpTutorial_Second
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
---- !u!114 &388321752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388321744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Events:
-    m_Signals:
-    - {fileID: 11400000, guid: ff6c3ec7f6392e646918c28250e091eb, type: 2}
-    m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 388321746}
-          m_TargetAssemblyTypeName: Signal_WarpTutorial, Assembly-CSharp
-          m_MethodName: WarpTutorial_End
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -141524,6 +141431,241 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3313654072791041014, guid: e63778a580d2cdf4ba17466b41ba4104, type: 3}
   m_PrefabInstance: {fileID: 1076190012}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1088130159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1088130169}
+  - component: {fileID: 1088130166}
+  - component: {fileID: 1088130165}
+  - component: {fileID: 1088130164}
+  - component: {fileID: 1088130163}
+  - component: {fileID: 1088130162}
+  - component: {fileID: 1088130161}
+  - component: {fileID: 1088130160}
+  m_Layer: 0
+  m_Name: TutorialTimeline_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!61 &1088130160
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088130159}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 4.96, y: 5.06}
+  m_EdgeRadius: 0
+--- !u!114 &1088130161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088130159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8985a69f3f7f7c742b0aef0ec3b4fb49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isAlwaysAnimated: 0
+  _animator: {fileID: 0}
+  playableDirector: {fileID: 1088130162}
+--- !u!320 &1088130162
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088130159}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: b20409feec1f2bc43a4612faaa382684, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: 749192571284300620, guid: f114c53d804b7c646a4e5eb861eea0de, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 6513112827436473922, guid: f114c53d804b7c646a4e5eb861eea0de, type: 2}
+    value: {fileID: 1920801948}
+  - key: {fileID: -6572834039008818209, guid: f114c53d804b7c646a4e5eb861eea0de, type: 2}
+    value: {fileID: 1899072781}
+  - key: {fileID: 753827312867516237, guid: f114c53d804b7c646a4e5eb861eea0de, type: 2}
+    value: {fileID: 1519988072}
+  - key: {fileID: 0}
+    value: {fileID: 6509519756776246318}
+  - key: {fileID: 749192571284300620, guid: b20409feec1f2bc43a4612faaa382684, type: 2}
+    value: {fileID: 1088130166}
+  - key: {fileID: 2050416925824411379, guid: b20409feec1f2bc43a4612faaa382684, type: 2}
+    value: {fileID: 6509519756776246318}
+  - key: {fileID: 2653466671011390303, guid: b20409feec1f2bc43a4612faaa382684, type: 2}
+    value: {fileID: 3533117522502050628}
+  m_ExposedReferences:
+    m_References: []
+--- !u!114 &1088130163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088130159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 359d310ffba91ef40ad17c7ab2e30e5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 1050631893}
+--- !u!114 &1088130164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088130159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: ff6c3ec7f6392e646918c28250e091eb, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1088130163}
+          m_TargetAssemblyTypeName: Signal_WarpTutorial, Assembly-CSharp
+          m_MethodName: WarpTutorial_End
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1088130165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088130159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 24eb2b95aa26a9d4eac91aae53a0043f, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1088130163}
+          m_TargetAssemblyTypeName: Signal_WarpTutorial, Assembly-CSharp
+          m_MethodName: WarpTutorial_Fourth
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1088130166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088130159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 643d9ffefec966348bb5e37798f14185, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1088130163}
+          m_TargetAssemblyTypeName: Signal_WarpTutorial, Assembly-CSharp
+          m_MethodName: WarpTutorial_Third
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!4 &1088130169
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088130159}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -22.38, y: 5.9, z: -0.121447824}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1097778757
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -279770,6 +279912,8 @@ PlayableDirector:
   m_SceneBindings:
   - key: {fileID: 749192571284300620, guid: f114c53d804b7c646a4e5eb861eea0de, type: 2}
     value: {fileID: 0}
+  - key: {fileID: -6243990746137170613, guid: 5c037eb56acf9594b97304a4ba3d726f, type: 2}
+    value: {fileID: 3533117522502050628}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &1583076604
@@ -334624,14 +334768,48 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8637051165963006167, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 800
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4421373631291310206, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6509519756776246317}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1867822359188746270, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3533117522502050628}
   m_SourcePrefab: {fileID: 100100000, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+--- !u!1 &3533117522502050627 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1867822359188746270, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+  m_PrefabInstance: {fileID: 3533117522502050626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &3533117522502050628
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3533117522502050627}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!222 &6509519756776246313
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -334858,6 +335036,7 @@ SceneRoots:
   - {fileID: 1377750435}
   - {fileID: 1583076604}
   - {fileID: 388321745}
+  - {fileID: 1088130169}
   - {fileID: 2116052203}
   - {fileID: 1010386462}
   - {fileID: 464952665}
