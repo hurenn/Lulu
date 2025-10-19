@@ -42,11 +42,13 @@ public class PlayerController : MonoBehaviour {
 
     private CharacterInputData input;
     public CharacterInputData Input => input;
+    public CharacterInputData virtualInput { get; set; }
 
     // 特定入力完了コールバック
     System.Action _inputCompletedCallback = null;
     // 特定入力記憶
     CharacterInputData _specificInput = new CharacterInputData();
+
     public void SetSpecificInput(CharacterInputData specific_input, System.Action input_completed) {
         _ResetInput();
         _specificInput = specific_input;
@@ -98,6 +100,7 @@ public class PlayerController : MonoBehaviour {
         input.abilityXHeld = _isAbilityXHeld;
         input.abilityAPressed = _isAbilityAPressed;
         input.abilityAHeld = _isAbilityAHeld;
+        virtualInput = input;
 
         // 特定入力のチェック
         if (_inputCompletedCallback != null) {
@@ -269,6 +272,7 @@ public class PlayerController : MonoBehaviour {
         _isAbilityAPressed = false;
         _isAbilityAHeld = false;
         _isMessageNextPressed = false;
+        virtualInput.Clear();
     }
 
     /// <summary>
