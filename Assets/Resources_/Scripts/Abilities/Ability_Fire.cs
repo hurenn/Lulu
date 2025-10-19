@@ -49,6 +49,11 @@ public class Ability_Fire : Ability_Base
         bullet.SetCallback(() => _currentShot--);
         bullet.IsRight = _isRight;
 
+        // êiçsï˚å¸Ç…çáÇÌÇπÇƒîΩì]
+        var scale = bullet.transform.localScale;
+        scale.x *= (_isRight ? 1 : -1);
+        bullet.transform.localScale = scale;
+
         _currentShot++;
         return eAbilityResult.FireShot;
     }

@@ -475,19 +475,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e8cb43a5e796954fa45e07060890b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _vistaBuildings:
-  - {fileID: 569964987}
-  - {fileID: 1389900905}
-  - {fileID: 1760633112}
-  _closeBuildings:
-  - {fileID: 540225722}
-  - {fileID: 22407452}
-  - {fileID: 2017493560}
-  _mainCamera: {fileID: 519420031}
-  _vistaBuildingParallax: 0.5
-  _closeBuildingParallax: 0.8
-  _vistaBuildingWidth: 13.135651
-  _closeBuildingWidth: 17.4
+  cameraTransform: {fileID: 0}
+  layers: []
 --- !u!4 &57651415 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2596961546366669693, guid: 7f0804a91c8682f4b84187097274003d, type: 3}
@@ -3917,7 +3906,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2596961546366669693, guid: 7f0804a91c8682f4b84187097274003d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 86.28
+      value: 88.29
       objectReference: {fileID: 0}
     - target: {fileID: 2596961546366669693, guid: 7f0804a91c8682f4b84187097274003d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -174623,6 +174612,10 @@ PrefabInstance:
     - target: {fileID: 2826599311687445177, guid: 57c75c4de11f03b4ea5f09adaa24b712, type: 3}
       propertyPath: m_Name
       value: Laser
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826599311687445177, guid: 57c75c4de11f03b4ea5f09adaa24b712, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4468542829268429271, guid: 57c75c4de11f03b4ea5f09adaa24b712, type: 3}
       propertyPath: m_LocalPosition.x
