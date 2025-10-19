@@ -359,7 +359,7 @@ public class Player_Character : Character_Base {
             return false;
         }
 
-        if (_isSliding || _isSlidingJump) {
+        if (_isSliding) {
             return false; // スライディング中はダメージ無効
         }
 
