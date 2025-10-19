@@ -1,5 +1,98 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8363009465995978598
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21bf7f712d84d26478ebe6a299f21738, type: 3}
+  m_Name: Activation Track
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_AnimClip: {fileID: 0}
+  m_Locked: 0
+  m_Muted: 0
+  m_CustomPlayableFullTypename: 
+  m_Curves: {fileID: 0}
+  m_Parent: {fileID: 11400000}
+  m_Children: []
+  m_Clips:
+  - m_Version: 1
+    m_Start: 0.9500000000000002
+    m_ClipIn: 0
+    m_Asset: {fileID: 1429020266217893361}
+    m_Duration: 0.21666666666666656
+    m_TimeScale: 1
+    m_ParentTrack: {fileID: -8363009465995978598}
+    m_EaseInDuration: 0
+    m_EaseOutDuration: 0
+    m_BlendInDuration: 0
+    m_BlendOutDuration: 0
+    m_MixInCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_MixOutCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_BlendInCurveMode: 0
+    m_BlendOutCurveMode: 0
+    m_ExposedParameterNames: []
+    m_AnimationCurves: {fileID: 0}
+    m_Recordable: 0
+    m_PostExtrapolationMode: 0
+    m_PreExtrapolationMode: 0
+    m_PostExtrapolationTime: 0
+    m_PreExtrapolationTime: 0
+    m_DisplayName: Active
+  m_Markers:
+    m_Objects: []
+  m_PostPlaybackState: 0
 --- !u!114 &-4040261874777589360
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -15,7 +108,7 @@ MonoBehaviour:
   messageDatas:
   - text: "\u304A\u30FC\u3063"
     englishText: "Let\u2019s go."
-    characterIcon: {fileID: 21300000, guid: 21a616f61046fb34bb4c24fcd3501c06, type: 3}
+    characterIcon: {fileID: 21300000, guid: fc7693bdc9c27c54f807d516e0905714, type: 3}
     addShowTime: 0
     isAutoForce: 0
 --- !u!114 &-3984745561290169882
@@ -33,7 +126,7 @@ MonoBehaviour:
   messageDatas:
   - text: "\u7121\u4E8B\u304B\uFF01"
     englishText: You alright!?
-    characterIcon: {fileID: 21300000, guid: f199f40227e7a524db48ac9fe8783f27, type: 3}
+    characterIcon: {fileID: 21300000, guid: 96d014bc614680646a633619967c8f64, type: 3}
     addShowTime: 0
     isAutoForce: 0
 --- !u!114 &-3309718847197235593
@@ -84,7 +177,7 @@ MonoBehaviour:
     englishText: Node has joined!
     characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
     addShowTime: 0
-    isAutoForce: 0
+    isAutoForce: 1
 --- !u!114 &-298345029865518490
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -119,6 +212,8 @@ MonoBehaviour:
   m_Tracks:
   - {fileID: 5213631926527016224}
   - {fileID: 1903994753303499940}
+  - {fileID: 6397241911199985752}
+  - {fileID: -8363009465995978598}
   m_FixedDuration: 0
   m_EditorSettings:
     m_Framerate: 60
@@ -140,9 +235,165 @@ MonoBehaviour:
   messageDatas:
   - text: "\u5206\u304B\u3063\u305F\u3002\u3059\u3050\u306B\u52A9\u3051\u306B\u5411\u304B\u304A\u3046\u3002\n\u7ACB\u3066\u308B\u304B\uFF1F"
     englishText: Alright. We will go help immediately. Are you able to stand?
-    characterIcon: {fileID: 21300000, guid: f199f40227e7a524db48ac9fe8783f27, type: 3}
+    characterIcon: {fileID: 21300000, guid: e94264859b55de64586a7bbfacd718b9, type: 3}
     addShowTime: 0
     isAutoForce: 0
+--- !u!74 &1170435202149634698
+AnimationClip:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Recorded
+  serializedVersion: 7
+  m_Legacy: 0
+  m_Compressed: 0
+  m_UseHighQualityCurve: 1
+  m_RotationCurves: []
+  m_CompressedRotationCurves: []
+  m_EulerCurves: []
+  m_PositionCurves: []
+  m_ScaleCurves: []
+  m_FloatCurves:
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 490
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.5
+        value: 800
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.9
+        value: 800
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1.1666666
+        value: 490
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_AnchoredPosition.y
+    path: 
+    classID: 224
+    script: {fileID: 0}
+    flags: 0
+  m_PPtrCurves: []
+  m_SampleRate: 60
+  m_WrapMode: 0
+  m_Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_ClipBindingConstant:
+    genericBindings:
+    - serializedVersion: 2
+      path: 0
+      attribute: 538195251
+      script: {fileID: 0}
+      typeID: 224
+      customType: 28
+      isPPtrCurve: 0
+      isIntCurve: 0
+      isSerializeReferenceCurve: 0
+    pptrCurveMapping: []
+  m_AnimationClipSettings:
+    serializedVersion: 2
+    m_AdditiveReferencePoseClip: {fileID: 0}
+    m_AdditiveReferencePoseTime: 0
+    m_StartTime: 0
+    m_StopTime: 1.1666666
+    m_OrientationOffsetY: 0
+    m_Level: 0
+    m_CycleOffset: 0
+    m_HasAdditiveReferencePose: 0
+    m_LoopTime: 0
+    m_LoopBlend: 0
+    m_LoopBlendOrientation: 0
+    m_LoopBlendPositionY: 0
+    m_LoopBlendPositionXZ: 0
+    m_KeepOriginalOrientation: 0
+    m_KeepOriginalPositionY: 1
+    m_KeepOriginalPositionXZ: 0
+    m_HeightFromFeet: 0
+    m_Mirror: 0
+  m_EditorCurves:
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 490
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.5
+        value: 800
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.9
+        value: 800
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1.1666666
+        value: 490
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_AnchoredPosition.y
+    path: 
+    classID: 224
+    script: {fileID: 0}
+    flags: 0
+  m_EulerEditorCurves: []
+  m_HasGenericRootTransform: 0
+  m_HasMotionFloatCurves: 0
+  m_Events: []
 --- !u!114 &1224351277344622476
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -158,14 +409,26 @@ MonoBehaviour:
   messageDatas:
   - text: "\u2026\u2026\u30C3\uFF01"
     englishText: "Tsk\u2026\u2026!"
-    characterIcon: {fileID: 21300000, guid: 68f872cf0e39f3c4681da717c50adcfc, type: 3}
+    characterIcon: {fileID: 21300000, guid: 3727daa9959b89b47aacc2acbc499d30, type: 3}
     addShowTime: 0
     isAutoForce: 0
   - text: "\u59B9\u304C\u2026\u2026\u9023\u308C\u53BB\u3089\u308C\u305F\u2026\u2026\uFF01"
     englishText: "My little sister\u2026 has been taken\u2026!"
-    characterIcon: {fileID: 21300000, guid: 68f872cf0e39f3c4681da717c50adcfc, type: 3}
+    characterIcon: {fileID: 21300000, guid: 87bc8f26727f6314fa5bd0de176dcf25, type: 3}
     addShowTime: 0
     isAutoForce: 0
+--- !u!114 &1429020266217893361
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde0d25a170598d46a0b9dc16b4527a5, type: 3}
+  m_Name: ActivationPlayableAsset
+  m_EditorClassIdentifier: 
 --- !u!114 &1903994753303499940
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -188,7 +451,7 @@ MonoBehaviour:
   m_Children: []
   m_Clips:
   - m_Version: 1
-    m_Start: 0.3333333333333333
+    m_Start: 0.5
     m_ClipIn: 0
     m_Asset: {fileID: -298345029865518490}
     m_Duration: 0.050000000000000044
@@ -221,7 +484,7 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.4
+    m_Start: 0.55
     m_ClipIn: 0
     m_Asset: {fileID: -3984745561290169882}
     m_Duration: 0.04999999999999999
@@ -254,7 +517,7 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.4666666666666667
+    m_Start: 0.6000000000000001
     m_ClipIn: 0
     m_Asset: {fileID: 1224351277344622476}
     m_Duration: 0.04999999999999999
@@ -287,7 +550,7 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.5333333333333333
+    m_Start: 0.6500000000000001
     m_ClipIn: 0
     m_Asset: {fileID: -3309718847197235593}
     m_Duration: 0.050000000000000044
@@ -320,7 +583,7 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.6
+    m_Start: 0.7000000000000002
     m_ClipIn: 0
     m_Asset: {fileID: 37354601190633039}
     m_Duration: 0.04999999999999999
@@ -353,10 +616,10 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.6666666666666666
+    m_Start: 0.7500000000000002
     m_ClipIn: 0
     m_Asset: {fileID: 3459239899025019070}
-    m_Duration: 0.050000000000000044
+    m_Duration: 0.04999999999999982
     m_TimeScale: 1
     m_ParentTrack: {fileID: 1903994753303499940}
     m_EaseInDuration: 0
@@ -386,7 +649,7 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.7333333333333333
+    m_Start: 0.8
     m_ClipIn: 0
     m_Asset: {fileID: 4419985580148802116}
     m_Duration: 0.050000000000000044
@@ -419,7 +682,7 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.8
+    m_Start: 0.8500000000000001
     m_ClipIn: 0
     m_Asset: {fileID: -4040261874777589360}
     m_Duration: 0.050000000000000044
@@ -452,7 +715,7 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.8666666666666667
+    m_Start: 0.9000000000000001
     m_ClipIn: 0
     m_Asset: {fileID: -327014225540591130}
     m_Duration: 0.050000000000000044
@@ -499,9 +762,9 @@ MonoBehaviour:
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   messageDatas:
-  - text: "\u3042\u3042\u3002\u3059\u307E\u306A\u3044"
+  - text: "\u3042\u3042\u2026\u2026\u3002\u60AA\u3044\u3002"
     englishText: "Ah\u2026 sorry about that."
-    characterIcon: {fileID: 21300000, guid: 68f872cf0e39f3c4681da717c50adcfc, type: 3}
+    characterIcon: {fileID: 21300000, guid: b001bed835483c24e9cfe595e091475f, type: 3}
     addShowTime: 0
     isAutoForce: 0
 --- !u!114 &4419985580148802116
@@ -548,7 +811,7 @@ MonoBehaviour:
     m_Start: 0
     m_ClipIn: 0
     m_Asset: {fileID: 5448785678806974802}
-    m_Duration: 0.95
+    m_Duration: 0.9000000000000001
     m_TimeScale: 1
     m_ParentTrack: {fileID: 5213631926527016224}
     m_EaseInDuration: 0
@@ -614,10 +877,10 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: PlayerControlPlayableAsset
   - m_Version: 1
-    m_Start: 0.95
+    m_Start: 0.9000000000000001
     m_ClipIn: 0
     m_Asset: {fileID: -1189685815200711617}
-    m_Duration: 0.050000000000000044
+    m_Duration: 0.2666666666666666
     m_TimeScale: 1
     m_ParentTrack: {fileID: 5213631926527016224}
     m_EaseInDuration: 0
@@ -679,3 +942,44 @@ MonoBehaviour:
   m_Name: PlayerControlPlayableAsset(Clone)(Clone)
   m_EditorClassIdentifier: 
   enableControl: 0
+--- !u!114 &6397241911199985752
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d21dcc2386d650c4597f3633c75a1f98, type: 3}
+  m_Name: Animation Track
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_AnimClip: {fileID: 0}
+  m_Locked: 0
+  m_Muted: 0
+  m_CustomPlayableFullTypename: 
+  m_Curves: {fileID: 0}
+  m_Parent: {fileID: 11400000}
+  m_Children: []
+  m_Clips: []
+  m_Markers:
+    m_Objects: []
+  m_InfiniteClipPreExtrapolation: 1
+  m_InfiniteClipPostExtrapolation: 1
+  m_InfiniteClipOffsetPosition: {x: 0, y: 0, z: 0}
+  m_InfiniteClipOffsetEulerAngles: {x: 0, y: 0, z: 0}
+  m_InfiniteClipTimeOffset: 0
+  m_InfiniteClipRemoveOffset: 0
+  m_InfiniteClipApplyFootIK: 1
+  mInfiniteClipLoop: 0
+  m_MatchTargetFields: 63
+  m_Position: {x: 0, y: 0, z: 0}
+  m_EulerAngles: {x: 0, y: 0, z: 0}
+  m_AvatarMask: {fileID: 0}
+  m_ApplyAvatarMask: 1
+  m_TrackOffset: 0
+  m_InfiniteClip: {fileID: 1170435202149634698}
+  m_OpenClipOffsetRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+  m_ApplyOffsets: 0

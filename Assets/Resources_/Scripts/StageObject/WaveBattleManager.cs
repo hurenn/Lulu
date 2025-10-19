@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -10,8 +11,9 @@ public class WaveBattleManager : MonoBehaviour
     public Transform[] spawnPoints; // 敵の出現ポイント
 
     [Header("カメラ設定")]
-    [SerializeField] private Transform cameraLockPos; // カメラをロックする位置
-    [SerializeField] private CameraFollow cameraFollow; // カメラ追従スクリプトの参照
+    [SerializeField] private Transform cameraLockPos;
+    [SerializeField] private CinemachineCamera _currentCam;
+    private Transform _originalFollow;
 
     [Header("道封鎖設定")]
     [SerializeField] private GameObject[] walls; // 道を封鎖するオブジェクト
@@ -48,8 +50,9 @@ public class WaveBattleManager : MonoBehaviour
         foreach (var wall in walls) {
             if (!wall.activeSelf) wall.SetActive(true);
         }
-        // カメラをロック
-        cameraFollow.CameraLock(cameraLockPos.position);
+        // ウェーブ戦闘用カメラを有効化
+        _originalFollow = _currentCam.Follow;
+        _currentCam.Follow = cameraLockPos;
 
         // 出現させた敵を管理するリスト
         List<Enemy_Base> spawnedEnemies = new List<Enemy_Base>();
@@ -92,8 +95,8 @@ public class WaveBattleManager : MonoBehaviour
         foreach (var wall in walls) {
             if (wall.activeSelf) wall.SetActive(false);
         }
-        // カメラの追従を元に戻す
-        cameraFollow.ReleaseCameraLock();
         gameObject.SetActive(false);
+        // ウェーブ戦闘用カメラを無効化
+        _currentCam.Follow = _originalFollow;
     }
 }

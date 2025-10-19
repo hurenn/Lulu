@@ -81,7 +81,7 @@ public class WarpControl : MonoBehaviour
         }
 
         transform.position = safe_point;
-        _cameraFollow.SetWarpMode(is_warp_camera);
+        //_cameraFollow.SetWarpMode(is_warp_camera);
 
         // ÅŒã‚Éƒ[ƒv‚µ‚½•ûŒü‚ğ•Û‘¶
         WarpChecker nearest_checker = null;
