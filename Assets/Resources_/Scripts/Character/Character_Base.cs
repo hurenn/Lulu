@@ -38,10 +38,18 @@ public class Character_Base : MonoBehaviour
     protected bool _isWarpDelay;
     protected bool _isWarpDashing;
     protected bool _isSliding;      // スライディング中かどうか
+    protected void _SetSliding(bool is_sliding, bool is_play_anim = true) {
+        _isSliding = is_sliding;
+        _anim?.SetBool("Slide", is_sliding && is_play_anim);
+    }
     protected bool _isSlidingCanceling; // スライディングキャンセル中かどうか
     protected bool _isSlidingJump;  // スライディングジャンプ中かどうか
     protected bool _isGroundSticking; // 地面に張り付いている状態
-    protected bool _isWallSliding;  // 壁に沿って滑っている状態
+    protected bool _isWallDash;  // 壁に沿って滑っている状態
+    protected void _SetWallDash(bool is_wall_sliding, bool is_play_anim = true) {
+        _isWallDash = is_wall_sliding;
+        _anim?.SetBool("WallDash", is_wall_sliding && is_play_anim);
+    }
     protected bool _isGrounded;
     public bool isGrounded => _isGrounded;
     protected bool _isJumping;
@@ -51,7 +59,7 @@ public class Character_Base : MonoBehaviour
     // 通常移動可能かどうか
     protected bool _CanMove => !_isWarpDashing && !_isSlidingCanceling;
     // 重力を適用するかどうか
-    protected bool _EnableGravity => !_isWarpDashing && !_isWallSliding && !_isWarpDelay && enableGravity;
+    protected bool _EnableGravity => !_isWarpDashing && !_isWallDash && !_isWarpDelay && enableGravity;
     public bool enableGravity = true;
     // ジャンプ力を取得
     protected float _jumpForce => _isDashing ? _param.dashJumpForce :

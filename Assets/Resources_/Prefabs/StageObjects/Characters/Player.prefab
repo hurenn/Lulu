@@ -320,11 +320,13 @@ MonoBehaviour:
   _rb: {fileID: 9106834840076273126}
   _sprite: {fileID: 6554501651606250815}
   _anim: {fileID: 6181267916212409532}
+  _isRight: 1
+  enableGravity: 1
+  _warpControl: {fileID: 8695738934329559163}
+  _warpEffectPrefab: {fileID: 6601440612607403682, guid: 2a8521a41404b8440a44d393284c768c, type: 3}
   _abilityY: {fileID: 0}
   _abilityX: {fileID: 0}
   _abilityA: {fileID: 0}
-  _warpControl: {fileID: 8695738934329559163}
-  _warpEffectPrefab: {fileID: 6601440612607403682, guid: 2a8521a41404b8440a44d393284c768c, type: 3}
 --- !u!114 &8695738934329559163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,6 +354,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _coinWarpInterval: 0.05
+  _avoidWarpInterval: 0.5
 --- !u!114 &4239974138943333648
 MonoBehaviour:
   m_ObjectHideFlags: 0

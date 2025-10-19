@@ -115,12 +115,12 @@ public class Player_Character : Character_Base {
     /// </summary>
     private void _UpdateWallSlideMove() {
         // 壁滑り中でない場合は何もしない
-        if (!_isWallSliding) {
+        if (!_isWallDash) {
             return;
         }
 
         if (_currentWallSlideTime >= _param.maxWallSlideTime) {
-            _isWallSliding = false; // 壁滑り終了
+            _SetWallDash(false);
             return;
         }
         _currentWallSlideTime += Time.deltaTime;
@@ -134,11 +134,12 @@ public class Player_Character : Character_Base {
             // 壁に沿って上方向に滑る
             velocity.y = _param.wallSlideSpeed;
         }
+        _SetWallDash(_isWallDash, velocity.y >= 0);
         _rb.linearVelocity = velocity;
 
         // 壁との接触が無くなった場合は壁滑りを終了してジャンプする
         if (!_isTouchingLeft && !_isTouchingRight) {
-            _isWallSliding = false; // 壁滑り終了
+            _SetWallDash(false);
             _isJumping = true;
 
             velocity.y = _param.jumpForce;
@@ -147,7 +148,7 @@ public class Player_Character : Character_Base {
 
         // 着地した場合は壁滑りを終了
         if (_isGrounded) {
-            _isWallSliding = false; // 壁滑り終了
+            _SetWallDash(false);
         }
     }
 
@@ -156,7 +157,7 @@ public class Player_Character : Character_Base {
     /// </summary>
     private void _ExecuteSlide() {
         _isDashing = true;
-        _isSliding = true;
+        _SetSliding(true);
         _currentSlideTime = 0;
     }
     /// <summary>
@@ -176,7 +177,7 @@ public class Player_Character : Character_Base {
             return;
         }
 
-        _isWallSliding = true;
+        _SetWallDash(true, _rb.linearVelocity.y >= 0);
         _currentWallSlideTime = 0;
         _isSlidingJump = false;
         _isWarpDashing = false;
@@ -195,17 +196,17 @@ public class Player_Character : Character_Base {
 
             _currentSlideTime += Time.deltaTime;
             if (_currentSlideTime >= _param.maxSlideTime) {
-                _isSliding = false; // スライディング終了
+                _SetSliding(false); // スライディング終了
                 _currentSlideTime = 0;
             }
             // 壁に接触している場合はスライディング終了
             if ((_isTouchingLeft && velocity.x < 0) || (_isTouchingRight && velocity.x > 0)) {
-                _isSliding = false; // スライディング終了
+                _SetSliding(false);
                 _currentSlideTime = 0;
             }
         }
         if (_isSlidingCanceling) {
-            _isSliding = false;
+            _SetSliding(false);
 
             Vector2 velocity = _rb.linearVelocity;
             velocity.x *= _param.slideCancelDamping;
@@ -217,6 +218,7 @@ public class Player_Character : Character_Base {
             }
             _rb.linearVelocity = velocity;
         }
+        _anim?.SetBool("Sliding", _isSliding);
     }
 
     private void _UpdateSlideJump() {
@@ -357,10 +359,14 @@ public class Player_Character : Character_Base {
             return false;
         }
 
+        if (_isSliding || _isSlidingJump) {
+            return false; // スライディング中はダメージ無効
+        }
+
         _isWarpDashing = false; // ワープダッシュ終了
-        _isSliding = false; // スライディング終了
+        _SetSliding(false);
         _isSlidingJump = false; // スライディングジャンプ終了
-        _isWallSliding = false; // 壁滑り終了
+        _SetWallDash(false);
         _isGroundSticking = false; // 地面張り付き状態終了
         _isJumping = false; // ジャンプ終了
 
@@ -378,10 +384,10 @@ public class Player_Character : Character_Base {
         }
 
         // 壁滑り中の入力
-        if (_isWallSliding) {
+        if (_isWallDash) {
             // 壁と反対方向に移動しようとする入力があれば壁滑りを終了
             if (_inputData.move.x != 0 && Mathf.Sign(_inputData.move.x) != Mathf.Sign(_warpDashDirection.x)) {
-                _isWallSliding = false; // 壁滑り終了
+                _SetWallDash(false);
                 return;
             }
         }
@@ -419,7 +425,7 @@ public class Player_Character : Character_Base {
         if (_inputData.jumpPressed && _isGrounded && !(_inputData.move.y < -0.5f && _inputData.move.x == 0)) {
             // スライディングジャンプ
             if (_isSliding) {
-                _isSliding = false;
+                _SetSliding(false);
                 _isSlidingJump = true;
 
                 // y方向の加速を無視
@@ -589,7 +595,7 @@ public class Player_Character : Character_Base {
 
     void _OnPreWarpCommon() {
         // スライディングリセット
-        _isSliding = false;
+        _SetSliding(false);
         // 重力を無効化
         _isWarpDelay = true;
         // 速度をリセット
