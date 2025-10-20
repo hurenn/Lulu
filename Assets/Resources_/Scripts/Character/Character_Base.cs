@@ -78,8 +78,8 @@ public class Character_Base : MonoBehaviour
     protected float _damageReactionTimer = 0;
 
     // 死亡フラグ
-    protected bool _isDie = false;
-    public bool isDead => _isDie;
+    protected bool _isDead = false;
+    public bool isDead => _isDead;
 
     private void Start()
     {
@@ -128,7 +128,7 @@ public class Character_Base : MonoBehaviour
     /// コントローラ入力
     /// </summary>
     public virtual void UpdateControl(CharacterInputData input) {
-        if( _isDie ) {
+        if( _isDead ) {
             input.move = Vector2.zero;
             input.jumpHeld = false;
             input.jumpPressed = false;
@@ -295,15 +295,15 @@ public class Character_Base : MonoBehaviour
     /// <param name="invincible_time">無敵時間</param>
     /// <param name="damage_reaction_time">動けない時間</param>
     public virtual bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
-        if (isInvincible || _isDie) {
+        if (isInvincible || _isDead) {
             return false;
         }
 
         if (_charaParam != null) {
             // ダメージ実行
-            _charaParam.ExecuteDamage(damage, invincible_time, ref _isDie);
+            _charaParam.ExecuteDamage(damage, invincible_time, ref _isDead);
 
-            if (_isDie) {
+            if (_isDead) {
                 StartCoroutine(Die());
                 return true;
             }

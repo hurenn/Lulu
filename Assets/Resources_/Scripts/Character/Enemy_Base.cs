@@ -18,6 +18,10 @@ public class Enemy_Base : Character_Base
     [SerializeField] private GameObject _dieExplosion = null;
     public System.Action OnDied = null;
 
+    // 次の行動までの時間
+    protected float _nextActionTime = 0f;
+    protected float _currentActionTime = 0f;
+
     protected override IEnumerator Die() {
         yield return base.Die();
         // ダメージゾーン無効化
