@@ -8,7 +8,6 @@ public class Coin_Object : StageObject_Base
 {
     [SerializeField] private int _MpRecoverAmount = 10; // コイン取得で回復するMP量
     [SerializeField] private int _coinValue = 1; // コインの価値
-    [SerializeField] private AudioClip _collectSound; // コイン取得音
 
     [Header("自動回収設定")]
     [SerializeField] private bool _isAutoCollect = false;   // 自動回収するかどうか
@@ -20,6 +19,8 @@ public class Coin_Object : StageObject_Base
     private Vector3 _velocity = Vector3.zero;
     [SerializeField] private TrailRenderer _trail;
     [SerializeField] private GameObject _pickEffect;
+
+    [SerializeField] private AudioClip _seCollectCoin; // コイン取得音
 
     /// <summary>
     /// 自動回収の初期化
@@ -70,9 +71,9 @@ public class Coin_Object : StageObject_Base
         {
             player.RecoverMP(_MpRecoverAmount, true); // コイン取得でMPを回復
             player.AddExp(_coinValue);
-            if (_collectSound != null)
+            if (player.audioSource != null && _seCollectCoin != null)
             {
-                AudioSource.PlayClipAtPoint(_collectSound, transform.position);
+                player.audioSource.PlayOneShot(_seCollectCoin);
             }
             if(_trail != null) {
                 _trail.transform.parent = null; // トレイルを親から外す

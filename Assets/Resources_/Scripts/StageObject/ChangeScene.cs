@@ -1,11 +1,15 @@
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 public class ChangeScene : StageObject_Base
 {
+#if UNITY_EDITOR
     [SerializeField] private SceneAsset _sceneAsset; // シーンアセット
-    private string _sceneName => _sceneAsset != null ? _sceneAsset.name : string.Empty;
+#endif
+    [SerializeField] private string _sceneName;
 
     [SerializeField]
     private PlayerController characterController = null;
@@ -13,6 +17,14 @@ public class ChangeScene : StageObject_Base
     private void Reset() {
         characterController = FindAnyObjectByType<PlayerController>();
     }
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+      if(_sceneAsset != null) {
+          _sceneName = _sceneAsset.name;
+        }
+    }
+#endif
 
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);

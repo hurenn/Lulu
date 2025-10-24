@@ -29,6 +29,9 @@ public class Player_Character : Character_Base {
     [SerializeField] protected Ability_Base _abilityX;
     [SerializeField] protected Ability_Base _abilityA;
 
+    [SerializeField] protected AudioSource _audio;
+    [SerializeField] protected AudioClip _seWarpSuccess;
+
     protected override void _Setup() {
         base._Setup();
         if (_warpControl != null) {
@@ -544,6 +547,7 @@ public class Player_Character : Character_Base {
             }
             WarpControl.eWarpDirection dash_direction = _warpDirection;
 
+            _audio?.PlayOneShot(_seWarpSuccess);
             if (_inputData.move.magnitude != 0) {
                 // “ü—Í•ûŒü‚Éƒ[ƒv
                 yield return _warpControl.DirectionWarp(_warpDirection);

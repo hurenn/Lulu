@@ -23,6 +23,8 @@ public class Character_Base : MonoBehaviour
     [SerializeField] protected Rigidbody2D _rb;
     [SerializeField] protected SpriteRenderer _sprite;
     [SerializeField] protected Animator _anim;
+    [SerializeField] protected AudioSource _audioSource;
+    public AudioSource audioSource => _audioSource;
 
     // チェッカーパラメータ
     protected Vector3 _groundCheckLocalPos = default;
