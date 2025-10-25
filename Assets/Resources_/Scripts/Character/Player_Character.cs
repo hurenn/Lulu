@@ -41,6 +41,17 @@ public class Player_Character : Character_Base {
         }
         _playerParam = PlayerParameter.Instance;
         ApplyPlayerParameter();
+        _SetupHadAbility();
+    }
+
+    /// <summary>
+    /// 取得済み能力のセットアップ
+    /// </summary>
+    private void _SetupHadAbility() {
+        var had_ability = _playerParam.Abilities;
+        foreach (var ability in had_ability) {
+            SetAbilitySlot(ability.Key, ability.Value);
+        }
     }
 
     protected override void _UpdateSpecials() {
@@ -310,6 +321,7 @@ public class Player_Character : Character_Base {
             default:
                 break;
         }
+        _playerParam.AddAbility(ability_type, ability_slot);
     }
 
     /// <summary>

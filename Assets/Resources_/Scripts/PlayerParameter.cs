@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerParameter : MonoBehaviour {
     private static PlayerParameter _instance;
@@ -22,9 +23,7 @@ public class PlayerParameter : MonoBehaviour {
     public int currentExp => _exp; // 現在の経験値
     private int _expToNextLevel = 200; // 次のレベルまでの経験値
     public int nextExp { get => _expToNextLevel; set => _expToNextLevel = value; }
-
     public System.Action<int> OnExpChanged; // 経験値変更時のコールバック
-
     public enum eLevelType
     {
         HP,
@@ -40,6 +39,14 @@ public class PlayerParameter : MonoBehaviour {
         public int attackLevel = 0;
     }
     public LevelParameter levelParameter = new LevelParameter();
+
+    private Dictionary<eAbilityType, eAbilitySlot> _abilities = new Dictionary<eAbilityType, eAbilitySlot>(); // 取得済みの能力
+    public Dictionary<eAbilityType, eAbilitySlot> Abilities => _abilities;
+    public void AddAbility(eAbilityType ability_type, eAbilitySlot ability_slot) {
+        if (!_abilities.ContainsKey(ability_type)) {
+            _abilities.Add(ability_type, ability_slot);
+        }
+    }
 
     private void Awake() {
         if (_instance != null && _instance != this) {
