@@ -424,7 +424,7 @@ public class Player_Character : Character_Base {
         yield return new WaitForSeconds(1.0f);
 
         // ƒV[ƒ“Ä“Ç‚İ‚İ
-        ChangeScene.UpdateScene();
+        ChangeScene.LoadScene();
     }
 
     /// <summary>

@@ -29,6 +29,7 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private Image _iconImage;                  // キャラクターアイコン表示用イメージ
     [SerializeField] private GameObject _messagePanel;          // メッセージパネル
     [SerializeField] private Image _nextIcon;                   // 次のメッセージを促すアイコン
+    [SerializeField] private Image _nextButtonIcon;             // 次のメッセージを促すボタンアイコン
     [SerializeField] private Image[] _messageWindows;         // メッセージパネルのCanvasGroup
     [SerializeField] private float _fadeAlpha = 0.3f;      // フェード時の透明度
     [SerializeField] private float _normalAlpha = 0.9f;    // 通常時の透明度
@@ -49,18 +50,14 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private AudioClip _seSpeak;
     [SerializeField] private AudioClip _seSpeakOne;
 
-    private enum eLanguage {
-        English,
-        Japanese,
-    }
-    // 言語設定
-    [SerializeField] private eLanguage _language = eLanguage.Japanese;
+    private PlayerParameter _playerParameter;
 
     private void OnEnable() {
         _messagePanel.SetActive(false); // パネルを非表示
         if(_playerController == null) {
             _playerController = FindAnyObjectByType<PlayerController>();
         }
+        _playerParameter = PlayerParameter.Instance;
     }
 
     private void Update() {
@@ -81,7 +78,12 @@ public class MessageViewer : MonoBehaviour {
         }
         if (!_isShowing) return;
 
-        if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
+        // ボタン表示切替
+        var is_auto_message = _currentMessage.playableDirector == null || _currentMessage.isAutoForce;
+        _nextButtonIcon.gameObject.SetActive(!is_auto_message);
+
+        _nextIcon.gameObject.SetActive(is_auto_message);
+        if (is_auto_message) {
             // イベントメッセージの場合、ユーザー入力待ち
             if (_isShowing && _playerController.Input.messageNextPressed) {
                 _HideOrNext();
@@ -103,7 +105,7 @@ public class MessageViewer : MonoBehaviour {
             StopCoroutine(_typingCoroutine);            // 表示中のコルーチンを停止
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
-        _currentText = _language == eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
+        _currentText = _playerParameter.language == PlayerParameter.eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
         if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
             //_currentMessage.playableDirector.Pause(); // Timelineを一時停止
 
@@ -113,7 +115,7 @@ public class MessageViewer : MonoBehaviour {
             StartCoroutine(_typingCoroutine);
         } else {
             // メッセージを1文字ずつ表示するコルーチン開始
-            _typingCoroutine = _TypeText(_currentText, _language == eLanguage.Japanese ? _AUTO_MESSAGE_SHOW_TIME : _AUTO_ENG_MESSAGE_SHOW_TIME);
+            _typingCoroutine = _TypeText(_currentText, _playerParameter.language == PlayerParameter.eLanguage.Japanese ? _AUTO_MESSAGE_SHOW_TIME : _AUTO_ENG_MESSAGE_SHOW_TIME);
             StartCoroutine(_typingCoroutine);
         }
 
@@ -125,7 +127,7 @@ public class MessageViewer : MonoBehaviour {
         character_name = character_name.Split('_')[0];
 
         // キャラクター名をセット
-        if(_language == eLanguage.English) {
+        if(_playerParameter.language == PlayerParameter.eLanguage.English) {
             _characterText.text = character_name;
             _namePanel.SetActive(!string.IsNullOrEmpty(character_name));
         } else {
@@ -167,8 +169,8 @@ public class MessageViewer : MonoBehaviour {
             _messageText.text = message;
         } else {
             foreach (char c in message) { // 1文字ずつ表示
-                if (_language == eLanguage.Japanese ||
-                    (_language == eLanguage.English && _messageText.text.Length % 2 == 0)) {
+                if (_playerParameter.language == PlayerParameter.eLanguage.Japanese ||
+                    (_playerParameter.language == PlayerParameter.eLanguage.English && _messageText.text.Length % 2 == 0)) {
                     _audioSource.PlayOneShot(_seSpeakOne);
                 }
                 _messageText.text += c;

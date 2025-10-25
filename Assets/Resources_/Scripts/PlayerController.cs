@@ -144,29 +144,35 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void OnAbilityY(InputAction.CallbackContext context) {
+        _isMessageNextPressed = true;
         _isAbilityYPressed = true;
         _isAbilityYHeld = true;
     }
 
     private void OnAbilityYRelease(InputAction.CallbackContext context) {
+        _isMessageNextPressed = false;
         _isAbilityYPressed = false;
         _isAbilityYHeld = false;
     }
 
     private void OnAbilityX(InputAction.CallbackContext context) {
+        _isMessageNextPressed = true;
         _isAbilityXPressed = true;
         _isAbilityXHeld = true;
     }
     private void OnAbilityXRelease(InputAction.CallbackContext context) {
+        _isMessageNextPressed = false;
         _isAbilityXPressed = false;
         _isAbilityXHeld = false;
     }
 
     private void OnAbilityA(InputAction.CallbackContext context) {
+        _isMessageNextPressed = true;
         _isAbilityAPressed = true;
         _isAbilityAHeld = true;
     }
     private void OnAbilityARelease(InputAction.CallbackContext context) {
+        _isMessageNextPressed = false;
         _isAbilityAPressed = false;
         _isAbilityAHeld = false;
     }

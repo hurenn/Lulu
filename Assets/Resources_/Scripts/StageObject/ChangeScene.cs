@@ -30,13 +30,13 @@ public class ChangeScene : StageObject_Base
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);
         if (!string.IsNullOrEmpty(_sceneName)) {
-            UpdateScene(_sceneName, characterController);
+            LoadScene(_sceneName, characterController);
         } else {
             Debug.LogWarning("SceneAsset is not assigned.");
         }
     }
 
-    public static void UpdateScene(string sceneName = null, PlayerController characterController = null) {
+    public static void LoadScene(string sceneName = null, PlayerController characterController = null) {
         if (characterController != null) {
             characterController.isEnabledCharacterInput = false;
         }
