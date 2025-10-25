@@ -18,13 +18,12 @@ public class FadeManager : MonoBehaviour
 	public static FadeManager Instance {
 		get {
 			if (instance == null) {
-				instance = (FadeManager)FindObjectOfType (typeof(FadeManager));
-				
+				instance = GameObject.FindAnyObjectByType<FadeManager>();
 				if (instance == null) {
-					Debug.LogError (typeof(FadeManager) + "is nothing");
+					GameObject obj = new GameObject();
+					instance = obj.AddComponent<FadeManager>();
 				}
 			}
-			
 			return instance;
 		}
 	}
@@ -40,7 +39,7 @@ public class FadeManager : MonoBehaviour
 	/// <summary>フェード中かどうか</summary>
 	private bool isFading = false;
 	/// <summary>フェード色</summary>
-	public Color fadeColor = Color.black;
+	public Color fadeColor = Color.white;
 
 
 	public void Awake ()

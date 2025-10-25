@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// プレイヤーキャラクター（ルル）
@@ -410,6 +411,20 @@ public class Player_Character : Character_Base {
         _isJumping = false; // ジャンプ終了
 
         return base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
+    }
+
+    protected override IEnumerator Die() {
+        yield return base.Die();
+
+        yield return new WaitForSeconds(1.0f);
+
+        Instantiate(_warpEffectPrefab, transform.position, Quaternion.identity);
+        _sprite.enabled = false;
+
+        yield return new WaitForSeconds(1.0f);
+
+        // シーン再読み込み
+        ChangeScene.UpdateScene();
     }
 
     /// <summary>

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEditor;
 #endif
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ChangeScene : StageObject_Base
 {
@@ -29,18 +30,21 @@ public class ChangeScene : StageObject_Base
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);
         if (!string.IsNullOrEmpty(_sceneName)) {
-            StartCoroutine(_ChangeSceneCoroutine());
+            UpdateScene(_sceneName, characterController);
         } else {
             Debug.LogWarning("SceneAsset is not assigned.");
         }
     }
 
-    private IEnumerator _ChangeSceneCoroutine() {
-        characterController.isEnabledCharacterInput = false;
+    public static void UpdateScene(string sceneName = null, PlayerController characterController = null) {
+        if (characterController != null) {
+            characterController.isEnabledCharacterInput = false;
+        }
 
-        // フェードアウト
-        yield return new WaitForSeconds(1.0f);
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene(_sceneName);
+        // 切り替えシーンの読み込み
+        if (sceneName == null) {
+            sceneName = SceneManager.GetActiveScene().name;
+        }
+        FadeManager.Instance.LoadScene(sceneName, 0.5f);
     }
 }
