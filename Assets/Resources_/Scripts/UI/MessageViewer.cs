@@ -79,11 +79,11 @@ public class MessageViewer : MonoBehaviour {
         if (!_isShowing) return;
 
         // ボタン表示切替
-        var is_auto_message = _currentMessage.playableDirector == null || _currentMessage.isAutoForce;
-        _nextButtonIcon.gameObject.SetActive(!is_auto_message);
+        var is_event_message = _currentMessage.playableDirector != null && !_currentMessage.isAutoForce;
+        _nextButtonIcon.gameObject.SetActive(is_event_message);
+        _nextIcon.gameObject.SetActive(!is_event_message);
 
-        _nextIcon.gameObject.SetActive(is_auto_message);
-        if (is_auto_message) {
+        if (is_event_message) {
             // イベントメッセージの場合、ユーザー入力待ち
             if (_isShowing && _playerController.Input.messageNextPressed) {
                 _HideOrNext();
