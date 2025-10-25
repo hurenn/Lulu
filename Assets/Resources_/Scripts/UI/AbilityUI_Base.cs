@@ -21,8 +21,8 @@ public class AbilityUI_Base : MonoBehaviour
     /// 能力UIの設定
     /// </summary>
     /// <param name="ability_type">能力タイプ</param>
-    public void SetAbilityUI(eAbilityType ability_type) {
-        StartCoroutine(_JoinEffect(ability_type));
+    public void SetAbilityUI(eAbilityType ability_type, bool is_effect = true) {
+        StartCoroutine(_JoinEffect(ability_type, is_effect));
     }
 
     /// <summary>
@@ -30,10 +30,12 @@ public class AbilityUI_Base : MonoBehaviour
     /// </summary>
     /// <param name="ability_type"></param>
     /// <returns></returns>
-    private IEnumerator _JoinEffect(eAbilityType ability_type) {
+    private IEnumerator _JoinEffect(eAbilityType ability_type, bool is_effect = true) {
         _UpdateUI(ability_type);
         yield return new WaitForSeconds(0.1f);
-        Instantiate(_effectPrefab, _iconImage.transform);
+        if (is_effect) {
+            Instantiate(_effectPrefab, _iconImage.transform);
+        }
     }
 
     private void _UpdateUI(eAbilityType ability_type) {

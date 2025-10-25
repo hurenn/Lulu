@@ -21,7 +21,7 @@ public static class AbilityFactory {
     /// <param name="type">能力の種類</param>
     /// <returns>生成した能力</returns>
     public static Ability_Base CreateAbility(
-        eAbilityType type, eAbilitySlot slot) {
+        eAbilityType type, eAbilitySlot slot, bool is_effect = true) {
         if (type == eAbilityType.None) {
             Debug.LogError("Ability type is None");
             return null;
@@ -50,13 +50,13 @@ public static class AbilityFactory {
 
         // UI更新
         if(_abilityUIManager == null) {
-            _abilityUIManager = GameObject.FindObjectOfType<AbilityUIManager>();
+            _abilityUIManager = GameObject.FindAnyObjectByType<AbilityUIManager>();
             if(_abilityUIManager == null) {
                 Debug.LogError("AbilityUIManagerが見つかりません");
                 return ability;
             }
         }
-        _abilityUIManager.SetAbilityUI(slot, type);
+        _abilityUIManager.SetAbilityUI(slot, type, is_effect);
 
         return ability;
     }

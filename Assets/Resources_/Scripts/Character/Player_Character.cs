@@ -50,7 +50,7 @@ public class Player_Character : Character_Base {
     private void _SetupHadAbility() {
         var had_ability = _playerParam.Abilities;
         foreach (var ability in had_ability) {
-            SetAbilitySlot(ability.Key, ability.Value);
+            SetAbilitySlot(ability.Key, ability.Value, false);
         }
     }
 
@@ -300,8 +300,8 @@ public class Player_Character : Character_Base {
     /// <summary>
     /// 能力スロットにセット
     /// </summary>
-    public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot) {
-        var ability = AbilityFactory.CreateAbility(ability_type, ability_slot);
+    public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot, bool is_effect = true) {
+        var ability = AbilityFactory.CreateAbility(ability_type, ability_slot, is_effect);
         if (ability == null) {
             Debug.LogError("能力生成失敗: " + ability_type);
             return;
