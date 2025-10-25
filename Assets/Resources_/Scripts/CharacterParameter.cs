@@ -201,19 +201,20 @@ public class CharacterParameter : MonoBehaviour {
     /// </summary>
     /// <param name="amount">回復値</param>
     /// <param name="force">強制回復フラグ</param>
-    public void RecoverMP(float amount, bool force = false) {
+    public bool RecoverMP(float amount, bool force = false) {
         if (!force && (isOverheat || _currentUnRecoverableTime_MP > 0)) {
             // 回復不可判定
-            return;
+            return false;
         }
         _currentMP += amount;
         if (_currentMP > _maxMP) _currentMP = _maxMP; // Assuming 100 is the max MP
 
         // MPゲージの更新
         _UpdateMPUI();
+        return true;
     }
-    public void RecoverMP() {
-        RecoverMP(_maxMP);
+    public bool RecoverMP() {
+        return RecoverMP(_maxMP);
     }
     public void OnRecoverOverheat() {
         _currentOverheatTimer = 0;

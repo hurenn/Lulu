@@ -322,6 +322,9 @@ MonoBehaviour:
   _sprite: {fileID: 6554501651606250815}
   _anim: {fileID: 6181267916212409532}
   _audioSource: {fileID: 1073441699862045369}
+  _seJump: {fileID: 8300000, guid: ba2aec84cf544e543bab0e6a7fd2cc35, type: 3}
+  _seDamage: {fileID: 8300000, guid: 49310710ade74f04abaf99a4bc9ef99c, type: 3}
+  _seDead: {fileID: 8300000, guid: ae9ed51805db1a34d98ba0dd085be0b3, type: 3}
   _isRight: 1
   enableGravity: 1
   _warpControl: {fileID: 8695738934329559163}
@@ -329,8 +332,7 @@ MonoBehaviour:
   _abilityY: {fileID: 0}
   _abilityX: {fileID: 0}
   _abilityA: {fileID: 0}
-  _audio: {fileID: 3123718113213705543}
-  _seWarpSuccess: {fileID: 8300000, guid: 649de4670f4e4214f83fe3e2d29d7f43, type: 3}
+  _seMpRecover: {fileID: 8300000, guid: bf9741272d0121e4eb35c8e541eb34d3, type: 3}
 --- !u!114 &8695738934329559163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,6 +361,8 @@ MonoBehaviour:
     m_Bits: 256
   _coinWarpInterval: 0.05
   _avoidWarpInterval: 0.5
+  _audioSource: {fileID: 3123718113213705543}
+  _seWarp: {fileID: 8300000, guid: 649de4670f4e4214f83fe3e2d29d7f43, type: 3}
 --- !u!114 &4239974138943333648
 MonoBehaviour:
   m_ObjectHideFlags: 0

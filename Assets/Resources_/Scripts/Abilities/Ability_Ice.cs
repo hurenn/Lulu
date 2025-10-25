@@ -223,6 +223,7 @@ public class Ability_Ice : Ability_Base {
     }
 
     public override eAbilityResult ExecuteLong() {
+        return eAbilityResult.None;
         // êÿÇËó£Çµ
         if (!_isHoldExecuted) {
             _pressHoldTime += Time.deltaTime;
@@ -235,7 +236,6 @@ public class Ability_Ice : Ability_Base {
                 return eAbilityResult.IceSeparate;
             }
         }
-        return eAbilityResult.None;
     }
 
     public override void ExecuteRelease() {

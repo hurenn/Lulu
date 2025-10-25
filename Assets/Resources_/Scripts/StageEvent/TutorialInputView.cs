@@ -9,6 +9,9 @@ public class TutorialInputView : MonoBehaviour {
     // プレイヤーコントローラー
     [SerializeField] private PlayerController _PlayerController;
 
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _seInput;
+
     private bool _isAllComplete = false;
     private float _blinkSpeed = 2.0f;
 
@@ -26,6 +29,12 @@ public class TutorialInputView : MonoBehaviour {
         // 十字キー入力表示
         if (_rightInputView != null) {
             if (is_right || _isAllComplete) {
+                if(is_right && !_rightInputView.color.Equals(Color.green)) {
+                    // 入力音再生
+                    if(_audioSource != null && _seInput != null) {
+                        _audioSource.PlayOneShot(_seInput);
+                    }
+                }
                 _rightInputView.color = Color.green;
             } else {
                 _rightInputView.color = _GetWaitInputColor();
@@ -33,6 +42,12 @@ public class TutorialInputView : MonoBehaviour {
         }
         if (_downInputView != null) {
             if (is_down || _isAllComplete) {
+                if(is_down && !_downInputView.color.Equals(Color.green)) {
+                    // 入力音再生
+                    if(_audioSource != null && _seInput != null) {
+                        _audioSource.PlayOneShot(_seInput);
+                    }
+                }
                 _downInputView.color = Color.green;
             } else {
                 _downInputView.color = _GetWaitInputColor();

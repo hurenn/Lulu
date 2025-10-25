@@ -43,6 +43,10 @@ public class WarpControl : MonoBehaviour
     // 最後にワープした方向
     public eWarpDirection lastWarpDir { get; private set; } = eWarpDirection.Right;
 
+    [SerializeField] private AudioSource _audioSource;
+    public AudioSource audioSource { get { return _audioSource; } }
+    [SerializeField] private AudioClip _seWarp;
+
     /// <summary>
     /// セットアップ
     /// </summary>
@@ -80,6 +84,10 @@ public class WarpControl : MonoBehaviour
             yield return 0.1f; // 一瞬待機
         }
 
+        // ワープSE再生
+        if (_audioSource != null && _seWarp != null) {
+            _audioSource.PlayOneShot(_seWarp);
+        }
         transform.position = safe_point;
         //_cameraFollow.SetWarpMode(is_warp_camera);
 

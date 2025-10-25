@@ -25,6 +25,9 @@ public class Character_Base : MonoBehaviour
     [SerializeField] protected Animator _anim;
     [SerializeField] protected AudioSource _audioSource;
     public AudioSource audioSource => _audioSource;
+    [SerializeField] protected AudioClip _seJump;
+    [SerializeField] protected AudioClip _seDamage;
+    [SerializeField] protected AudioClip _seDead;
 
     // チェッカーパラメータ
     protected Vector3 _groundCheckLocalPos = default;
@@ -302,10 +305,16 @@ public class Character_Base : MonoBehaviour
         }
 
         if (_charaParam != null) {
+            if (_seDamage != null) {
+                _audioSource?.PlayOneShot(_seDamage);
+            }
             // ダメージ実行
             _charaParam.ExecuteDamage(damage, invincible_time, ref _isDead);
 
             if (_isDead) {
+                if (_seDead != null) {
+                    _audioSource?.PlayOneShot(_seDead);
+                }
                 StartCoroutine(Die());
                 return true;
             }
@@ -344,17 +353,6 @@ public class Character_Base : MonoBehaviour
             return _col.bounds.size; // キャラクターのコライダーサイズを返す
         }
         return new Vector2(0.5f, 1f); // デフォルトのキャラクターサイズ
-    }
-
-    /// <summary>
-    /// MP回復
-    /// </summary>
-    /// <param name="amount">回復値</param>
-    /// <param name="force">強制回復</param>
-    public void RecoverMP(float amount, bool force) {
-        if (_charaParam != null) {
-            _charaParam.RecoverMP(amount, force);
-        }
     }
 
     #region デバッグ用

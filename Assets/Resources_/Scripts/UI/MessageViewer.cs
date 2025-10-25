@@ -17,6 +17,7 @@ public class MessageViewer : MonoBehaviour {
     };
     private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
     private const float _AUTO_MESSAGE_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間
+    private const float _AUTO_ENG_MESSAGE_SHOW_TIME = 0.025f; // 英語1文字あたりの追加表示時間
     private const float _COOL_TIME = 0.5f;  // メッセージ表示クールタイム
     private const float _FORCE_COOL_TIME = 0.1f; // 強制メッセージ表示クールタイム
 
@@ -43,6 +44,10 @@ public class MessageViewer : MonoBehaviour {
     private bool _isEventMessage;    // イベントメッセージフラグ
     private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
     private IEnumerator _typingCoroutine; // 文字を1つずつ表示するコルーチン
+
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _seSpeak;
+    [SerializeField] private AudioClip _seSpeakOne;
 
     private enum eLanguage {
         English,
@@ -108,7 +113,7 @@ public class MessageViewer : MonoBehaviour {
             StartCoroutine(_typingCoroutine);
         } else {
             // メッセージを1文字ずつ表示するコルーチン開始
-            _typingCoroutine = _TypeText(_currentText, _AUTO_MESSAGE_SHOW_TIME);
+            _typingCoroutine = _TypeText(_currentText, _language == eLanguage.Japanese ? _AUTO_MESSAGE_SHOW_TIME : _AUTO_ENG_MESSAGE_SHOW_TIME);
             StartCoroutine(_typingCoroutine);
         }
 
@@ -150,8 +155,10 @@ public class MessageViewer : MonoBehaviour {
 
     // 1文字ずつ表示する場合のコルーチン
     private IEnumerator _TypeText(string message, float message_show_time) {
+        _audioSource.Stop();
         _messageText.text = "";
         if (message_show_time <= 0) { // 一気に表示
+            _audioSource.PlayOneShot(_seSpeak);
             var view_message = message.Length / 3;
             _messageText.text = message.Substring(0, view_message);
             yield return new WaitForSeconds(0.01f);
@@ -160,6 +167,10 @@ public class MessageViewer : MonoBehaviour {
             _messageText.text = message;
         } else {
             foreach (char c in message) { // 1文字ずつ表示
+                if (_language == eLanguage.Japanese ||
+                    (_language == eLanguage.English && _messageText.text.Length % 2 == 0)) {
+                    _audioSource.PlayOneShot(_seSpeakOne);
+                }
                 _messageText.text += c;
                 yield return new WaitForSeconds(message_show_time);
             }

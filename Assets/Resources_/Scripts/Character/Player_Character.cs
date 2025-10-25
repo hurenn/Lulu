@@ -29,8 +29,7 @@ public class Player_Character : Character_Base {
     [SerializeField] protected Ability_Base _abilityX;
     [SerializeField] protected Ability_Base _abilityA;
 
-    [SerializeField] protected AudioSource _audio;
-    [SerializeField] protected AudioClip _seWarpSuccess;
+    [SerializeField] protected AudioClip _seMpRecover;
 
     protected override void _Setup() {
         base._Setup();
@@ -56,7 +55,12 @@ public class Player_Character : Character_Base {
 
         // 着地時MP回復
         if (_isGrounded && !_charaParam.isMaxMP) {
-            _charaParam.RecoverMP();
+            if (_charaParam.RecoverMP()) {
+                // SE再生
+                if (_seMpRecover != null) {
+                    _warpControl.audioSource?.PlayOneShot(_seMpRecover);
+                }
+            }
         }
 
         // 地面張り付き状態計測
@@ -66,6 +70,18 @@ public class Player_Character : Character_Base {
                 _isGroundSticking = false; // 張り付き状態を解除
             }
         }
+    }
+
+    /// <summary>
+    /// MP回復
+    /// </summary>
+    /// <param name="amount">回復値</param>
+    /// <param name="force">強制回復</param>
+    public void RecoverMP(float amount, bool force) {
+        if (_charaParam == null) {
+            return;
+        }
+        _charaParam.RecoverMP(amount, force);
     }
 
     /// <summary>
@@ -144,6 +160,9 @@ public class Player_Character : Character_Base {
         if (!_isTouchingLeft && !_isTouchingRight) {
             _SetWallDash(false);
             _isJumping = true;
+            if (_seJump != null) {
+                _audioSource?.PlayOneShot(_seJump);
+            }
 
             velocity.y = _param.jumpForce;
             _rb.linearVelocity = velocity; // ジャンプ力を適用
@@ -444,6 +463,9 @@ public class Player_Character : Character_Base {
             _isJumping = true;
             _anim?.SetBool("Jump", true);
             _anim?.Play("Jump");
+            if (_seJump != null) {
+                _audioSource?.PlayOneShot(_seJump);
+            }
         }
         // ジャンプリリース
         if ((!_inputData.jumpHeld && _isJumping) || _currentJumpTime <= 0) {
@@ -547,7 +569,6 @@ public class Player_Character : Character_Base {
             }
             WarpControl.eWarpDirection dash_direction = _warpDirection;
 
-            _audio?.PlayOneShot(_seWarpSuccess);
             if (_inputData.move.magnitude != 0) {
                 // 入力方向にワープ
                 yield return _warpControl.DirectionWarp(_warpDirection);

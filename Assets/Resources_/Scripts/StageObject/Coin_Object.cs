@@ -75,9 +75,9 @@ public class Coin_Object : StageObject_Base
             {
                 player.audioSource.PlayOneShot(_seCollectCoin);
             }
-            if(_trail != null) {
+            if (_trail != null) {
                 _trail.transform.parent = null; // トレイルを親から外す
-                _trail.autodestruct = true; // 自動削除を有効化
+                Destroy(_trail, 5.0f);
             }
             if(_pickEffect != null) {
                 Instantiate(_pickEffect, transform.position, Quaternion.identity, player.transform);
