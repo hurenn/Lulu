@@ -4,9 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class CharacterParameter : MonoBehaviour {
-    // 共通パラメータ
-    protected CommonParameter _param;
-
     private const float _warpCost = 30.0f; // ワープに必要なMP
     private const float _iceCost = 10.0f; // 氷の能力に必要なMP
     private const float _fireCost = 5.0f; // 炎の能力に必要なMP
@@ -14,11 +11,11 @@ public class CharacterParameter : MonoBehaviour {
     private const float _lightAvoidCost = 5.0f; // 回避時に必要なMP
 
     // HP
-    public int defaultMaxHP = 3;
+    private int _defaultMaxHP = 3;
     private int _maxHP = 3;
     public int MaxHP => _maxHP;
-    public void SetMaxHP(int max_hp, bool recover = true) {
-        _maxHP = max_hp;
+    public void SetPlusMaxHp(int plus_hp, bool recover = true) {
+        _maxHP = _defaultMaxHP + plus_hp;
         OnMaxHPChanged?.Invoke(_maxHP);
 
         if (recover) {
@@ -35,7 +32,6 @@ public class CharacterParameter : MonoBehaviour {
     }
     public System.Action<int> OnHPChanged;
     public System.Action<int> OnMaxHPChanged;
-    public System.Action<int> OnExpChanged;
 
     // 無敵時間
     private float _currentInvincibilityTimer = 0;
@@ -44,10 +40,10 @@ public class CharacterParameter : MonoBehaviour {
     public bool isInvincible => _currentInvincibilityTimer > 0;
 
     // MP
-    public float defaultMaxMP = 100.0f;
+    public float _defaultMaxMP = 100.0f;
     private float _maxMP = 100.0f;
-    public void SetMaxMP(float max_mp, bool recover = true) {
-        _maxMP = max_mp;
+    public void SetPlusMaxMp(float plus_mp, bool recover = true) {
+        _maxMP = _defaultMaxMP +  plus_mp;
         if (recover) {
             _currentMP = _maxMP;
             _UpdateMPUI();
@@ -84,31 +80,9 @@ public class CharacterParameter : MonoBehaviour {
     // MPゲージ非表示コルーチン
     private IEnumerator _mpHideCoroutine = null;
 
-    private int _currentExp = 0;
-    public int currentExp {
-        get => _currentExp;
-        set {
-            _currentExp = value;
-            if (_currentExp < 0) _currentExp = 0;
-            OnExpChanged?.Invoke(_currentExp);
-        }
-    }
-    private int _nextLevelExp = 100;
-    public int nextLevelExp {
-        get => _nextLevelExp;
-        set {
-            _nextLevelExp = value;
-            if (_nextLevelExp < 1) _nextLevelExp = 1;
-        }
-    }
-
-    public void Setup(CommonParameter param) {
-        _param = param;
+    public void Setup() {
         _originalColor = _rend.color;
-    }
-
-    private void Start() {
-        _maxHP = defaultMaxHP;
+        _maxHP = _defaultMaxHP;
         CurrentHP = _maxHP;
     }
 
@@ -270,63 +244,4 @@ public class CharacterParameter : MonoBehaviour {
         }
         _mpHideCoroutine = null;
     }
-
-    /// <summary>
-    /// 経験値追加
-    /// </summary>
-    public void AddExp(int value) {
-        currentExp += value;
-        if (currentExp >= nextLevelExp) {
-            currentExp -= nextLevelExp;
-            nextLevelExp = (int)(nextLevelExp * 1.5f);
-            // レベルアップ処理
-            Levelup();
-        }
-    }
-
-    /// <summary>
-    /// レベルアップ実行
-    /// </summary>
-    /// <param name="level_type"></param>
-    public void Levelup(PlayerParameter.eLevelType level_type = PlayerParameter.eLevelType.All) {
-        // 対応するレベルを上げる
-        var player_param = PlayerParameter.Instance;
-        if (player_param != null) {
-            switch (level_type) {
-                case PlayerParameter.eLevelType.HP:
-                    player_param.levelParameter.hpLevel++;
-                    break;
-                case PlayerParameter.eLevelType.MP:
-                    player_param.levelParameter.mpLevel++;
-                    break;
-                case PlayerParameter.eLevelType.Attack:
-                    player_param.levelParameter.attackLevel++;
-                    break;
-                case PlayerParameter.eLevelType.All:
-                    player_param.levelParameter.hpLevel++;
-                    player_param.levelParameter.mpLevel++;
-                    player_param.levelParameter.attackLevel++;
-                    break;
-                default:
-                    break;
-            }
-        }
-        Debug.Log($"Levelup:{level_type.ToString()}");
-
-        // レベルに応じたパラメータを適用
-        ApplyPlayerParameter();
-    }
-
-    /// <summary>
-    /// レベルに応じたパラメータを適用
-    /// </summary>
-    public void ApplyPlayerParameter() {
-        var player_param = PlayerParameter.Instance;
-        if (player_param != null) {
-            SetMaxHP(defaultMaxHP + player_param.levelParameter.hpLevel);
-            SetMaxMP(defaultMaxMP + player_param.levelParameter.mpLevel * _param.mpUpPerLevel);
-            attackPower = defaultAttackPower + player_param.levelParameter.attackLevel * _param.attackUpPerLevel;
-        }
-    }
-
 }

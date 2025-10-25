@@ -1,18 +1,29 @@
 using System;
 using UnityEngine;
 
-public class PlayerParameter : MonoBehaviour
-{    public static PlayerParameter Instance { get; private set; }
+public class PlayerParameter : MonoBehaviour {
+    private static PlayerParameter _instance;
+    public static PlayerParameter Instance {
+        get {
+            if (_instance == null) {
+                // シーンに存在しない場合、新規作成
+                GameObject obj = new GameObject("PlayerParameter");
+                _instance = obj.AddComponent<PlayerParameter>();
+                DontDestroyOnLoad(obj);
+            }
+            return _instance;
+        }
+    }
+
     [SerializeField]
     private int _level = 1; // レベル
     [SerializeField]
     private int _exp = 0; // 経験値
-    [SerializeField]
-    private int _expToNextLevel = 100; // 次のレベルまでの経験値
-    [SerializeField]
-    private int _score = 0; // 現在のスコア
-    // スコアが変化したときに呼び出されるイベント
-    public System.Action<int> OnScoreChanged;
+    public int currentExp => _exp; // 現在の経験値
+    private int _expToNextLevel = 200; // 次のレベルまでの経験値
+    public int nextExp { get => _expToNextLevel; set => _expToNextLevel = value; }
+
+    public System.Action<int> OnExpChanged; // 経験値変更時のコールバック
 
     public enum eLevelType
     {
@@ -31,41 +42,47 @@ public class PlayerParameter : MonoBehaviour
     public LevelParameter levelParameter = new LevelParameter();
 
     private void Awake() {
-        if (Instance == null) {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        } else {
+        if (_instance != null && _instance != this) {
             Destroy(gameObject);
+            return;
         }
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
-    public void AddExp(int amount) {
+
+    public void AddExp(int amount, System.Action apply_status_callback) {
         _exp += amount;
-        Debug.Log($"Gained {amount} EXP. Total EXP: {_exp}/{_expToNextLevel}");
+        OnExpChanged?.Invoke(_exp);
         while (_exp >= _expToNextLevel) {
             LevelUp();
+            apply_status_callback?.Invoke();
         }
     }
-    private void LevelUp() {
+    private void LevelUp(eLevelType level_type = eLevelType.All) {
         _exp -= _expToNextLevel;
         _level++;
-        Debug.Log($"Leveled up! New Level: {_level}. EXP for next level: {_expToNextLevel}");
-        // レベルアップ時の処理（ステータスアップ、スキル取得など）をここに追加
+
+        switch (level_type) {
+            case eLevelType.HP:
+                levelParameter.hpLevel++;
+                break;
+            case eLevelType.MP:
+                levelParameter.mpLevel++;
+                break;
+            case eLevelType.Attack:
+                levelParameter.attackLevel++;
+                break;
+            case eLevelType.All:
+                levelParameter.hpLevel++;
+                levelParameter.mpLevel++;
+                levelParameter.attackLevel++;
+                break;
+        }
     }
     public int GetLevel() {
         return _level;
     }
     public int GetExp() {
         return _exp;
-    }
-    public int GetExpToNextLevel() {
-        return _expToNextLevel;
-    }
-
-    public void AddScore(int amount) {
-        _score += amount;
-        OnScoreChanged?.Invoke(_score);
-    }
-    public int GetScore() {
-        return _score;
     }
 }

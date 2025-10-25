@@ -108,7 +108,7 @@ public class Character_Base : MonoBehaviour
         _wallCheckRightLocalPos = Vector3.right * (chara_size.x / 2 + _param.wallCheckWidth);
         _wallCheckScale = new Vector3(_param.wallCheckWidth, chara_size.y - _param.checkerBuffer, 1);
 
-        _charaParam?.Setup(_param);
+        _charaParam?.Setup();
     }
 
     private void FixedUpdate() {
@@ -286,10 +286,6 @@ public class Character_Base : MonoBehaviour
 
             _rb.linearVelocity = velocity;
         }
-    }
-
-    public void Levelup(PlayerParameter.eLevelType level_type) {
-        _charaParam?.Levelup(level_type);
     }
 
     /// <summary>

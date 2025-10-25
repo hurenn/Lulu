@@ -45,7 +45,6 @@ public class CommonParameter : ScriptableObject
 
     [Header("ワープクールタイム")]
     public float warpCoolTime = 0.1f;
-    public float coinWarpInterval = 0.1f; // コインワープのインターバル時間
 
     [Header("ワープダッシュ時間")]
     public float maxWarpDashTime = 0.5f; // ワープダッシュの最大時間

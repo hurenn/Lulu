@@ -31,11 +31,16 @@ public class Player_Character : Character_Base {
 
     [SerializeField] protected AudioClip _seMpRecover;
 
+    // プレイヤー用パラメーター
+    private PlayerParameter _playerParam;
+
     protected override void _Setup() {
         base._Setup();
         if (_warpControl != null) {
             _warpControl.Setup(_OnPreWarpCommon, _OnWarpEndCommon);
         }
+        _playerParam = PlayerParameter.Instance;
+        ApplyPlayerParameter();
     }
 
     protected override void _UpdateSpecials() {
@@ -644,10 +649,18 @@ public class Player_Character : Character_Base {
         _isWarpDelay = false;
     }
 
-    public void AddExp(int exp) {
-        if (exp <= 0) {
-            return;
+    /// <summary>
+    /// 経験値追加
+    /// </summary>
+    public void AddExp(int value) => _playerParam.AddExp(value, ApplyPlayerParameter);
+
+    /// <summary>
+    /// レベルに応じたパラメータを適用
+    /// </summary>
+    public void ApplyPlayerParameter() {
+        if (_playerParam != null) {
+            _charaParam.SetPlusMaxHp(_playerParam.levelParameter.hpLevel);
+            _charaParam.SetPlusMaxMp(_playerParam.levelParameter.mpLevel * _param.mpUpPerLevel);
         }
-        _charaParam.AddExp(exp);
     }
 }

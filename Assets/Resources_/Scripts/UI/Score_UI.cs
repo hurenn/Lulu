@@ -17,15 +17,15 @@ public class Score_UI : MonoBehaviour
             }
         }
         // 初期スコア表示
-        _UpdateScoreDisplay(PlayerParameter.Instance.GetScore());
+        //_UpdateScoreDisplay(PlayerParameter.Instance.GetScore());
         // スコアが変化したときにUIを更新するイベントを登録
-        PlayerParameter.Instance.OnScoreChanged += _UpdateScoreDisplay;
+        //PlayerParameter.Instance.OnScoreChanged += _UpdateScoreDisplay;
     }
 
     private void OnDestroy() {
         // イベント登録解除
         if (PlayerParameter.Instance != null) {
-            PlayerParameter.Instance.OnScoreChanged -= _UpdateScoreDisplay;
+           //PlayerParameter.Instance.OnScoreChanged -= _UpdateScoreDisplay;
         }
     }
 

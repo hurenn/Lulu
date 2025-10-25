@@ -8,6 +8,6 @@ public class LevelupObject : StageObject_Base
     protected override void _HitPlayer(Player_Character player)
     {
         Debug.Log($"Levelup:{player.gameObject.name}, Type:{levelType.ToString()}");
-        player.Levelup(levelType);
+        player.AddExp(100);
     }
 }

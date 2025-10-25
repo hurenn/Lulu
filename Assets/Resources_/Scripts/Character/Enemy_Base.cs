@@ -30,8 +30,6 @@ public class Enemy_Base : Character_Base
         }
         _col.enabled = false;
 
-        // 経験値取得
-        PlayerParameter.Instance.AddExp(_exp);
         // コイン生成
         if (_coinPrefab != null) {
             for (int i = 0; i < _exp; i++) {
