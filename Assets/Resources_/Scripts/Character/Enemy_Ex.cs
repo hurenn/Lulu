@@ -17,6 +17,7 @@ public class Enemy_Ex : Enemy_Base {
     }
     [SerializeField] private AudioClip _seFinish;
     [SerializeField] private AudioSource _audioBGM;
+    [SerializeField] private AudioClip _bgmFlower;
 
     // レーザービームのプレハブ
     [SerializeField] private GameObject _laserPrefab;
@@ -208,13 +209,13 @@ public class Enemy_Ex : Enemy_Base {
         yield return new WaitForSecondsRealtime(0.2f);
         flash?.Flash(3.0f);
 
+        var current_volume = _audioBGM != null ? _audioBGM.volume : 0.8f;
         if (_audioBGM != null) {
-            _audioBGM.volume = 0.2f;
+            _audioBGM.volume = 0f;
         }
 
         yield return new WaitForSecondsRealtime(4.0f);
 
-        // === 3. 死亡アニメーション ===
         cinemachineManager.ReturnToPlayer();
 
         // 徐々に時間を戻す
@@ -225,23 +226,45 @@ public class Enemy_Ex : Enemy_Base {
             yield return null;
         }
 
+        // コイン生成
+        if (_coinPrefab != null) {
+            for (int i = 0; i < _exp; i++) {
+                var coin_obj = Instantiate(_coinPrefab, transform.position, Quaternion.identity);
+                var coin = coin_obj.GetComponent<Coin_Object>();
+                if (coin != null) {
+                    coin.InitializeAutoCollect();
+                }
+                yield return new WaitForSecondsRealtime(0.005f);
+            }
+        }
+        yield return new WaitForSecondsRealtime(0.5f);
+
         // === 4. 爆発 ===
         if (_dieExplosion != null) {
             // 爆発エフェクト生成
             flash?.Flash();
             yield return new WaitForSecondsRealtime(0.2f);
             flash?.Flash();
-            yield return new WaitForSecondsRealtime(0.2f);
+            yield return new WaitForSecondsRealtime(0.5f);
 
             Instantiate(_dieExplosion, transform.position, Quaternion.identity);
-            flash?.FadeIn(1.0f);
-            cinemachineManager.ShakeCamera(duration: 0.5f);
+            cinemachineManager.ShakeCamera(duration: 1f);
             _sprite.enabled = false;
+
+            flash?.FadeIn(5.0f);
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
 
         OnDieEnded?.Invoke();
+
+        yield return new WaitForSeconds(5.0f);
+
+        // BGM切り替え
+        _audioBGM.volume = current_volume;
+        _audioBGM.clip = _bgmFlower;
+        _audioBGM.Play();
+
     }
 }
 

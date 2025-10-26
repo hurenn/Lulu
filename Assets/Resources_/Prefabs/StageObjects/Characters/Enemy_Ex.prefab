@@ -590,9 +590,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f5d22f392f9bc4783351c9001c6734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultMaxHP: 500
   isLightInvincible: 0
-  defaultMaxMP: 100
+  _defaultMaxMP: 100
   attackPower: 1
   _rend: {fileID: 3639660798774829809}
   _mpBackground: {fileID: 0}
@@ -728,13 +727,16 @@ MonoBehaviour:
   _seDead: {fileID: 8300000, guid: ae9ed51805db1a34d98ba0dd085be0b3, type: 3}
   _isRight: 0
   enableGravity: 1
-  _exp: 50
+  _exp: 30
   _coinPrefab: {fileID: 4284812828183195615, guid: 6d0e3575028230e4daff4f717c1306fb, type: 3}
   _leftWarpChecker: {fileID: 7486943850393906782}
   _rightWarpChecker: {fileID: 5549001526048564600}
   _lockonMarker: {fileID: 1930699352610763275}
   _damageZone: {fileID: 4226934493998121972}
-  _dieExplosion: {fileID: 2517521421506470330, guid: 9060e6478a2e9d34fb759aef4adceb21, type: 3}
+  _dieExplosion: {fileID: 2517521421506470330, guid: 9c246e61ad32da54ab8422b647e87a2a, type: 3}
+  _seFinish: {fileID: 8300000, guid: b3d4427b5b8e65f46b53c7da8ac10408, type: 3}
+  _audioBGM: {fileID: 0}
+  _bgmFlower: {fileID: 8300000, guid: ebb83608023c97e42b23ca142855536f, type: 3}
   _laserPrefab: {fileID: 605466143074066808, guid: 7b4197836c2fa6647b61ce4fd9abb8ab, type: 3}
   _explosionPrefab: {fileID: 8794748140675898472, guid: 2749609615b8c5e4f9b5cf87db348f70, type: 3}
   _exParameter: {fileID: 11400000, guid: 88d15af2f18c97147b96df0d39f908ab, type: 2}

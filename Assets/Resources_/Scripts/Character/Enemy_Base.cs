@@ -4,8 +4,8 @@ using UnityEngine;
 public class Enemy_Base : Character_Base
 {
     // 経験値
-    [SerializeField] private int _exp = 1;
-    [SerializeField] private GameObject _coinPrefab;
+    [SerializeField] protected int _exp = 1;
+    [SerializeField] protected GameObject _coinPrefab;
 
     // ワープチェック用のコンポーネント
     [SerializeField] private WarpChecker _leftWarpChecker;
@@ -39,6 +39,7 @@ public class Enemy_Base : Character_Base
                 if (coin != null) {
                     coin.InitializeAutoCollect();
                 }
+                yield return new WaitForSeconds(0.01f);
             }
         }
 
