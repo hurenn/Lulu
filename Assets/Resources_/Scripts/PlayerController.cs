@@ -119,6 +119,7 @@ public class PlayerController : MonoBehaviour {
         input.messageNextPressed = _isMessageNextPressed;
         _isMessageNextPressed = false;
 
+        character.IsEventInvincible = !isEnabledCharacterInput;
         character.UpdateControl(input);
 
         _isJumpPressed = false;

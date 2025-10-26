@@ -11,8 +11,8 @@ public class TitleManager : MonoBehaviour {
     [SerializeField] private string _sceneName;
 
     [SerializeField] private PlayerController _playerController;
-    [SerializeField] private GameObject _japaneseActiveButton;
-    [SerializeField] private GameObject _englishActiveButton;
+    [SerializeField] private GameObject[] _japaneseUIs;
+    [SerializeField] private GameObject[] _englishUIs;
     [SerializeField] private RectTransform _japaneseUiRect;
     [SerializeField] private RectTransform _englishUiRect;
     [SerializeField] private RectTransform _frameUiRect;
@@ -78,8 +78,12 @@ public class TitleManager : MonoBehaviour {
     }
 
     private void _UpdateUiView(PlayerParameter.eLanguage language) {
-        _japaneseActiveButton.SetActive(language == PlayerParameter.eLanguage.Japanese);
-        _englishActiveButton.SetActive(language == PlayerParameter.eLanguage.English);
+        foreach (var _japaneseUI in _japaneseUIs) {
+            _japaneseUI.SetActive(language == PlayerParameter.eLanguage.Japanese);
+        }
+        foreach (var _englishUI in _englishUIs) {
+            _englishUI.SetActive(language == PlayerParameter.eLanguage.English);
+        }
         if (language == PlayerParameter.eLanguage.Japanese) {
             StartCoroutine(_UiMoveAnim(_japaneseUiRect.anchoredPosition, 0.1f));
         } else {

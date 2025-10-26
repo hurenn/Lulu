@@ -1,0 +1,35 @@
+using Unity.Cinemachine;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class CinemachineManager : MonoBehaviour {
+    public static CinemachineManager Instance;
+    [SerializeField] private CinemachineCamera _playerCam;
+    [SerializeField] private CinemachineCamera _zoomCam;
+
+    [SerializeField] private CinemachineImpulseSource _impulseSource;
+
+    private void Reset() {
+        _playerCam = GameObject.Find("FollowCamera").GetComponent<CinemachineCamera>();
+        _zoomCam = GameObject.Find("ZoomCamera").GetComponent<CinemachineCamera>();
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
+    }
+
+    void Awake() => Instance = this;
+
+    public void ZoomOnTarget(Transform target) {
+        _zoomCam.Follow = target;
+        _zoomCam.Priority = 20; // プレイヤーカメラより高く
+    }
+
+    public void ReturnToPlayer() {
+        _zoomCam.Priority = -1;
+    }
+
+    public void ShakeCamera(float intensity = 1.0f, float duration = 0.2f) {
+        _impulseSource.ImpulseDefinition.AmplitudeGain = intensity;
+        _impulseSource.ImpulseDefinition.TimeEnvelope.SustainTime = duration;
+        _impulseSource.GenerateImpulse();
+    }
+
+}

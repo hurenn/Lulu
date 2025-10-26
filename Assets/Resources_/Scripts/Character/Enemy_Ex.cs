@@ -15,6 +15,8 @@ public class Enemy_Ex : Enemy_Base {
         JumpShoot,
         SpecialAttack,
     }
+    [SerializeField] private AudioClip _seFinish;
+    [SerializeField] private AudioSource _audioBGM;
 
     // レーザービームのプレハブ
     [SerializeField] private GameObject _laserPrefab;
@@ -31,6 +33,7 @@ public class Enemy_Ex : Enemy_Base {
     [SerializeField] private Transform _jumpShootPoint;
     [SerializeField] private Transform _jumpShootExplosionPoint;
 
+    // 行動中フラグ
     private bool _isExecutingAction = false;
 
     protected override void _Setup() {
@@ -181,6 +184,64 @@ public class Enemy_Ex : Enemy_Base {
     private void _ResetAction() {
         _isExecutingAction = false;
         _currentActionTime = 0;
+    }
+
+    protected override IEnumerator Die() {
+        OnDied?.Invoke();
+
+        if (_seFinish != null) {
+            _audioSource?.PlayOneShot(_seDead);
+            _audioSource?.PlayOneShot(_seFinish);
+        }
+
+        var cinemachineManager = CinemachineManager.Instance;
+        var flash = ScreenFlash.Instance;
+
+        // === 2. カメラズーム ===
+        cinemachineManager.ZoomOnTarget(transform);
+        yield return new WaitForSeconds(0.05f);
+
+        // === 1. ヒット時演出 ===
+        Time.timeScale = 0.1f;
+        flash?.Flash();
+        _anim.Play("Die");
+        yield return new WaitForSecondsRealtime(0.2f);
+        flash?.Flash(3.0f);
+
+        if (_audioBGM != null) {
+            _audioBGM.volume = 0.2f;
+        }
+
+        yield return new WaitForSecondsRealtime(4.0f);
+
+        // === 3. 死亡アニメーション ===
+        cinemachineManager.ReturnToPlayer();
+
+        // 徐々に時間を戻す
+        float timeScale = Time.timeScale;
+        while (timeScale < 1f) {
+            timeScale += Time.unscaledDeltaTime;
+            Time.timeScale = Mathf.Min(timeScale, 1f);
+            yield return null;
+        }
+
+        // === 4. 爆発 ===
+        if (_dieExplosion != null) {
+            // 爆発エフェクト生成
+            flash?.Flash();
+            yield return new WaitForSecondsRealtime(0.2f);
+            flash?.Flash();
+            yield return new WaitForSecondsRealtime(0.2f);
+
+            Instantiate(_dieExplosion, transform.position, Quaternion.identity);
+            flash?.FadeIn(1.0f);
+            cinemachineManager.ShakeCamera(duration: 0.5f);
+            _sprite.enabled = false;
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        OnDieEnded?.Invoke();
     }
 }
 

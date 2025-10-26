@@ -399,8 +399,8 @@ public class Player_Character : Character_Base {
             return false;
         }
 
-        if (_isSliding) {
-            return false; // スライディング中はダメージ無効
+        if (_isSliding || _isEventInvincible) {
+            return false; // ダメージ無効
         }
 
         _isWarpDashing = false; // ワープダッシュ終了

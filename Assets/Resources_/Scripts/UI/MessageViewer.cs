@@ -46,6 +46,11 @@ public class MessageViewer : MonoBehaviour {
     private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
     private IEnumerator _typingCoroutine; // 文字を1つずつ表示するコルーチン
 
+    private bool _isStopMessage = false;    // メッセージ表示停止フラグ
+    public void SetIsStopMessage(bool enable) {
+        _isStopMessage = enable;
+    }
+
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _seSpeak;
     [SerializeField] private AudioClip _seSpeakOne;
@@ -62,9 +67,12 @@ public class MessageViewer : MonoBehaviour {
 
     private void Update() {
         UpdateWindowAlpha();
+        if (_isStopMessage) {
+            return;
+        }
 
         if (_currentCoolTime > 0) {
-            _currentCoolTime -= Time.deltaTime;
+            _currentCoolTime -= Time.unscaledDeltaTime;
             return;
         }
 
@@ -90,7 +98,7 @@ public class MessageViewer : MonoBehaviour {
             }
         } else if (_currentShowTime > 0) {
             // メッセージ表示の残り時間表示
-            _currentShowTime -= Time.deltaTime;
+            _currentShowTime -= Time.unscaledDeltaTime;
             _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentText.Length * _AUTO_MESSAGE_SHOW_TIME));
             if (_currentShowTime <= 0f) {
                 // 表示時間終了
@@ -163,9 +171,9 @@ public class MessageViewer : MonoBehaviour {
             _audioSource.PlayOneShot(_seSpeak);
             var view_message = message.Length / 3;
             _messageText.text = message.Substring(0, view_message);
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSecondsRealtime(0.01f);
             _messageText.text = message.Substring(0, view_message * 2);
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSecondsRealtime(0.01f);
             _messageText.text = message;
         } else {
             foreach (char c in message) { // 1文字ずつ表示
@@ -174,7 +182,10 @@ public class MessageViewer : MonoBehaviour {
                     _audioSource.PlayOneShot(_seSpeakOne);
                 }
                 _messageText.text += c;
-                yield return new WaitForSeconds(message_show_time);
+                yield return new WaitForSecondsRealtime(message_show_time);
+                while (_isStopMessage) {
+                    yield return null;
+                }
             }
         }
         _typingCoroutine = null;
@@ -208,7 +219,7 @@ public class MessageViewer : MonoBehaviour {
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
                 var color = window.color;
-                color.a = Mathf.Lerp(color.a, _fadeAlpha, Time.deltaTime * 5f);
+                color.a = Mathf.Lerp(color.a, _fadeAlpha, Time.unscaledDeltaTime * 5f);
                 window.color = color;
             }
         } else {
@@ -216,7 +227,7 @@ public class MessageViewer : MonoBehaviour {
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
                 var color = window.color;
-                color.a = Mathf.Lerp(color.a, _normalAlpha, Time.deltaTime * 5f);
+                color.a = Mathf.Lerp(color.a, _normalAlpha, Time.unscaledDeltaTime * 5f);
                 window.color = color;
             }
         }

@@ -82,6 +82,12 @@ public class Character_Base : MonoBehaviour
     // ダメージリアクション時間計測
     protected float _damageReactionTimer = 0;
 
+    protected bool _isEventInvincible = false;
+    public bool IsEventInvincible {
+        get { return _isEventInvincible; }
+        set { _isEventInvincible = value; }
+    }
+
     // 死亡フラグ
     protected bool _isDead = false;
     public bool isDead => _isDead;
