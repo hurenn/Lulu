@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.03, y: -1.2, z: 0}
-  m_LocalScale: {x: 0.45, y: 0.45, z: 0.45}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 316459826235371173}
@@ -157,8 +157,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isGround: 1
-  _returnTime: 1
-  _localPosition: {x: 0.8, y: 0.25, z: 1}
+  _returnTime: 3
+  _localPosition: {x: 0.8, y: 0, z: 1}
   _rend: {fileID: 256934369167759302}
   _anim: {fileID: 3268640100333669516}
   _warpAnimationPrefab: {fileID: 6601440612607403682, guid: 2a8521a41404b8440a44d393284c768c, type: 3}
