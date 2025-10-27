@@ -14,6 +14,7 @@ public class MessageViewer : MonoBehaviour {
         {"Marlica", "マルリカ"},
         {"Node", "ノード"},
         {"Pepe", "ペペ"},
+        {"Milly", "ミリー"},
     };
     private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
     private const float _AUTO_MESSAGE_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間

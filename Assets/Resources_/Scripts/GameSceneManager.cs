@@ -58,6 +58,14 @@ public class GameSceneManager : MonoBehaviour
                 player.SaveAbilitySlot(); // 能力スロットセーブ
             }
         }
+
+        // デバッグ用：Lキーで言語切り替え
+        if (keyboard.lKey.wasPressedThisFrame) {
+            var player_param = PlayerParameter.Instance;
+            var new_language = player_param.language == PlayerParameter.eLanguage.Japanese ?
+                PlayerParameter.eLanguage.English : PlayerParameter.eLanguage.Japanese;
+            player_param.language = new_language;
+        }
     }
 
     public void StageRestart(bool is_ability_save) {
