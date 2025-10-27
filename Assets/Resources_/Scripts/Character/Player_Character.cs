@@ -331,7 +331,9 @@ public class Player_Character : Character_Base {
                 break;
         }
 
-        _tmpAbilitySlot.Add(ability_type, ability_slot);
+        if (!_tmpAbilitySlot.ContainsKey(ability_type)) {
+            _tmpAbilitySlot.Add(ability_type, ability_slot);
+        }
         if (ability == null) {
             _playerParam.RemoveAbility(ability_slot);
         }
