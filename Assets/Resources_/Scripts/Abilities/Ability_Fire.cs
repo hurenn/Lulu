@@ -20,6 +20,8 @@ public class Ability_Fire : Ability_Base
     public override eAbilityResult ExecuteSimple() {
         // オーバーヒート中は使用不可
         if (_cancelByOverheat) {
+            UpdatePartnerTransform(); // 位置更新
+            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // 召喚エフェクト再生
             return eAbilityResult.None;
         }
 
