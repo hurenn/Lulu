@@ -359,7 +359,7 @@ MonoBehaviour:
   _coinLayer:
     serializedVersion: 2
     m_Bits: 256
-  _coinWarpInterval: 0.05
+  _coinWarpInterval: 0.08
   _avoidWarpInterval: 0.5
   _audioSource: {fileID: 3123718113213705543}
   _seWarp: {fileID: 8300000, guid: 649de4670f4e4214f83fe3e2d29d7f43, type: 3}
@@ -375,9 +375,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f5d22f392f9bc4783351c9001c6734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultMaxHP: 3
   isLightInvincible: 0
-  defaultMaxMP: 100
+  _defaultMaxMP: 100
   attackPower: 1
   _rend: {fileID: 6554501651606250815}
   _mpBackground: {fileID: 1326344433677251810}
