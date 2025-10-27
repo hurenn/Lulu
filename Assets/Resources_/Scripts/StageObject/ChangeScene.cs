@@ -30,15 +30,25 @@ public class ChangeScene : StageObject_Base
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);
         if (!string.IsNullOrEmpty(_sceneName)) {
-            LoadScene(_sceneName, characterController);
+            LoadScene(true, _sceneName, characterController);
         } else {
             Debug.LogWarning("SceneAsset is not assigned.");
         }
     }
 
-    public static void LoadScene(string sceneName = null, PlayerController characterController = null) {
+    public static void LoadScene(bool is_save_ability, string sceneName = null, PlayerController characterController = null) {
         if (characterController != null) {
             characterController.isEnabledCharacterInput = false;
+        }
+        if (is_save_ability) {
+            // プレイヤーパラメーターのセーブ
+            // NOTE: Player_Parameter側にセーブ処理を移動させる方が健全
+            var player = FindAnyObjectByType<Player_Character>();
+            if (player != null) {
+                player.SaveAbilitySlot();
+            } else {
+                Debug.LogError("Player_Character not found for saving status.");
+            }
         }
 
         // 切り替えシーンの読み込み

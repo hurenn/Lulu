@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,6 +30,17 @@ public class Player_Character : Character_Base {
     [SerializeField] protected Ability_Base _abilityY;
     [SerializeField] protected Ability_Base _abilityX;
     [SerializeField] protected Ability_Base _abilityA;
+    // 能力スロット一時保存
+    private Dictionary<eAbilityType, eAbilitySlot> _tmpAbilitySlot = new Dictionary<eAbilityType, eAbilitySlot>();
+    public void SaveAbilitySlot() {
+        foreach (var ability in _tmpAbilitySlot) {
+            if (ability.Key != eAbilityType.None) {
+                _playerParam.AddAbility(ability.Key, ability.Value);
+            } else {
+                _playerParam.RemoveAbility(ability.Value);
+            }
+        }
+    }
 
     [SerializeField] protected AudioClip _seMpRecover;
 
@@ -303,10 +315,6 @@ public class Player_Character : Character_Base {
     /// </summary>
     public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot, bool is_effect = true) {
         var ability = AbilityFactory.CreateAbility(ability_type, ability_slot, is_effect);
-        if (ability == null) {
-            Debug.LogError("能力生成失敗: " + ability_type);
-            return;
-        }
 
         // スロットにセット
         switch (ability_slot) {
@@ -322,7 +330,11 @@ public class Player_Character : Character_Base {
             default:
                 break;
         }
-        _playerParam.AddAbility(ability_type, ability_slot);
+
+        _tmpAbilitySlot.Add(ability_type, ability_slot);
+        if (ability == null) {
+            _playerParam.RemoveAbility(ability_slot);
+        }
     }
 
     /// <summary>
@@ -424,7 +436,7 @@ public class Player_Character : Character_Base {
         yield return new WaitForSeconds(1.0f);
 
         // シーン再読み込み
-        ChangeScene.LoadScene();
+        ChangeScene.LoadScene(false);
     }
 
     /// <summary>

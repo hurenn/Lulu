@@ -60,6 +60,15 @@ public class PlayerParameter : MonoBehaviour {
             _abilities.Add(ability_type, ability_slot);
         }
     }
+    public void RemoveAbility(eAbilitySlot ability_slot) {
+        // 指定されたスロットの能力を削除
+        foreach (var kvp in _abilities) {
+            if (kvp.Value == ability_slot) {
+                _abilities.Remove(kvp.Key);
+                break;
+            }
+        }
+    }
 
     public enum eLanguage {
         Japanese,

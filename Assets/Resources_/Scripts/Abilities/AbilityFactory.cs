@@ -23,7 +23,6 @@ public static class AbilityFactory {
     public static Ability_Base CreateAbility(
         eAbilityType type, eAbilitySlot slot, bool is_effect = true) {
         if (type == eAbilityType.None) {
-            Debug.LogError("Ability type is None");
             return null;
         }
 

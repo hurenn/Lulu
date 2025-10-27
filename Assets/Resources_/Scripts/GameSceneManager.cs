@@ -8,7 +8,7 @@ public class GameSceneManager : MonoBehaviour
 
     private void Update() {
         var keyboard = Keyboard.current;
-        if(keyboard == null) {
+        if (keyboard == null) {
             return;
         }
 
@@ -19,16 +19,53 @@ public class GameSceneManager : MonoBehaviour
 
         // Rキーでステージ再スタート
         if (keyboard.rKey.wasPressedThisFrame) {
-            StageRestart();
+            StageRestart(false);
+        }
+
+        // デバッグ用：Pキーで経験値200獲得
+        if (keyboard.pKey.wasPressedThisFrame) {
+            var player = FindAnyObjectByType<Player_Character>();
+            if (player != null) {
+                player.AddExp(200);
+            }
+        }
+
+        // デバッグ用：数字キーで能力の付与/解除
+        if (keyboard.numpad4Key.wasPressedThisFrame) {
+            var player = FindAnyObjectByType<Player_Character>();
+            if (player != null) {
+                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Ice);
+                player.SetAbilitySlot(had_ability ? eAbilityType.None : eAbilityType.Ice, eAbilitySlot.Y);
+            }
+        }
+        if (keyboard.numpad8Key.wasPressedThisFrame) {
+            var player = FindAnyObjectByType<Player_Character>();
+            if (player != null) {
+                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Light);
+                player.SetAbilitySlot(had_ability ? eAbilityType.None : eAbilityType.Light, eAbilitySlot.X);
+            }
+        }
+        if (keyboard.numpad6Key.wasPressedThisFrame) {
+            var player = FindAnyObjectByType<Player_Character>();
+            if (player != null) {
+                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Fire);
+                player.SetAbilitySlot(had_ability ? eAbilityType.None : eAbilityType.Fire, eAbilitySlot.A);
+            }
+        }
+        if (keyboard.numpad5Key.wasPressedThisFrame) {
+            var player = FindAnyObjectByType<Player_Character>();
+            if (player != null) {
+                player.SaveAbilitySlot(); // 能力スロットセーブ
+            }
         }
     }
 
-    public void StageRestart() {
+    public void StageRestart(bool is_ability_save) {
         // シーン再読み込み
-        ChangeScene.LoadScene();
+        ChangeScene.LoadScene(is_ability_save);
     }
 
     public void GameRestart() {
-        ChangeScene.LoadScene(_titleSceneName);
+        ChangeScene.LoadScene(false, _titleSceneName);
     }
 }

@@ -93,7 +93,7 @@ public class TitleManager : MonoBehaviour {
             
             // 決定状態にして、指定シーンに遷移
             _isDecided = true;
-            ChangeScene.LoadScene(_sceneName);
+            ChangeScene.LoadScene(false, _sceneName);
         }
     }
     
