@@ -1,7 +1,5 @@
-#if UNITY_EDITOR
 using System.Collections;
 using UnityEditor;
-#endif
 using UnityEngine;
 
 public class TitleManager : MonoBehaviour {
