@@ -7,13 +7,26 @@ public class PlayerParameter : MonoBehaviour {
     public static PlayerParameter Instance {
         get {
             if (_instance == null) {
-                // シーンに存在しない場合、新規作成
-                GameObject obj = new GameObject("PlayerParameter");
-                _instance = obj.AddComponent<PlayerParameter>();
-                DontDestroyOnLoad(obj);
+                _CreateInstance();
             }
             return _instance;
         }
+    }
+
+    /// <summary>
+    /// インスタンスを強制的に生成/初期化
+    /// </summary>
+    public static void CreateNewInstance() {
+        if (_instance != null) {
+            Destroy(_instance.gameObject);
+            _instance = null;
+        }
+        _CreateInstance();
+    }
+    private static void _CreateInstance() {
+        GameObject obj = new GameObject("PlayerParameter");
+        _instance = obj.AddComponent<PlayerParameter>();
+        DontDestroyOnLoad(obj);
     }
 
     [SerializeField]
@@ -92,6 +105,7 @@ public class PlayerParameter : MonoBehaviour {
                 break;
         }
     }
+
     public int GetLevel() {
         return _level;
     }
