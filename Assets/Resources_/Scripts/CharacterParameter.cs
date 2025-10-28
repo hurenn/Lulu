@@ -75,6 +75,8 @@ public class CharacterParameter : MonoBehaviour {
     [SerializeField] private GameObject _mpBackground;
     // MP表示UI
     [SerializeField] private Image _mpImage;
+    [SerializeField] private Image _mpImage2;
+    [SerializeField] private Image _mpImage3;
     // MPゲージアニメーション
     [SerializeField] private Animator _mpFilled;
     // MPゲージ非表示コルーチン
@@ -212,16 +214,44 @@ public class CharacterParameter : MonoBehaviour {
         }
 
         // MPゲージの更新
-        if (_mpImage != null) {
-            _mpImage.fillAmount = _currentMP / _maxMP;
 
-            // ゲージの色変更（オーバーヒート中は赤、それ以外は白）
-            if (isOverheat && _mpImage.color != Color.red) {
-                _mpImage.color = Color.red;
-            } else if (!isOverheat && _mpImage.color != Color.white) {
-                _mpImage.color = Color.white;
+        // 第1段階: 基本MP (0 - _defaultMaxMP)
+        if (_mpImage != null) {
+            _mpImage.fillAmount = Mathf.Clamp01(_currentMP / _defaultMaxMP);
+        }
+
+        // 第2段階: 拡張MP1 (_defaultMaxMP - _defaultMaxMP*2)
+        if (_mpImage2 != null) {
+            if (_currentMP > _defaultMaxMP) {
+                float excess1 = _currentMP - _defaultMaxMP;
+                _mpImage2.fillAmount = Mathf.Clamp01(excess1 / _defaultMaxMP);
+            } else {
+                _mpImage2.fillAmount = 0f;
             }
         }
+
+        // 第3段階: 拡張MP2 (_defaultMaxMP*2 - _defaultMaxMP*3)
+        if (_mpImage3 != null) {
+            if (_currentMP > _defaultMaxMP * 2) {
+                float excess2 = _currentMP - (_defaultMaxMP * 2);
+                _mpImage3.fillAmount = Mathf.Clamp01(excess2 / _defaultMaxMP);
+            } else {
+                _mpImage3.fillAmount = 0f;
+            }
+        }
+
+        // ゲージの色変更（オーバーヒート中は赤、それ以外は白）
+        Color targetColor = isOverheat ? Color.red : Color.white;
+        if (_mpImage.color != targetColor) {
+            _mpImage.color = targetColor;
+        }
+        if (_mpImage2 != null && _mpImage2.color != targetColor) {
+            _mpImage2.color = targetColor;
+        }
+        if (_mpImage3 != null && _mpImage3.color != targetColor) {
+            _mpImage3.color = targetColor;
+        }
+
         // MPが最大になった場合のアニメーション再生
         if (_mpFilled != null) {
             if (_currentMP >= _maxMP) {
