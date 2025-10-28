@@ -54,7 +54,7 @@ public class CharacterParameter : MonoBehaviour {
     // MPが最大かどうか
     public bool isMaxMP => _currentMP >= _maxMP;
     // オーバーヒートからの回復時間
-    private float _overheatRecoverRate => (_maxMP / _overheatRecoveryTime) * Time.deltaTime;
+    private float _overheatRecoverRate => (_defaultMaxMP / _overheatRecoveryTime) * Time.deltaTime;
 
     // オーバーヒート中かどうか
     public bool isOverheat { get; set; }
@@ -114,9 +114,10 @@ public class CharacterParameter : MonoBehaviour {
     private void _UpdateOverheatTimer() {
         if (isOverheat) {
             _currentMP = Mathf.Clamp(_currentMP + _overheatRecoverRate, 0, _maxMP);
-            if (_currentMP >= _maxMP) {
+            if (_currentMP >= _defaultMaxMP) {
                 // オーバーヒート解除
                 isOverheat = false;
+                _currentMP = _maxMP;
             }
             _UpdateMPUI();
         }
