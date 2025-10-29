@@ -143,9 +143,9 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     /// <param name="ability_type">能力タイプ</param>
     /// <param name="un_recover_time">MP回復開始までのクールタイム</param>
-    protected void _AppearCheck(eAbilityType ability_type, float un_recover_time = 0.5f) {
+    protected void _AppearCheck(eAbilityType ability_type, float un_recover_time = 0.5f, bool force_appear = false) {
         // 召喚エフェクト判定
-        if (!_isAppearing) {
+        if (!_isAppearing || force_appear) {
             // MP消費
             _charaParam.SetUnRecoverTime_MP(un_recover_time);
             _charaParam.ConsumeMP(ability_type);

@@ -188,7 +188,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4472013383389708359}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: cf6d73c3313e53147a47e5b77354fc15, type: 2}
   m_CullingMode: 0
@@ -269,6 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cc63673c8bf84348accf1477cb5762e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hitStopWait: 0.05
   _animator: {fileID: 6277873534358155435}
   _rigidbody2D: {fileID: 0}
   _particleSystems: []
@@ -364,7 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageToPlayer: 0
-  _damageToEnemy: 3
+  _damageToEnemy: 9
   _invincibleTime: 0
   _blowPowerRight: {x: 0, y: 0}
   _damageReactionTime: 0.2
@@ -376,3 +377,4 @@ MonoBehaviour:
   _hitEffectSize: 1
   _localTimePauses:
   - {fileID: 4934009630043631025}
+  _hitStopTime: 0.1

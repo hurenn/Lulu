@@ -5,6 +5,7 @@ using UnityEngine;
 public enum eAbilityType {
     None,
     Ice,
+    LockonSlash,
     Fire,
     Light,
     LightAvoid,

@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 254120183998218709}
@@ -269,6 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cc63673c8bf84348accf1477cb5762e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hitStopWait: 0.05
   _animator: {fileID: 6277873534358155435}
   _rigidbody2D: {fileID: 0}
   _particleSystems: []
@@ -364,7 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageToPlayer: 0
-  _damageToEnemy: 7
+  _damageToEnemy: 1
   _invincibleTime: 0
   _blowPowerRight: {x: 0, y: 0}
   _damageReactionTime: 0.2
@@ -376,4 +377,4 @@ MonoBehaviour:
   _hitEffectSize: 1
   _localTimePauses:
   - {fileID: 5709971862930202264}
-  _hitStopTime: 0.1
+  _hitStopTime: 0.2

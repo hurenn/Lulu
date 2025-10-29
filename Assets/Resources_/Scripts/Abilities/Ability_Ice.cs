@@ -53,10 +53,15 @@ public class Ability_Ice : Ability_Base {
 
         // ロックオン攻撃判定
         if (LockonManager.Instance.HasTarget) {
-            _LockonSlash();
-
-            // ロックオン中の攻撃
-            return eAbilityResult.IceLockonSlash;
+            if (!_charaParam.isOverheat) {
+                // ロックオン中の攻撃
+                _LockonSlash();
+                return eAbilityResult.IceLockonSlash;
+            } else {
+                // オーバーヒート中は使用不可
+                UpdatePartnerTransform(); // 位置更新
+                Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // 召喚エフェクト再生
+            }
         }
 
         // コンボ攻撃判定
@@ -100,6 +105,9 @@ public class Ability_Ice : Ability_Base {
         IEnumerator attack_routine() {
             yield return _warpControl?.TargetWarp(warp_checker);
 
+            // MP消費
+            _AppearCheck(eAbilityType.LockonSlash, force_appear: true);
+
             // キャラクター位置を更新
             _isRight = to_target.x > 0;
             UpdatePartnerTransform();
@@ -112,10 +120,8 @@ public class Ability_Ice : Ability_Base {
             // アニメーション再生
             _anim?.Play("Node_Attack2", 0, 0.0f);
 
-            // コンボリセット
-            _attackStep = 0;
-            _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
-            _currentComboCoolTime = _param.comboIntervalTime; // クールタイムセット
+            // コンボ1段目をスキップ
+            _SetComboStep(1);
         }
         StartCoroutine(attack_routine());
     }
@@ -134,29 +140,32 @@ public class Ability_Ice : Ability_Base {
             // 1段目
             Debug.Log("Slash 1");
             StartCoroutine(_UpdateTransformEasing(_slash1, "Node_Attack1"));
-            _attackStep = 1;                            // 次の攻撃へ
-            _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
-            _currentComboCoolTime = _param.comboIntervalTime; // クールタイムセット
+            _SetComboStep(1);
             return eAbilityResult.IceSlash1;            // 実行結果返却
         } else if (_attackStep == 1) {
             // 2段目
             Debug.Log("Slash 2");
             StartCoroutine(_UpdateTransformEasing(_slash2, "Node_Attack2"));
-            _attackStep = 2;                            // 次の攻撃へ
-            _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
-            _currentComboCoolTime = _param.comboIntervalTime; // クールタイムセット
+            _SetComboStep(2);
             return eAbilityResult.IceSlash2;            // 実行結果返却
         } else if (_attackStep == 2) {
             // 3段目
             Debug.Log("Slash 3");
             StartCoroutine(_UpdateTransformEasing(_slash3, "Node_Attack3"));
-            _attackStep = 0;                            // コンボリセット
-            _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
-            _currentComboCoolTime = _param.comboCoolTime;     // クールタイムセット
+            _SetComboStep(0); // コンボリセット
             return eAbilityResult.IceSlash3;            // 実行結果返却
         }
 
         return eAbilityResult.None;
+    }
+
+    /// <summary>
+    /// コンボ段階更新
+    /// </summary>
+    private void _SetComboStep(int step) {
+        _attackStep = step;
+        _currentComboTime = _param.comboReceptionTime;    // 次のコンボ受付時間
+        _currentComboCoolTime = step == 0 ? _param.comboCoolTime : _param.comboIntervalTime;     // クールタイムセット
     }
 
     private IEnumerator _UpdateTransformEasing(GameObject effect, string anim_name) {
