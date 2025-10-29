@@ -197,6 +197,7 @@ GameObject:
   - component: {fileID: 6173536078136561140}
   - component: {fileID: 1469779398896877721}
   - component: {fileID: 5368941601767139257}
+  - component: {fileID: 8592327859970755910}
   m_Layer: 0
   m_Name: TrapHead
   m_TagString: Untagged
@@ -335,6 +336,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 30, y: 25}
   m_EdgeRadius: 0
+--- !u!114 &8592327859970755910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2826599311687445177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc63673c8bf84348accf1477cb5762e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitStopWait: 0.05
+  _animator: {fileID: 8906997776124929788}
+  _rigidbody2D: {fileID: 0}
+  _particleSystems: []
 --- !u!1 &6342002518144872966
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,9 +465,13 @@ MonoBehaviour:
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 1
   _hitEffectSize: 2
-  _hitStopTime: 0.05
-  _hitStopDelay: 0.01
-  _hitStop_Heavy: 0
+  _localTimePauses:
+  - {fileID: 8592327859970755910}
+  _hitStopTime: 0.2
+  _manualCameraShake: 0
+  _manualShakeIntensity: 0.5
+  _manualShakeDuration: 0.5
+  _hitCameraShakeIntensity: 0
 --- !u!61 &2560585190245754646
 BoxCollider2D:
   m_ObjectHideFlags: 0
