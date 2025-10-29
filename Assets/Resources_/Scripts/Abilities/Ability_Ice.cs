@@ -18,6 +18,9 @@ public class Ability_Ice : Ability_Base {
     // 攻撃方向ロックフラグ
     private bool _isAttackDirectionLocked = false;
 
+    // ヒットストップ管理
+    [SerializeField] private LocalTimePause _localTimeController;
+    
     [SerializeField] private GameObject _slash1;
     [SerializeField] private GameObject _slash2;
     [SerializeField] private GameObject _slash3;
@@ -174,7 +177,10 @@ public class Ability_Ice : Ability_Base {
         
         UpdatePartnerTransform();   // キャラクター位置を更新
 
-        Instantiate(effect, transform.position, Quaternion.identity);  // エフェクト生成
+        var effect_obj = Instantiate(effect, transform.position, Quaternion.identity);  // エフェクト生成
+        var damage_zone = effect_obj.GetComponentInChildren<DamageZone>();
+        damage_zone?.AddHitStopTarget(_localTimeController); // ヒットストップ対象に追加
+
         _anim?.Play(anim_name, 0, 0.0f);   // アニメーション再生
     }
 

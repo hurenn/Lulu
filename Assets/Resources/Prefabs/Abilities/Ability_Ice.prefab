@@ -51,6 +51,7 @@ MonoBehaviour:
   _rend: {fileID: 2913760439177407100}
   _anim: {fileID: 1130858857649652259}
   _warpAnimationPrefab: {fileID: 6601440612607403682, guid: 2a8521a41404b8440a44d393284c768c, type: 3}
+  _localTimeController: {fileID: 7970374099948249408}
   _slash1: {fileID: 3568965013177453205, guid: c3339261c4be5664f824c36464bf3793, type: 3}
   _slash2: {fileID: 3568965013177453205, guid: 4b72e1cb41d4c294fb83b45a2d17c16f, type: 3}
   _slash3: {fileID: 3568965013177453205, guid: 09088dd8cbcea0c41bce9975dc2537cd, type: 3}
@@ -153,6 +154,7 @@ GameObject:
   - component: {fileID: 5037684090238628223}
   - component: {fileID: 2913760439177407100}
   - component: {fileID: 1130858857649652259}
+  - component: {fileID: 7970374099948249408}
   m_Layer: 0
   m_Name: Graphic_Node
   m_TagString: Untagged
@@ -253,3 +255,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7970374099948249408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7242273127479908726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc63673c8bf84348accf1477cb5762e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitStopWait: 0.05
+  _animator: {fileID: 1130858857649652259}
+  _rigidbody2D: {fileID: 0}
+  _particleSystems: []

@@ -33,12 +33,9 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private HitEffect.eType _hitEffectType = HitEffect.eType.Normal;
     [SerializeField] private float _hitEffectSize = 1.0f;
 
-    // ヒットストップ時間
-    [SerializeField] private float _hitStopTime = 0.05f;
-    // ヒットストップまでの遅延時間
-    [SerializeField] private float _hitStopDelay = 0.01f;
-    // ヒットストップの重さ（0.0f:完全停止、1.0f:通常速度）
-    [SerializeField] private float _hitStop_Heavy = 0.0f;
+    // ヒットストップ設定
+    [SerializeField] private List<LocalTimePause> _localTimePauses = new List<LocalTimePause>();
+    [SerializeField] private float _hitStopTime = 0.1f;
 
     // ダメージ判定の有効無効
     private bool _isEnable = true;
@@ -60,15 +57,15 @@ public class DamageZone : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(_hitCharacters.Count > 0) {
+        if (_hitCharacters.Count > 0) {
             var keys = new List<Character_Base>(_hitCharacters.Keys);
-            foreach(var key in keys) {
-                if(_hitCharacters[key] > 0) {
+            foreach (var key in keys) {
+                if (_hitCharacters[key] > 0) {
                     _hitCharacters[key] -= Time.deltaTime;
-                    if(_hitCharacters[key] <= 0) {
+                    if (_hitCharacters[key] <= 0) {
                         _hitCharacters.Remove(key);
                     }
-                } else if(_hitCharacters[key] < 0) {
+                } else if (_hitCharacters[key] < 0) {
                     // 一度だけヒットの場合はタイマーを更新しない
                 }
             }
@@ -127,9 +124,12 @@ public class DamageZone : MonoBehaviour {
         // ダメージ演出
         if (damage_result) {
             // ヒットエフェクト生成
-            _SpawnHitEffect(other.transform.position, _hitEffectType);
+            var hit_effect = _SpawnHitEffect(other.transform.position, _hitEffectType);
+            var target_effect = hit_effect?.GetComponent<LocalTimePause>();
+
             // ヒットストップ
-            //StartCoroutine(_HitStopCoroutine());
+            LocalTimePause hit_target = other.GetComponent<LocalTimePause>();
+            _HitStop(hit_target, target_effect);
         }
 
         if (_isHitDestroy && _destroyObject != null) {
@@ -137,20 +137,27 @@ public class DamageZone : MonoBehaviour {
         }
     }
 
-    private void _SpawnHitEffect(Vector3 position, HitEffect.eType type) {
-        if (_hitEffectPrefab == null) return;
+    private GameObject _SpawnHitEffect(Vector3 position, HitEffect.eType type) {
+        if (_hitEffectPrefab == null) return null;
 
         var effect = Instantiate(_hitEffectPrefab, position, Quaternion.identity);
         effect.Setup(type, _hitEffectSize);
+        return effect.gameObject;
     }
 
-    private IEnumerator _HitStopCoroutine() {
-        yield return new WaitForSeconds(_hitStopDelay); // 遅延時間待つ
-
-        float originalTimeScale = Time.timeScale;
-        Time.timeScale = _hitStop_Heavy; // ストップ
-        yield return new WaitForSecondsRealtime(_hitStopTime); // 実時間で待つ
-        Time.timeScale = originalTimeScale; // 元に戻す
+    private void _HitStop(LocalTimePause hit_target, LocalTimePause hit_effect) {
+        if (hit_effect) _localTimePauses.Add(hit_effect);
+        if (hit_target) _localTimePauses.Add(hit_target);
+        foreach (var pause in _localTimePauses) {
+            StartCoroutine(pause?.Pause(_hitStopTime));
+        }
+        _localTimePauses.Remove(hit_effect);
+        _localTimePauses.Remove(hit_target);
     }
 
+    public void AddHitStopTarget(LocalTimePause target) {
+        if (!_localTimePauses.Contains(target)) {
+            _localTimePauses.Add(target);
+        }
+    }
 }

@@ -12,7 +12,7 @@ public class CharacterParameter : MonoBehaviour {
     private const float _overheatRecoveryTime = 3.0f; // オーバーヒート回復時間
 
     // HP
-    private int _defaultMaxHP = 3;
+    [SerializeField] private int _defaultMaxHP = 3;
     private int _maxHP = 3;
     public int MaxHP => _maxHP;
     public void SetPlusMaxHp(int plus_hp, bool recover = true) {
