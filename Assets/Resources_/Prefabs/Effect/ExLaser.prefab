@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4821458863706443726}
   - component: {fileID: 2798828603834397962}
   - component: {fileID: 5022422734101343861}
+  - component: {fileID: 8992723864680944278}
   m_Layer: 0
   m_Name: ExLaser
   m_TagString: Untagged
@@ -71,6 +72,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lifetime: 0
   _animator: {fileID: 2798828603834397962}
+--- !u!114 &8992723864680944278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605466143074066808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc63673c8bf84348accf1477cb5762e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitStopWait: 0.05
+  _animator: {fileID: 2798828603834397962}
+  _rigidbody2D: {fileID: 0}
+  _particleSystems: []
 --- !u!1 &3408232071245764485
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,9 +201,13 @@ MonoBehaviour:
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 1
   _hitEffectSize: 2
-  _hitStopTime: 0.05
-  _hitStopDelay: 0.01
-  _hitStop_Heavy: 0
+  _localTimePauses:
+  - {fileID: 8992723864680944278}
+  _hitStopTime: 0.2
+  _manualCameraShake: 0
+  _manualShakeIntensity: 0.5
+  _manualShakeDuration: 0.5
+  _hitCameraShakeIntensity: 0.1
 --- !u!61 &2020714752910909934
 BoxCollider2D:
   m_ObjectHideFlags: 0

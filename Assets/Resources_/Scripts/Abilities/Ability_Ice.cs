@@ -105,6 +105,11 @@ public class Ability_Ice : Ability_Base {
         IEnumerator attack_routine() {
             yield return _warpControl?.TargetWarp(warp_checker);
 
+            // ƒtƒ‰ƒbƒVƒ…
+            Color flash_color = Color.white;
+            flash_color.a = 0.5f;
+            ScreenFlash.Instance.Flash(color:flash_color);
+
             // MPÁ”ï
             _AppearCheck(eAbilityType.LockonSlash, force_appear: true);
 

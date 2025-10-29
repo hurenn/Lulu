@@ -196,6 +196,7 @@ GameObject:
   - component: {fileID: 4239974138943333648}
   - component: {fileID: 5472578248599958905}
   - component: {fileID: 1073441699862045369}
+  - component: {fileID: 2099095817979731009}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -375,6 +376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f5d22f392f9bc4783351c9001c6734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _defaultMaxHP: 3
   isLightInvincible: 0
   _defaultMaxMP: 100
   attackPower: 1
@@ -588,6 +590,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2099095817979731009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531109707819632045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc63673c8bf84348accf1477cb5762e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitStopWait: 0.05
+  _animator: {fileID: 6181267916212409532}
+  _rigidbody2D: {fileID: 9106834840076273126}
+  _particleSystems: []
 --- !u!1 &1176145536098947805
 GameObject:
   m_ObjectHideFlags: 0

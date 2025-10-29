@@ -37,6 +37,11 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private List<LocalTimePause> _localTimePauses = new List<LocalTimePause>();
     [SerializeField] private float _hitStopTime = 0.1f;
 
+    [SerializeField] private bool _manualCameraShake = false;
+    [SerializeField] private float _manualShakeIntensity = 0.5f;
+    [SerializeField] private float _manualShakeDuration = 0.5f;
+    [SerializeField] private float _hitCameraShakeIntensity = 0f;
+
     // ダメージ判定の有効無効
     private bool _isEnable = true;
 
@@ -57,6 +62,13 @@ public class DamageZone : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        // 手動カメラシェイク
+        if (_manualCameraShake && _manualShakeIntensity > 0f) {
+            _manualCameraShake = false;
+            var cinemachineManager = CinemachineManager.Instance;
+            cinemachineManager.ShakeCamera(_manualShakeIntensity, _manualShakeDuration);
+        }
+
         if (_hitCharacters.Count > 0) {
             var keys = new List<Character_Base>(_hitCharacters.Keys);
             foreach (var key in keys) {
@@ -148,8 +160,14 @@ public class DamageZone : MonoBehaviour {
     private void _HitStop(LocalTimePause hit_target, LocalTimePause hit_effect) {
         if (hit_effect) _localTimePauses.Add(hit_effect);
         if (hit_target) _localTimePauses.Add(hit_target);
+        // ヒットストップ実行
         foreach (var pause in _localTimePauses) {
             StartCoroutine(pause?.Pause(_hitStopTime));
+        }
+        // カメラシェイク
+        if (_hitCameraShakeIntensity > 0) {
+            var cinemachineManager = CinemachineManager.Instance;
+            cinemachineManager.ShakeCamera(_hitCameraShakeIntensity, 0.05f);
         }
         _localTimePauses.Remove(hit_effect);
         _localTimePauses.Remove(hit_target);

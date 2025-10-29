@@ -248,7 +248,7 @@ public class Enemy_Ex : Enemy_Base {
             yield return new WaitForSecondsRealtime(0.5f);
 
             Instantiate(_dieExplosion, transform.position, Quaternion.identity);
-            cinemachineManager.ShakeCamera(duration: 1f);
+            cinemachineManager.ShakeCamera(duration: 0.5f);
             _sprite.enabled = false;
 
             flash?.FadeIn(5.0f);

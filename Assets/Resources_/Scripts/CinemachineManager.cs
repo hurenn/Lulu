@@ -26,9 +26,9 @@ public class CinemachineManager : MonoBehaviour {
         _zoomCam.Priority = -1;
     }
 
-    public void ShakeCamera(float intensity = 1.0f, float duration = 0.2f) {
+    public void ShakeCamera(float intensity = 1.0f, float duration = 0.1f) {
         _impulseSource.ImpulseDefinition.AmplitudeGain = intensity;
-        _impulseSource.ImpulseDefinition.TimeEnvelope.SustainTime = duration;
+        _impulseSource.ImpulseDefinition.ImpulseDuration = duration;
         _impulseSource.GenerateImpulse();
     }
 
