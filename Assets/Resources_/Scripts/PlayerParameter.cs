@@ -85,13 +85,16 @@ public class PlayerParameter : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
-    public void AddExp(int amount, System.Action apply_status_callback) {
+    public bool AddExp(int amount, System.Action apply_status_callback) {
+        bool is_level_up = false;
         _exp += amount;
         OnExpChanged?.Invoke(_exp);
         while (_exp >= _expToNextLevel) {
             LevelUp();
             apply_status_callback?.Invoke();
+            is_level_up = true;
         }
+        return is_level_up;
     }
     private void LevelUp(eLevelType level_type = eLevelType.All) {
         _exp -= _expToNextLevel;

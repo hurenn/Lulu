@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /// <summary>
 /// プレイヤーキャラクター（ルル）
@@ -32,6 +31,10 @@ public class Player_Character : Character_Base {
     [SerializeField] protected Ability_Base _abilityA;
     // 能力スロット一時保存
     private Dictionary<eAbilityType, eAbilitySlot> _tmpAbilitySlot = new Dictionary<eAbilityType, eAbilitySlot>();
+
+    // レベルアップオブジェクト
+    [SerializeField] private Animator _levelUpAnimator;
+
     public void SaveAbilitySlot() {
         foreach (var ability in _tmpAbilitySlot) {
             if (ability.Key != eAbilityType.None) {
@@ -693,7 +696,28 @@ public class Player_Character : Character_Base {
     /// <summary>
     /// 経験値追加
     /// </summary>
-    public void AddExp(int value) => _playerParam.AddExp(value, ApplyPlayerParameter);
+    public void AddExp(int value) {
+        var is_level_up = _playerParam.AddExp(value, ApplyPlayerParameter);
+        if(is_level_up) {
+            StartCoroutine(_levelUpCoroutine());
+        }
+    }
+
+    /// <summary>
+    /// レベルアップ演出
+    /// </summary>
+    private IEnumerator _levelUpCoroutine() {
+        if( _levelUpAnimator == null) {
+            yield break;
+        }
+
+        // レベルアップアニメーション再生
+        _levelUpAnimator.gameObject.SetActive(true);
+        var length = _levelUpAnimator.GetCurrentAnimatorStateInfo(0).length;
+        _levelUpAnimator.Play("LevelUp", -1, 0f);
+        yield return new WaitForSeconds(length);
+        _levelUpAnimator.gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// レベルに応じたパラメータを適用
