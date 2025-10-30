@@ -10,6 +10,11 @@ public class ExpGauge : MonoBehaviour {
     /// 経験値ゲージ表示
     /// </summary>
     [SerializeField] private Image _expFillImage;
+    [SerializeField] private Image _expWhiteImage;
+    /// <summary>
+    /// 経験値追加アニメーション
+    /// </summary>
+    [SerializeField] private Animator _expAddAnim;
 
     public void Start() {
         _playerParameter = PlayerParameter.Instance;
@@ -33,5 +38,11 @@ public class ExpGauge : MonoBehaviour {
         var nextLevelExp = _playerParameter.nextExp;
         var fillAmount = (float)currentExp / nextLevelExp;
         _expFillImage.fillAmount = fillAmount;
+        //_expWhiteImage.fillAmount = fillAmount;
+
+        // 経験値追加アニメーション再生
+        if (exp > 0 && _expAddAnim != null) {
+            _expAddAnim.Play("AddExp", 0, 0f);
+        }
     }
 }

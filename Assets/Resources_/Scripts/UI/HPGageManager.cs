@@ -10,6 +10,7 @@ public class HPGageManager : MonoBehaviour {
     [SerializeField] private HP_Heart _heartPrefab;
     private List<HP_Heart> _hearts = new List<HP_Heart>();
     [SerializeField] private Transform _heartParent;
+    private bool isInitialized = false;
 
     private void Reset() {
         if (_heartParent == null) _heartParent = transform;
@@ -18,7 +19,6 @@ public class HPGageManager : MonoBehaviour {
     private void Start() {
         // 初期化
         if (_characterParameter != null) {
-            UpdateMaxHP(_characterParameter.MaxHP);
             // HP更新イベントに登録
             _characterParameter.OnHPChanged += UpdateHPGage;
             // 初期表示
@@ -43,7 +43,16 @@ public class HPGageManager : MonoBehaviour {
         // 最大HP分のハートを生成
         for (int i = 0; i < max_hp; i++) {
             var heart = Instantiate(_heartPrefab, _heartParent);
+            if (isInitialized && i == max_hp - 1) {
+                // 最後のハートのみスポーンアニメーションを再生
+                heart.OnPlaySpawnAnim();
+            }
             _hearts.Add(heart);
+        }
+
+        // 初期化フラグを設定
+        if (!isInitialized) {
+            isInitialized = true;
         }
     }
 

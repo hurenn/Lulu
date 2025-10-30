@@ -14,6 +14,8 @@ public class CharacterParameter : MonoBehaviour {
 
     // HP
     [SerializeField] private int _defaultMaxHP = 3;
+    public int defaultMaxHP => _defaultMaxHP;
+
     private int _maxHP = 3;
     public int MaxHP => _maxHP;
     public void SetPlusMaxHp(int plus_hp, bool recover = true) {
@@ -42,10 +44,10 @@ public class CharacterParameter : MonoBehaviour {
     public bool isInvincible => _currentInvincibilityTimer > 0;
 
     // MP
-    public float _defaultMaxMP = 100.0f;
+    public float defaultMaxMP = 100.0f;
     private float _maxMP = 100.0f;
     public void SetPlusMaxMp(float plus_mp, bool recover = true) {
-        _maxMP = _defaultMaxMP +  plus_mp;
+        _maxMP = defaultMaxMP +  plus_mp;
         if (recover) {
             _currentMP = _maxMP;
             _UpdateMPUI();
@@ -55,7 +57,7 @@ public class CharacterParameter : MonoBehaviour {
     // MP‚ªÅ‘å‚©‚Ç‚¤‚©
     public bool isMaxMP => _currentMP >= _maxMP;
     // ƒI[ƒo[ƒq[ƒg‚©‚ç‚Ì‰ñ•œŽžŠÔ
-    private float _overheatRecoverRate => (_defaultMaxMP / _overheatRecoveryTime) * Time.deltaTime;
+    private float _overheatRecoverRate => (defaultMaxMP / _overheatRecoveryTime) * Time.deltaTime;
 
     // ƒI[ƒo[ƒq[ƒg’†‚©‚Ç‚¤‚©
     public bool isOverheat { get; set; }
@@ -115,7 +117,7 @@ public class CharacterParameter : MonoBehaviour {
     private void _UpdateOverheatTimer() {
         if (isOverheat) {
             _currentMP = Mathf.Clamp(_currentMP + _overheatRecoverRate, 0, _maxMP);
-            if (_currentMP >= _defaultMaxMP) {
+            if (_currentMP >= defaultMaxMP) {
                 // ƒI[ƒo[ƒq[ƒg‰ðœ
                 isOverheat = false;
                 _currentMP = _maxMP;
@@ -220,26 +222,26 @@ public class CharacterParameter : MonoBehaviour {
 
         // MPƒQ[ƒW‚ÌXV
 
-        // ‘æ1’iŠK: Šî–{MP (0 - _defaultMaxMP)
+        // ‘æ1’iŠK: Šî–{MP (0 - defaultMaxMP)
         if (_mpImage != null) {
-            _mpImage.fillAmount = Mathf.Clamp01(_currentMP / _defaultMaxMP);
+            _mpImage.fillAmount = Mathf.Clamp01(_currentMP / defaultMaxMP);
         }
 
-        // ‘æ2’iŠK: Šg’£MP1 (_defaultMaxMP - _defaultMaxMP*2)
+        // ‘æ2’iŠK: Šg’£MP1 (defaultMaxMP - defaultMaxMP*2)
         if (_mpImage2 != null) {
-            if (_currentMP > _defaultMaxMP) {
-                float excess1 = _currentMP - _defaultMaxMP;
-                _mpImage2.fillAmount = Mathf.Clamp01(excess1 / _defaultMaxMP);
+            if (_currentMP > defaultMaxMP) {
+                float excess1 = _currentMP - defaultMaxMP;
+                _mpImage2.fillAmount = Mathf.Clamp01(excess1 / defaultMaxMP);
             } else {
                 _mpImage2.fillAmount = 0f;
             }
         }
 
-        // ‘æ3’iŠK: Šg’£MP2 (_defaultMaxMP*2 - _defaultMaxMP*3)
+        // ‘æ3’iŠK: Šg’£MP2 (defaultMaxMP*2 - defaultMaxMP*3)
         if (_mpImage3 != null) {
-            if (_currentMP > _defaultMaxMP * 2) {
-                float excess2 = _currentMP - (_defaultMaxMP * 2);
-                _mpImage3.fillAmount = Mathf.Clamp01(excess2 / _defaultMaxMP);
+            if (_currentMP > defaultMaxMP * 2) {
+                float excess2 = _currentMP - (defaultMaxMP * 2);
+                _mpImage3.fillAmount = Mathf.Clamp01(excess2 / defaultMaxMP);
             } else {
                 _mpImage3.fillAmount = 0f;
             }
