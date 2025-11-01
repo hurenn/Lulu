@@ -46,6 +46,8 @@ public class CharacterParameter : MonoBehaviour {
     // MP
     private float _defaultMaxMP = 100.0f;
     private float _maxMP = 100.0f;
+    private float _viewMP = 0.0f;
+
     private float _addMaxMP = 0.0f;
     public void SetPlusMaxMp(float plus_mp, bool recover = true) {
         var set_max_mp = _defaultMaxMP + plus_mp;
@@ -115,6 +117,11 @@ public class CharacterParameter : MonoBehaviour {
         // MP回復不可タイマーの更新
         if (_currentUnRecoverableTime_MP > 0) {
             _currentUnRecoverableTime_MP -= Time.deltaTime;
+        }
+
+        // 表示MPの更新
+        if (_viewMP != _currentMP) {
+            _UpdateMPUI();
         }
 
         // レベルアップ時の最大MP上昇処理
@@ -258,8 +265,13 @@ public class CharacterParameter : MonoBehaviour {
     /// MP UIの更新
     /// </summary>
     private void _UpdateMPUI() {
+        // 表示用MPの更新
+        if (_viewMP != _currentMP) {
+            _viewMP = Mathf.MoveTowards(_viewMP, _currentMP, 600.0f * Time.deltaTime);
+        }
+
         // MPが最大でない場合はゲージを表示
-        if (_mpBackground != null && _currentMP < _maxMP) {
+        if (_mpBackground != null && _viewMP < _maxMP) {
             _mpBackground.SetActive(true);
         }
 
@@ -267,13 +279,13 @@ public class CharacterParameter : MonoBehaviour {
 
         // 第1段階: 基本MP (0 - _defaultMaxMP)
         if (_mpImage != null) {
-            _mpImage.fillAmount = Mathf.Clamp01(_currentMP / _defaultMaxMP);
+            _mpImage.fillAmount = Mathf.Clamp01(_viewMP / _defaultMaxMP);
         }
 
         // 第2段階: 拡張MP1 (_defaultMaxMP - _defaultMaxMP*2)
         if (_mpImage2 != null) {
-            if (_currentMP > _defaultMaxMP) {
-                float excess1 = _currentMP - _defaultMaxMP;
+            if (_viewMP > _defaultMaxMP) {
+                float excess1 = _viewMP - _defaultMaxMP;
                 _mpImage2.fillAmount = Mathf.Clamp01(excess1 / _defaultMaxMP);
             } else {
                 _mpImage2.fillAmount = 0f;
@@ -282,8 +294,8 @@ public class CharacterParameter : MonoBehaviour {
 
         // 第3段階: 拡張MP2 (_defaultMaxMP*2 - _defaultMaxMP*3)
         if (_mpImage3 != null) {
-            if (_currentMP > _defaultMaxMP * 2) {
-                float excess2 = _currentMP - (_defaultMaxMP * 2);
+            if (_viewMP > _defaultMaxMP * 2) {
+                float excess2 = _viewMP - (_defaultMaxMP * 2);
                 _mpImage3.fillAmount = Mathf.Clamp01(excess2 / _defaultMaxMP);
             } else {
                 _mpImage3.fillAmount = 0f;
@@ -302,7 +314,7 @@ public class CharacterParameter : MonoBehaviour {
             _mpImage3.color = targetColor;
         }
 
-        if (_currentMP >= _maxMP && !_isMpFilled && _addMaxMP <= 0) {
+        if (_viewMP >= _maxMP && !_isMpFilled && _addMaxMP <= 0) {
             _isMpFilled = true;
             // MP全快アニメ
             _mpFilled.Play("MP_Filled", 0, 0f);
