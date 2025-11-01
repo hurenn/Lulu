@@ -63,7 +63,7 @@
                     "name": "Previous",
                     "type": "Button",
                     "id": "2776c80d-3c14-4091-8c56-d04ced07a2b0",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -239,10 +239,10 @@
                 {
                     "name": "",
                     "id": "3ea4d645-4504-4529-b061-ab81934c3752",
-                    "path": "<Joystick>/stick",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Joystick",
+                    "groups": ";Gamepad",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -447,6 +447,17 @@
                 },
                 {
                     "name": "",
+                    "id": "0d56da67-719c-490e-b8a7-97e998c4d7d7",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1534dc16-a6aa-499d-9c3a-22b47347b52a",
                     "path": "<Keyboard>/1",
                     "interactions": "",
@@ -535,6 +546,17 @@
                 },
                 {
                     "name": "",
+                    "id": "fd9cd536-fc33-488e-bcae-56af8e11eb76",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "AbilityY",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8550cc3f-4d19-464b-aea7-25fed28c9059",
                     "path": "<Keyboard>/w",
                     "interactions": "",
@@ -557,6 +579,17 @@
                 },
                 {
                     "name": "",
+                    "id": "83fafbd3-30fa-41f1-bc7a-619b871b4f40",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "AbilityX",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "48f637d9-35dd-46c4-9280-c1b5b709321e",
                     "path": "<Keyboard>/d",
                     "interactions": "",
@@ -570,6 +603,17 @@
                     "name": "",
                     "id": "5a888c4b-a3fe-427b-ac94-20de13c84cd5",
                     "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "AbilityA",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fbaa2f9a-75c5-4dd7-96bc-d03f164ff7ec",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",

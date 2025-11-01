@@ -91,7 +91,13 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         // “ü—ÍŽæ“¾
-        input.move = _moveInputValue;
+        Vector2 move_input = Vector2.zero;
+        if(_moveInputValue.x > 0.5f) move_input.x = 1f;
+        if(_moveInputValue.x < -0.5f) move_input.x = -1f;
+        if (_moveInputValue.y > 0.5f) move_input.y = 1f;
+        if (_moveInputValue.y < -0.5f) move_input.y = -1f;
+        input.move = move_input;
+
         input.jumpPressed = _isJumpPressed;
         input.jumpHeld = _isJumpHeld;
         input.abilityYPressed = _isAbilityYPressed;
