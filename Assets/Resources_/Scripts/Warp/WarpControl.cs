@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class WarpControl : MonoBehaviour
 {
@@ -134,13 +135,12 @@ public class WarpControl : MonoBehaviour
     /// ワープチェッカーを指定してワープ
     /// </summary>
     public IEnumerator TargetWarp(WarpChecker warp_checker, float end_delay = 0.0f) {
-        // ワープ先の決定
-        var safe_point = warp_checker.GetWarpPoint();
+        // ワープ前の位置保存
+        Vector2 origin = transform.position;
+        var safe_point = warp_checker.GetWarpDestination(origin, warp_checker.transform.position);
 
         // ワープ先に移動
-        if (safe_point.HasValue) {
-            yield return _ExecuteWarpCommon(safe_point.Value, end_delay:end_delay);
-        }
+        yield return _ExecuteWarpCommon(safe_point, end_delay: end_delay);
     }
 
     /// <summary>
