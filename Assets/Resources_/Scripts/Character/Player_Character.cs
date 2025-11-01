@@ -45,8 +45,6 @@ public class Player_Character : Character_Base {
         }
     }
 
-    [SerializeField] protected AudioClip _seMpRecover;
-
     // プレイヤー用パラメーター
     private PlayerParameter _playerParam;
 
@@ -87,12 +85,7 @@ public class Player_Character : Character_Base {
 
         // 着地時MP回復
         if (_isGrounded && !_charaParam.isMaxMP) {
-            if (_charaParam.RecoverMP()) {
-                // SE再生
-                if (_seMpRecover != null) {
-                    _warpControl.audioSource?.PlayOneShot(_seMpRecover);
-                }
-            }
+            _charaParam.RecoverMP();
         }
 
         // 地面張り付き状態計測

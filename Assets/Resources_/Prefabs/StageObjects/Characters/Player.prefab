@@ -335,7 +335,6 @@ MonoBehaviour:
   _abilityX: {fileID: 0}
   _abilityA: {fileID: 0}
   _levelUpAnimator: {fileID: 3229794863365798266}
-  _seMpRecover: {fileID: 8300000, guid: bf9741272d0121e4eb35c8e541eb34d3, type: 3}
 --- !u!114 &8695738934329559163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,7 +356,6 @@ MonoBehaviour:
   - {fileID: 8752185223556704210}
   - {fileID: 7614556621928951151}
   - {fileID: 8834824389040262793}
-  _cameraFollow: {fileID: 0}
   _coinCheckSize: {x: 5, y: 3}
   _coinLayer:
     serializedVersion: 2
@@ -387,6 +385,8 @@ MonoBehaviour:
   _mpImage2: {fileID: 5933207661161018412}
   _mpImage3: {fileID: 2124368633965066426}
   _mpFilled: {fileID: 8242460072774927710}
+  _audioSource: {fileID: 3123718113213705543}
+  _seMpRecover: {fileID: 8300000, guid: bf9741272d0121e4eb35c8e541eb34d3, type: 3}
 --- !u!96 &5472578248599958905
 TrailRenderer:
   serializedVersion: 3

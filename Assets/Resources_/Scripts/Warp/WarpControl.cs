@@ -19,9 +19,6 @@ public class WarpControl : MonoBehaviour
     // ワープチェック用のコンポーネント
     [SerializeField] private WarpChecker[] warpCheckers;
 
-    // カメラ
-    [SerializeField] private CameraFollow _cameraFollow = default;
-
     [SerializeField] private Vector2 _coinCheckSize = new Vector2(5,3);   // コインチェックの半径
     [SerializeField] private LayerMask _coinLayer;          // コインのレイヤー
     [SerializeField] private float _coinWarpInterval = 0.1f;
@@ -89,7 +86,6 @@ public class WarpControl : MonoBehaviour
             _audioSource.PlayOneShot(_seWarp);
         }
         transform.position = safe_point;
-        //_cameraFollow.SetWarpMode(is_warp_camera);
 
         // 最後にワープした方向を保存
         WarpChecker nearest_checker = null;

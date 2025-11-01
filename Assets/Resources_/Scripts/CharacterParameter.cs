@@ -48,6 +48,10 @@ public class CharacterParameter : MonoBehaviour {
     private float _maxMP = 100.0f;
     private float _viewMP = 0.0f;
 
+    // MP全快アニメ再生制御
+    private float _waitViewMpGauge = 0.05f;
+    private float _currentWaitViewMpGauge = 0.0f;
+
     private float _addMaxMP = 0.0f;
     public void SetPlusMaxMp(float plus_mp, bool recover = true) {
         var set_max_mp = _defaultMaxMP + plus_mp;
@@ -57,7 +61,7 @@ public class CharacterParameter : MonoBehaviour {
         }
     }
 
-    private bool _isMpFilled = false;
+    private bool _isViewMpFilled = false;
     // MPゲージが非表示になるまでの時間
     private float _mpHideTime = 1.0f;
     private float _currentMpHideTime = 0f;
@@ -91,8 +95,9 @@ public class CharacterParameter : MonoBehaviour {
     [SerializeField] private Image _mpImage3;
     // MPゲージアニメーション
     [SerializeField] private Animator _mpFilled;
-    // MPゲージ非表示コルーチン
-    private IEnumerator _mpHideCoroutine = null;
+
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _seMpRecover;
 
     public void Setup() {
         _originalColor = _rend.color;
@@ -119,9 +124,9 @@ public class CharacterParameter : MonoBehaviour {
             _currentUnRecoverableTime_MP -= Time.deltaTime;
         }
 
-        // 表示MPの更新
-        if (_viewMP != _currentMP) {
-            _UpdateMPUI();
+        // MPゲージ表示待ち時間の更新
+        if (_currentWaitViewMpGauge > 0) {
+            _currentWaitViewMpGauge -= Time.deltaTime;
         }
 
         // レベルアップ時の最大MP上昇処理
@@ -132,7 +137,6 @@ public class CharacterParameter : MonoBehaviour {
 
             // MPゲージ表示
             _mpBackground.SetActive(true);
-            _isMpFilled = false;
 
             // 非表示タイマーリセット
             _currentMpHideTime = 0;
@@ -142,7 +146,7 @@ public class CharacterParameter : MonoBehaviour {
 
         // MPゲージ非表示タイマーの更新
         if (_mpBackground != null && _mpBackground.activeSelf) {
-            if (_isMpFilled) {
+            if (_isViewMpFilled) {
                 if (_currentMpHideTime < _mpHideTime) {
                     _currentMpHideTime += Time.deltaTime;
                 } else {
@@ -153,6 +157,11 @@ public class CharacterParameter : MonoBehaviour {
                 // 非表示タイマーリセット
                 _currentMpHideTime = 0;
             }
+        }
+
+        // 表示MPの更新
+        if (_viewMP != _currentMP || _currentMP < _maxMP) {
+            _UpdateMPUI();
         }
     }
 
@@ -213,17 +222,17 @@ public class CharacterParameter : MonoBehaviour {
         }
         return true;
     }
-    
-    public void DecreaseMP(float amount)
-    {
+
+    public void DecreaseMP(float amount) {
+        if (_currentMP >= _maxMP) {
+            _currentWaitViewMpGauge = _waitViewMpGauge;
+        }
+
         _currentMP -= amount;
         if (_currentMP < 0) {
             // オーバーヒート処理
             _currentMP = 0;
             isOverheat = true;
-        }
-        if (_currentMP < _maxMP) {
-            _isMpFilled = false;
         }
 
         // MPゲージの更新
@@ -265,9 +274,17 @@ public class CharacterParameter : MonoBehaviour {
     /// MP UIの更新
     /// </summary>
     private void _UpdateMPUI() {
+        if (_currentWaitViewMpGauge > 0) {
+            // MP全快アニメ待ち中は更新しない
+            return;
+        }
+
         // 表示用MPの更新
         if (_viewMP != _currentMP) {
             _viewMP = Mathf.MoveTowards(_viewMP, _currentMP, 600.0f * Time.deltaTime);
+            if(_viewMP < _maxMP) {
+                _isViewMpFilled = false;
+            }
         }
 
         // MPが最大でない場合はゲージを表示
@@ -314,10 +331,17 @@ public class CharacterParameter : MonoBehaviour {
             _mpImage3.color = targetColor;
         }
 
-        if (_viewMP >= _maxMP && !_isMpFilled && _addMaxMP <= 0) {
-            _isMpFilled = true;
-            // MP全快アニメ
-            _mpFilled.Play("MP_Filled", 0, 0f);
+        // MP全快アニメーション判定
+        if (_viewMP >= _maxMP && !_isViewMpFilled && _addMaxMP <= 0) {
+            _isViewMpFilled = true;
+            if (_currentWaitViewMpGauge <= 0) {
+                // MP全快アニメ
+                _mpFilled.Play("MP_Filled", 0, 0f);
+                // 回復SE再生
+                if (_audioSource != null && _seMpRecover != null) {
+                    _audioSource.PlayOneShot(_seMpRecover);
+                }
+            }
         }
     }
 }
