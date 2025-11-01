@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 9106834840076273126}
   - component: {fileID: 2780845963305904891}
   - component: {fileID: 8695738934329559163}
-  - component: {fileID: 4239974138943333648}
+  - component: {fileID: 2689069601214134212}
   - component: {fileID: 5472578248599958905}
   - component: {fileID: 1073441699862045369}
   - component: {fileID: 2099095817979731009}
@@ -309,7 +309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _param: {fileID: 11400000, guid: 109acb4e2818ef442ac66fc2ddb0b528, type: 2}
-  _charaParam: {fileID: 4239974138943333648}
+  _charaParam: {fileID: 2689069601214134212}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -364,7 +364,7 @@ MonoBehaviour:
   _avoidWarpInterval: 0.5
   _audioSource: {fileID: 3123718113213705543}
   _seWarp: {fileID: 8300000, guid: 649de4670f4e4214f83fe3e2d29d7f43, type: 3}
---- !u!114 &4239974138943333648
+--- !u!114 &2689069601214134212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -373,13 +373,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 531109707819632045}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9f5d22f392f9bc4783351c9001c6734, type: 3}
+  m_Script: {fileID: 11500000, guid: c1b3bf575074aee4693baa2634ce66c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _defaultMaxHP: 3
-  isLightInvincible: 0
   attackPower: 1
   _rend: {fileID: 6554501651606250815}
+  isLightInvincible: 0
   _mpBackground: {fileID: 1326344433677251810}
   _mpImage: {fileID: 2498267118133095891}
   _mpImage2: {fileID: 5933207661161018412}

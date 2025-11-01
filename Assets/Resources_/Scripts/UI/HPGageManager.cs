@@ -5,7 +5,7 @@ public class HPGageManager : MonoBehaviour {
     /// <summary>
     /// 対象キャラクターのパラメーター
     /// </summary>
-    [SerializeField] private CharacterParameter _characterParameter;
+    [SerializeField] private CharacterParameter_Player _characterParameter;
 
     [SerializeField] private HP_Heart _heartPrefab;
     private List<HP_Heart> _hearts = new List<HP_Heart>();
@@ -18,6 +18,9 @@ public class HPGageManager : MonoBehaviour {
 
     private void Start() {
         // 初期化
+        if (_characterParameter == null) {
+            _characterParameter = FindAnyObjectByType<CharacterParameter_Player>();
+        }
         if (_characterParameter != null) {
             // HP更新イベントに登録
             _characterParameter.OnHPChanged += UpdateHPGage;

@@ -6,6 +6,8 @@ using UnityEngine;
 /// プレイヤーキャラクター（ルル）
 /// </summary>
 public class Player_Character : Character_Base {
+    private CharacterParameter_Player _player_charaParam => _charaParam as CharacterParameter_Player;
+
     // ワープ管理
     [SerializeField] private WarpControl _warpControl;
     // ワープエフェクト
@@ -75,17 +77,17 @@ public class Player_Character : Character_Base {
         _UpdateWallSlideMove();
         _UpdateSlideJump();
 
-        _abilityX?.Setup(_isRight, transform, _param, _charaParam, _warpControl);
-        _abilityY?.Setup(_isRight, transform, _param, _charaParam, _warpControl);
-        _abilityA?.Setup(_isRight, transform, _param, _charaParam, _warpControl);
+        _abilityX?.Setup(_isRight, transform, _param, _player_charaParam, _warpControl);
+        _abilityY?.Setup(_isRight, transform, _param, _player_charaParam, _warpControl);
+        _abilityA?.Setup(_isRight, transform, _param, _player_charaParam, _warpControl);
 
         if (_currentWarpCoolTime > 0) {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
         }
 
         // 着地時MP回復
-        if (_isGrounded && !_charaParam.isMaxMP) {
-            _charaParam.RecoverMP();
+        if (_isGrounded && !_player_charaParam.isMaxMP) {
+            _player_charaParam.RecoverMP();
         }
 
         // 地面張り付き状態計測
@@ -103,10 +105,10 @@ public class Player_Character : Character_Base {
     /// <param name="amount">回復値</param>
     /// <param name="force">強制回復</param>
     public void RecoverMP(float amount, bool force) {
-        if (_charaParam == null) {
+        if (_player_charaParam == null) {
             return;
         }
-        _charaParam.RecoverMP(amount, force);
+        _player_charaParam.RecoverMP(amount, force);
     }
 
     /// <summary>
@@ -143,7 +145,7 @@ public class Player_Character : Character_Base {
                 _isGroundSticking = true;
                 _currentLandingDashTime = 0;
             }
-            _charaParam.OnRecoverOverheat(); // オーバーヒート回復
+            _player_charaParam.OnRecoverOverheat(); // オーバーヒート回復
             _isWarpDashing = false; // ワープダッシュ終了
             return;
         }
@@ -265,7 +267,6 @@ public class Player_Character : Character_Base {
             }
             _rb.linearVelocity = velocity;
         }
-        _anim?.SetBool("Sliding", _isSliding);
     }
 
     private void _UpdateSlideJump() {
@@ -399,9 +400,9 @@ public class Player_Character : Character_Base {
 
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
         // 光の能力で無敵回避
-        if (_charaParam.isLightInvincible && !_charaParam.isOverheat) {
+        if (_player_charaParam.isLightInvincible && !_player_charaParam.isOverheat) {
             // MP消費
-            _charaParam.ConsumeMP(eAbilityType.LightAvoid);
+            _player_charaParam.ConsumeMP(eAbilityType.LightAvoid);
 
             StartCoroutine(_warpControl.AvoidWarp(
                 () => {
@@ -605,7 +606,7 @@ public class Player_Character : Character_Base {
 
         IEnumerator WarpStart() {
             // MP消費
-            var is_success = _charaParam.ConsumeMP(eAbilityType.Warp);
+            var is_success = _player_charaParam.ConsumeMP(eAbilityType.Warp);
 
             if (!is_success) {
                 yield break; // 失敗
@@ -718,8 +719,8 @@ public class Player_Character : Character_Base {
     /// </summary>
     public void ApplyPlayerParameter() {
         if (_playerParam != null) {
-            _charaParam.SetPlusMaxHp(_playerParam.levelParameter.hpLevel);
-            _charaParam.SetPlusMaxMp(_playerParam.levelParameter.mpLevel * _param.mpUpPerLevel);
+            _player_charaParam.SetPlusMaxHp(_playerParam.levelParameter.hpLevel);
+            _player_charaParam.SetPlusMaxMp(_playerParam.levelParameter.mpLevel * _param.mpUpPerLevel);
         }
     }
 }

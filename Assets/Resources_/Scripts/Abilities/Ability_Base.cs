@@ -47,7 +47,7 @@ public class Ability_Base : MonoBehaviour {
 
     // キャラクター情報
     protected Transform _playerTransform = default;
-    protected CharacterParameter _charaParam = null;
+    protected CharacterParameter_Player _charaParam = null;
     protected CommonParameter _param = null;
     protected WarpControl _warpControl = null;
 
@@ -72,7 +72,7 @@ public class Ability_Base : MonoBehaviour {
         bool is_right, 
         Transform chara_pos, 
         CommonParameter common_param, 
-        CharacterParameter chara_param,
+        CharacterParameter_Player chara_param,
         WarpControl warp_control) {
         _isRight = is_right;
         _playerTransform = chara_pos;

@@ -45,7 +45,7 @@ public class Character_Base : MonoBehaviour
     protected bool _isSliding;      // スライディング中かどうか
     protected void _SetSliding(bool is_sliding, bool is_play_anim = true) {
         _isSliding = is_sliding;
-        _anim?.SetBool("Slide", is_sliding && is_play_anim);
+        _anim?.SetBool("Sliding", _isSliding);
     }
     protected bool _isSlidingCanceling; // スライディングキャンセル中かどうか
     protected bool _isSlidingJump;  // スライディングジャンプ中かどうか
@@ -322,7 +322,9 @@ public class Character_Base : MonoBehaviour
             }
 
             // アニメーション
-            _anim.Play("Damage");
+            if (_anim.HasState(0, Animator.StringToHash("Damage"))) {
+                _anim.Play("Damage");
+            }
 
             // ダメージリアクション
             _damageReactionTimer = damage_reaction_time;
