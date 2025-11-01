@@ -44,20 +44,27 @@ public class CharacterParameter : MonoBehaviour {
     public bool isInvincible => _currentInvincibilityTimer > 0;
 
     // MP
-    public float defaultMaxMP = 100.0f;
+    private float _defaultMaxMP = 100.0f;
     private float _maxMP = 100.0f;
+    private float _addMaxMP = 0.0f;
     public void SetPlusMaxMp(float plus_mp, bool recover = true) {
-        _maxMP = defaultMaxMP +  plus_mp;
+        var set_max_mp = _defaultMaxMP + plus_mp;
+        _addMaxMP += set_max_mp - _maxMP;
         if (recover) {
             _currentMP = _maxMP;
-            _UpdateMPUI();
         }
     }
+
+    private bool _isMpFilled = false;
+    // MPゲージが非表示になるまでの時間
+    private float _mpHideTime = 1.0f;
+    private float _currentMpHideTime = 0f;
+
     private float _currentMP { get; set; }
     // MPが最大かどうか
     public bool isMaxMP => _currentMP >= _maxMP;
     // オーバーヒートからの回復時間
-    private float _overheatRecoverRate => (defaultMaxMP / _overheatRecoveryTime) * Time.deltaTime;
+    private float _overheatRecoverRate => (_defaultMaxMP / _overheatRecoveryTime) * Time.deltaTime;
 
     // オーバーヒート中かどうか
     public bool isOverheat { get; set; }
@@ -109,6 +116,37 @@ public class CharacterParameter : MonoBehaviour {
         if (_currentUnRecoverableTime_MP > 0) {
             _currentUnRecoverableTime_MP -= Time.deltaTime;
         }
+
+        // レベルアップ時の最大MP上昇処理
+        if (_addMaxMP > 0) {
+            _maxMP += 1.0f;
+            _currentMP = Mathf.Min(_currentMP + 1.0f, _maxMP);
+            _addMaxMP = Mathf.Max(0, _addMaxMP - 1.0f);
+
+            // MPゲージ表示
+            _mpBackground.SetActive(true);
+            _isMpFilled = false;
+
+            // 非表示タイマーリセット
+            _currentMpHideTime = 0;
+            // MPゲージの更新
+            _UpdateMPUI();
+        }
+
+        // MPゲージ非表示タイマーの更新
+        if (_mpBackground != null && _mpBackground.activeSelf) {
+            if (_isMpFilled) {
+                if (_currentMpHideTime < _mpHideTime) {
+                    _currentMpHideTime += Time.deltaTime;
+                } else {
+                    // MPゲージ非表示
+                    _mpBackground.SetActive(false);
+                }
+            } else {
+                // 非表示タイマーリセット
+                _currentMpHideTime = 0;
+            }
+        }
     }
 
     /// <summary>
@@ -117,7 +155,7 @@ public class CharacterParameter : MonoBehaviour {
     private void _UpdateOverheatTimer() {
         if (isOverheat) {
             _currentMP = Mathf.Clamp(_currentMP + _overheatRecoverRate, 0, _maxMP);
-            if (_currentMP >= defaultMaxMP) {
+            if (_currentMP >= _defaultMaxMP) {
                 // オーバーヒート解除
                 isOverheat = false;
                 _currentMP = _maxMP;
@@ -177,6 +215,9 @@ public class CharacterParameter : MonoBehaviour {
             _currentMP = 0;
             isOverheat = true;
         }
+        if (_currentMP < _maxMP) {
+            _isMpFilled = false;
+        }
 
         // MPゲージの更新
         _UpdateMPUI();
@@ -193,7 +234,9 @@ public class CharacterParameter : MonoBehaviour {
             return false;
         }
         _currentMP += amount;
-        if (_currentMP > _maxMP) _currentMP = _maxMP; // Assuming 100 is the max MP
+        if (_currentMP > _maxMP) {
+            _currentMP = _maxMP;
+        }
 
         // MPゲージの更新
         _UpdateMPUI();
@@ -222,26 +265,26 @@ public class CharacterParameter : MonoBehaviour {
 
         // MPゲージの更新
 
-        // 第1段階: 基本MP (0 - defaultMaxMP)
+        // 第1段階: 基本MP (0 - _defaultMaxMP)
         if (_mpImage != null) {
-            _mpImage.fillAmount = Mathf.Clamp01(_currentMP / defaultMaxMP);
+            _mpImage.fillAmount = Mathf.Clamp01(_currentMP / _defaultMaxMP);
         }
 
-        // 第2段階: 拡張MP1 (defaultMaxMP - defaultMaxMP*2)
+        // 第2段階: 拡張MP1 (_defaultMaxMP - _defaultMaxMP*2)
         if (_mpImage2 != null) {
-            if (_currentMP > defaultMaxMP) {
-                float excess1 = _currentMP - defaultMaxMP;
-                _mpImage2.fillAmount = Mathf.Clamp01(excess1 / defaultMaxMP);
+            if (_currentMP > _defaultMaxMP) {
+                float excess1 = _currentMP - _defaultMaxMP;
+                _mpImage2.fillAmount = Mathf.Clamp01(excess1 / _defaultMaxMP);
             } else {
                 _mpImage2.fillAmount = 0f;
             }
         }
 
-        // 第3段階: 拡張MP2 (defaultMaxMP*2 - defaultMaxMP*3)
+        // 第3段階: 拡張MP2 (_defaultMaxMP*2 - _defaultMaxMP*3)
         if (_mpImage3 != null) {
-            if (_currentMP > defaultMaxMP * 2) {
-                float excess2 = _currentMP - (defaultMaxMP * 2);
-                _mpImage3.fillAmount = Mathf.Clamp01(excess2 / defaultMaxMP);
+            if (_currentMP > _defaultMaxMP * 2) {
+                float excess2 = _currentMP - (_defaultMaxMP * 2);
+                _mpImage3.fillAmount = Mathf.Clamp01(excess2 / _defaultMaxMP);
             } else {
                 _mpImage3.fillAmount = 0f;
             }
@@ -259,31 +302,10 @@ public class CharacterParameter : MonoBehaviour {
             _mpImage3.color = targetColor;
         }
 
-        // MPが最大になった場合のアニメーション再生
-        if (_mpFilled != null) {
-            if (_currentMP >= _maxMP) {
-                _mpFilled.Play("MP_Filled", 0, 0f);
-                // 一定時間後にゲージを非表示にする
-                _mpHideCoroutine = _HideMPGageRoutine();
-                StartCoroutine(_mpHideCoroutine);
-            } else {
-                // 非表示コルーチンを止める
-                if (_mpHideCoroutine != null) {
-                    StopCoroutine(_mpHideCoroutine);
-                    _mpHideCoroutine = null;
-                }
-            }
+        if (_currentMP >= _maxMP && !_isMpFilled && _addMaxMP <= 0) {
+            _isMpFilled = true;
+            // MP全快アニメ
+            _mpFilled.Play("MP_Filled", 0, 0f);
         }
-    }
-
-    /// <summary>
-    /// MPゲージ非表示コルーチン
-    /// </summary>
-    private IEnumerator _HideMPGageRoutine() {
-        yield return new WaitForSeconds(1.0f);
-        if (_mpBackground != null) {
-            _mpBackground.SetActive(false);
-        }
-        _mpHideCoroutine = null;
     }
 }

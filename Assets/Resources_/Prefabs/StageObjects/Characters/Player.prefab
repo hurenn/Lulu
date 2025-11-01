@@ -334,7 +334,7 @@ MonoBehaviour:
   _abilityY: {fileID: 0}
   _abilityX: {fileID: 0}
   _abilityA: {fileID: 0}
-  _levelUpAnimator: {fileID: 0}
+  _levelUpAnimator: {fileID: 3229794863365798266}
   _seMpRecover: {fileID: 8300000, guid: bf9741272d0121e4eb35c8e541eb34d3, type: 3}
 --- !u!114 &8695738934329559163
 MonoBehaviour:
@@ -380,7 +380,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultMaxHP: 3
   isLightInvincible: 0
-  _defaultMaxMP: 100
+  defaultMaxMP: 100
+  _waitAddMaxMPTime: 0.1
   attackPower: 1
   _rend: {fileID: 6554501651606250815}
   _mpBackground: {fileID: 1326344433677251810}
