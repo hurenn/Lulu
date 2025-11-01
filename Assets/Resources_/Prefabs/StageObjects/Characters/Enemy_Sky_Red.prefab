@@ -141,6 +141,51 @@ Transform:
   - {fileID: 5386060910319058499}
   m_Father: {fileID: 6315691806196020579}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2984464746513135230
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 204342144361479419}
+  - component: {fileID: 93544007035516694}
+  m_Layer: 0
+  m_Name: CoinSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &204342144361479419
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2984464746513135230}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6315691806196020579}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &93544007035516694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2984464746513135230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76a66a3b9e0fbfb45b7593e5da05cebd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawnInterval: 0.01
 --- !u!1 &3350910787429456608
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,6 +495,7 @@ Transform:
   - {fileID: 8935208632838463747}
   - {fileID: 7723188360355581549}
   - {fileID: 5947559869714045736}
+  - {fileID: 204342144361479419}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6541187341324001765
@@ -636,7 +682,7 @@ MonoBehaviour:
   _isRight: 0
   enableGravity: 0
   _exp: 4
-  _coinPrefab: {fileID: 4284812828183195615, guid: 6d0e3575028230e4daff4f717c1306fb, type: 3}
+  _coinSpawner: {fileID: 93544007035516694}
   _leftWarpChecker: {fileID: 8927694369288500240}
   _rightWarpChecker: {fileID: 3141748920434146761}
   _lockonMarker: {fileID: 6327048222348729855}
@@ -656,7 +702,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultMaxHP: 1
   isLightInvincible: 0
-  _defaultMaxMP: 100
   attackPower: 1
   _rend: {fileID: 6541187341324001765}
   _mpBackground: {fileID: 0}

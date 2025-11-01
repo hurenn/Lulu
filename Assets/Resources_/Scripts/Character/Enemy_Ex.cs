@@ -226,17 +226,6 @@ public class Enemy_Ex : Enemy_Base {
             yield return null;
         }
 
-        // ÉRÉCÉìê∂ê¨
-        if (_coinPrefab != null) {
-            for (int i = 0; i < _exp; i++) {
-                var coin_obj = Instantiate(_coinPrefab, transform.position, Quaternion.identity);
-                var coin = coin_obj.GetComponent<Coin_Object>();
-                if (coin != null) {
-                    coin.InitializeAutoCollect();
-                }
-                yield return new WaitForSecondsRealtime(0.005f);
-            }
-        }
         yield return new WaitForSecondsRealtime(0.5f);
 
         // === 4. îöî≠ ===

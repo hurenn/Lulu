@@ -5,7 +5,7 @@ public class Enemy_Base : Character_Base
 {
     // 経験値
     [SerializeField] protected int _exp = 1;
-    [SerializeField] protected GameObject _coinPrefab;
+    [SerializeField] protected CoinSpawner _coinSpawner;
 
     // ワープチェック用のコンポーネント
     [SerializeField] private WarpChecker _leftWarpChecker;
@@ -32,15 +32,8 @@ public class Enemy_Base : Character_Base
         _col.enabled = false;
 
         // コイン生成
-        if (_coinPrefab != null) {
-            for (int i = 0; i < _exp; i++) {
-                var coin_obj = Instantiate(_coinPrefab, transform.position, Quaternion.identity);
-                var coin = coin_obj.GetComponent<Coin_Object>();
-                if (coin != null) {
-                    coin.InitializeAutoCollect();
-                }
-                yield return new WaitForSeconds(0.01f);
-            }
+        if (_coinSpawner != null) {
+            _coinSpawner.SpawnCoin(_exp);
         }
 
         // アニメーションの長さを取得してから削除
