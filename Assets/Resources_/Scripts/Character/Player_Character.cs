@@ -371,6 +371,7 @@ public class Player_Character : Character_Base {
                 // 斬撃隙
                 _intervalTimer = _param.iceSlashInterval;
                 _rb.linearVelocity = Vector2.zero;
+                _isWarpDashing = false; // ワープダッシュ終了
                 Vector2 slash_bounce_move = Vector2.right * dir_input.x * _param.slashMoveForce;
                 if (!_isGrounded) {
                     slash_bounce_move.y = _param.slashRebound;
