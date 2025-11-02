@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -114,12 +115,13 @@ public class LockonManager : MonoBehaviour
     /// <summary>
     /// カメラの画面外にターゲットがいるか
     /// </summary>
-    private bool _IsTargetOffScreen()
-    {
+    private bool _IsTargetOffScreen() {
         if (Camera.main == null || _currentTarget == null) return false;
-        
+
         Vector3 screenPos = Camera.main.WorldToScreenPoint(_currentTarget.transform.position);
-        return screenPos.x < 0 || screenPos.x > Screen.width || 
-               screenPos.y < 0 || screenPos.y > Screen.height;
+        var heightOffset = (Screen.width - Screen.height); // 少し余裕を持たせる
+
+        return screenPos.x < 0 || screenPos.x > Screen.width ||
+               screenPos.y < 0 - heightOffset || screenPos.y > Screen.height + heightOffset;
     }
 }

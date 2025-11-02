@@ -27,6 +27,10 @@ public class Player_Character : Character_Base {
     // 壁に沿って滑る速度
     private float _currentWallSlideTime = 0;
 
+    private bool _isAvoid = false;
+    private float _isAvoidTimer = 0.01f;
+    private float _currentAvoidTime = 0f;
+
     // 能力スロット
     [SerializeField] protected Ability_Base _abilityY;
     [SerializeField] protected Ability_Base _abilityX;
@@ -83,6 +87,13 @@ public class Player_Character : Character_Base {
 
         if (_currentWarpCoolTime > 0) {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
+        }
+        if (_isAvoid) {
+            _currentAvoidTime -= Time.fixedDeltaTime;
+            if (_currentAvoidTime <= 0) {
+                _isAvoid = false;
+                _anim.SetBool("Avoid", false);
+            }
         }
 
         // 着地時MP回復
@@ -403,6 +414,11 @@ public class Player_Character : Character_Base {
         if (_player_charaParam.isLightInvincible && !_player_charaParam.isOverheat) {
             // MP消費
             _player_charaParam.ConsumeMP(eAbilityType.LightAvoid);
+
+            _anim.Play("Warp_Enter");       // ワープアニメ再生
+            _anim.SetBool("Avoid", true);   // ワープアニメフラグ
+            _isAvoid = true;
+            _currentAvoidTime = _isAvoidTimer;
 
             StartCoroutine(_warpControl.AvoidWarp(
                 () => {
