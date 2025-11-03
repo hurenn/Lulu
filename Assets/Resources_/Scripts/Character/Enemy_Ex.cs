@@ -90,7 +90,7 @@ public class Enemy_Ex : Enemy_Base {
         }
 
         // HP”¼•ªˆÈ‰º‚ÅƒXƒyƒVƒƒƒ‹UŒ‚
-        if (_charaParam.CurrentHP < _charaParam.MaxHP / 2 && _isSpecialActioned == false) {
+        if (_isHalfHp && _isSpecialActioned == false) {
             action = eExAction.SpecialAttack;
             _isSpecialActioned = true;
         }
