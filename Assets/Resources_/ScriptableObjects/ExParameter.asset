@@ -13,17 +13,18 @@ MonoBehaviour:
   m_Name: ExParameter
   m_EditorClassIdentifier: 
   ActionInterval: 2.5
+  FastActionInterval: 1.5
   ShootTime: 1
   RainShootTime: 0.8
   BurstTime: 2
   ThreeShootTime: 0.8
   JumpShootWait: 0.1
   JumpShootTime: 0.2
-  SpecialShootTime: 5
+  SpecialShootTime: 1
   ShootExplosionTime: 0.5
-  ShootWeight: 15
-  RainShootWeight: 40
-  BurstWeight: 15
-  ThreeShootWeight: 15
-  JumpShootWeight: 10
+  ShootWeight: 30
+  RainShootWeight: 30
+  BurstWeight: 10
+  FastBurstWeight: 10
+  ThreeShootWeight: 0
   ShootInterval: 0.2

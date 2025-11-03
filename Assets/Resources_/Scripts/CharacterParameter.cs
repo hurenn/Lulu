@@ -31,6 +31,7 @@ public class CharacterParameter : MonoBehaviour {
 
     // –³“GŽžŠÔ
     protected float _currentInvincibilityTimer = 0;
+    public float currentInvincibilityTimer { set => _currentInvincibilityTimer = value; }
     public bool isInvincible => _currentInvincibilityTimer > 0;
 
     // UŒ‚—Í

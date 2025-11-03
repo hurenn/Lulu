@@ -50,6 +50,7 @@ public class Ability_Light : Ability_Base
 
         // –³“G‰»
         _charaParam.isLightInvincible = true;
+        _charaParam.currentInvincibilityTimer = 0f;
 
         return eAbilityResult.LightDome;
     }

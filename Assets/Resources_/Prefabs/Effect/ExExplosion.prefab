@@ -117,7 +117,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.495768, y: 1.495768, z: 1.495768}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 566476455501294100}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -183,7 +183,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1308028132908450482}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -239,7 +239,7 @@ MonoBehaviour:
   - {fileID: 8121132203644737018}
   _hitStopTime: 0.3
   _manualCameraShake: 0
-  _manualShakeIntensity: 0.1
+  _manualShakeIntensity: 0.01
   _manualShakeDuration: 0.1
   _hitCameraShakeIntensity: 0
 --- !u!1 &5891395673387587722
@@ -358,7 +358,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7956566375734017462}
   - {fileID: 2981359810265368330}
@@ -786,7 +786,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -21.990482, y: 27.551144, z: 0}
-  m_LocalScale: {x: 2.8, y: 2.8, z: 3.5}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.8750002}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 566476455501294100}
