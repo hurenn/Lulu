@@ -7,6 +7,10 @@ using UnityEngine;
 public class Coin_Object : StageObject_Base {
     [SerializeField] private int _MpRecoverAmount = 10; // コイン取得で回復するMP量
     [SerializeField] private int _coinValue = 1; // コインの価値
+    public int SetCoinValue(int value) {
+        _coinValue = value;
+        return _coinValue;
+    }
 
     [Header("自動回収設定")]
     [SerializeField] private bool _isAutoCollect = false;   // 自動回収するかどうか

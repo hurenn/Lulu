@@ -18,6 +18,7 @@ public class Enemy_Ex : Enemy_Base {
     }
     [SerializeField] private AudioClip _seFinish;
     [SerializeField] private AudioSource _audioBGM;
+    [SerializeField] private AudioClip _bgmSerious;
     [SerializeField] private AudioClip _bgmFlower;
 
     // レーザービームのプレハブ
@@ -30,6 +31,7 @@ public class Enemy_Ex : Enemy_Base {
     // パラメータ
     [SerializeField] private ExParameter _exParameter;
     private bool _isHalfHp => _charaParam.CurrentHP <= _charaParam.MaxHP / 2;
+    private bool _isDowned = false;
 
     [SerializeField] private Transform[] _fastRainShoot;
     [SerializeField] private Transform[] _fastRainShootReverse;
@@ -43,15 +45,19 @@ public class Enemy_Ex : Enemy_Base {
     [SerializeField] private Transform _jumpShootPoint;
     [SerializeField] private Transform _jumpShootExplosionPoint;
     private Transform _playerTransform;
+    private Transform _laserParent;
+    [SerializeField] private GameObject _sparkEffect;
 
     // 行動中フラグ
     private bool _isExecutingAction = false;
     private bool _isSpecialActioned = false;
+    private IEnumerator _currentActionCoroutine = null;
 
     protected override void _Setup() {
         base._Setup();
         _nextActionTime = _exParameter.ActionInterval;
         _playerTransform = GameObject.FindAnyObjectByType<Player_Character>()?.transform;
+        _laserParent = new GameObject("LaserBeams").transform;
     }
 
     protected override void _UpdateSpecials() {
@@ -83,30 +89,31 @@ public class Enemy_Ex : Enemy_Base {
         switch (action) {
             case eExAction.LaserShoot:
                 bool is_reverse = Random.value > 0.5f;
-                StartCoroutine(_ExecuteLaser(_exParameter.ShootTime, is_reverse ? _fastRainShootReverse : _fastRainShoot,
+                _currentActionCoroutine = (_ExecuteLaser(_exParameter.ShootTime, is_reverse ? _fastRainShootReverse : _fastRainShoot,
                     count: _isHalfHp ? _fastRainShoot.Length : 2, is_random: _isHalfHp ? false : true,
                     interval_rate: 0.5f, reset_time: -1.0f, is_thin: true));
                 break;
             case eExAction.RainShoot:
-                StartCoroutine(_ExecuteLaser(_exParameter.RainShootTime, _rainShootPoints,
+                _currentActionCoroutine = (_ExecuteLaser(_exParameter.RainShootTime, _rainShootPoints,
                     _isHalfHp ? 5 : 3, is_random: true));
                 break;
             case eExAction.BurstShoot:
-                StartCoroutine(_ExecuteBurst(_isHalfHp ? _burstExplosionPoints.Length : 3, _burstExplosionPoints, is_special_burst: true));
+                _currentActionCoroutine = (_ExecuteBurst(_isHalfHp ? _burstExplosionPoints.Length : 3, _burstExplosionPoints, is_special_burst: true));
                 break;
             case eExAction.FastBurst:
-                StartCoroutine(_ExecuteBurst(1, _fastBurstPoints, reset_time: -1.0f, is_random:true, is_special_burst: false));
+                _currentActionCoroutine = (_ExecuteBurst(1, _fastBurstPoints, reset_time: -1.0f, is_random:true, is_special_burst: false));
                 break;
             case eExAction.ThreeShoot:
-                StartCoroutine(_ExecuteLaser(_exParameter.ThreeShootTime, _threeShootPoints, 3));
+                _currentActionCoroutine = (_ExecuteLaser(_exParameter.ThreeShootTime, _threeShootPoints, 3));
                 break;
             case eExAction.JumpShoot:
-                StartCoroutine(_ExecuteJumpLaser());
+                _currentActionCoroutine = (_ExecuteJumpLaser());
                 break;
             case eExAction.SpecialAttack:
-                StartCoroutine(_ExecuteSpecialAttack());
+                _currentActionCoroutine = (_ExecuteSpecialAttack());
                 break;
         }
+        StartCoroutine(_currentActionCoroutine);
         _isExecutingAction = true;
     }
 
@@ -159,6 +166,7 @@ public class Enemy_Ex : Enemy_Base {
                 is_thin ? _thinLaserPrefab : _laserPrefab,
                 trans.position, Quaternion.identity);
             laser_obj.transform.rotation = trans.transform.rotation;
+            laser_obj.transform.parent = _laserParent;
             yield return new WaitForSeconds(_exParameter.ShootInterval * interval_rate);
         }
 
@@ -243,6 +251,9 @@ public class Enemy_Ex : Enemy_Base {
 
     // 必殺攻撃
     private IEnumerator _ExecuteSpecialAttack() {
+        var camera = CinemachineManager.Instance;
+        camera.ShakeCamera(duration: 0.1f, intensity: 0.1f);
+
         yield return (_ExecuteLaser(_exParameter.SpecialShootTime, _specialShootPoints, 30, is_thin: true,
             interval_rate: 0.5f, reset_time: 1.0f));
 
@@ -268,6 +279,62 @@ public class Enemy_Ex : Enemy_Base {
         _currentActionTime = -wait_time - (_isHalfHp ? 0.1f : 0);
     }
 
+    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
+        var result = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
+
+        if (_isHalfHp && !_isDowned) {
+            StartCoroutine(_Down());
+            _isDowned = true;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// ダウン演出
+    /// </summary>
+    private IEnumerator _Down() {
+        var cinemachineManager = CinemachineManager.Instance;
+        var flash = ScreenFlash.Instance;
+
+        if (_seFinish != null) {
+            _audioSource?.PlayOneShot(_seDead);
+            _audioSource?.PlayOneShot(_seFinish);
+        }
+        if (_sparkEffect != null) {
+            _sparkEffect.SetActive(true);
+        }
+        _ResetLaser();
+
+        var current_volume = _audioBGM != null ? _audioBGM.volume : 0.8f;
+        if (_audioBGM != null) {
+            _audioBGM.volume = 0f;
+        }
+
+        // === 1. ヒット時演出 ===
+        flash?.Flash();
+        _anim.Play("Down");
+        yield return new WaitForSeconds(0.2f);
+        flash?.Flash(3.0f);
+
+        yield return new WaitForSeconds(1.0f);
+
+        _coinSpawner.SpawnCoin(200);
+
+        // 現在の行動をリセット
+        _isExecutingAction = false;
+        _currentActionTime = -_nextActionTime * 0.8f;
+        if (_sparkEffect != null) {
+            _sparkEffect.SetActive(false);
+        }
+
+        yield return new WaitForSeconds(2f);
+
+        // BGM切り替え
+        _audioBGM.volume = current_volume;
+        _audioBGM.clip = _bgmSerious;
+        _audioBGM.Play();
+    }
+
     protected override IEnumerator Die() {
         OnDied?.Invoke();
 
@@ -275,6 +342,7 @@ public class Enemy_Ex : Enemy_Base {
             _audioSource?.PlayOneShot(_seDead);
             _audioSource?.PlayOneShot(_seFinish);
         }
+        _ResetLaser();
 
         var cinemachineManager = CinemachineManager.Instance;
         var flash = ScreenFlash.Instance;
@@ -334,7 +402,16 @@ public class Enemy_Ex : Enemy_Base {
         _audioBGM.volume = current_volume;
         _audioBGM.clip = _bgmFlower;
         _audioBGM.Play();
-
     }
+
+    private void _ResetLaser() {
+        // レーザービーム削除
+        foreach (Transform child in _laserParent) {
+            Destroy(child.gameObject);
+        }
+        StopCoroutine(_currentActionCoroutine);
+        _currentActionCoroutine = null;
+    }
+
 }
 
