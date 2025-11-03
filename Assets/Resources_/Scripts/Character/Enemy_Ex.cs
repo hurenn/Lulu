@@ -46,12 +46,14 @@ public class Enemy_Ex : Enemy_Base {
     [SerializeField] private Transform _jumpShootExplosionPoint;
     private Transform _playerTransform;
     private Transform _laserParent;
-    [SerializeField] private GameObject _sparkEffect;
 
     // 行動中フラグ
     private bool _isExecutingAction = false;
     private bool _isSpecialActioned = false;
     private IEnumerator _currentActionCoroutine = null;
+
+    // 強制爆発攻撃までのカウント
+    int _forceBurstCount = 3;
 
     protected override void _Setup() {
         base._Setup();
@@ -79,13 +81,21 @@ public class Enemy_Ex : Enemy_Base {
             _isRight = _playerTransform.position.x > transform.position.x;
         }
 
+        // HP半分以下で強制爆発攻撃カウントダウン
+        if (_isHalfHp && _forceBurstCount > 0) {
+            _forceBurstCount--;
+            if (_forceBurstCount == 0) {
+                action = eExAction.BurstShoot;
+            }
+        }
+
         // HP半分以下でスペシャル攻撃
         if (_charaParam.CurrentHP < _charaParam.MaxHP / 2 && _isSpecialActioned == false) {
             action = eExAction.SpecialAttack;
             _isSpecialActioned = true;
-            _nextActionTime = _exParameter.FastActionInterval;
         }
 
+        _anim.Play("Stand");
         switch (action) {
             case eExAction.LaserShoot:
                 bool is_reverse = Random.value > 0.5f;
@@ -161,7 +171,9 @@ public class Enemy_Ex : Enemy_Base {
 
         var set_transforms = _GetTransforms(count, startTranses, is_random);
 
-        foreach (var trans in set_transforms) {
+        for (int i = 0; i < count; i++) {
+            var trans = set_transforms[i % set_transforms.Length];
+
             var laser_obj = Instantiate(
                 is_thin ? _thinLaserPrefab : _laserPrefab,
                 trans.position, Quaternion.identity);
@@ -169,7 +181,6 @@ public class Enemy_Ex : Enemy_Base {
             laser_obj.transform.parent = _laserParent;
             yield return new WaitForSeconds(_exParameter.ShootInterval * interval_rate);
         }
-
         _ResetAction(reset_time);
     }
 
@@ -246,6 +257,11 @@ public class Enemy_Ex : Enemy_Base {
         // 爆発生成
         _anim.SetTrigger("Burst");
 
+        // 強制爆発カウント終了
+        if(_isHalfHp) {
+            _forceBurstCount = -1;
+        }
+
         _ResetAction(reset_time);
     }
 
@@ -254,8 +270,8 @@ public class Enemy_Ex : Enemy_Base {
         var camera = CinemachineManager.Instance;
         camera.ShakeCamera(duration: 0.1f, intensity: 0.1f);
 
-        yield return (_ExecuteLaser(_exParameter.SpecialShootTime, _specialShootPoints, 30, is_thin: true,
-            interval_rate: 0.5f, reset_time: 1.0f));
+        yield return (_ExecuteLaser(_exParameter.SpecialShootTime, _specialShootPoints, _exParameter.SpecialLaserCount, is_thin: true,
+            interval_rate: 0.5f, reset_time: -_exParameter.FastActionInterval));
 
         yield return _ExecuteExplosion(_specialExposionPoint, 1.7f);
     }
@@ -275,8 +291,8 @@ public class Enemy_Ex : Enemy_Base {
     }
 
     private void _ResetAction(float wait_time = 0) {
+        _currentActionTime = wait_time;
         _isExecutingAction = false;
-        _currentActionTime = -wait_time - (_isHalfHp ? 0.1f : 0);
     }
 
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
@@ -296,13 +312,13 @@ public class Enemy_Ex : Enemy_Base {
         var cinemachineManager = CinemachineManager.Instance;
         var flash = ScreenFlash.Instance;
 
+        _isExecutingAction = true;
+
         if (_seFinish != null) {
             _audioSource?.PlayOneShot(_seDead);
             _audioSource?.PlayOneShot(_seFinish);
         }
-        if (_sparkEffect != null) {
-            _sparkEffect.SetActive(true);
-        }
+        OnDowned?.Invoke();
         _ResetLaser();
 
         var current_volume = _audioBGM != null ? _audioBGM.volume : 0.8f;
@@ -314,25 +330,22 @@ public class Enemy_Ex : Enemy_Base {
         flash?.Flash();
         _anim.Play("Down");
         yield return new WaitForSeconds(0.2f);
-        flash?.Flash(3.0f);
+        flash?.Flash(2.0f);
 
         yield return new WaitForSeconds(1.0f);
 
         _coinSpawner.SpawnCoin(200);
 
-        // 現在の行動をリセット
-        _isExecutingAction = false;
-        _currentActionTime = -_nextActionTime * 0.8f;
-        if (_sparkEffect != null) {
-            _sparkEffect.SetActive(false);
-        }
-
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(2.0f);
 
         // BGM切り替え
         _audioBGM.volume = current_volume;
         _audioBGM.clip = _bgmSerious;
         _audioBGM.Play();
+
+        // 現在の行動をリセット
+        _nextActionTime = _exParameter.FastActionInterval;
+        _ResetAction();
     }
 
     protected override IEnumerator Die() {

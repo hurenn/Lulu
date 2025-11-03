@@ -16,6 +16,7 @@ public class Enemy_Base : Character_Base
     [SerializeField] private DamageZone _damageZone;
 
     [SerializeField] protected GameObject _dieExplosion = null;
+    public System.Action OnDowned = null;
     public System.Action OnDied = null;
     public System.Action OnDieEnded = null;
 

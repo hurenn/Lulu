@@ -27,4 +27,7 @@ public class ExParameter : ScriptableObject {
 
     [Header("攻撃インターバル")]
     public float ShootInterval = 0.2f;
+
+    [Header("必殺レーザー本数")]
+    public int SpecialLaserCount = 30;
 }

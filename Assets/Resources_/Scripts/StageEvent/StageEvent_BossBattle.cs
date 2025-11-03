@@ -26,7 +26,27 @@ public class StageEvent_BossBattle : MonoBehaviour {
         if (_bossEnemy != null) {
             _bossEnemy.OnDied += _OnBossDied;
             _bossEnemy.OnDieEnded += _OnBossDieEnded;
+            _bossEnemy.OnDowned += _OnBossDowned;
         }
+    }
+
+    private void _OnBossDowned() {
+        StartCoroutine(_BossDownedRoutine());
+    }
+    private IEnumerator _BossDownedRoutine() {
+        // プレイヤーの操作を停止
+        if (_playerController != null) {
+            _playerController.isEnabledCharacterInput = false;
+        }
+        if (_sparkEffect != null) _sparkEffect.SetActive(true);
+
+        yield return new WaitForSeconds(2.0f);
+
+        // プレイヤーの操作を再開
+        if (_playerController != null) {
+            _playerController.isEnabledCharacterInput = true;
+        }
+        if(_sparkEffect != null) _sparkEffect.SetActive(false);
     }
 
     private void _OnBossDied() {
