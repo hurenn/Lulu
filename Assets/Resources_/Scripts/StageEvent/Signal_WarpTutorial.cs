@@ -37,13 +37,19 @@ public class Signal_WarpTutorial : MonoBehaviour
     public void WarpTutorial_Fourth() {
         _WarpTutorial_Common(Vector2.right, false);
     }
+    public void WarpTutorial_Fifth() {
+        _WarpTutorial_Common(Vector2.right, true, any_dir: true);
+    }
+    public void WarpTutorial_Sixth() {
+        _WarpTutorial_Common(Vector2.right, true, any_dir: true);
+    }
     public void WarpTutorial_End() {
         playerController.insertMoveRight = false;
         playerController.insertMoveDown = false;
         playerController.insertJumpHeld = false;
     }
 
-    private void _WarpTutorial_Common(Vector2 dir_input, bool jump_input) {
+    private void _WarpTutorial_Common(Vector2 dir_input, bool jump_input, bool any_dir = false) {
         if (playerController == null) {
             return;
         }
@@ -55,7 +61,7 @@ public class Signal_WarpTutorial : MonoBehaviour
         _isTutorialActive = true;
 
         CharacterInputData specific_input = new CharacterInputData();
-        specific_input.move = dir_input;
+        specific_input.move = any_dir ? Vector2.zero : dir_input;
         specific_input.jumpPressed = jump_input;
         playerController.SetSpecificInput(specific_input, () => {
             // “ü—ÍŠ®—¹Œã‚Ìˆ—

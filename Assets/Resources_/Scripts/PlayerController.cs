@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour {
     CharacterInputData _specificInput = new CharacterInputData();
 
     public void SetSpecificInput(CharacterInputData specific_input, System.Action input_completed) {
-        _ResetInput();
+        //_ResetInput();
         _specificInput = specific_input;
         _inputCompletedCallback = input_completed;
     }
