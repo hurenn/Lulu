@@ -50,11 +50,15 @@ MonoBehaviour:
   _messageDatas:
     messageDatas:
     - text: "\u3053\u3093\u306B\u3061\u306F\uFF01"
+      englishText: 
       characterIcon: {fileID: 21300000, guid: 8d8c99fc86f3f4142a6350a305569910, type: 3}
-      characterName: "\u30DF\u30EA\u30FC"
+      addShowTime: 0
+      isAutoForce: 0
     - text: "\u304A\u5143\u6C17\u3067\u3059\u306E\u30FC"
+      englishText: 
       characterIcon: {fileID: 21300000, guid: b1a11817d0329474da2a6d31cfa66a1a, type: 3}
-      characterName: "\u30BB\u30BF"
+      addShowTime: 0
+      isAutoForce: 0
     isForced: 0
 --- !u!61 &2602801905800970279
 BoxCollider2D:
@@ -109,7 +113,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 784869042385548296}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

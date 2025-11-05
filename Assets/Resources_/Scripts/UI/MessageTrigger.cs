@@ -33,7 +33,7 @@ public class MessageTrigger : MonoBehaviour {
 
         // メッセージ表示中は待機
         if (!_messageDatas.isForced) {
-            while (_messageListScript.HasMessages() || _messageViewer.IsShowing || !_playerController.isEnabledCharacterInput) {
+            while (_messageListScript.HasMessages() || _messageViewer.IsShowing) {// || !_playerController.isEnabledCharacterInput) {
                 yield return null;
 
                 if (!_isPlayerInside) {
