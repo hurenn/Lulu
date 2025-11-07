@@ -42,6 +42,7 @@ public class Ability_Light : Ability_Base
     public override eAbilityResult ExecuteLong() {
         // オーバーヒート中は使用不可
         if (_cancelByOverheat || _lightDomePrefab == null) {
+            ExecuteRelease();
             return eAbilityResult.None;
         }
 
