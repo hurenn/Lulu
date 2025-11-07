@@ -216,6 +216,9 @@ public class WarpControl : MonoBehaviour
         WarpChecker[] valid_checkers =
         System.Array.FindAll(warpCheckers, (checker) => {
             var safe_point = checker.GetWarpPoint(true);
+            if (!safe_point.HasValue) {
+                safe_point = checker.GetWarpPoint(false);
+            }
             return safe_point.HasValue;
         });
 
