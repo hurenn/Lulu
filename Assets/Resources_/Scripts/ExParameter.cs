@@ -24,6 +24,7 @@ public class ExParameter : ScriptableObject {
     public int BurstWeight = 15;
     public int FastBurstWeight = 10;
     public int ThreeShootWeight = 15;
+    public int FastSpecialWeight = 10;
 
     [Header("攻撃インターバル")]
     public float ShootInterval = 0.2f;

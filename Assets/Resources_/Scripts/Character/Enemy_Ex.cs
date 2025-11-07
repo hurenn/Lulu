@@ -14,6 +14,7 @@ public class Enemy_Ex : Enemy_Base {
         FastBurst,
         ThreeShoot,
         JumpShoot,
+        FastSpecialShoot,
         SpecialAttack,
     }
     [SerializeField] private AudioClip _seFinish;
@@ -133,6 +134,9 @@ public class Enemy_Ex : Enemy_Base {
             case eExAction.JumpShoot:
                 _currentActionCoroutine = (_ExecuteJumpLaser());
                 break;
+            case eExAction.FastSpecialShoot:
+                _currentActionCoroutine = (_FastSpecialAttack());
+                break;
             case eExAction.SpecialAttack:
                 _currentActionCoroutine = (_ExecuteSpecialAttack());
                 break;
@@ -154,7 +158,7 @@ public class Enemy_Ex : Enemy_Base {
         }
     }
     private eExAction _ChooseSeriousAction() {
-        int totalWeight = _exParameter.ShootWeight + _exParameter.ThreeShootWeight + 
+        int totalWeight = _exParameter.ShootWeight + _exParameter.ThreeShootWeight + _exParameter.FastSpecialWeight +
             _exParameter.RainShootWeight + _exParameter.BurstWeight + _exParameter.FastBurstWeight;
 
         int randomValue = Random.Range(0, totalWeight);
@@ -166,6 +170,8 @@ public class Enemy_Ex : Enemy_Base {
             return eExAction.RainShoot;
         } else if (randomValue < _exParameter.ShootWeight + _exParameter.ThreeShootWeight + _exParameter.RainShootWeight + _exParameter.FastBurstWeight) {
             return eExAction.FastBurst;
+        }else if(randomValue < _exParameter.ShootWeight + _exParameter.ThreeShootWeight + _exParameter.RainShootWeight + _exParameter.FastBurstWeight + _exParameter.FastSpecialWeight) {
+            return eExAction.FastSpecialShoot;
         } else {
             return eExAction.BurstShoot;
         }
@@ -285,9 +291,15 @@ public class Enemy_Ex : Enemy_Base {
         camera.ShakeCamera(duration: 0.1f, intensity: 0.1f);
 
         yield return (_ExecuteLaser(_exParameter.SpecialShootTime, _specialShootPoints, _exParameter.SpecialLaserCount, is_thin: true,
-            interval_rate: 0.5f, reset_time: -_exParameter.FastActionInterval));
+            is_random:true, interval_rate: 0.5f, reset_time: -_exParameter.FastActionInterval));
 
         yield return _ExecuteExplosion(_specialExposionPoint, 1.7f);
+    }
+
+    // ŠÈˆÕ•KŽEUŒ‚
+    private IEnumerator _FastSpecialAttack() {
+        yield return (_ExecuteLaser(_exParameter.ShootTime, _specialShootPoints, _exParameter.SpecialLaserCount / 2, is_thin: true,
+            is_random: true, interval_rate: 0.5f, reset_time: -_exParameter.FastActionInterval));
     }
 
     private IEnumerator _ExecuteExplosion(Transform startTrans, float scale_rate = 1.0f) {
