@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -12,12 +13,20 @@ public class CharacterParameter : MonoBehaviour {
     public int MaxHP => _maxHP;
     public void SetPlusMaxHp(int plus_hp, bool recover = true) {
         _maxHP = _defaultMaxHP + plus_hp;
-        OnMaxHPChanged?.Invoke(_maxHP);
+        StartCoroutine(_waitMaxHPChange());
 
         if (recover) {
             CurrentHP = _maxHP;
         }
     }
+    // HPゲージセットアップができるまで待つ
+    private IEnumerator _waitMaxHPChange() {
+        while (OnMaxHPChanged == null) {
+            yield return null;
+        }
+        OnMaxHPChanged.Invoke(_maxHP);
+    }
+
     private int _currentHP = 3;
     public int CurrentHP {
         get => _currentHP;

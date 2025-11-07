@@ -54,9 +54,15 @@ public class Enemy_Ex : Enemy_Base {
 
     // 強制爆発攻撃までのカウント
     int _forceBurstCount = 3;
+    private float _currentBGMVolume = 0.7f;
+    private bool _startBGM = false;
 
     protected override void _Setup() {
         base._Setup();
+        _currentBGMVolume = _audioBGM != null ? _audioBGM.volume : 0.7f;
+        if (_audioBGM != null) {
+            _audioBGM.enabled = false;
+        }
         _nextActionTime = _exParameter.ActionInterval;
         _playerTransform = GameObject.FindAnyObjectByType<Player_Character>()?.transform;
         _laserParent = new GameObject("LaserBeams").transform;
@@ -79,6 +85,14 @@ public class Enemy_Ex : Enemy_Base {
         var action = _isHalfHp ? _ChooseSeriousAction() : _ChooseAction();
         if (_playerTransform != null) {
             _isRight = _playerTransform.position.x > transform.position.x;
+        }
+        if (_startBGM == false) {
+            // BGMスタート
+            _startBGM = true;
+            if (_audioBGM != null) {
+                _audioBGM.enabled = true;
+                _audioBGM.Play();
+            }
         }
 
         // HP半分以下で強制爆発攻撃カウントダウン
@@ -321,7 +335,6 @@ public class Enemy_Ex : Enemy_Base {
         OnDowned?.Invoke();
         _ResetLaser();
 
-        var current_volume = _audioBGM != null ? _audioBGM.volume : 0.8f;
         if (_audioBGM != null) {
             _audioBGM.volume = 0f;
         }
@@ -339,7 +352,7 @@ public class Enemy_Ex : Enemy_Base {
         yield return new WaitForSeconds(2.0f);
 
         // BGM切り替え
-        _audioBGM.volume = current_volume;
+        _audioBGM.volume = _currentBGMVolume;
         _audioBGM.clip = _bgmSerious;
         _audioBGM.Play();
 
@@ -371,7 +384,7 @@ public class Enemy_Ex : Enemy_Base {
         yield return new WaitForSecondsRealtime(0.2f);
         flash?.Flash(3.0f);
 
-        var current_volume = _audioBGM != null ? _audioBGM.volume : 0.8f;
+        // BGM停止
         if (_audioBGM != null) {
             _audioBGM.volume = 0f;
         }
@@ -412,7 +425,7 @@ public class Enemy_Ex : Enemy_Base {
         yield return new WaitForSeconds(5.0f);
 
         // BGM切り替え
-        _audioBGM.volume = current_volume;
+        _audioBGM.volume = _currentBGMVolume;
         _audioBGM.clip = _bgmFlower;
         _audioBGM.Play();
     }

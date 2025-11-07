@@ -734,7 +734,7 @@ public class Player_Character : Character_Base {
     /// レベルに応じたパラメータを適用
     /// </summary>
     public void ApplyPlayerParameter() {
-        if (_playerParam != null) {
+        if (_player_charaParam != null) {
             _player_charaParam.SetPlusMaxHp(_playerParam.levelParameter.hpLevel);
             _player_charaParam.SetPlusMaxMp(_playerParam.levelParameter.mpLevel * _param.mpUpPerLevel);
         }
