@@ -94,7 +94,7 @@ public class Coin_Object : StageObject_Base {
             }
 
             if (_pickEffect != null) {
-                Instantiate(_pickEffect, transform.position, Quaternion.identity, player.transform);
+                Instantiate(_pickEffect, transform.position, Quaternion.identity);
             }
             // ƒŒƒCƒ„[‚ğ•ÏX
             gameObject.layer = LayerMask.NameToLayer("Default");
