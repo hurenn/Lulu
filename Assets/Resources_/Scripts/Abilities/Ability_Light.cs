@@ -6,6 +6,16 @@ public class Ability_Light : Ability_Base
     private GameObject _lightDomeInstance;
 
     private bool _isNotHide => _rend.color.a > 0.9f;
+    private GoalMarker _goalMarker;
+
+    public override void Setup(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control) {
+        base.Setup(is_right, chara_pos, common_param, chara_param, warp_control);
+
+        var goal_marker = FindAnyObjectByType<GoalMarker>();
+        if (goal_marker != null) {
+            _goalMarker = goal_marker;
+        }
+    }
 
     private void Update() {
         if (_isNotHide && _IsOutOfScreen()) {
@@ -34,6 +44,11 @@ public class Ability_Light : Ability_Base
             _lightDomeInstance = Instantiate(_lightDomePrefab, _playerTransform);
         }
         _lightDomeInstance.SetActive(true);
+
+        if(_goalMarker != null) {
+            // ゴールマーカー表示
+            _goalMarker.SetMarkerActive(true);
+        }
 
         Debug.Log("Light Parry");
         return eAbilityResult.LightParry;
@@ -70,6 +85,11 @@ public class Ability_Light : Ability_Base
         }
         // 無敵解除
         _charaParam.isLightInvincible = false;
+
+        if(_goalMarker != null) {
+            // ゴールマーカー非表示
+            _goalMarker.SetMarkerActive(false);
+        }
     }
 
     /// <summary>

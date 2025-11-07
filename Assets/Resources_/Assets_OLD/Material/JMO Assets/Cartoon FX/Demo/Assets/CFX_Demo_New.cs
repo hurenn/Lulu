@@ -166,7 +166,7 @@ public class CFX_Demo_New : MonoBehaviour
 		#else
 			particles.SetActive(true);
 //			for(int i = 0; i < particles.transform.childCount; i++)
-//				particles.transform.GetChild(i).gameObject.SetActive(true);
+//				particles.transform.GetChild(i).gameObject.SetMarkerActive(true);
 		#endif
 		
 		ParticleSystem ps = particles.GetComponent<ParticleSystem>();
