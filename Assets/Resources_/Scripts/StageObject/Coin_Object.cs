@@ -21,6 +21,7 @@ public class Coin_Object : StageObject_Base {
     private Transform _playerTransform = null;
     private Vector3 _velocity = Vector3.zero;
     [SerializeField] private SpriteRenderer _coinRend;
+    [SerializeField] private GameObject _lightObject;
     [SerializeField] private TrailRenderer _trail;
     [SerializeField] private GameObject _pickEffect;
 
@@ -109,6 +110,7 @@ public class Coin_Object : StageObject_Base {
         transform.position = position;
         gameObject.SetActive(true);
         _coinRend.enabled = true;   // コインの表示を有効化
+        _lightObject.SetActive(true); // ライトを有効化
 
         // レイヤーを元に戻す
         gameObject.layer = LayerMask.NameToLayer("Coin");
@@ -126,6 +128,7 @@ public class Coin_Object : StageObject_Base {
     /// </summary>
     private IEnumerator _HideRoutine() {
         _coinRend.enabled = false;
+        _lightObject.SetActive(false); // ライトを無効化
         if (_trail != null) {
             yield return new WaitForSeconds(2.0f);
         }

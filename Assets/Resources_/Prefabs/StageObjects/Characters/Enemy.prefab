@@ -407,8 +407,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1960725399
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 4593201436922957072, guid: a45a635d53eddc94a9807026e49212d9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -676,14 +676,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _defaultMaxHP: 3
-  isLightInvincible: 0
   attackPower: 1
   _rend: {fileID: 9099040648427971505}
-  _mpBackground: {fileID: 0}
-  _mpImage: {fileID: 0}
-  _mpImage2: {fileID: 0}
-  _mpImage3: {fileID: 0}
-  _mpFilled: {fileID: 0}
 --- !u!82 &-6207851134025900007
 AudioSource:
   m_ObjectHideFlags: 0
