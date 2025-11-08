@@ -55,8 +55,12 @@ public class CharacterParameter_Player : CharacterParameter {
 
     // MP背景
     [SerializeField] private GameObject _mpBackground;
-    // MP表示UI（配列に統一）
-    [SerializeField] private Image[] _mpImages;
+    // MP表示UI
+    [SerializeField] private Image _mpImage;
+    [SerializeField] private Image _mpImage2;
+    [SerializeField] private Image _mpImage3;
+    [SerializeField] private Image _mpImage4;
+    [SerializeField] private Image _mpImage5;
     // MPゲージアニメーション
     [SerializeField] private Animator _mpFilled;
 
@@ -231,26 +235,63 @@ public class CharacterParameter_Player : CharacterParameter {
             _mpBackground.SetActive(true);
         }
 
-        // MPゲージの更新（配列対応）
-        float mp = _viewMP;
-        Color targetColor = isOverheat ? Color.red : Color.white;
-        for (int i = 0; i < _mpImages.Length; i++) {
-            if (_mpImages[i] == null) continue;
-            float gaugeMax = _defaultMaxMP;
-            if (i == 0) {
-                // 1つ目は初期MP分のみ
-                _mpImages[i].fillAmount = Mathf.Clamp01(mp / gaugeMax);
+        // MPゲージの更新
+
+        // 第1段階: 基本MP (0 - _defaultMaxMP)
+        if (_mpImage != null) {
+            _mpImage.fillAmount = Mathf.Clamp01(_viewMP / _defaultMaxMP);
+        }
+
+        // 第2段階: 拡張MP1 (_defaultMaxMP - _defaultMaxMP*2)
+        if (_mpImage2 != null) {
+            if (_viewMP > _defaultMaxMP) {
+                float excess1 = _viewMP - _defaultMaxMP;
+                _mpImage2.fillAmount = Mathf.Clamp01(excess1 / _defaultMaxMP);
             } else {
-                // 2つ目以降は拡張分のみ
-                float expandedMp = _maxMP - _defaultMaxMP * i;
-                if (expandedMp > 0) {
-                    float gaugeMp = Mathf.Clamp(mp - _defaultMaxMP * i, 0, gaugeMax);
-                    _mpImages[i].fillAmount = gaugeMp / gaugeMax;
-                } else {
-                    _mpImages[i].fillAmount = 0f;
-                }
+                _mpImage2.fillAmount = 0f;
             }
-            _mpImages[i].color = targetColor;
+        }
+
+        // 第3段階: 拡張MP2 (_defaultMaxMP*2 - _defaultMaxMP*3)
+        if (_mpImage3 != null) {
+            if (_viewMP > _defaultMaxMP * 2) {
+                float excess2 = _viewMP - (_defaultMaxMP * 2);
+                _mpImage3.fillAmount = Mathf.Clamp01(excess2 / _defaultMaxMP);
+            } else {
+                _mpImage3.fillAmount = 0f;
+            }
+        }
+        
+        // 第4段階: 拡張MP3 (_defaultMaxMP*3 - _defaultMaxMP*4)
+        if (_mpImage4 != null) {
+            if (_viewMP > _defaultMaxMP * 3) {
+                float excess3 = _viewMP - (_defaultMaxMP * 3);
+                _mpImage4.fillAmount = Mathf.Clamp01(excess3 / _defaultMaxMP);
+            } else {
+                _mpImage4.fillAmount = 0f;
+            }
+        }
+
+        // 第5段階: 拡張MP4 (_defaultMaxMP*4 - _defaultMaxMP*5)
+        if (_mpImage5 != null) {
+            if (_viewMP > _defaultMaxMP * 4) {
+                float excess4 = _viewMP - (_defaultMaxMP * 4);
+                _mpImage5.fillAmount = Mathf.Clamp01(excess4 / _defaultMaxMP);
+            } else {
+                _mpImage5.fillAmount = 0f;
+            }
+        }
+
+        // ゲージの色変更（オーバーヒート中は赤、それ以外は白）
+        Color targetColor = isOverheat ? Color.red : Color.white;
+        if (_mpImage.color != targetColor) {
+            _mpImage.color = targetColor;
+        }
+        if (_mpImage2 != null && _mpImage2.color != targetColor) {
+            _mpImage2.color = targetColor;
+        }
+        if (_mpImage3 != null && _mpImage3.color != targetColor) {
+            _mpImage3.color = targetColor;
         }
 
         // MP全快アニメーション判定
