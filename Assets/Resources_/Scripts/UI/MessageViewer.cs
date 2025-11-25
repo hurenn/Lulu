@@ -16,7 +16,7 @@ public class MessageViewer : MonoBehaviour {
         {"Pepe", "ペペ"},
         {"Milly", "ミリー"},
     };
-    private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
+    private const float _BASE_SHOW_TIME = 2.5f; // 基本表示時間
     private const float _AUTO_MESSAGE_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間
     private const float _AUTO_ENG_MESSAGE_SHOW_TIME = 0.025f; // 英語1文字あたりの追加表示時間
     private const float _COOL_TIME = 0.5f;  // メッセージ表示クールタイム
@@ -116,17 +116,11 @@ public class MessageViewer : MonoBehaviour {
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
         _currentText = _playerParameter.language == PlayerParameter.eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
         if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
-            //_currentMessage.playableDirector.Pause(); // Timelineを一時停止
-
             _isEventMessage = true;
-            // メッセージを一気に表示
-            _typingCoroutine = _TypeText(_currentText, 0);
-            StartCoroutine(_typingCoroutine);
-        } else {
-            // メッセージを1文字ずつ表示するコルーチン開始
-            _typingCoroutine = _TypeText(_currentText, _playerParameter.language == PlayerParameter.eLanguage.Japanese ? _AUTO_MESSAGE_SHOW_TIME : _AUTO_ENG_MESSAGE_SHOW_TIME);
-            StartCoroutine(_typingCoroutine);
         }
+        // メッセージを一気に表示
+        _typingCoroutine = _TypeText(_currentText, 0);
+        StartCoroutine(_typingCoroutine);
 
         // キャラクター名とアイコンの設定
         Sprite chara_icon = _currentMessage.characterIcon;
@@ -136,7 +130,7 @@ public class MessageViewer : MonoBehaviour {
         character_name = character_name.Split('_')[0];
 
         // キャラクター名をセット
-        if(_playerParameter.language == PlayerParameter.eLanguage.English) {
+        if (_playerParameter.language == PlayerParameter.eLanguage.English) {
             _characterText.text = character_name;
             _namePanel.SetActive(!string.IsNullOrEmpty(character_name));
         } else {
