@@ -11,10 +11,12 @@ public class CharacterParameter_Player : CharacterParameter {
     private const float _fireCost = 5.0f; // 炎の能力に必要なMP
     private const float _lightCost = 15.0f; // 光の能力に必要なMP
     private const float _lightAvoidCost = 5.0f; // 回避時に必要なMP
+    private const float _lightAutoAvoidCost = 10.0f; // 自動回避時に必要なMP
     private const float _overheatRecoveryTime = 3.0f; // オーバーヒート回復時間
 
     // 光能力による無敵フラグ
     public bool isLightInvincible = false;
+    public bool isAutoLightInvincible = false;
 
     // MP
     private float _defaultMaxMP = 100.0f;
@@ -157,6 +159,9 @@ public class CharacterParameter_Player : CharacterParameter {
                 break;
             case eAbilityType.LightAvoid:
                 DecreaseMP(_lightAvoidCost);
+                break;
+            case eAbilityType.LightAutoAvoid:
+                DecreaseMP(_lightAutoAvoidCost);
                 break;
         }
         return true;

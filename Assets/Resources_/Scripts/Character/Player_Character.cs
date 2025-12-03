@@ -81,9 +81,9 @@ public class Player_Character : Character_Base {
         _UpdateWallSlideMove();
         _UpdateSlideJump();
 
-        _abilityX?.Setup(_isRight, transform, _param, _player_charaParam, _warpControl);
-        _abilityY?.Setup(_isRight, transform, _param, _player_charaParam, _warpControl);
-        _abilityA?.Setup(_isRight, transform, _param, _player_charaParam, _warpControl);
+        _abilityX?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl);
+        _abilityY?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl);
+        _abilityA?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl);
 
         if (_currentWarpCoolTime > 0) {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
@@ -311,9 +311,9 @@ public class Player_Character : Character_Base {
         }
         base.UpdateControl(input);
 
-        _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld);
-        _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld);
-        _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld);
+        _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld, input);
+        _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld, input);
+        _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld, input);
 
         _Warp();
     }
@@ -350,7 +350,7 @@ public class Player_Character : Character_Base {
     /// <summary>
     /// 能力の更新処理
     /// </summary>
-    private void _UpdateAbility(Ability_Base ability, Vector2 dir_input, bool button_pressed, bool button_held) {
+    private void _UpdateAbility(Ability_Base ability, Vector2 dir_input, bool button_pressed, bool button_held, CharacterInputData input) {
         if (ability == null) {
             return;
         }
@@ -407,13 +407,57 @@ public class Player_Character : Character_Base {
             default:
                 break;
         }
+
+        if (result != eAbilityResult.LightParry && result != eAbilityResult.LightDome) {
+            _OnReleaseLightDome();
+        }
+    }
+
+    /// <summary>
+    /// オート発光解除
+    /// </summary>
+    private void _OnReleaseLightDome() {
+        var ability = _GetLightAbility();
+        if(ability != null) {
+            ability.SetAutoLight(false);
+        }
+    }
+
+    private void _OnAvoidAutoLight() {
+        var ability = _GetLightAbility();
+        if (ability != null) {
+            ability.AutoAvoid();
+        }
+    }
+
+    private Ability_Light _GetLightAbility() {
+        if (_abilityY is Ability_Light ability_y) {
+            return ability_y;
+        }
+        if (_abilityX is Ability_Light ability_x) {
+            return ability_x;
+        }
+        if (_abilityA is Ability_Light ability_a) {
+            return ability_a;
+        }
+        return null;
     }
 
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
+        if (isInvincible || _isDead) {
+            return false;
+        }
+
         // 光の能力で無敵回避
-        if (_player_charaParam.isLightInvincible && !_player_charaParam.isOverheat) {
+        bool is_light_avoid = _player_charaParam.isLightInvincible || _player_charaParam.isAutoLightInvincible;
+        if (is_light_avoid && !_player_charaParam.isOverheat) {
             // MP消費
-            _player_charaParam.ConsumeMP(eAbilityType.LightAvoid);
+            _player_charaParam.ConsumeMP(_player_charaParam.isLightInvincible ? eAbilityType.LightAvoid : eAbilityType.LightAutoAvoid);
+
+            // 自動発光回避
+            if (_player_charaParam.isAutoLightInvincible && !_player_charaParam.isLightInvincible) {
+                _OnAvoidAutoLight();
+            }
 
             _anim.Play("Warp_Enter");       // ワープアニメ再生
             _anim.SetBool("Avoid", true);   // ワープアニメフラグ
@@ -618,6 +662,9 @@ public class Player_Character : Character_Base {
 
             // ワープ処理開始
             StartCoroutine(WarpStart());
+
+            // ライトドーム自動解除
+            _OnReleaseLightDome();
         }
 
         IEnumerator WarpStart() {

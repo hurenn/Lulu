@@ -8,12 +8,22 @@ public class Ability_Light : Ability_Base
     private bool _isNotHide => _rend.color.a > 0.9f;
     private GoalMarker _goalMarker;
 
-    public override void Setup(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control) {
-        base.Setup(is_right, chara_pos, common_param, chara_param, warp_control);
+    // 自動発光タイマー
+    private float _autoLightTimer = 1.0f;
+    private float _currentAutoLightTimer = 0f;
+    private bool _isAutoLight => _currentAutoLightTimer > _autoLightTimer;
+    private bool _isManualLight = false;
+
+    public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control) {
+        base.UpdateParameter(is_right, chara_pos, common_param, chara_param, warp_control);
 
         var goal_marker = FindAnyObjectByType<GoalMarker>();
         if (goal_marker != null) {
             _goalMarker = goal_marker;
+        }
+
+        if (_lightDomeInstance == null) {
+            _lightDomeInstance = Instantiate(_lightDomePrefab, _playerTransform);
         }
     }
 
@@ -21,6 +31,27 @@ public class Ability_Light : Ability_Base
         if (_isNotHide && _IsOutOfScreen()) {
             // 画面外に出たら非表示にする
             _anim?.Play("Pepe_ToHide");
+        }
+
+        // 自動発光タイマー更新
+        if (_currentAutoLightTimer < _autoLightTimer) {
+            _currentAutoLightTimer += Time.deltaTime;
+            if (_currentAutoLightTimer >= _autoLightTimer) {
+                // 自動発光
+                SetAutoLight(true);
+            }
+        }
+
+        _UpdateLightDomeActive();
+    }
+
+    // 自動発光設定
+    public void SetAutoLight(bool is_active) {
+        _isManualLight = is_active;
+        _charaParam.isAutoLightInvincible = is_active;
+
+        if (!is_active) {
+            _currentAutoLightTimer = 0f;
         }
     }
 
@@ -37,15 +68,16 @@ public class Ability_Light : Ability_Base
         UpdatePartnerTransform(); // 位置更新
 
         // MP消費
-        _charaParam.ConsumeMP(eAbilityType.Light);
-        _charaParam.SetUnRecoverTime_MP(1.0f);
-
-        if (_lightDomeInstance == null) {
-            _lightDomeInstance = Instantiate(_lightDomePrefab, _playerTransform);
+        if (!_isAutoLight) {
+            _charaParam.ConsumeMP(eAbilityType.Light);
+            _charaParam.SetUnRecoverTime_MP(1.0f);
+            _currentAutoLightTimer = _autoLightTimer; // 自動発光タイマーリセット
         }
-        _lightDomeInstance.SetActive(true);
 
-        if(_goalMarker != null) {
+        // ライトドーム表示
+        _isManualLight = true;
+
+        if (_goalMarker != null) {
             // ゴールマーカー表示
             _goalMarker.SetMarkerActive(true);
         }
@@ -61,9 +93,6 @@ public class Ability_Light : Ability_Base
             return eAbilityResult.None;
         }
 
-        // MP回復不可
-        //_charaParam.SetUnRecoverTime_MP(1.0f);
-
         // 無敵化
         _charaParam.isLightInvincible = true;
         _charaParam.currentInvincibilityTimer = 0f;
@@ -76,9 +105,9 @@ public class Ability_Light : Ability_Base
             return;
         }
 
-        if (_lightDomeInstance != null) {
-            _lightDomeInstance.SetActive(false);
-        }
+        // ライトドーム非表示
+        _isManualLight = false;
+
         // 帰還
         if (_isNotHide) {
             _anim?.Play("Pepe_ToHide");
@@ -89,6 +118,25 @@ public class Ability_Light : Ability_Base
         if(_goalMarker != null) {
             // ゴールマーカー非表示
             _goalMarker.SetMarkerActive(false);
+        }
+    }
+
+    // 自動発光回避
+    public void AutoAvoid() {
+        if (_isManualLight) {
+            return;
+        }
+
+        // アニメーション再生
+        _anim?.Play("Pepe_Appear", 0, 0.0f);
+        UpdatePartnerTransform(); // 位置更新
+
+        _ResetReturnTimer();
+    }
+
+    private void _UpdateLightDomeActive() {
+        if (_lightDomeInstance != null) {
+            _lightDomeInstance.SetActive(_isManualLight || _isAutoLight);
         }
     }
 

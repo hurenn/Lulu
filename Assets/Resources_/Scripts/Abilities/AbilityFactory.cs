@@ -9,6 +9,7 @@ public enum eAbilityType {
     Fire,
     Light,
     LightAvoid,
+    LightAutoAvoid,
     Warp,
 }
 

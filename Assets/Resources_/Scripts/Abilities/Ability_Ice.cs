@@ -265,8 +265,8 @@ public class Ability_Ice : Ability_Base {
         _isHoldExecuted = false;
     }
 
-    public override void Setup(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter_Player chara_param, WarpControl warp_control) {
-        base.Setup(is_right, chara_transform, param, chara_param, warp_control);
+    public override void UpdateParameter(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter_Player chara_param, WarpControl warp_control) {
+        base.UpdateParameter(is_right, chara_transform, param, chara_param, warp_control);
         // 向きに応じて攻撃エフェクトの向きを調整
         _AttackEffectSetup(_slash1);
         _AttackEffectSetup(_slash2);

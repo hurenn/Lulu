@@ -68,7 +68,7 @@ public class Ability_Base : MonoBehaviour {
     /// ‰EŒü‚«‚©Šm”F
     /// </summary>
     protected bool _isRight = true;
-    public virtual void Setup(
+    public virtual void UpdateParameter(
         bool is_right, 
         Transform chara_pos, 
         CommonParameter common_param, 
