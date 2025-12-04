@@ -11,7 +11,7 @@ public class Ability_Light : Ability_Base
     // 自動発光タイマー
     private float _autoLightTimer = 1.0f;
     private float _currentAutoLightTimer = 0f;
-    private bool _isAutoLight => _currentAutoLightTimer > _autoLightTimer;
+    private bool _isAutoLight => _currentAutoLightTimer >= _autoLightTimer;
     private bool _isManualLight = false;
 
     public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control) {
@@ -47,7 +47,6 @@ public class Ability_Light : Ability_Base
 
     // 自動発光設定
     public void SetAutoLight(bool is_active) {
-        _isManualLight = is_active;
         _charaParam.isAutoLightInvincible = is_active;
 
         if (!is_active) {
@@ -71,7 +70,10 @@ public class Ability_Light : Ability_Base
         if (!_isAutoLight) {
             _charaParam.ConsumeMP(eAbilityType.Light);
             _charaParam.SetUnRecoverTime_MP(1.0f);
-            _currentAutoLightTimer = _autoLightTimer; // 自動発光タイマーリセット
+
+            // 自動発光有効化
+            SetAutoLight(true);
+            _currentAutoLightTimer = _autoLightTimer;
         }
 
         // ライトドーム表示
@@ -105,13 +107,12 @@ public class Ability_Light : Ability_Base
             return;
         }
 
-        // ライトドーム非表示
+        // 手動発光解除
         _isManualLight = false;
 
         // 帰還
-        if (_isNotHide) {
-            _anim?.Play("Pepe_ToHide");
-        }
+        _anim?.Play("Pepe_ToHide");
+
         // 無敵解除
         _charaParam.isLightInvincible = false;
 
@@ -123,7 +124,7 @@ public class Ability_Light : Ability_Base
 
     // 自動発光回避
     public void AutoAvoid() {
-        if (_isManualLight) {
+        if (_isManualLight || _isNotHide) {
             return;
         }
 

@@ -12,14 +12,18 @@ public class PlayerController : MonoBehaviour {
     private Vector2 _moveInputValue;
     private bool _isJumpPressed = false;
     private bool _isJumpHeld = false;
+    private bool _isJumpReleased = false;
 
     // Abilityボタンの状態
     private bool _isAbilityYPressed = false;
     private bool _isAbilityYHeld = false;
+    private bool _isAbilityYReleased = false;
     private bool _isAbilityXPressed = false;
     private bool _isAbilityXHeld = false;
+    private bool _isAbilityXReleased = false;
     private bool _isAbilityAPressed = false;
     private bool _isAbilityAHeld = false;
+    private bool _isAbilityAReleased = false;
 
     // メッセージ送り入力
     private bool _isMessageNextPressed = false;
@@ -100,12 +104,16 @@ public class PlayerController : MonoBehaviour {
 
         input.jumpPressed = _isJumpPressed;
         input.jumpHeld = _isJumpHeld;
+        input.jumpReleased = _isJumpReleased;
         input.abilityYPressed = _isAbilityYPressed;
         input.abilityYHeld = _isAbilityYHeld;
+        input.abilityYReleased = _isAbilityYReleased;
         input.abilityXPressed = _isAbilityXPressed;
         input.abilityXHeld = _isAbilityXHeld;
+        input.abilityXReleased = _isAbilityXReleased;
         input.abilityAPressed = _isAbilityAPressed;
         input.abilityAHeld = _isAbilityAHeld;
+        input.abilityAReleased = _isAbilityAReleased;
         virtualInput = input;
 
         // 特定入力のチェック
@@ -129,9 +137,13 @@ public class PlayerController : MonoBehaviour {
         character.UpdateControl(input);
 
         _isJumpPressed = false;
+        _isJumpReleased = false;
         _isAbilityYPressed = false;
+        _isAbilityYReleased = false;
         _isAbilityXPressed = false;
+        _isAbilityXReleased = false;
         _isAbilityAPressed = false;
+        _isAbilityAReleased = false;
     }
 
     private void _OnMove(InputAction.CallbackContext context) {
@@ -148,6 +160,7 @@ public class PlayerController : MonoBehaviour {
         _isMessageNextPressed = false;
         _isJumpPressed = false;
         _isJumpHeld = false;
+        _isJumpReleased = true;
     }
 
     private void OnAbilityY(InputAction.CallbackContext context) {
@@ -160,6 +173,7 @@ public class PlayerController : MonoBehaviour {
         _isMessageNextPressed = false;
         _isAbilityYPressed = false;
         _isAbilityYHeld = false;
+        _isAbilityYReleased = true;
     }
 
     private void OnAbilityX(InputAction.CallbackContext context) {
@@ -171,6 +185,7 @@ public class PlayerController : MonoBehaviour {
         _isMessageNextPressed = false;
         _isAbilityXPressed = false;
         _isAbilityXHeld = false;
+        _isAbilityXReleased = true;
     }
 
     private void OnAbilityA(InputAction.CallbackContext context) {
@@ -182,6 +197,7 @@ public class PlayerController : MonoBehaviour {
         _isMessageNextPressed = false;
         _isAbilityAPressed = false;
         _isAbilityAHeld = false;
+        _isAbilityAReleased = true;
     }
 
     bool _insertMoveMode = false;
@@ -278,12 +294,16 @@ public class PlayerController : MonoBehaviour {
         _moveInputValue = Vector2.zero;
         _isJumpPressed = false;
         _isJumpHeld = false;
+        _isJumpReleased = false;
         _isAbilityYPressed = false;
         _isAbilityYHeld = false;
+        _isAbilityYReleased = false;
         _isAbilityXPressed = false;
         _isAbilityXHeld = false;
+        _isAbilityXReleased = false;
         _isAbilityAPressed = false;
         _isAbilityAHeld = false;
+        _isAbilityAReleased = false;
         _isMessageNextPressed = false;
         virtualInput.Clear();
     }

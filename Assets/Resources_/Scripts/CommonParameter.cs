@@ -88,25 +88,33 @@ public struct CharacterInputData
         move = Vector2.zero;
         jumpPressed = false;
         jumpHeld = false;
+        jumpReleased = false;
         abilityYPressed = false;
         abilityYHeld = false;
+        abilityYReleased = false;
         abilityXPressed = false;
         abilityXHeld = false;
+        abilityXReleased = false;
         abilityAPressed = false;
         abilityAHeld = false;
+        abilityAReleased = false;
         messageNextPressed = false;
     }
 
     public Vector2 move;     // 方向入力
     public bool jumpPressed; // ジャンプボタンを押した瞬間
     public bool jumpHeld;    // ジャンプボタンを押し続ける
+    public bool jumpReleased; // ジャンプボタンを離した瞬間
 
     public bool abilityYPressed; // Yボタンを押した瞬間
     public bool abilityYHeld;    // Yボタンを押し続ける
+    public bool abilityYReleased; // Yボタンを離した瞬間
     public bool abilityXPressed; // Xボタンを押した瞬間
     public bool abilityXHeld;    // Xボタンを押し続ける
+    public bool abilityXReleased; // Xボタンを離した瞬間
     public bool abilityAPressed; // Aボタンを押した瞬間
     public bool abilityAHeld;    // Aボタンを押し続ける
+    public bool abilityAReleased; // Aボタンを離した瞬間
 
     public bool messageNextPressed; // メッセージ送りボタンを押した瞬間
 }

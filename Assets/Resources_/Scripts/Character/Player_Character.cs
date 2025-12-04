@@ -311,9 +311,9 @@ public class Player_Character : Character_Base {
         }
         base.UpdateControl(input);
 
-        _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld, input);
-        _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld, input);
-        _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld, input);
+        _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld, input.abilityYReleased, input);
+        _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld, input.abilityXReleased, input);
+        _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld, input.abilityAReleased, input);
 
         _Warp();
     }
@@ -350,7 +350,7 @@ public class Player_Character : Character_Base {
     /// <summary>
     /// 能力の更新処理
     /// </summary>
-    private void _UpdateAbility(Ability_Base ability, Vector2 dir_input, bool button_pressed, bool button_held, CharacterInputData input) {
+    private void _UpdateAbility(Ability_Base ability, Vector2 dir_input, bool button_pressed, bool button_held, bool button_released, CharacterInputData input) {
         if (ability == null) {
             return;
         }
@@ -364,7 +364,7 @@ public class Player_Character : Character_Base {
             _AbilityResult(ability.ExecuteLong(), dir_input);
         }
         // ボタンを離したときの処理
-        if (!button_held && !button_pressed) {
+        if (button_released) {
             ability.ExecuteRelease();
         }
     }
