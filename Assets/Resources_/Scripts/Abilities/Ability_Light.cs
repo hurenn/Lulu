@@ -14,9 +14,9 @@ public class Ability_Light : Ability_Base
     private GoalMarker _goalMarker;
 
     // 自動発光タイマー
-    private float _autoLightTimer = 0.5f;
+    private float _autoLightTimer = 0.3f;
     private float _currentAutoLightTimer = 0f;
-    private bool _isAutoLight => _currentAutoLightTimer >= _autoLightTimer;
+    private bool _isAutoLight => _currentAutoLightTimer >= _autoLightTimer && !_charaParam.isOverheat;
     private bool _isManualLight = false;
 
     public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control) {
@@ -60,9 +60,6 @@ public class Ability_Light : Ability_Base
 
     // 自動発光設定
     public void SetAutoLight(bool is_active) {
-        if(_cancelByOverheat) {
-            is_active = false;
-        }
         _charaParam.isAutoLightInvincible = is_active;
 
         if (!is_active) {
@@ -106,7 +103,7 @@ public class Ability_Light : Ability_Base
 
     public override eAbilityResult ExecuteLong() {
         // オーバーヒート中は使用不可
-        if (_cancelByOverheat || _lightDomePrefab == null) {
+        if (_charaParam.isOverheat || _lightDomePrefab == null) {
             ExecuteRelease();
             return eAbilityResult.None;
         }
@@ -127,7 +124,9 @@ public class Ability_Light : Ability_Base
         _isManualLight = false;
 
         // 帰還
-        _anim?.Play("Pepe_ToHide");
+        if (_isNotHide) {
+            _anim?.Play("Pepe_ToHide");
+        }
 
         // 無敵解除
         _charaParam.isLightInvincible = false;
