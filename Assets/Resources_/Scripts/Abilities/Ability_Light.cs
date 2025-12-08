@@ -1,15 +1,20 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Ability_Light : Ability_Base
 {
     [SerializeField] private GameObject _lightDomePrefab;
     private GameObject _lightDomeInstance;
+    private SpriteRenderer _lightDomeRenderer;
+    private float _lightDomeDefaultAlpha = 0.5f;
+    private Light2D _light;
+    private float _lightDefaultIntensity = 0.7f;
 
     private bool _isNotHide => _rend.color.a > 0.9f;
     private GoalMarker _goalMarker;
 
     // 自動発光タイマー
-    private float _autoLightTimer = 1.0f;
+    private float _autoLightTimer = 0.5f;
     private float _currentAutoLightTimer = 0f;
     private bool _isAutoLight => _currentAutoLightTimer >= _autoLightTimer;
     private bool _isManualLight = false;
@@ -24,6 +29,14 @@ public class Ability_Light : Ability_Base
 
         if (_lightDomeInstance == null) {
             _lightDomeInstance = Instantiate(_lightDomePrefab, _playerTransform);
+            _lightDomeRenderer = _lightDomeInstance.GetComponentInChildren<SpriteRenderer>();
+            if (_lightDomeRenderer != null) {
+                _lightDomeDefaultAlpha = _lightDomeRenderer.color.a;
+            }
+            _light = _lightDomeInstance.GetComponentInChildren<Light2D>();
+            if (_light != null) {
+                _lightDefaultIntensity = _light.intensity;
+            }
         }
     }
 
@@ -47,6 +60,9 @@ public class Ability_Light : Ability_Base
 
     // 自動発光設定
     public void SetAutoLight(bool is_active) {
+        if(_cancelByOverheat) {
+            is_active = false;
+        }
         _charaParam.isAutoLightInvincible = is_active;
 
         if (!is_active) {
@@ -136,9 +152,31 @@ public class Ability_Light : Ability_Base
     }
 
     private void _UpdateLightDomeActive() {
-        if (_lightDomeInstance != null) {
-            _lightDomeInstance.SetActive(_isManualLight || _isAutoLight);
+        if(_lightDomeRenderer == null) {
+            return;
         }
+        var light_color = _lightDomeRenderer.color;
+        if (_isManualLight || _isAutoLight) {
+            // 発光中は徐々に明るくする
+            light_color.a = Mathf.Min(light_color.a + Time.deltaTime * 30.0f, _lightDomeDefaultAlpha);
+            if (_light != null) {
+                _light.intensity = Mathf.Min(_light.intensity + Time.deltaTime * 2.0f, _lightDefaultIntensity);
+            }
+        } else {
+            // すぐに暗くする
+            if (light_color.a < _lightDomeDefaultAlpha / 2) {
+                light_color.a = 0;
+                if (_light != null) {
+                    _light.intensity = 0;
+                }
+            } else {
+                light_color.a = light_color.a / 2;
+                if (_light != null) {
+                    _light.intensity = _light.intensity / 2;
+                }
+            }
+        }
+        _lightDomeRenderer.color = light_color;
     }
 
     /// <summary>
