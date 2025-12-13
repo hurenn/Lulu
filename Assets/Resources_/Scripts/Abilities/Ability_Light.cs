@@ -40,7 +40,7 @@ public class Ability_Light : Ability_Base
         }
     }
 
-    private void Update() {
+    protected override void _Update() {
         if (_isNotHide && _IsOutOfScreen()) {
             // ‰æ–ÊŠO‚Éo‚½‚ç”ñ•\¦‚É‚·‚é
             _anim?.Play("Pepe_ToHide");

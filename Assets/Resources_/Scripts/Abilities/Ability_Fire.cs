@@ -63,6 +63,13 @@ public class Ability_Fire : Ability_Base
         }
     }
 
+    /// <summary>
+    /// オート攻撃タイマーリセット
+    /// </summary>
+    public void ResetAutoAttackInterval() {
+        _currentAutoAttackInterval = _autoAttackInterval;
+    }
+
     public override eAbilityResult ExecuteSimple() {
         // オーバーヒート中は使用不可
         if (_cancelByOverheat) {

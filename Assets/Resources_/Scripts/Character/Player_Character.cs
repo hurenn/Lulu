@@ -456,6 +456,9 @@ public class Player_Character : Character_Base {
         if (result != eAbilityResult.LightParry && result != eAbilityResult.LightDome) {
             _OnReleaseLightDome();
         }
+        if (result != eAbilityResult.LightDome) {
+            _OnResetFireInterval();
+        }
     }
 
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
@@ -819,9 +822,19 @@ public class Player_Character : Character_Base {
     /// オート発光解除
     /// </summary>
     private void _OnReleaseLightDome() {
-        var ability = _GetLightAbility();
+        var ability = _GetAbility<Ability_Light>();
         if (ability != null) {
             ability.SetAutoLight(false);
+        }
+    }
+
+    /// <summary>
+    /// オート火攻撃間隔リセット
+    /// </summary>
+    private void _OnResetFireInterval() {
+        var ability = _GetAbility<Ability_Fire>();
+        if (ability != null) {
+            ability.ResetAutoAttackInterval();
         }
     }
 
@@ -829,25 +842,17 @@ public class Player_Character : Character_Base {
     /// オート発光回避実行
     /// </summary>
     private void _OnAvoidAutoLight() {
-        var ability = _GetLightAbility();
+        var ability = _GetAbility<Ability_Light>();
         if (ability != null) {
             ability.AutoAvoid();
         }
     }
 
     /// <summary>
-    /// 装備済みの光の能力取得
-    /// </summary>
-    /// <returns></returns>
-    private Ability_Light _GetLightAbility() {
-        return _GetAbility<Ability_Light>();
-    }
-
-    /// <summary>
     /// 氷自動攻撃実行
     /// </summary>
     private void _OnExecuteIceAutoAttack(Enemy_Base target_enemy) {
-        var ability = _GetIceAbility();
+        var ability = _GetAbility<Ability_Ice>();
         if (ability != null) {
 
             // 移動場所探索
@@ -880,14 +885,6 @@ public class Player_Character : Character_Base {
                 ability.ExecuteAutoAttack(attack_warp_target, target_enemy.transform.position);
             }
         }
-    }
-
-    /// <summary>
-    /// 装備済みの氷の能力取得
-    /// </summary>
-    /// <returns></returns>
-    private Ability_Ice _GetIceAbility() {
-        return _GetAbility<Ability_Ice>();
     }
 
     /// <summary>
