@@ -5,10 +5,12 @@ using UnityEngine;
 public enum eAbilityType {
     None,
     Ice,
-    LockonSlash,
-    AutoSlash,
     Fire,
     Light,
+    // ‚±‚±‚Ü‚ÅŒÅ’è
+
+    LockonSlash,
+    AutoSlash,
     LightAvoid,
     LightAutoAvoid,
     Warp,
