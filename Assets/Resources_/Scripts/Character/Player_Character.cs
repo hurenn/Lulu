@@ -41,6 +41,13 @@ public class Player_Character : Character_Base {
     // レベルアップオブジェクト
     [SerializeField] private Animator _levelUpAnimator;
 
+    // オート氷攻撃チェッカー
+    [SerializeField] private AutoIceAttackChecker _autoAttackChecker;
+
+    private bool _isIceInvincible = false;
+    private float _iceInvincibleTime = 0.1f;
+    private float _currentIceInvincibleTime = 0f;
+
     public void SaveAbilitySlot() {
         foreach (var ability in _tmpAbilitySlot) {
             if (ability.Key != eAbilityType.None) {
@@ -80,6 +87,18 @@ public class Player_Character : Character_Base {
         _UpdateSliding();
         _UpdateWallSlideMove();
         _UpdateSlideJump();
+
+        // 氷無敵時間計測
+        if (_isIceInvincible) {
+            // 無敵保障時間計測
+            _currentIceInvincibleTime -= Time.fixedDeltaTime;
+            if (_currentIceInvincibleTime <= 0) {
+                if (!_isWarpDashing) {
+                    // 無敵終了
+                    _isIceInvincible = false;
+                }
+            }
+        }
 
         _abilityX?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl);
         _abilityY?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl);
@@ -128,6 +147,14 @@ public class Player_Character : Character_Base {
     private void _UpdateWarpDash() {
         if (!_isWarpDashing) {
             return; // ワープダッシュ中でない場合は何もしない
+        }
+
+        // オート攻撃対象がいる場合はオート攻撃を実行
+        var target_enemy = _autoAttackChecker.PopTargetEnemy();
+        if (target_enemy != null && _HasAbility<Ability_Ice>()) {
+            _isWarpDashing = false;
+            _OnExecuteIceAutoAttack(target_enemy);
+            return;
         }
 
         // ワープダッシュの最大時間を超えた場合は終了
@@ -244,10 +271,28 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
+    /// ワープダッシュ実行
+    /// </summary>
+    private void _ExecuteWarpDash() {
+        _isDashing = true;
+        _isWarpDashing = true;
+        _currentWarpDashTime = 0;
+    }
+
+    /// <summary>
     /// スライディング処理
     /// </summary>
     private void _UpdateSliding() {
         if (_isSliding) {
+            // オート攻撃対象がいる場合はオート攻撃を実行
+            var target_enemy = _autoAttackChecker.PopTargetEnemy();
+            if (target_enemy != null && _HasAbility<Ability_Ice>()) {
+                _SetSliding(false); // スライディング終了
+                _currentSlideTime = 0;
+                _OnExecuteIceAutoAttack(target_enemy);
+                return;
+            }
+
             // スライドダッシュ中はキャラクターの位置を更新
             Vector2 velocity = _rb.linearVelocity;
             var dash_dir = _warpDashDirection.normalized;
@@ -413,38 +458,13 @@ public class Player_Character : Character_Base {
         }
     }
 
-    /// <summary>
-    /// オート発光解除
-    /// </summary>
-    private void _OnReleaseLightDome() {
-        var ability = _GetLightAbility();
-        if(ability != null) {
-            ability.SetAutoLight(false);
-        }
-    }
-
-    private void _OnAvoidAutoLight() {
-        var ability = _GetLightAbility();
-        if (ability != null) {
-            ability.AutoAvoid();
-        }
-    }
-
-    private Ability_Light _GetLightAbility() {
-        if (_abilityY is Ability_Light ability_y) {
-            return ability_y;
-        }
-        if (_abilityX is Ability_Light ability_x) {
-            return ability_x;
-        }
-        if (_abilityA is Ability_Light ability_a) {
-            return ability_a;
-        }
-        return null;
-    }
-
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
         if (isInvincible || _isDead) {
+            return false;
+        }
+
+        // 氷の能力で無敵（仮対応）
+        if ( _isIceInvincible) {
             return false;
         }
 
@@ -638,6 +658,13 @@ public class Player_Character : Character_Base {
         }
         _warpControl.isRight = _isRight;
 
+        // 自動攻撃判定の位置調整
+        if (_autoAttackChecker != null) {
+            var auto_attack_pos = _autoAttackChecker.transform.localPosition;
+            auto_attack_pos.x = Mathf.Abs(auto_attack_pos.x) * (_isRight ? 1 : -1);
+            _autoAttackChecker.transform.localPosition = auto_attack_pos;
+        }
+
         _rb.linearVelocity = velocity;
     }
 
@@ -674,6 +701,9 @@ public class Player_Character : Character_Base {
             if (!is_success) {
                 yield break; // 失敗
             }
+            _isIceInvincible = true;
+            _currentIceInvincibleTime = _iceInvincibleTime;
+
             WarpControl.eWarpDirection dash_direction = _warpDirection;
 
             if (_inputData.move.magnitude != 0) {
@@ -684,11 +714,11 @@ public class Player_Character : Character_Base {
                 yield return _warpControl.CoinWarp();
             }
 
-            // 入力がある場合はその方向に移動
+            // ワープダッシュ方向決定
             if (_warpDirection != WarpControl.eWarpDirection.Neutral) {
                 dash_direction = _warpDirection;
             } else {
-                dash_direction = _warpControl.lastWarpDir; // 入力が無い場合は最後にワープした方向
+                dash_direction = _warpControl.lastWarpDir; // 直前のワープ方向を使用
             }
 
             // ワープダッシュの方向を設定
@@ -707,9 +737,7 @@ public class Player_Character : Character_Base {
             yield return null;
 
             // ワープダッシュ実行
-            _isDashing = true;
-            _isWarpDashing = true;
-            _currentWarpDashTime = 0;
+            _ExecuteWarpDash();
         }
     }
 
@@ -785,5 +813,101 @@ public class Player_Character : Character_Base {
             _player_charaParam.SetPlusMaxHp(_playerParam.levelParameter.hpLevel);
             _player_charaParam.SetPlusMaxMp(_playerParam.levelParameter.mpLevel * _param.mpUpPerLevel);
         }
+    }
+
+    /// <summary>
+    /// オート発光解除
+    /// </summary>
+    private void _OnReleaseLightDome() {
+        var ability = _GetLightAbility();
+        if (ability != null) {
+            ability.SetAutoLight(false);
+        }
+    }
+
+    /// <summary>
+    /// オート発光回避実行
+    /// </summary>
+    private void _OnAvoidAutoLight() {
+        var ability = _GetLightAbility();
+        if (ability != null) {
+            ability.AutoAvoid();
+        }
+    }
+
+    /// <summary>
+    /// 装備済みの光の能力取得
+    /// </summary>
+    /// <returns></returns>
+    private Ability_Light _GetLightAbility() {
+        return _GetAbility<Ability_Light>();
+    }
+
+    /// <summary>
+    /// 氷自動攻撃実行
+    /// </summary>
+    private void _OnExecuteIceAutoAttack(Enemy_Base target_enemy) {
+        var ability = _GetIceAbility();
+        if (ability != null) {
+
+            // 移動場所探索
+            WarpControl.eWarpDirection warp_dir =
+                _inputData.move.x > 0 ? WarpControl.eWarpDirection.Right : 
+                _inputData.move.x < 0 ? WarpControl.eWarpDirection.Left : WarpControl.eWarpDirection.Neutral;
+            if(warp_dir == WarpControl.eWarpDirection.Neutral) {
+                var to_target = target_enemy.transform.position - transform.position;
+                warp_dir = to_target.x > 0 ? WarpControl.eWarpDirection.Right : WarpControl.eWarpDirection.Left;
+            }
+
+            var player_warp_target = target_enemy.GetWarpChecker(warp_dir, true);
+
+            // 攻撃場所探索
+            WarpControl.eWarpDirection attack_warp_dir = warp_dir == WarpControl.eWarpDirection.Right ? 
+                WarpControl.eWarpDirection.Left : WarpControl.eWarpDirection.Right;
+            var attack_warp_target = target_enemy.GetWarpChecker(attack_warp_dir, true);
+
+            if (player_warp_target == null) {
+                // 自動攻撃失敗
+                return;
+            }
+
+            // 目標にワープ
+            _warpControl.TargetWarp(player_warp_target);
+            _ExecuteWarpDash();
+
+            // オート攻撃実行
+            if (attack_warp_target != null) {
+                ability.ExecuteAutoAttack(attack_warp_target, target_enemy.transform.position);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 装備済みの氷の能力取得
+    /// </summary>
+    /// <returns></returns>
+    private Ability_Ice _GetIceAbility() {
+        return _GetAbility<Ability_Ice>();
+    }
+
+    /// <summary>
+    /// 装備済みの能力を型で取得（ジェネリック）
+    /// </summary>
+    /// <typeparam name="T">取得したい能力の型</typeparam>
+    /// <returns>見つかった能力、なければnull</returns>
+    private T _GetAbility<T>() where T : Ability_Base {
+        if (_abilityY is T abilityY) return abilityY;
+        if (_abilityX is T abilityX) return abilityX;
+        if (_abilityA is T abilityA) return abilityA;
+        return null;
+    }
+
+    /// <summary>
+    /// 特定の能力が装備されているか確認
+    /// </summary>
+    /// <typeparam name="T">確認したい能力の型</typeparam>
+    /// <returns>装備されていればtrue</returns>
+    private bool _HasAbility<T>() where T : Ability_Base {
+        return _GetAbility<T>() != null;
     }
 }

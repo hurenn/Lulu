@@ -61,10 +61,35 @@ public class Enemy_Base : Character_Base
     /// ワープ地点取得
     /// </summary>
     /// <param name="warp_direction">ワープの向き</param>
-    public WarpChecker? GetWarpChecker(WarpControl.eWarpDirection warp_direction) {
+    /// <param name="is_other_check">反対側もチェックするか</param>
+    public WarpChecker? GetWarpChecker(WarpControl.eWarpDirection warp_direction, bool is_other_check = false) {
         if (warp_direction == WarpControl.eWarpDirection.Left) {
+            if(is_other_check) {
+                // 反対側もチェック
+                var left_checker = _leftWarpChecker.GetWarpPoint();
+                if (left_checker.HasValue) {
+                    return _leftWarpChecker;
+                }
+                var right_checker = _rightWarpChecker.GetWarpPoint();
+                if (right_checker.HasValue) {
+                    return _rightWarpChecker;
+                }
+                return null;
+            }
             return _leftWarpChecker;
         } else if (warp_direction == WarpControl.eWarpDirection.Right) {
+            if (is_other_check) {
+                // 反対側もチェック
+                var right_checker = _rightWarpChecker.GetWarpPoint();
+                if (right_checker.HasValue) {
+                    return _rightWarpChecker;
+                }
+                var left_checker = _leftWarpChecker.GetWarpPoint();
+                if (left_checker.HasValue) {
+                    return _leftWarpChecker;
+                }
+                return null;
+            }
             return _rightWarpChecker;
         }
         return null;

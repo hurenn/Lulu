@@ -55,7 +55,21 @@ public class Ability_Ice : Ability_Base {
         if (LockonManager.Instance.HasTarget) {
             if (!_charaParam.isOverheat) {
                 // ロックオン中の攻撃
-                _LockonSlash();
+
+                // ロックオン対象の方向を向く
+                var lockon = LockonManager.Instance;
+                Vector3 to_target = lockon.targetTransform.position - _playerTransform.position;
+                to_target.y = 0; // 水平成分のみ
+
+                // ワープチェッカー取得
+                WarpChecker warp_checker = null;
+                if (to_target.x > 0) {
+                    warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Left);
+                } else if (to_target.x < 0) {
+                    warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Right);
+                }
+
+                _LockonSlash(warp_checker, lockon.targetTransform.position);
                 return eAbilityResult.IceLockonSlash;
             } else {
                 // オーバーヒート中は使用不可
@@ -81,52 +95,17 @@ public class Ability_Ice : Ability_Base {
     /// <summary>
     /// ロックオン攻撃実行
     /// </summary>
-    private void _LockonSlash() {
+    private void _LockonSlash(WarpChecker warp_checker, Vector3 target_pos) {
         if (_lockonSlash == null) {
             Debug.Log("ロックオン攻撃エフェクトが見つかりません");
             return;
         }
         Debug.Log("Lockon Slash");
 
-        // ロックオン対象の方向を向く
-        var lockon = LockonManager.Instance;
-        Vector3 to_target = lockon.targetTransform.position - _playerTransform.position;
-        to_target.y = 0; // 水平成分のみ
-
-        // ロックオン対象の近くにワープ
-        WarpChecker warp_checker = null;
-        // ワープチェッカー取得
-        if (to_target.x > 0) {
-            warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Left);
-        } else if (to_target.x < 0) {
-            warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Right);
-        }
-
         IEnumerator attack_routine() {
             yield return _warpControl?.TargetWarp(warp_checker);
 
-            // フラッシュ
-            Color flash_color = Color.white;
-            flash_color.a = 0.5f;
-            ScreenFlash.Instance.Flash(color:flash_color);
-
-            // MP消費
-            _AppearCheck(eAbilityType.LockonSlash, force_appear: true);
-
-            // キャラクター位置を更新
-            _isRight = to_target.x > 0;
-            UpdatePartnerTransform();
-
-            // エフェクトの向きを調整
-            _AttackEffectSetup(_lockonSlash);
-
-            // エフェクト生成
-            Instantiate(_lockonSlash, transform.position, Quaternion.identity);
-            // アニメーション再生
-            _anim?.Play("Node_Attack2", 0, 0.0f);
-
-            // コンボ1段目をスキップ
-            _SetComboStep(1);
+            _OnceAttack(target_pos, eAbilityType.LockonSlash);
         }
         StartCoroutine(attack_routine());
     }
@@ -263,6 +242,56 @@ public class Ability_Ice : Ability_Base {
     public override void ExecuteRelease() {
         _pressHoldTime = 0f;
         _isHoldExecuted = false;
+    }
+
+    /// <summary>
+    /// 自動攻撃実行
+    /// </summary>
+    public void ExecuteAutoAttack(WarpChecker warp_checker, Vector3 enemy_pos) {
+        _AutoSlash(warp_checker, enemy_pos);
+    }
+
+    /// <summary>
+    /// 自動攻撃
+    /// </summary>
+    private void _AutoSlash(WarpChecker warp_checker, Vector3 enemy_pos) {
+        if (_lockonSlash == null) {
+            Debug.Log("ロックオン攻撃エフェクトが見つかりません");
+            return;
+        }
+        Debug.Log("Lockon Slash");
+
+        _OnceAttack(enemy_pos, eAbilityType.AutoSlash);
+    }
+
+    /// <summary>
+    /// 一撃攻撃
+    /// </summary>
+    /// <param name="target_pos">敵の位置</param>
+    private void _OnceAttack(Vector3 target_pos, eAbilityType ability_type) {
+        // フラッシュ
+        Color flash_color = Color.white;
+        flash_color.a = 0.5f;
+        ScreenFlash.Instance.Flash(color: flash_color);
+
+        // MP消費
+        _AppearCheck(ability_type, force_appear: true);
+
+        // キャラクター位置を更新
+        UpdatePartnerTransform();
+        var is_right = target_pos.x > transform.position.x;
+        _isRight = is_right;
+
+        // エフェクトの向きを調整
+        _AttackEffectSetup(_lockonSlash);
+
+        // エフェクト生成
+        Instantiate(_lockonSlash, transform.position, Quaternion.identity);
+        // アニメーション再生
+        _anim?.Play("Node_Attack2", 0, 0.0f);
+
+        // コンボ1段目をスキップ
+        _SetComboStep(1);
     }
 
     public override void UpdateParameter(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter_Player chara_param, WarpControl warp_control) {

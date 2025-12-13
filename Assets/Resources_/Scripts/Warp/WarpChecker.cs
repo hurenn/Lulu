@@ -73,7 +73,7 @@ public class WarpChecker : MonoBehaviour
     }
 
     /// <summary>
-    /// ワープ地点チェック
+    /// 位置指定してワープ地点チェック
     /// </summary>
     /// <param name="point">チェック地点</param>
     /// <returns></returns>
@@ -85,6 +85,12 @@ public class WarpChecker : MonoBehaviour
         _isValidWarpPoint = warpCheck.collider == null;
         return _isValidWarpPoint ? point : null;
     }
+
+    /// <summary>
+    /// ワープ地点チェック
+    /// </summary>
+    /// <param name="is_damage_avoid">ダメージを受ける場所を含めるか</param>
+    /// <returns></returns>
     public Vector2? GetWarpPoint(bool is_damage_avoid = false)
     {
         return GetWarpPoint(transform.position, is_damage_avoid ? _damageZoneLayer : default);

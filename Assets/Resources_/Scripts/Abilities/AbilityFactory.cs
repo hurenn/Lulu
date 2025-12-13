@@ -6,6 +6,7 @@ public enum eAbilityType {
     None,
     Ice,
     LockonSlash,
+    AutoSlash,
     Fire,
     Light,
     LightAvoid,
