@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Playables;
 
 public enum eAbilityResult {
     None,
@@ -7,9 +8,12 @@ public enum eAbilityResult {
     IceSlash3,
     IceSeparate,
     IceLockonSlash,
+    IceSpecial,
     FireShot,
+    FireSpecial,
     LightParry,
     LightDome,
+    LightSpecial,
 }
 
 public class Ability_Base : MonoBehaviour {
@@ -18,6 +22,29 @@ public class Ability_Base : MonoBehaviour {
     /// 地上にいるか確認
     /// </summary>
     public bool _isGround = true;
+
+    /// <summary>
+    /// 必殺技チャージタイム
+    /// </summary>
+    [SerializeField]
+    private float _specialChargeTime = 60.0f;
+    private float _currentSpecialChargeTime = 59.0f;
+    /// <summary>
+    /// 必殺技チャージ完了確認
+    /// </summary>
+    protected bool _isSpecialCharged => _currentSpecialChargeTime >= _specialChargeTime;
+
+    /// <summary>
+    /// 必殺技演出タイムライン
+    /// </summary>
+    protected PlayableDirector _specialTimelineDirector = null;
+    [SerializeField] private PlayableDirector _specialTimelinePrefab = null;
+
+    /// <summary>
+    /// 必殺技チャージ停止時間
+    /// </summary>
+    private float _specialChargeStopTime = 1.0f;
+    private float _currentSpecialChargeStopTime = 0f;
 
     [SerializeField]
     private float _returnTime = 1.0f;
@@ -64,6 +91,14 @@ public class Ability_Base : MonoBehaviour {
     // ワープエフェクト
     [SerializeField] protected GameObject _warpAnimationPrefab = null;
 
+    protected void Awake() {
+        if (_specialTimelinePrefab) {
+            var obj = Instantiate(_specialTimelinePrefab.gameObject);
+            _specialTimelineDirector = obj.GetComponent<PlayableDirector>();
+            _specialTimelineDirector.stopped += _OnSpecialFinished;
+        }
+    }
+
     /// <summary>
     /// 右向きか確認
     /// </summary>
@@ -95,6 +130,20 @@ public class Ability_Base : MonoBehaviour {
                 _anim.Play("ToHide");
             }
         }
+
+        if(_currentSpecialChargeStopTime > 0f) {
+            // チャージ停止中
+            _currentSpecialChargeStopTime -= Time.deltaTime;
+        } else {
+            // 必殺技チャージ
+            if(_currentSpecialChargeTime < _specialChargeTime) {
+                _currentSpecialChargeTime += Time.deltaTime;
+                if(_currentSpecialChargeTime > _specialChargeTime) {
+                    _currentSpecialChargeTime = _specialChargeTime;
+                }
+            }
+        }
+
         _Update();
     }
 
@@ -137,6 +186,34 @@ public class Ability_Base : MonoBehaviour {
     /// ワープ実行時の処理
     /// </summary>
     public virtual void OnWarp() { }
+
+    /// <summary>
+    /// 必殺技チャージ停止
+    /// </summary>
+    protected void _StopSpecialCharge() {
+        _currentSpecialChargeStopTime = _specialChargeStopTime;
+    }
+
+    /// <summary>
+    /// 必殺技使用
+    /// </summary>
+    protected virtual void _UseSpecial() {
+        if(!_specialTimelineDirector) {
+            return;
+        }
+        _specialTimelineDirector.time = 0;
+        _specialTimelineDirector.Evaluate();
+        _specialTimelineDirector.Play();
+        _currentSpecialChargeTime = 0;
+    }
+
+    /// <summary>
+    /// 必殺技終了
+    /// </summary>
+    protected virtual void _OnSpecialFinished(PlayableDirector obj) {
+        _specialTimelineDirector.time = 0;
+        _specialTimelineDirector.Stop();
+    }
 
     /// <summary>
     /// 召喚エフェクトとMP消費チェック

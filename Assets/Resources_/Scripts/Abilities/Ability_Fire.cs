@@ -77,6 +77,12 @@ public class Ability_Fire : Ability_Base
             return eAbilityResult.None;
         }
 
+        // •KE‹Z”­“®
+        if(_isSpecialCharged) {
+            _UseSpecial();
+            return eAbilityResult.FireSpecial;
+        }
+
         var ability_result = _SimpleShot();
 
         // UŒ‚Às
