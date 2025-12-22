@@ -17,11 +17,13 @@ public class Ability_Fire : Ability_Base
 
     // 必殺オブジェクト
     [SerializeField] private GameObject _specialBulletObj;
-    
+    [SerializeField] private GameObject _specialExplosionObj;
+
     // 必殺技弾のオブジェクトプール
     private Queue<GameObject> _specialBulletPool = new Queue<GameObject>();
-    private const int INITIAL_POOL_SIZE = 50; // 初期プールサイズ（2秒 ÷ 0.1秒 + 余裕）
-    private const float BULLET_LIFETIME = 0.5f; // 弾の生存時間
+    private const int INITIAL_POOL_SIZE = 10; // 初期プールサイズ（2秒 ÷ 0.1秒 + 余裕）
+    private const float BULLET_MIN_LIFETIME = 0.05f; // 弾の最小生存時間
+    private const float BULLET_MAX_LIFETIME = 0.2f; // 弾の最大生存時間
 
     // 自動攻撃範囲
     [SerializeField] private Collider2D _autoAttackRange;
@@ -85,6 +87,15 @@ public class Ability_Fire : Ability_Base
     /// </summary>
     private void _ReturnBulletToPool(GameObject bullet) {
         if (bullet == null) return;
+        
+        // 着弾エフェクト再生
+        Instantiate(_specialExplosionObj, bullet.transform.position, Quaternion.identity);
+        
+        // カメラシェイク（微妙な揺れ）
+        var cinemachineManager = CinemachineManager.Instance;
+        if (cinemachineManager != null) {
+            cinemachineManager.ShakeCamera(duration: 0.01f, intensity: 0.01f);
+        }
         
         bullet.SetActive(false);
         _specialBulletPool.Enqueue(bullet);
@@ -222,17 +233,30 @@ public class Ability_Fire : Ability_Base
         // カメラからのZ距離を計算
         float cameraDistance = Mathf.Abs(mainCamera.transform.position.z);
 
-        // 画面の高さを計算して、0.2秒で横断する速度を算出
+        // 画面の高さを計算して、0.1秒で横断する速度を算出
         Vector3 topPoint = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, cameraDistance));
         Vector3 bottomPoint = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, cameraDistance));
         float screenHeight = Mathf.Abs(topPoint.y - bottomPoint.y);
         float bulletSpeed = screenHeight / 0.1f; // 0.1秒で画面の高さ分移動
 
+        // 画面の左上座標を取得
+        Vector3 topLeft = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, cameraDistance));
+        topLeft.z = 0;
+        
+        // 画面の幅を計算
+        Vector3 topRight = mainCamera.ViewportToWorldPoint(new Vector3(1, 1, cameraDistance));
+        topRight.z = 0;
+        float screenWidth = Mathf.Abs(topRight.x - topLeft.x);
+
+        // 生成地点を画面外左上に固定（画面高さの20%上）
+        float spawnHeight = topLeft.y + screenHeight * 0.2f;
+        Vector3 spawnPosition = new Vector3(topLeft.x, spawnHeight, 0);
+
         yield return new WaitForSeconds(0.5f); // 少し待ってから攻撃開始
         while (current_time < attack_duration) {
             // 一定間隔で弾を発射
             if (current_time >= next_spawn_time) {
-                _SpawnSpecialBullet(mainCamera, bulletSpeed);
+                _SpawnSpecialBulletWithAngle(spawnPosition, bulletSpeed, screenWidth, screenHeight);
                 next_spawn_time += spawn_interval;
             }
 
@@ -244,49 +268,41 @@ public class Ability_Fire : Ability_Base
     }
 
     /// <summary>
-    /// 必殺技の弾を生成（画面外左上からランダムな位置に）
+    /// 必殺技の弾を角度を変えて生成（画面左上から）
     /// </summary>
-    private void _SpawnSpecialBullet(Camera camera, float bulletSpeed) {
+    private void _SpawnSpecialBulletWithAngle(Vector3 spawnPosition, float bulletSpeed, float screenWidth, float screenHeight) {
         if (_specialBulletObj == null) return;
-
-        // カメラからのZ距離を計算（カメラのZ座標の絶対値）
-        float cameraDistance = Mathf.Abs(camera.transform.position.z);
-
-        // 2D基準で画面の左上（ビューポート座標 0,1）のワールド座標を取得
-        Vector3 topLeft = camera.ViewportToWorldPoint(new Vector3(0, 1, cameraDistance));
-        topLeft.z = 0; // 2D基準でZ座標を0に固定
-        
-        // 2D基準で画面の右上（ビューポート座標 1,1）のワールド座標を取得
-        Vector3 topRight = camera.ViewportToWorldPoint(new Vector3(1, 1, cameraDistance));
-        topRight.z = 0; // 2D基準でZ座標を0に固定
-
-        // 画面外の上空から降らせる（画面の高さの20%上）
-        Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0, 0, cameraDistance));
-        bottomLeft.z = 0;
-        float screenHeight = Mathf.Abs(topLeft.y - bottomLeft.y);
-        float spawnHeight = topLeft.y + screenHeight * 0.2f;
-
-        // X座標をランダムに（画面左端から右端まで）
-        float randomX = Random.Range(topLeft.x, topRight.x);
-        
-        // 生成位置（2D基準でZ=0）
-        Vector3 spawnPosition = new Vector3(randomX, spawnHeight, 0);
 
         // プールから弾を取得
         GameObject bullet = _GetPooledBullet();
         bullet.transform.position = spawnPosition;
-        bullet.transform.rotation = Quaternion.identity;
         
-        // 弾に下向きの一定速度を設定（Rigidbody2Dがある場合）
+        // 発射角度を0度～80度の範囲でランダムに生成
+        // 0度 = 真下、80度 = ほぼ横方向
+        float randomAngle = Random.Range(0f, 80f);
+        
+        // 角度から方向ベクトルを計算（真下を0度として右方向に角度が増える）
+        float angleInRadians = randomAngle * Mathf.Deg2Rad;
+        Vector2 direction = new Vector2(Mathf.Sin(angleInRadians), -Mathf.Cos(angleInRadians));
+        
+        // 弾の表示角度を進行方向に合わせる
+        // Unityの回転は反時計回りが正なので、進行方向の角度を計算
+        float rotationAngle = Mathf.Atan2(direction.x, -direction.y) * Mathf.Rad2Deg;
+        bullet.transform.rotation = Quaternion.Euler(0, 0, rotationAngle);
+        
+        // 弾に速度を設定（Rigidbody2Dがある場合）
         var rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null) {
-            // 重力を無効化して一定速度で落下
+            // 重力を無効化して一定速度で移動
             rb.gravityScale = 0f;
-            rb.linearVelocity = Vector2.down * bulletSpeed; // 下向きに一定速度で落下
+            rb.linearVelocity = direction * bulletSpeed;
         }
         
-        // 1秒後にプールに戻すコルーチンを開始
-        StartCoroutine(_ReturnBulletAfterDelay(bullet, BULLET_LIFETIME));
+        // 生存時間をランダムに決定（MINからMAXの間）
+        float randomLifetime = Random.Range(BULLET_MIN_LIFETIME, BULLET_MAX_LIFETIME);
+        
+        // ランダムな時間後にプールに戻すコルーチンを開始
+        StartCoroutine(_ReturnBulletAfterDelay(bullet, randomLifetime));
     }
 
     /// <summary>
