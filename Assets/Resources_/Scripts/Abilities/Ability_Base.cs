@@ -14,6 +14,7 @@ public enum eAbilityResult {
     LightParry,
     LightDome,
     LightSpecial,
+    SpecialEnd,
 }
 
 public class Ability_Base : MonoBehaviour {
@@ -45,6 +46,12 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     private float _specialChargeStopTime = 1.0f;
     private float _currentSpecialChargeStopTime = 0f;
+
+    // 必殺技終了コールバック
+    protected System.Action _onEndSpecialAttack = null;
+    public void SetOnSpecialAttackEndCallback(System.Action callback) {
+        _onEndSpecialAttack = callback;
+    }
 
     [SerializeField]
     private float _returnTime = 1.0f;
@@ -95,7 +102,7 @@ public class Ability_Base : MonoBehaviour {
         if (_specialTimelinePrefab) {
             var obj = Instantiate(_specialTimelinePrefab.gameObject);
             _specialTimelineDirector = obj.GetComponent<PlayableDirector>();
-            _specialTimelineDirector.stopped += _OnSpecialFinished;
+            _specialTimelineDirector.stopped += _OnSpecialCutInFinished;
         }
     }
 
@@ -208,9 +215,9 @@ public class Ability_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// 必殺技終了
+    /// 必殺技演出終了
     /// </summary>
-    protected virtual void _OnSpecialFinished(PlayableDirector obj) {
+    protected virtual void _OnSpecialCutInFinished(PlayableDirector obj) {
         _specialTimelineDirector.time = 0;
         _specialTimelineDirector.Stop();
     }

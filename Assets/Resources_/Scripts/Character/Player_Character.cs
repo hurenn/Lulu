@@ -48,6 +48,9 @@ public class Player_Character : Character_Base {
     private float _iceInvincibleTime = 0.1f;
     private float _currentIceInvincibleTime = 0f;
 
+    // 必殺技使用中フラグ
+    protected bool _specialUsing = false;
+
     public void SaveAbilitySlot() {
         foreach (var ability in _tmpAbilitySlot) {
             if (ability.Key != eAbilityType.None) {
@@ -367,7 +370,8 @@ public class Player_Character : Character_Base {
     /// 能力スロットにセット
     /// </summary>
     public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot, bool is_effect = true) {
-        var ability = AbilityFactory.CreateAbility(ability_type, ability_slot, is_effect);
+        var ability = AbilityFactory.CreateAbility(ability_type, ability_slot,
+            () => _AbilityResult(eAbilityResult.SpecialEnd, _inputData.move), is_effect);
 
         // スロットにセット
         switch (ability_slot) {
@@ -449,6 +453,16 @@ public class Player_Character : Character_Base {
 
                 LockonManager.Instance.ClearTarget(); // ロックオン解除
                 break;
+            case eAbilityResult.FireSpecial:
+            case eAbilityResult.IceSpecial:
+            case eAbilityResult.LightSpecial:
+                // 操作不能にする
+                _specialUsing = true;
+                break;
+            case eAbilityResult.SpecialEnd:
+                // 操作可能にする
+                _specialUsing = false;
+                break;
             default:
                 break;
         }
@@ -528,7 +542,7 @@ public class Player_Character : Character_Base {
     protected override void _UpdateMotor() {
         Vector2 velocity = _rb.linearVelocity;
 
-        if (_damageReactionTimer > 0 || _intervalTimer > 0) {
+        if (_damageReactionTimer > 0 || _intervalTimer > 0 || _specialUsing) {
             return;
         }
 
