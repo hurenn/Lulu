@@ -110,6 +110,9 @@ public class Ability_Base : MonoBehaviour {
             var obj = Instantiate(_specialTimelinePrefab.gameObject);
             _specialTimelineDirector = obj.GetComponent<PlayableDirector>();
             _specialTimelineDirector.stopped += _OnSpecialCutInFinished;
+            
+            // Timeline‚ªTime.timeScale‚Ì‰e‹¿‚ğó‚¯‚È‚¢‚æ‚¤‚Éİ’è
+            _specialTimelineDirector.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
         }
     }
 

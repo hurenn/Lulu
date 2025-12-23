@@ -217,8 +217,22 @@ public class Ability_Fire : Ability_Base
         }
     }
 
+    /// <summary>
+    /// 必殺技使用
+    /// </summary>
+    protected override void _UseSpecial() {
+        // カットイン演出開始時にゲーム時間をスローにする
+        Time.timeScale = 0.1f;
+        
+        base._UseSpecial();
+    }
+
     protected override void _OnSpecialCutInFinished(PlayableDirector obj) {
         base._OnSpecialCutInFinished(obj);
+        
+        // カットイン終了時に速度を元に戻す
+        Time.timeScale = 1.0f;
+        
         StartCoroutine(_SpecialAttack());
     }
 
@@ -261,7 +275,9 @@ public class Ability_Fire : Ability_Base
         float spawnHeight = topLeft.y + screenHeight * 0.2f;
         Vector3 spawnPosition = new Vector3(topLeft.x, spawnHeight, 0);
 
-        yield return new WaitForSeconds(0.5f); // 少し待ってから攻撃開始
+        // 攻撃開始前の待機
+        yield return new WaitForSeconds(0.5f);
+        
         while (current_time < attack_duration) {
             // 一定間隔で弾を発射
             if (current_time >= next_spawn_time) {
