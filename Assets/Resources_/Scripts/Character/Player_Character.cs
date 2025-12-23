@@ -688,7 +688,7 @@ public class Player_Character : Character_Base {
     /// ƒ[ƒv”\—Í
     /// </summary>
     private void _Warp() {
-        if (_warpControl == null || _currentWarpCoolTime > 0) {
+        if (_warpControl == null || _currentWarpCoolTime > 0 || _specialUsing) {
             return;
         }
 
