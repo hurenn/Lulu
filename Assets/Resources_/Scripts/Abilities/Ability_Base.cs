@@ -29,7 +29,7 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     [SerializeField]
     private float _specialChargeTime = 60.0f;
-    private float _currentSpecialChargeTime = 59.0f;
+    private float _currentSpecialChargeTime = 0.0f;
     /// <summary>
     /// 必殺技チャージ完了確認
     /// </summary>
