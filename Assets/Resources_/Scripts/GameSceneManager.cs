@@ -30,6 +30,16 @@ public class GameSceneManager : MonoBehaviour
             }
         }
 
+        // デバッグ用：Numpad9キーで必殺チャージ
+        if (keyboard.numpad9Key.wasPressedThisFrame) {
+            Ability_Base[] abilities = FindObjectsByType<Ability_Base>(FindObjectsSortMode.None);
+            foreach (var ability in abilities) {
+                if (ability != null) {
+                    ability.ForceCharge();
+                }
+            }
+        }
+
         // デバッグ用：数字キーで能力の付与/解除
         if (keyboard.numpad4Key.wasPressedThisFrame) {
             var player = FindAnyObjectByType<Player_Character>();

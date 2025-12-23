@@ -252,4 +252,11 @@ public class Ability_Base : MonoBehaviour {
         // 帰還タイマーリセット
         _ResetReturnTimer();
     }
+
+    /// <summary>
+    /// 必殺技強制チャージ
+    /// </summary>
+    public void ForceCharge(float rate = 1.0f) {
+        _currentSpecialChargeTime = _specialChargeTime * rate;
+    }
 }
