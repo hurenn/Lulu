@@ -48,9 +48,6 @@ public class Player_Character : Character_Base {
     private float _iceInvincibleTime = 0.1f;
     private float _currentIceInvincibleTime = 0f;
 
-    // 必殺技使用中フラグ
-    protected bool _specialUsing = false;
-
     public void SaveAbilitySlot() {
         foreach (var ability in _tmpAbilitySlot) {
             if (ability.Key != eAbilityType.None) {
@@ -103,9 +100,9 @@ public class Player_Character : Character_Base {
             }
         }
 
-        _abilityX?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl);
-        _abilityY?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl);
-        _abilityA?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl);
+        _abilityX?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
+        _abilityY?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
+        _abilityA?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
 
         if (_currentWarpCoolTime > 0) {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
@@ -458,6 +455,8 @@ public class Player_Character : Character_Base {
             case eAbilityResult.LightSpecial:
                 // 操作不能にする
                 _specialUsing = true;
+                // 慣性をリセット
+                _rb.linearVelocity = Vector2.zero;
                 break;
             case eAbilityResult.SpecialEnd:
                 // 操作可能にする

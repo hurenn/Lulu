@@ -84,6 +84,7 @@ public class Ability_Base : MonoBehaviour {
     protected CharacterParameter_Player _charaParam = null;
     protected CommonParameter _param = null;
     protected WarpControl _warpControl = null;
+    protected MotorStates _motorStates = null;
 
     /// <summary>
     /// 装備時のローカルポジション
@@ -115,12 +116,14 @@ public class Ability_Base : MonoBehaviour {
         Transform chara_pos, 
         CommonParameter common_param, 
         CharacterParameter_Player chara_param,
-        WarpControl warp_control) {
+        WarpControl warp_control,
+        MotorStates motor_states) {
         _isRight = is_right;
         _playerTransform = chara_pos;
         _param = common_param;
         _charaParam = chara_param;
         _warpControl = warp_control;
+        _motorStates = motor_states;
     }
 
     private void Update() {

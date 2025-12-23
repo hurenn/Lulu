@@ -19,8 +19,8 @@ public class Ability_Light : Ability_Base
     private bool _isAutoLight => _currentAutoLightTimer >= _autoLightTimer && !_charaParam.isOverheat;
     private bool _isManualLight = false;
 
-    public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control) {
-        base.UpdateParameter(is_right, chara_pos, common_param, chara_param, warp_control);
+    public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
+        base.UpdateParameter(is_right, chara_pos, common_param, chara_param, warp_control, motor_states);
 
         var goal_marker = FindAnyObjectByType<GoalMarker>();
         if (goal_marker != null) {

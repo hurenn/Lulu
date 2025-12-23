@@ -36,8 +36,8 @@ public class Ability_Fire : Ability_Base
     // トリガーヘルパー参照
     private FireAutoAttackTrigger _triggerHelper;
 
-    public override void UpdateParameter(bool is_right, Transform chara_transform, CommonParameter common_param,  CharacterParameter_Player chara_param, WarpControl warp_control) {
-        base.UpdateParameter(is_right, chara_transform, common_param, chara_param, warp_control);
+    public override void UpdateParameter(bool is_right, Transform chara_transform, CommonParameter common_param,  CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
+        base.UpdateParameter(is_right, chara_transform, common_param, chara_param, warp_control, motor_states);
         
         // 自動攻撃範囲のトリガー設定
         if (_autoAttackRange != null) {
@@ -113,7 +113,7 @@ public class Ability_Fire : Ability_Base
             _enemiesInRange.RemoveAll(enemy => enemy == null || enemy.isDead);
             // 敵がリスト内にいれば攻撃
             if (_enemiesInRange.Count > 0 && !_cancelByOverheat) {
-                ExecuteSimple();
+                _TryShot(true);
                 _currentAutoAttackInterval = _autoAttackInterval;
             }
         }
@@ -132,6 +132,14 @@ public class Ability_Fire : Ability_Base
     }
 
     public override eAbilityResult ExecuteSimple() {
+        return _TryShot(false);
+    }
+
+    /// <summary>
+    /// 攻撃判定
+    /// </summary>
+    /// <param name="is_auto">オート攻撃によるものか</param>
+    private eAbilityResult _TryShot(bool is_auto) {
         // オーバーヒート中は使用不可
         if (_cancelByOverheat) {
             Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // 召喚エフェクト再生
@@ -139,7 +147,8 @@ public class Ability_Fire : Ability_Base
         }
 
         // 必殺技発動
-        if(_isSpecialCharged) {
+        if (_isSpecialCharged && !is_auto && 
+                !_motorStates.isWarpDashing && !_motorStates.isSliding) {
             _UseSpecial();
             return eAbilityResult.FireSpecial;
         }

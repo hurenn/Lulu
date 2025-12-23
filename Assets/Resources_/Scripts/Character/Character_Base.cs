@@ -43,6 +43,9 @@ public class Character_Base : MonoBehaviour
     protected bool _isWarpDelay;
     protected bool _isWarpDashing;
     protected bool _isSliding;      // スライディング中かどうか
+
+    public MotorStates _motorStates = new MotorStates();
+
     protected void _SetSliding(bool is_sliding, bool is_play_anim = true) {
         _isSliding = is_sliding;
         _anim?.SetBool("Sliding", _isSliding);
@@ -61,10 +64,13 @@ public class Character_Base : MonoBehaviour
     protected bool _isTouchingLeft;
     protected bool _isTouchingRight;
 
+    // 必殺技使用中フラグ
+    protected bool _specialUsing = false;
+
     // 通常移動可能かどうか
     protected bool _CanMove => !_isWarpDashing && !_isSlidingCanceling;
     // 重力を適用するかどうか
-    protected bool _EnableGravity => !_isWarpDashing && !_isWallDash && !_isWarpDelay && enableGravity;
+    protected bool _EnableGravity => !_isWarpDashing && !_isWallDash && !_isWarpDelay && enableGravity && !_specialUsing;
     public bool enableGravity = true;
     // ジャンプ力を取得
     protected float _jumpForce => _isDashing ? _param.dashJumpForce :
@@ -133,6 +139,15 @@ public class Character_Base : MonoBehaviour
         if (_sprite != null) {
             _sprite.flipX = _isRight;
         }
+
+        _UpdateMotorStates();
+    }
+
+    private void _UpdateMotorStates() {
+        _motorStates.isWalking = _isWalking;
+        _motorStates.isSliding = _isSliding;
+        _motorStates.isDashing = _isDashing;
+        _motorStates.isWarpDashing = _isWarpDashing;
     }
 
     /// <summary>
@@ -372,4 +387,12 @@ public class Character_Base : MonoBehaviour
         Gizmos.DrawWireCube(transform.position + _wallCheckRightLocalPos, _wallCheckScale);
     }
     #endregion
+}
+
+// キャラクターの状態受け渡し用クラス
+public class MotorStates {
+    public bool isWalking;
+    public bool isDashing;
+    public bool isSliding;
+    public bool isWarpDashing;
 }
