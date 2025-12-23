@@ -475,7 +475,7 @@ public class Player_Character : Character_Base {
     }
 
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
-        if (isInvincible || _isDead) {
+        if (isInvincible || _isDead || _specialUsing) {
             return false;
         }
 
