@@ -108,6 +108,11 @@ public class Ability_Light : Ability_Base
             return eAbilityResult.None;
         }
 
+        // •KEƒ`ƒƒ[ƒW’â~
+        if (_isManualLight) {
+            _StopSpecialCharge();
+        }
+
         // –³“G‰»
         _charaParam.isLightInvincible = true;
         _charaParam.currentInvincibilityTimer = 0f;

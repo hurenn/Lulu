@@ -51,6 +51,9 @@ public class Ability_Ice : Ability_Base {
         // 切り離し攻撃終了
         _EndSeparate();
 
+        // 必殺技チャージ停止
+        _StopSpecialCharge();
+
         // ロックオン攻撃判定
         if (LockonManager.Instance.HasTarget) {
             if (!_charaParam.isOverheat) {

@@ -146,6 +146,11 @@ public class Ability_Fire : Ability_Base
             return eAbilityResult.None;
         }
 
+        // •KE‹Zƒ`ƒƒ[ƒW’â~
+        if (!is_auto) {
+            _StopSpecialCharge();
+        }
+
         // •KE‹Z”­“®
         if (_isSpecialCharged && !is_auto && 
                 !_motorStates.isWarpDashing && !_motorStates.isSliding) {
