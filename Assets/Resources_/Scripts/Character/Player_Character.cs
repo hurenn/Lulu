@@ -346,7 +346,7 @@ public class Player_Character : Character_Base {
     }
 
     public override void UpdateControl(CharacterInputData input) {
-        if (_isDead) {
+        if (_isDead || _specialUsing) {
             input.abilityXHeld = false;
             input.abilityXPressed = false;
             input.abilityYHeld = false;
