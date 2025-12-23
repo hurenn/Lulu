@@ -224,6 +224,9 @@ public class Ability_Base : MonoBehaviour {
         if(!_specialTimelineDirector) {
             return;
         }
+        // カットイン演出開始時にゲーム時間をスローにする
+        Time.timeScale = 0.1f;
+
         _specialTimelineDirector.time = 0;
         _specialTimelineDirector.Evaluate();
         _specialTimelineDirector.Play();
@@ -234,6 +237,9 @@ public class Ability_Base : MonoBehaviour {
     /// 必殺技演出終了
     /// </summary>
     protected virtual void _OnSpecialCutInFinished(PlayableDirector obj) {
+        // カットイン終了時に速度を元に戻す
+        Time.timeScale = 1.0f;
+
         _specialTimelineDirector.time = 0;
         _specialTimelineDirector.Stop();
     }
