@@ -108,7 +108,7 @@ public class Ability_Fire : Ability_Base
         UpdatePartnerTransform();
 
         // ƒŠƒXƒg“à‚É“G‚ª‚¢‚ê‚Î©“®UŒ‚
-        if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0) {
+        if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0 && !_isSpecialUsing) {
             // Šù‚É€‚ñ‚Å‚¢‚é“G‚ğƒŠƒXƒg‚©‚çíœ
             _enemiesInRange.RemoveAll(enemy => enemy == null || enemy.isDead);
             // “G‚ªƒŠƒXƒg“à‚É‚¢‚ê‚ÎUŒ‚

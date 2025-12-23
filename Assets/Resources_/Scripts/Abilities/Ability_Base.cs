@@ -40,6 +40,7 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     protected PlayableDirector _specialTimelineDirector = null;
     [SerializeField] private PlayableDirector _specialTimelinePrefab = null;
+    protected bool _isSpecialUsing = false;
 
     /// <summary>
     /// 必殺技チャージ停止時間
@@ -51,6 +52,9 @@ public class Ability_Base : MonoBehaviour {
     protected System.Action _onEndSpecialAttack = null;
     public void SetOnSpecialAttackEndCallback(System.Action callback) {
         _onEndSpecialAttack = callback;
+        _onEndSpecialAttack += () => {
+            _isSpecialUsing = false;
+        };
     }
 
     // 必殺技チャージコールバック
@@ -226,6 +230,7 @@ public class Ability_Base : MonoBehaviour {
         }
         // カットイン演出開始時にゲーム時間をスローにする
         Time.timeScale = 0.1f;
+        _isSpecialUsing = true;
 
         _specialTimelineDirector.time = 0;
         _specialTimelineDirector.Evaluate();
