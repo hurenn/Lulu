@@ -63,7 +63,7 @@ public static class AbilityFactory {
                 return ability;
             }
         }
-        _abilityUIManager.SetAbilityUI(slot, type, is_effect);
+        _abilityUIManager.SetAbilityUI(slot, type, ability, is_effect);
 
         return ability;
     }

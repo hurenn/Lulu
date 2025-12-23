@@ -9,6 +9,11 @@ public class AbilityUI_Base : MonoBehaviour
     /// </summary>
     [SerializeField]
     protected Image _iconImage;
+    /// <summary>
+    /// チャージ画像
+    /// </summary>
+    [SerializeField]
+    protected Image _chargeImage;
 
     [SerializeField] protected Sprite _iceIconSprite;
     [SerializeField] protected Sprite _lightIconSprite;
@@ -54,6 +59,14 @@ public class AbilityUI_Base : MonoBehaviour
                 Debug.LogError("不明な能力タイプ：" + ability_type);
                 break;
         }
+    }
+
+    /// <summary>
+    /// 必殺技チャージ更新
+    /// </summary>
+    /// <param name="charge_rate">チャージ率</param>
+    public void OnChargeSpecial(float charge_rate) {
+        _chargeImage.fillAmount = charge_rate;
     }
 
     /*

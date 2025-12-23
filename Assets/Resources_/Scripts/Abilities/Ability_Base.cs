@@ -53,6 +53,12 @@ public class Ability_Base : MonoBehaviour {
         _onEndSpecialAttack = callback;
     }
 
+    // 必殺技チャージコールバック
+    protected System.Action<float> _onChargeSpecial = null;
+    public void SetOnChargeSpecialCallback(System.Action<float> callback) {
+        _onChargeSpecial = callback;
+    }
+
     [SerializeField]
     private float _returnTime = 1.0f;
     /// <summary>
@@ -141,17 +147,21 @@ public class Ability_Base : MonoBehaviour {
             }
         }
 
-        if(_currentSpecialChargeStopTime > 0f) {
+        if (_currentSpecialChargeStopTime > 0f) {
             // チャージ停止中
             _currentSpecialChargeStopTime -= Time.deltaTime;
         } else {
             // 必殺技チャージ
-            if(_currentSpecialChargeTime < _specialChargeTime) {
+            if (_currentSpecialChargeTime < _specialChargeTime) {
                 _currentSpecialChargeTime += Time.deltaTime;
-                if(_currentSpecialChargeTime > _specialChargeTime) {
+                if (_currentSpecialChargeTime > _specialChargeTime) {
                     _currentSpecialChargeTime = _specialChargeTime;
                 }
             }
+        }
+        // 現在のチャージ量を通知
+        if (_onChargeSpecial != null) {
+            _onChargeSpecial(_currentSpecialChargeTime / _specialChargeTime);
         }
 
         _Update();
