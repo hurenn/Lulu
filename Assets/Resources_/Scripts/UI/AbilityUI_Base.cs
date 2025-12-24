@@ -9,11 +9,12 @@ public class AbilityUI_Base : MonoBehaviour
     /// </summary>
     [SerializeField]
     protected Image _iconImage;
-    /// <summary>
-    /// チャージ画像
-    /// </summary>
+    // 必殺チャージUI
     [SerializeField]
     protected Image _chargeImage;
+    // チャージ完了エフェクト
+    [SerializeField]
+    protected GameObject _chargedEffect;
 
     [SerializeField] protected Sprite _iceIconSprite;
     [SerializeField] protected Sprite _lightIconSprite;
@@ -67,6 +68,9 @@ public class AbilityUI_Base : MonoBehaviour
     /// <param name="charge_rate">チャージ率</param>
     public void OnChargeSpecial(float charge_rate) {
         _chargeImage.fillAmount = charge_rate;
+        if (_chargedEffect != null) {
+            _chargedEffect.SetActive(charge_rate >= 1.0f);
+        }
     }
 
     /*
