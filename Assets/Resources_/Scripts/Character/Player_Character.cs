@@ -88,6 +88,9 @@ public class Player_Character : Character_Base {
         _UpdateWallSlideMove();
         _UpdateSlideJump();
 
+        // 自動発光設定
+        _SetAutoLight(_isWarpDashing);
+
         // 氷無敵時間計測
         if (_isIceInvincible) {
             // 無敵保障時間計測
@@ -466,9 +469,6 @@ public class Player_Character : Character_Base {
                 break;
         }
 
-        if (result != eAbilityResult.LightParry && result != eAbilityResult.LightDome) {
-            _OnReleaseLightDome();
-        }
         if (result != eAbilityResult.LightDome) {
             _OnResetFireInterval();
         }
@@ -503,7 +503,7 @@ public class Player_Character : Character_Base {
             StartCoroutine(_warpControl.AvoidWarp(
                 () => {
                     Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
-                }));
+                }, _inputData.move));
             return false;
         }
 
@@ -705,9 +705,6 @@ public class Player_Character : Character_Base {
 
             // ワープ処理開始
             StartCoroutine(WarpStart());
-
-            // ライトドーム自動解除
-            _OnReleaseLightDome();
         }
 
         IEnumerator WarpStart() {
@@ -717,7 +714,10 @@ public class Player_Character : Character_Base {
             if (!is_success) {
                 yield break; // 失敗
             }
-            _isIceInvincible = true;
+            if(_GetAbility<Ability_Ice>() != null) {
+                // 氷無敵付与
+                _isIceInvincible = true;
+            }
             _currentIceInvincibleTime = _iceInvincibleTime;
 
             WarpControl.eWarpDirection dash_direction = _warpDirection;
@@ -832,12 +832,12 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// オート発光解除
+    /// オート発光開始
     /// </summary>
-    private void _OnReleaseLightDome() {
+    private void _SetAutoLight(bool enable) {
         var ability = _GetAbility<Ability_Light>();
         if (ability != null) {
-            ability.SetAutoLight(false);
+            ability.SetAutoLight(enable);
         }
     }
 

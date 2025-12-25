@@ -211,7 +211,7 @@ public class WarpControl : MonoBehaviour
     /// <summary>
     /// 回避ワープ
     /// </summary>
-    public IEnumerator AvoidWarp(System.Action avoid_effect) {
+    public IEnumerator AvoidWarp(System.Action avoid_effect, Vector2 input_dir) {
         // 全てのチェッカーでワープ可能な方向を調べる
         WarpChecker[] valid_checkers =
         System.Array.FindAll(warpCheckers, (checker) => {
@@ -236,9 +236,66 @@ public class WarpControl : MonoBehaviour
             yield break;
         }
 
-        // チェッカーからランダムに選んでワープ
-        var random_checker = valid_checkers[Random.Range(0, valid_checkers.Length)];
-        yield return TargetWarp(random_checker, _avoidWarpInterval);
+        WarpChecker selected_checker = null;
+
+        // input_dirの方向に対応するチェッカーを優先的に選択
+        if (input_dir.magnitude > 0.1f) {
+            eWarpDirection preferred_direction = _GetDirectionFromInput(input_dir);
+            
+            // 優先方向のチェッカーが有効かチェック
+            if (preferred_direction != eWarpDirection.Neutral && 
+                (int)preferred_direction < warpCheckers.Length) {
+                WarpChecker preferred_checker = warpCheckers[(int)preferred_direction];
+                
+                // 優先チェッカーが有効なチェッカーのリストに含まれているか確認
+                if (System.Array.Exists(valid_checkers, (checker) => checker == preferred_checker)) {
+                    selected_checker = preferred_checker;
+                }
+            }
+        }
+
+        // 優先方向が選択できなければランダムに選択
+        if (selected_checker == null) {
+            selected_checker = valid_checkers[Random.Range(0, valid_checkers.Length)];
+        }
+
+        yield return TargetWarp(selected_checker, _avoidWarpInterval);
+    }
+
+    /// <summary>
+    /// 入力方向からワープ方向を取得
+    /// </summary>
+    private eWarpDirection _GetDirectionFromInput(Vector2 input_dir) {
+        // 入力を正規化
+        input_dir.Normalize();
+
+        // 8方向の角度（0度 = 右、反時計回り）
+        float angle = Mathf.Atan2(input_dir.y, input_dir.x) * Mathf.Rad2Deg;
+        
+        // 角度を0～360度に正規化
+        if (angle < 0) angle += 360f;
+
+        // 8方向に分類（各方向45度の範囲）
+        // Right: 337.5 ~ 22.5, UpRight: 22.5 ~ 67.5, Up: 67.5 ~ 112.5, ...
+        if (angle >= 337.5f || angle < 22.5f) {
+            return eWarpDirection.Right;
+        } else if (angle >= 22.5f && angle < 67.5f) {
+            return eWarpDirection.UpRight;
+        } else if (angle >= 67.5f && angle < 112.5f) {
+            return eWarpDirection.Up;
+        } else if (angle >= 112.5f && angle < 157.5f) {
+            return eWarpDirection.UpLeft;
+        } else if (angle >= 157.5f && angle < 202.5f) {
+            return eWarpDirection.Left;
+        } else if (angle >= 202.5f && angle < 247.5f) {
+            return eWarpDirection.DownLeft;
+        } else if (angle >= 247.5f && angle < 292.5f) {
+            return eWarpDirection.Down;
+        } else if (angle >= 292.5f && angle < 337.5f) {
+            return eWarpDirection.DownRight;
+        }
+
+        return eWarpDirection.Neutral;
     }
 
     private void OnDrawGizmosSelected() {

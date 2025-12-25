@@ -14,9 +14,7 @@ public class Ability_Light : Ability_Base
     private GoalMarker _goalMarker;
 
     // 自動発光タイマー
-    private float _autoLightTimer = 0.3f;
-    private float _currentAutoLightTimer = 0f;
-    private bool _isAutoLight => _currentAutoLightTimer >= _autoLightTimer && !_charaParam.isOverheat;
+    private bool _isAutoLight = false;
     private bool _isManualLight = false;
 
     public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
@@ -46,25 +44,16 @@ public class Ability_Light : Ability_Base
             _anim?.Play("Pepe_ToHide");
         }
 
-        // 自動発光タイマー更新
-        if (_currentAutoLightTimer < _autoLightTimer) {
-            _currentAutoLightTimer += Time.deltaTime;
-            if (_currentAutoLightTimer >= _autoLightTimer) {
-                // 自動発光
-                SetAutoLight(true);
-            }
-        }
-
         _UpdateLightDomeActive();
     }
 
     // 自動発光設定
     public void SetAutoLight(bool is_active) {
-        _charaParam.isAutoLightInvincible = is_active;
-
-        if (!is_active) {
-            _currentAutoLightTimer = 0f;
+        if(_charaParam == null) {
+            return;
         }
+        _isAutoLight = is_active && !_charaParam.isOverheat;
+        _charaParam.isAutoLightInvincible = _isAutoLight;
     }
 
     public override eAbilityResult ExecuteSimple() {
@@ -75,19 +64,16 @@ public class Ability_Light : Ability_Base
             return eAbilityResult.None;
         }
 
+        // MP消費
+        if (!_isAppearing) {
+            _charaParam.ConsumeMP(eAbilityType.Light);
+            _charaParam.SetUnRecoverTime_MP(1.0f);
+        }
+
         // アニメーション再生
         _anim?.Play("Pepe_Appear", 0, 0.0f);
         UpdatePartnerTransform(); // 位置更新
-
-        // MP消費
-        if (!_isAutoLight) {
-            _charaParam.ConsumeMP(eAbilityType.Light);
-            _charaParam.SetUnRecoverTime_MP(1.0f);
-
-            // 自動発光有効化
-            SetAutoLight(true);
-            _currentAutoLightTimer = _autoLightTimer;
-        }
+        _ResetReturnTimer();
 
         // ライトドーム表示
         _isManualLight = true;
