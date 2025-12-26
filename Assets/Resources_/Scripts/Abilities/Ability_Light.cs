@@ -17,6 +17,21 @@ public class Ability_Light : Ability_Base
     private bool _isAutoLight = false;
     private bool _isManualLight = false;
 
+    // ジャスト回避時間
+    private float _justAvoidTime = 0.2f;
+    private float _currentJustAvoidTime = 0.0f;
+    private float _justAvoidCooltime = 0.5f;
+    private float _currentJustAvoidCooltime = 0.0f;
+    public bool canJustAvoid => _currentJustAvoidTime > 0f;
+    // ジャスト回避タイマーリセット
+    private void _ResetJustAvoidTimer() {
+        if (_currentJustAvoidCooltime > 0f) {
+            return;
+        }
+        _currentJustAvoidTime = _justAvoidTime;
+        _currentJustAvoidCooltime = _justAvoidCooltime;
+    }
+
     public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
         base.UpdateParameter(is_right, chara_pos, common_param, chara_param, warp_control, motor_states);
 
@@ -44,6 +59,14 @@ public class Ability_Light : Ability_Base
             _anim?.Play("Pepe_ToHide");
         }
 
+        // ジャスト回避タイマー更新
+        if (_currentJustAvoidTime > 0f) {
+            _currentJustAvoidTime -= Time.deltaTime;
+        }
+        if (_currentJustAvoidCooltime > 0f) {
+            _currentJustAvoidCooltime -= Time.deltaTime;
+        }
+
         _UpdateLightDomeActive();
     }
 
@@ -52,6 +75,9 @@ public class Ability_Light : Ability_Base
         if(_charaParam == null) {
             return;
         }
+        // ジャスト回避タイマーリセット
+        _ResetJustAvoidTimer();
+
         _isAutoLight = is_active && !_charaParam.isOverheat;
         _charaParam.isAutoLightInvincible = _isAutoLight;
     }
@@ -83,7 +109,9 @@ public class Ability_Light : Ability_Base
             _goalMarker.SetMarkerActive(true);
         }
 
-        Debug.Log("Light Parry");
+        // ジャスト回避タイマーリセット
+        _ResetJustAvoidTimer();
+
         return eAbilityResult.LightParry;
     }
 
