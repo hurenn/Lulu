@@ -1,8 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
-public class WarpControl : MonoBehaviour
-{
+public class WarpControl : MonoBehaviour {
+    private const float JUST_AVOID_ZONE_DURATION = 0.1f; // ジャスト回避ゾーンの持続時間
+    
     public enum eWarpDirection
     {
         Neutral = -1,
@@ -52,9 +53,58 @@ public class WarpControl : MonoBehaviour
         _onWarpEndCommon = on_warp_end;
     }
 
+    // --- デバッグ用: ジャスト回避判定の可視化 ---
+    private Vector2? _debugJustAvoidCenter = null;
+    private float _debugJustAvoidRadius = 1.0f;
+    private float _debugJustAvoidTimer = 0f;
+
+    // --- ジャスト回避クールタイム管理 ---
+    private float _justAvoidCooldownTimer = 0f;
+
+    // --- ジャスト回避判定管理 ---
+    private bool _isJustAvoidActive = false;
+    private Vector2 _justAvoidCenter;
+    private float _justAvoidRadius;
+    private float _justAvoidTimer;
+    private System.Action _justAvoidCallback;
+    private bool _justAvoided;
+
     private void Update() {
         if (_currentAvoidEffectInterval > 0) {
             _currentAvoidEffectInterval -= Time.deltaTime;
+        }
+        // ジャスト回避判定（毎フレーム）
+        if (_isJustAvoidActive) {
+            if (!_justAvoided) {
+                int damageZoneLayer = LayerMask.NameToLayer("DamageZone");
+                int layerMask = 1 << damageZoneLayer;
+                Collider2D[] hits = Physics2D.OverlapCircleAll(_justAvoidCenter, _justAvoidRadius, layerMask);
+                foreach (var hit in hits) {
+                    var damageZone = hit.GetComponent<DamageZone>();
+                    if (damageZone != null) {
+                        _justAvoided = true;
+                        _justAvoidCallback?.Invoke();
+                        break;
+                    }
+                }
+            }
+            _justAvoidTimer -= Time.deltaTime;
+            if (_justAvoidTimer <= 0f) {
+                _isJustAvoidActive = false;
+                _justAvoidCallback = null;
+                _justAvoidCooldownTimer = 0.5f;
+            }
+        }
+        // デバッグ用: ジャスト回避判定の可視化タイマー
+        if (_debugJustAvoidTimer > 0f) {
+            _debugJustAvoidTimer -= Time.deltaTime;
+            if (_debugJustAvoidTimer <= 0f) {
+                _debugJustAvoidCenter = null;
+            }
+        }
+        // ジャスト回避クールタイム
+        if (_justAvoidCooldownTimer > 0f) {
+            _justAvoidCooldownTimer -= Time.deltaTime;
         }
     }
 
@@ -113,7 +163,8 @@ public class WarpControl : MonoBehaviour
     /// </summary>
     /// <param name="direction">方向</param>
     public IEnumerator DirectionWarp(eWarpDirection direction, 
-        System.Action<Enemy_Base> warp_attack_callback)
+        System.Action<Enemy_Base> warp_attack_callback,
+        System.Action just_avoid_callback = null)
     {
         // ワープ前の位置保存
         Vector2 origin = transform.position;
@@ -137,10 +188,37 @@ public class WarpControl : MonoBehaviour
             }
         }
 
+        // ジャスト回避の確認
+        SpawnJustAvoidZone(origin, () => {
+            if (just_avoid_callback != null) {
+                just_avoid_callback();
+            }
+        });
+
         // ワープ先に移動
         yield return _ExecuteWarpCommon(safe_point);
 
         yield return CoinWarp();
+    }
+
+    /// <summary>
+    /// ジャスト回避判定（毎フレーム検索）
+    /// </summary>
+    public void SpawnJustAvoidZone(Vector2 position, System.Action justAvoidCallback) {
+        // クールタイム中は判定しない
+        if (_justAvoidCooldownTimer > 0f || _isJustAvoidActive) return;
+
+        _isJustAvoidActive = true;
+        _justAvoidCenter = position;
+        _justAvoidRadius = 1.2f;
+        _justAvoidTimer = JUST_AVOID_ZONE_DURATION;
+        _justAvoidCallback = justAvoidCallback;
+        _justAvoided = false;
+
+        // デバッグ用: 判定範囲を記録
+        _debugJustAvoidCenter = position;
+        _debugJustAvoidRadius = _justAvoidRadius;
+        _debugJustAvoidTimer = JUST_AVOID_ZONE_DURATION;
     }
 
     /// <summary>
@@ -322,5 +400,11 @@ public class WarpControl : MonoBehaviour
 
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(transform.position + Vector3.down * _coinCheckSize.y * _otherCheckRate * 0.5f, _coinCheckSize * _otherCheckRate);
+
+        // ジャスト回避判定のデバッグ表示
+        if (_debugJustAvoidCenter.HasValue && _debugJustAvoidTimer > 0f) {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(_debugJustAvoidCenter.Value, _debugJustAvoidRadius);
+        }
     }
 }

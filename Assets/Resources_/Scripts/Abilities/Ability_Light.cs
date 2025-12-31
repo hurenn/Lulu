@@ -18,21 +18,6 @@ public class Ability_Light : Ability_Base
     private bool _isAutoLight = false;
     private bool _isManualLight = false;
 
-    // ジャスト回避時間
-    private float _justAvoidTime = 0.2f;
-    private float _currentJustAvoidTime = 0.0f;
-    private float _justAvoidCooltime = 0.5f;
-    private float _currentJustAvoidCooltime = 0.0f;
-    public bool canJustAvoid => _currentJustAvoidTime > 0f;
-    // ジャスト回避タイマーリセット
-    private void _ResetJustAvoidTimer() {
-        if (_currentJustAvoidCooltime > 0f) {
-            return;
-        }
-        _currentJustAvoidTime = _justAvoidTime;
-        _currentJustAvoidCooltime = _justAvoidCooltime;
-    }
-
     public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
         base.UpdateParameter(is_right, chara_pos, common_param, chara_param, warp_control, motor_states);
 
@@ -60,14 +45,6 @@ public class Ability_Light : Ability_Base
             _anim?.Play("Pepe_ToHide");
         }
 
-        // ジャスト回避タイマー更新
-        if (_currentJustAvoidTime > 0f) {
-            _currentJustAvoidTime -= Time.deltaTime;
-        }
-        if (_currentJustAvoidCooltime > 0f) {
-            _currentJustAvoidCooltime -= Time.deltaTime;
-        }
-
         _UpdateLightDomeActive();
     }
 
@@ -76,9 +53,6 @@ public class Ability_Light : Ability_Base
         if(_charaParam == null) {
             return;
         }
-        // ジャスト回避タイマーリセット
-        _ResetJustAvoidTimer();
-
         _isAutoLight = is_active && !_charaParam.isOverheat;
         _charaParam.isAutoLightInvincible = _isAutoLight;
     }
@@ -110,8 +84,8 @@ public class Ability_Light : Ability_Base
             _goalMarker.SetMarkerActive(true);
         }
 
-        // ジャスト回避タイマーリセット
-        _ResetJustAvoidTimer();
+        // ジャスト回避判定（WarpControlに一元化）
+        _warpControl.SpawnJustAvoidZone(transform.position, StartJustAvoid);
 
         return eAbilityResult.LightParry;
     }
@@ -171,35 +145,17 @@ public class Ability_Light : Ability_Base
     }
 
     /// <summary>
-    /// ジャスト回避
+    /// ジャスト回避演出
     /// </summary>
-    public void _StartJustAvoid() {
+    public void StartJustAvoid() {
         if (_charaParam == null) {
             return;
         }
-        
-        // コルーチンを開始（MonoBehaviourのStartCoroutineが必要なため、呼び出し元で実行）
-        StartCoroutine(_AutoAvoidSlowMotionCoroutine());
-    }
 
-    /// <summary>
-    /// 自動回避スローモーションのコルーチン
-    /// </summary>
-    private IEnumerator _AutoAvoidSlowMotionCoroutine() {
-        float slow_duration = 1.0f;  // スロー持続時間（1秒)
-        float slow_scale = 0.01f;    // スロー倍率（0.01倍速）
-        
-        // 元のタイムスケールを保存
-        float original_time_scale = Time.timeScale;
-        
-        // スローモーション開始
-        Time.timeScale = slow_scale;
-        
-        // 実時間で1秒待機
-        yield return new WaitForSecondsRealtime(slow_duration);
-        
-        // タイムスケールを元に戻す
-        Time.timeScale = original_time_scale;
+        // MP回復
+        if (_charaParam is CharacterParameter_Player playerParam) {
+            playerParam.RecoverMP();
+        }
     }
 
     private void _UpdateLightDomeActive() {

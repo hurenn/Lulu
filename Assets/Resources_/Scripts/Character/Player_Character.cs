@@ -723,9 +723,16 @@ public class Player_Character : Character_Base {
             WarpControl.eWarpDirection dash_direction = _warpDirection;
 
             if (_inputData.move.magnitude != 0) {
+                var ability_light = _GetAbility<Ability_Light>();
+                System.Action just_avoid = null;
+                if (ability_light != null) {
+                    just_avoid = ability_light.StartJustAvoid;
+                }
+
                 // 入力方向にワープ
                 yield return _warpControl.DirectionWarp(_warpDirection,
-                    _OnExecuteIceAutoAttack);
+                    _OnExecuteIceAutoAttack,
+                    just_avoid);
             } else if (_warpControl.GetCoinWarpCheck().HasValue) {
                 // コインワープ
                 yield return _warpControl.CoinWarp();
