@@ -72,8 +72,11 @@ public class Ability_Ice : Ability_Base {
                     warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Right);
                 }
 
-                _LockonSlash(warp_checker, lockon.targetTransform.position);
-                return eAbilityResult.IceLockonSlash;
+                // ロックオン攻撃実行
+                if (warp_checker != null) {
+                    _LockonSlash(warp_checker, lockon.targetTransform.position);
+                    return eAbilityResult.IceLockonSlash;
+                }
             } else {
                 // オーバーヒート中は使用不可
                 UpdatePartnerTransform(); // 位置更新
@@ -272,6 +275,11 @@ public class Ability_Ice : Ability_Base {
     /// </summary>
     /// <param name="target_pos">敵の位置</param>
     private void _OnceAttack(Vector3 target_pos, WarpChecker warp_checker, eAbilityType ability_type) {
+        if(_warpControl == null || warp_checker == null) {
+            Debug.Log("ワープコントロールまたはワープチェッカーが見つかりません");
+            return;
+        }
+
         // フラッシュ
         Color flash_color = Color.white;
         flash_color.a = 0.5f;

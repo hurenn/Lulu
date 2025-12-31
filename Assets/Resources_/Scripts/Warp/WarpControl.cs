@@ -222,6 +222,10 @@ public class WarpControl : MonoBehaviour {
     /// ワープチェッカーを指定してワープ
     /// </summary>
     public IEnumerator TargetWarp(WarpChecker warp_checker, float end_delay = 0.0f) {
+        if(warp_checker == null) {
+            yield break;
+        }
+
         // ワープ前の位置保存
         Vector2 origin = transform.position;
         var safe_point = warp_checker.GetWarpDestination(origin, warp_checker.transform.position);

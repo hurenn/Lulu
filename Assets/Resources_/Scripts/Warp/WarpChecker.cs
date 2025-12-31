@@ -86,6 +86,12 @@ public class WarpChecker : MonoBehaviour
         return _isValidWarpPoint ? point : null;
     }
 
+    private void _WarpFailed(Vector2 target_pos)
+    {
+        // ワープ失敗時のエフェクトなどをここで実装
+        Debug.Log($"{target_pos} へのワープが失敗しました");
+    }
+
     /// <summary>
     /// ワープ地点チェック
     /// </summary>

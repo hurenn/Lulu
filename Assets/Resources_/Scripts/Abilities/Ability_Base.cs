@@ -187,6 +187,10 @@ public class Ability_Base : MonoBehaviour {
     /// 仲間キャラクターの位置を更新
     /// </summary>
     public virtual void UpdatePartnerTransform(Vector3? target_pos = null) {
+        if(_playerTransform == null) {
+            return;
+        }
+
         if (target_pos != null) {
             transform.position = target_pos.Value;
         } else {
