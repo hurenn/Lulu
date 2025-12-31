@@ -76,7 +76,10 @@ public class Enemy_Base : Character_Base
                 }
                 return null;
             }
-            return _leftWarpChecker;
+            var checker = _leftWarpChecker.GetWarpPoint();
+            if (checker.HasValue) {
+                return _leftWarpChecker;
+            }
         } else if (warp_direction == WarpControl.eWarpDirection.Right) {
             if (is_other_check) {
                 // 反対側もチェック
@@ -90,7 +93,10 @@ public class Enemy_Base : Character_Base
                 }
                 return null;
             }
-            return _rightWarpChecker;
+            var checker = _rightWarpChecker.GetWarpPoint();
+            if (checker.HasValue) {
+                return _rightWarpChecker;
+            }
         }
         return null;
     }
