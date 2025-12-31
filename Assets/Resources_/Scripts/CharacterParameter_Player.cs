@@ -229,7 +229,7 @@ public class CharacterParameter_Player : CharacterParameter {
 
         // 表示用MPの更新
         if (_viewMP != _currentMP) {
-            _viewMP = Mathf.MoveTowards(_viewMP, _currentMP, 600.0f * Time.deltaTime);
+            _viewMP = Mathf.MoveTowards(_viewMP, _currentMP, 600.0f * Time.unscaledDeltaTime);
             if (_viewMP < _maxMP) {
                 _isViewMpFilled = false;
             }

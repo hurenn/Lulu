@@ -64,9 +64,13 @@ public class WarpControl : MonoBehaviour {
     // --- ジャスト回避判定管理 ---
     private bool _isJustAvoidActive = false;
     private Vector2 _justAvoidCenter;
-    private float _justAvoidRadius;
+    private float _justAvoidRadius = 0.5f;
     private float _justAvoidTimer;
     private System.Action _justAvoidCallback;
+    public void SetJustAvoidCallback(System.Action callback) {
+        if (_justAvoidCallback != null) return;
+        _justAvoidCallback = callback;
+    }
     private bool _justAvoided;
 
     private void Update() {
@@ -163,8 +167,7 @@ public class WarpControl : MonoBehaviour {
     /// </summary>
     /// <param name="direction">方向</param>
     public IEnumerator DirectionWarp(eWarpDirection direction, 
-        System.Action<Enemy_Base> warp_attack_callback,
-        System.Action just_avoid_callback = null)
+        System.Action<Enemy_Base> warp_attack_callback)
     {
         // ワープ前の位置保存
         Vector2 origin = transform.position;
@@ -189,11 +192,7 @@ public class WarpControl : MonoBehaviour {
         }
 
         // ジャスト回避の確認
-        SpawnJustAvoidZone(origin, () => {
-            if (just_avoid_callback != null) {
-                just_avoid_callback();
-            }
-        });
+        SpawnJustAvoidZone();
 
         // ワープ先に移動
         yield return _ExecuteWarpCommon(safe_point);
@@ -204,19 +203,17 @@ public class WarpControl : MonoBehaviour {
     /// <summary>
     /// ジャスト回避判定（毎フレーム検索）
     /// </summary>
-    public void SpawnJustAvoidZone(Vector2 position, System.Action justAvoidCallback) {
+    public void SpawnJustAvoidZone() {
         // クールタイム中は判定しない
         if (_justAvoidCooldownTimer > 0f || _isJustAvoidActive) return;
 
         _isJustAvoidActive = true;
-        _justAvoidCenter = position;
-        _justAvoidRadius = 1.2f;
+        _justAvoidCenter = transform.position;
         _justAvoidTimer = JUST_AVOID_ZONE_DURATION;
-        _justAvoidCallback = justAvoidCallback;
         _justAvoided = false;
 
         // デバッグ用: 判定範囲を記録
-        _debugJustAvoidCenter = position;
+        _debugJustAvoidCenter = _justAvoidCenter;
         _debugJustAvoidRadius = _justAvoidRadius;
         _debugJustAvoidTimer = JUST_AVOID_ZONE_DURATION;
     }

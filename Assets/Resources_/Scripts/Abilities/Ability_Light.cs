@@ -37,6 +37,8 @@ public class Ability_Light : Ability_Base
                 _lightDefaultIntensity = _light.intensity;
             }
         }
+
+        _warpControl.SetJustAvoidCallback(StartJustAvoid);
     }
 
     protected override void _Update() {
@@ -84,8 +86,8 @@ public class Ability_Light : Ability_Base
             _goalMarker.SetMarkerActive(true);
         }
 
-        // ジャスト回避判定（WarpControlに一元化）
-        _warpControl.SpawnJustAvoidZone(transform.position, StartJustAvoid);
+        // ジャスト回避判定
+        _warpControl.SpawnJustAvoidZone();
 
         return eAbilityResult.LightParry;
     }
@@ -152,10 +154,44 @@ public class Ability_Light : Ability_Base
             return;
         }
 
-        // MP回復
-        if (_charaParam is CharacterParameter_Player playerParam) {
-            playerParam.RecoverMP();
+        _OnJustAvoidSuccess();
+    }
+
+    // ジャスト回避演出（スローモーション）
+    private Coroutine _justAvoidEffectCoroutine;
+    private void _OnJustAvoidSuccess() {
+        if (_charaParam != null) {
+            // MP回復
+            if (_charaParam is CharacterParameter_Player playerParam) {
+                // 回復不可時間をリセット
+                _charaParam.SetUnRecoverTime_MP(0);
+                playerParam.RecoverMP();
+            }
         }
+
+        // スローモーション演出
+        if (_justAvoidEffectCoroutine != null) {
+            StopCoroutine(_justAvoidEffectCoroutine);
+        }
+        _justAvoidEffectCoroutine = StartCoroutine(_JustAvoidEffectCoroutine());
+    }
+
+    private IEnumerator _JustAvoidEffectCoroutine() {
+        // 0.5秒間0.1倍速
+        Time.timeScale = 0.1f;
+        yield return new WaitForSecondsRealtime(0.5f);
+        // 0.5 секундかけて徐々に1.0倍速へ
+        float t = 0f;
+        float duration = 0.5f;
+        float startScale = 0.1f;
+        float endScale = 1.0f;
+        while (t < duration) {
+            t += Time.unscaledDeltaTime;
+            Time.timeScale = Mathf.Lerp(startScale, endScale, t / duration);
+            yield return null;
+        }
+        Time.timeScale = 1.0f;
+        _justAvoidEffectCoroutine = null;
     }
 
     private void _UpdateLightDomeActive() {
