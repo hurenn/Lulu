@@ -108,7 +108,7 @@ public class Ability_Ice : Ability_Base {
         IEnumerator attack_routine() {
             yield return _warpControl?.TargetWarp(warp_checker);
 
-            _OnceAttack(target_pos, eAbilityType.LockonSlash);
+            _OnceAttack(target_pos, warp_checker, eAbilityType.LockonSlash);
         }
         StartCoroutine(attack_routine());
     }
@@ -264,14 +264,14 @@ public class Ability_Ice : Ability_Base {
         }
         Debug.Log("Lockon Slash");
 
-        _OnceAttack(enemy_pos, eAbilityType.AutoSlash);
+        _OnceAttack(enemy_pos, warp_checker, eAbilityType.AutoSlash);
     }
 
     /// <summary>
     /// 一撃攻撃
     /// </summary>
     /// <param name="target_pos">敵の位置</param>
-    private void _OnceAttack(Vector3 target_pos, eAbilityType ability_type) {
+    private void _OnceAttack(Vector3 target_pos, WarpChecker warp_checker, eAbilityType ability_type) {
         // フラッシュ
         Color flash_color = Color.white;
         flash_color.a = 0.5f;
@@ -281,7 +281,7 @@ public class Ability_Ice : Ability_Base {
         _AppearCheck(ability_type, force_appear: true);
 
         // キャラクター位置を更新
-        UpdatePartnerTransform();
+        UpdatePartnerTransform(warp_checker.transform.position);
         var is_right = target_pos.x > transform.position.x;
         _isRight = is_right;
 

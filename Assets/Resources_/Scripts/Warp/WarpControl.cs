@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.UI.Image;
 
 public class WarpControl : MonoBehaviour
 {
@@ -113,7 +112,8 @@ public class WarpControl : MonoBehaviour
     /// ワープ処理を実行
     /// </summary>
     /// <param name="direction">方向</param>
-    public IEnumerator DirectionWarp(eWarpDirection direction)
+    public IEnumerator DirectionWarp(eWarpDirection direction, 
+        System.Action<Enemy_Base> warp_attack_callback)
     {
         // ワープ前の位置保存
         Vector2 origin = transform.position;
@@ -123,6 +123,18 @@ public class WarpControl : MonoBehaviour
         if (0 <= direction && (int)direction < warpCheckers.Length) {
             WarpChecker warp_checker = warpCheckers[(int)direction];
             safe_point = warp_checker.GetWarpDestination(origin, warp_checker.transform.position);
+        }
+
+        // 現在地からワープ先までの間に敵がいるか確認
+        RaycastHit2D[] hits = Physics2D.LinecastAll(origin, safe_point, LayerMask.GetMask("Enemy"));
+        foreach (var hit in hits) {
+            Enemy_Base enemy = hit.collider.GetComponent<Enemy_Base>();
+            if (enemy != null) {
+                // 敵に攻撃コールバック
+                if (warp_attack_callback != null) {
+                    warp_attack_callback(enemy);
+                }
+            }
         }
 
         // ワープ先に移動

@@ -186,11 +186,15 @@ public class Ability_Base : MonoBehaviour {
     /// <summary>
     /// 仲間キャラクターの位置を更新
     /// </summary>
-    public virtual void UpdatePartnerTransform() {
-        transform.position = _playerTransform.position + new Vector3(
-            _localPosition.x * (_isRight ? -1 : 1),
-            _localPosition.y,
-            _localPosition.z);
+    public virtual void UpdatePartnerTransform(Vector3? target_pos = null) {
+        if (target_pos != null) {
+            transform.position = target_pos.Value;
+        } else {
+            transform.position = _playerTransform.position + new Vector3(
+                _localPosition.x * (_isRight ? -1 : 1),
+                _localPosition.y,
+                _localPosition.z);
+        }
         _rend.flipX = _isRight;
     }
 

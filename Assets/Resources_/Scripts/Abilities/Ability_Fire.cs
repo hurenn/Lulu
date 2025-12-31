@@ -193,7 +193,7 @@ public class Ability_Fire : Ability_Base
         return eAbilityResult.FireShot;
     }
 
-    public override void UpdatePartnerTransform() {
+    public override void UpdatePartnerTransform(Vector3? target_pos = null) {
         base.UpdatePartnerTransform();
 
         // ©“®UŒ‚”ÍˆÍ‚ÌˆÊ’uXV

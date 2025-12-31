@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -167,6 +168,38 @@ public class Ability_Light : Ability_Base
         UpdatePartnerTransform(); // 位置更新
 
         _ResetReturnTimer();
+    }
+
+    /// <summary>
+    /// ジャスト回避
+    /// </summary>
+    public void _StartJustAvoid() {
+        if (_charaParam == null) {
+            return;
+        }
+        
+        // コルーチンを開始（MonoBehaviourのStartCoroutineが必要なため、呼び出し元で実行）
+        StartCoroutine(_AutoAvoidSlowMotionCoroutine());
+    }
+
+    /// <summary>
+    /// 自動回避スローモーションのコルーチン
+    /// </summary>
+    private IEnumerator _AutoAvoidSlowMotionCoroutine() {
+        float slow_duration = 1.0f;  // スロー持続時間（1秒)
+        float slow_scale = 0.01f;    // スロー倍率（0.01倍速）
+        
+        // 元のタイムスケールを保存
+        float original_time_scale = Time.timeScale;
+        
+        // スローモーション開始
+        Time.timeScale = slow_scale;
+        
+        // 実時間で1秒待機
+        yield return new WaitForSecondsRealtime(slow_duration);
+        
+        // タイムスケールを元に戻す
+        Time.timeScale = original_time_scale;
     }
 
     private void _UpdateLightDomeActive() {

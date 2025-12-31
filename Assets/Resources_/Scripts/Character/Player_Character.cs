@@ -724,7 +724,8 @@ public class Player_Character : Character_Base {
 
             if (_inputData.move.magnitude != 0) {
                 // 入力方向にワープ
-                yield return _warpControl.DirectionWarp(_warpDirection);
+                yield return _warpControl.DirectionWarp(_warpDirection,
+                    _OnExecuteIceAutoAttack);
             } else if (_warpControl.GetCoinWarpCheck().HasValue) {
                 // コインワープ
                 yield return _warpControl.CoinWarp();
