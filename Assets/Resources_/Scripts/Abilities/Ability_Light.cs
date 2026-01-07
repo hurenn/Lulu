@@ -169,11 +169,11 @@ public class Ability_Light : Ability_Base
             }
         }
 
-        // スローモーション演出
-        if (_justAvoidEffectCoroutine != null) {
-            StopCoroutine(_justAvoidEffectCoroutine);
-        }
-        _justAvoidEffectCoroutine = StartCoroutine(_JustAvoidEffectCoroutine());
+        //// スローモーション演出 ※あまり気持ちよくないのでカット
+        //if (_justAvoidEffectCoroutine != null) {
+        //    StopCoroutine(_justAvoidEffectCoroutine);
+        //}
+        //_justAvoidEffectCoroutine = StartCoroutine(_JustAvoidEffectCoroutine());
     }
 
     private IEnumerator _JustAvoidEffectCoroutine() {
