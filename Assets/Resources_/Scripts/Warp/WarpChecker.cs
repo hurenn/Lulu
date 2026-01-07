@@ -1,4 +1,3 @@
-using System.Drawing;
 using UnityEngine;
 
 public class WarpChecker : MonoBehaviour
@@ -14,6 +13,8 @@ public class WarpChecker : MonoBehaviour
 
     [SerializeField]
     private LayerMask _obstacleLayer = default;
+    [SerializeField]
+    private LayerMask _enemyLayer = default;
     [SerializeField]
     private LayerMask _damageZoneLayer = default;
 
@@ -36,9 +37,9 @@ public class WarpChecker : MonoBehaviour
         float totalDistance = Vector2.Distance(origin, target);
 
         // 目的地がワープ可能かチェック
-        RaycastHit2D directCheck = Physics2D.BoxCast(target, _characterSize, 0, Vector2.zero, 0f, _obstacleLayer);
-        if (directCheck.collider == null)
-        {
+        RaycastHit2D obstacleCheck = Physics2D.BoxCast(target, _characterSize, 0, Vector2.zero, 0f, _obstacleLayer);
+        RaycastHit2D enemyCheck = Physics2D.BoxCast(target, _characterSize, 0, Vector2.zero, 0f, _enemyLayer);
+        if (obstacleCheck.collider == null && enemyCheck.collider == null) {
             return target; // 直接ワープ可能
         }
 

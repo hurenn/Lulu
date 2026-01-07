@@ -42,7 +42,6 @@ public class WarpControl : MonoBehaviour {
     public eWarpDirection lastWarpDir { get; private set; } = eWarpDirection.Right;
 
     [SerializeField] private AudioSource _audioSource;
-    public AudioSource audioSource { get { return _audioSource; } }
     [SerializeField] private AudioClip _seWarp;
 
     /// <summary>
