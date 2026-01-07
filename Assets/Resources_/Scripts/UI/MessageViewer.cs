@@ -16,9 +16,9 @@ public class MessageViewer : MonoBehaviour {
         {"Pepe", "ペペ"},
         {"Milly", "ミリー"},
     };
-    private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
-    private const float _AUTO_MESSAGE_SHOW_TIME = 0.05f; // 1文字あたりの追加表示時間
-    private const float _AUTO_ENG_MESSAGE_SHOW_TIME = 0.025f; // 英語1文字あたりの追加表示時間
+    private const float _BASE_SHOW_TIME = 4.0f; // 基本表示時間
+    private const float _AUTO_MESSAGE_SHOW_TIME = 0.01f; // 1文字あたりの追加表示時間
+    private const float _AUTO_ENG_MESSAGE_SHOW_TIME = 0.001f; // 英語1文字あたりの追加表示時間
     private const float _COOL_TIME = 0.5f;  // メッセージ表示クールタイム
     private const float _FORCE_COOL_TIME = 0.1f; // 強制メッセージ表示クールタイム
 
@@ -168,8 +168,8 @@ public class MessageViewer : MonoBehaviour {
     private IEnumerator _TypeText(string message, float message_show_time) {
         _audioSource.Stop();
         _messageText.text = "";
+        _audioSource.PlayOneShot(_seSpeak);
         if (message_show_time <= 0) { // 一気に表示
-            _audioSource.PlayOneShot(_seSpeak);
             var view_message = message.Length / 3;
             _messageText.text = message.Substring(0, view_message);
             yield return new WaitForSecondsRealtime(0.01f);
@@ -180,7 +180,6 @@ public class MessageViewer : MonoBehaviour {
             foreach (char c in message) { // 1文字ずつ表示
                 if (_playerParameter.language == PlayerParameter.eLanguage.Japanese ||
                     (_playerParameter.language == PlayerParameter.eLanguage.English && _messageText.text.Length % 2 == 0)) {
-                    _audioSource.PlayOneShot(_seSpeakOne);
                 }
                 _messageText.text += c;
                 yield return new WaitForSecondsRealtime(message_show_time);
