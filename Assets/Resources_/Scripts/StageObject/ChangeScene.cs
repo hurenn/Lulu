@@ -37,21 +37,21 @@ public class ChangeScene : StageObject_Base
     }
 
     public static void LoadScene(bool is_save_ability, string sceneName = null, PlayerController characterController = null) {
+        // 入力を無効化
         if (characterController != null) {
             characterController.isEnabledCharacterInput = false;
         }
+        // プレイヤーの状態を保存
         if (is_save_ability) {
-            // プレイヤーパラメーターのセーブ
-            // NOTE: Player_Parameter側にセーブ処理を移動させる方が健全
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {
-                player.SaveAbilitySlot();
+                player.SavePlayerState();
             } else {
                 Debug.LogError("Player_Character not found for saving status.");
             }
         }
 
-        // 切り替えシーンの読み込み
+        // シーンの切り替え
         if (sceneName == null) {
             sceneName = SceneManager.GetActiveScene().name;
         }

@@ -6,6 +6,16 @@ public class GameSceneManager : MonoBehaviour
     public static GameSceneManager Instance { get; private set; }
     private string _titleSceneName = "Title";
 
+    private void Start() {
+        // シーン再読み込み時のみリスポーン地点に移動
+        var player = FindAnyObjectByType<Player_Character>();
+        var checkpointManager = CheckpointManager.Instance;
+        if (player != null && checkpointManager != null && checkpointManager.ShouldRespawnInCurrentScene())
+        {
+            checkpointManager.RespawnPlayer(player);
+        }
+    }
+
     private void Update() {
         var keyboard = Keyboard.current;
         if (keyboard == null) {

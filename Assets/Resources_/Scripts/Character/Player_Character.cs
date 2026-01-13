@@ -920,4 +920,40 @@ public class Player_Character : Character_Base {
     private bool _HasAbility<T>() where T : Ability_Base {
         return _GetAbility<T>() != null;
     }
+
+    // プレイヤーパラメータのスナップショットを取得
+    public PlayerParameterSnapshot GetParameterSnapshot() {
+        var snapshot = new PlayerParameterSnapshot();
+        if (_player_charaParam != null) {
+            snapshot.Lv = _playerParam.levelParameter.hpLevel; // レベルを保存
+        }
+        return snapshot;
+    }
+
+    // プレイヤーパラメータをスナップショットから復元
+    public void RestoreParameter(PlayerParameterSnapshot snapshot) {
+        if (_playerParam != null && snapshot != null) {
+            // レベルを復元（SetLevel等がなければ直接代入やAddExpで調整）
+            _playerParam.levelParameter.hpLevel = snapshot.Lv;
+            _playerParam.levelParameter.mpLevel = snapshot.Lv;
+            _playerParam.levelParameter.attackLevel = snapshot.Lv;
+            ApplyPlayerParameter();
+        }
+    }
+
+    // パラメータとアビリティスロットをまとめて保存する
+    public void SavePlayerState()
+    {
+        var snapshot = GetParameterSnapshot();
+        var checkpointManager = CheckpointManager.Instance;
+        if (checkpointManager != null && snapshot != null)
+        {
+            checkpointManager.SaveCheckpoint(transform.position, snapshot);
+        }
+        else
+        {
+            Debug.LogError("CheckpointManager or PlayerParameterSnapshot is null.");
+        }
+        SaveAbilitySlot();
+    }
 }
