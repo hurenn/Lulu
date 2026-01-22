@@ -5,6 +5,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Character_Base character;
     public Character_Base Character => character;
 
+    // ポーズUI参照
+    [SerializeField] private Pause_UI pauseUI;
+
     // コントローラー
     private InputActions _inputActions;
 
@@ -27,6 +30,9 @@ public class PlayerController : MonoBehaviour {
 
     // メッセージ送り入力
     private bool _isMessageNextPressed = false;
+
+    // ポーズ画面表示入力
+    private bool _isPauseViewPressed = false;
 
     // キャラクター操作入力受付フラグ
     public bool isEnabledCharacterInput { get; set; } = true;
@@ -76,6 +82,8 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.AbilityX.canceled += OnAbilityXRelease;
         _inputActions.Player.AbilityA.performed += OnAbilityA;
         _inputActions.Player.AbilityA.canceled += OnAbilityARelease;
+        // Pauseアクション購読
+        _inputActions.Player.Pause.performed += OnPause;
     }
 
     private void OnDisable() {
@@ -89,7 +97,22 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.AbilityX.canceled -= OnAbilityXRelease;
         _inputActions.Player.AbilityA.performed -= OnAbilityA;
         _inputActions.Player.AbilityA.canceled -= OnAbilityARelease;
+        // Pauseアクション解除
+        _inputActions.Player.Pause.performed -= OnPause;
         _inputActions.Player.Disable();
+    }
+
+    // Pauseアクションのコールバック
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        if (pauseUI == null)
+        {
+            pauseUI = FindObjectOfType<Pause_UI>();
+        }
+        if (pauseUI != null)
+        {
+            pauseUI.UIViewSwitch();
+        }
     }
 
     // Update is called once per frame
