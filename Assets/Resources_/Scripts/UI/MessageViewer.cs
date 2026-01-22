@@ -68,6 +68,10 @@ public class MessageViewer : MonoBehaviour {
 
     private void Update() {
         UpdateWindowAlpha();
+        // ポーズUIが開いている間はメッセージ表示時間経過を止める
+        if (Pause_UI.IsOpen == true) {
+            return;
+        }
         if (_isStopMessage) {
             return;
         }
