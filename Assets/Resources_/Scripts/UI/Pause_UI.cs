@@ -5,7 +5,6 @@ public class Pause_UI : MonoBehaviour
     private const float BGM_VOLUME_SCALE_WHILE_PAUSED = 0.5f; // ポーズ中のBGM音量スケール
 
     [SerializeField] private GameObject pausePanel; // ポーズUIのパネル
-    [SerializeField] private AudioSource bgmSource; // BGM用AudioSource
     private static bool isOpen = false;
     private float _originalTimeScale = 1f;
     private float _originalBgmVolume = 1f;
@@ -14,7 +13,6 @@ public class Pause_UI : MonoBehaviour
     // BGM AudioSource取得（キャッシュ利用）
     private AudioSource GetBgmSource()
     {
-        if (bgmSource != null) return bgmSource;
         if (s_bgmSource != null) return s_bgmSource;
         var bgmObj = GameObject.Find("BGM");
         if (bgmObj != null)
