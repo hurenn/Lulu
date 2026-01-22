@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class Pause_UI : MonoBehaviour
 {
+    private const float BGM_VOLUME_SCALE_WHILE_PAUSED = 0.5f; // ポーズ中のBGM音量スケール
+
     [SerializeField] private GameObject pausePanel; // ポーズUIのパネル
     [SerializeField] private AudioSource bgmSource; // BGM用AudioSource
-    [SerializeField] private float pauseBgmVolume = 0.3f; // ポーズ中のBGM音量
     private static bool isOpen = false;
     private float _originalTimeScale = 1f;
     private float _originalBgmVolume = 1f;
@@ -40,7 +41,7 @@ public class Pause_UI : MonoBehaviour
             if (source != null)
             {
                 _originalBgmVolume = source.volume;
-                source.volume = pauseBgmVolume;
+                source.volume = _originalBgmVolume * BGM_VOLUME_SCALE_WHILE_PAUSED;
             }
         }
         else
@@ -50,40 +51,6 @@ public class Pause_UI : MonoBehaviour
             {
                 source.volume = _originalBgmVolume;
             }
-        }
-    }
-
-    // 明示的に開く
-    public void OpenPauseUI()
-    {
-        isOpen = true;
-        if (pausePanel != null)
-        {
-            pausePanel.SetActive(true);
-        }
-        var source = GetBgmSource();
-        _originalTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
-        if (source != null)
-        {
-            _originalBgmVolume = source.volume;
-            source.volume = pauseBgmVolume;
-        }
-    }
-
-    // 明示的に閉じる
-    public void ClosePauseUI()
-    {
-        isOpen = false;
-        if (pausePanel != null)
-        {
-            pausePanel.SetActive(false);
-        }
-        var source = GetBgmSource();
-        Time.timeScale = _originalTimeScale;
-        if (source != null)
-        {
-            source.volume = _originalBgmVolume;
         }
     }
 
