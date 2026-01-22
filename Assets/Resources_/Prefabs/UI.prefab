@@ -1173,7 +1173,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &782171216566457222
 MonoBehaviour:
@@ -4436,6 +4436,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pausePanel: {fileID: 7384260277265635018}
+  bgmSource: {fileID: 0}
+  pauseBgmVolume: 0.3
 --- !u!1 &8335445916894080615
 GameObject:
   m_ObjectHideFlags: 0

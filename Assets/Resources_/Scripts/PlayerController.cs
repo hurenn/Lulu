@@ -117,6 +117,13 @@ public class PlayerController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        // ポーズ画面を開いている間はキャラクター操作入力を無効化
+        if (Pause_UI.IsOpen) {
+            input.Clear();
+            character.UpdateControl(input);
+            return;
+        }
+
         // 入力取得
         Vector2 move_input = Vector2.zero;
         if(_moveInputValue.x > 0.5f) move_input.x = 1f;
@@ -147,8 +154,6 @@ public class PlayerController : MonoBehaviour {
         // キャラクター操作入力が無効な場合、入力をクリア
         if (!isEnabledCharacterInput) {
             input.Clear();
-
-            // Insert用入力の処理
             _ProcessInspectorInputs();
         }
 

@@ -139,7 +139,26 @@ public class Ability_Base : MonoBehaviour {
         _motorStates = motor_states;
     }
 
+    private bool _wasPauseOpen = false;
+    private bool _isSpecialCutInViewing = false;
+
     private void Update() {
+        // ポーズ画面の開閉状態を監視し、Timelineを制御
+        bool isPauseOpen = Pause_UI.IsOpen;
+        if (_specialTimelineDirector != null)
+        {
+            // カットイン演出中のみ再開処理を許可
+            if (isPauseOpen && !_wasPauseOpen)
+            {
+                _specialTimelineDirector.Pause();
+            }
+            else if (!isPauseOpen && _wasPauseOpen && _isSpecialCutInViewing)
+            {
+                _specialTimelineDirector.Play();
+            }
+        }
+        _wasPauseOpen = isPauseOpen;
+
         // 帰還タイマー
         if (_isAppearing) {
             _currentReturnTime -= Time.deltaTime;
@@ -230,6 +249,17 @@ public class Ability_Base : MonoBehaviour {
     }
 
     /// <summary>
+    /// 必殺技演出終了
+    /// </summary>
+    protected virtual void _OnSpecialCutInFinished(PlayableDirector obj) {
+        // カットイン終了時に速度を元に戻す
+        Time.timeScale = 1.0f;
+        _isSpecialCutInViewing = false;
+        _specialTimelineDirector.time = 0;
+        _specialTimelineDirector.Stop();
+    }
+
+    /// <summary>
     /// 必殺技使用
     /// </summary>
     protected virtual void _UseSpecial() {
@@ -239,22 +269,11 @@ public class Ability_Base : MonoBehaviour {
         // カットイン演出開始時にゲーム時間をスローにする
         Time.timeScale = 0.1f;
         _isSpecialUsing = true;
-
+        _isSpecialCutInViewing = true;
         _specialTimelineDirector.time = 0;
         _specialTimelineDirector.Evaluate();
         _specialTimelineDirector.Play();
         _currentSpecialChargeTime = 0;
-    }
-
-    /// <summary>
-    /// 必殺技演出終了
-    /// </summary>
-    protected virtual void _OnSpecialCutInFinished(PlayableDirector obj) {
-        // カットイン終了時に速度を元に戻す
-        Time.timeScale = 1.0f;
-
-        _specialTimelineDirector.time = 0;
-        _specialTimelineDirector.Stop();
     }
 
     /// <summary>
