@@ -5,9 +5,6 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Character_Base character;
     public Character_Base Character => character;
 
-    // ポーズUI参照
-    [SerializeField] private Pause_UI pauseUI;
-
     // コントローラー
     private InputActions _inputActions;
 
@@ -65,8 +62,30 @@ public class PlayerController : MonoBehaviour {
         _inputCompletedCallback = input_completed;
     }
 
+    private Pause_UI _pauseUIInstance;
+    private float _pauseMenuInputCooldown = 0f;
+    private const float PAUSE_MENU_INPUT_COOLDOWN = 0.2f;
+
+    // Pause_UIインスタンスをキャッシュして取得
+    private Pause_UI GetPauseUI()
+    {
+        if (_pauseUIInstance == null)
+        {
+            _pauseUIInstance = FindAnyObjectByType<Pause_UI>();
+        }
+        return _pauseUIInstance;
+    }
+
     private void Awake() {
         _inputActions = new InputActions();
+    }
+
+    private void Start() {
+        // Pause_UIインスタンス取得
+        var pauseUI = FindAnyObjectByType<Pause_UI>();
+        if (pauseUI != null) {
+            _pauseUIInstance = pauseUI;
+        }
     }
 
     private void OnEnable() {
@@ -103,14 +122,9 @@ public class PlayerController : MonoBehaviour {
     }
 
     // Pauseアクションのコールバック
-    private void OnPause(InputAction.CallbackContext context)
-    {
-        if (pauseUI == null)
-        {
-            pauseUI = FindObjectOfType<Pause_UI>();
-        }
-        if (pauseUI != null)
-        {
+    private void OnPause(InputAction.CallbackContext context) {
+        var pauseUI = GetPauseUI();
+        if (pauseUI != null) {
             pauseUI.UIViewSwitch();
         }
     }
@@ -119,6 +133,22 @@ public class PlayerController : MonoBehaviour {
     void Update() {
         // ポーズ画面を開いている間はキャラクター操作入力を無効化
         if (Pause_UI.IsOpen) {
+            // Pause_UIの上下入力イベントを発火
+            var pauseUI = GetPauseUI();
+            if (pauseUI != null)
+            {
+                if (_pauseMenuInputCooldown > 0f) _pauseMenuInputCooldown -= Time.unscaledDeltaTime;
+                float y = _moveInputValue.y;
+                int dir = 0;
+                if (y > 0.5f) dir = -1; // 上
+                else if (y < -0.5f) dir = 1; // 下
+                if (dir != 0 && _pauseMenuInputCooldown <= 0f)
+                {
+                    pauseUI.MoveMenu(dir);
+                    _pauseMenuInputCooldown = PAUSE_MENU_INPUT_COOLDOWN;
+                    input.move.y = 0; // 入力を1フレームでリセット
+                }
+            }
             input.Clear();
             character.UpdateControl(input);
             return;
