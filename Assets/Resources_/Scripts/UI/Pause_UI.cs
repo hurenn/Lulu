@@ -117,7 +117,10 @@ public class Pause_UI : MonoBehaviour
         selectFrame.rectTransform.anchoredPosition = targetPos;
     }
 
-    private void ExecuteSelectedMenu()
+    /// <summary>
+    /// 選択中のメニューを実行
+    /// </summary>
+    public void ExecuteSelectedMenu()
     {
         switch (_selectedIndex)
         {

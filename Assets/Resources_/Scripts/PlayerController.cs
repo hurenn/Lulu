@@ -28,9 +28,6 @@ public class PlayerController : MonoBehaviour {
     // メッセージ送り入力
     private bool _isMessageNextPressed = false;
 
-    // ポーズ画面表示入力
-    private bool _isPauseViewPressed = false;
-
     // キャラクター操作入力受付フラグ
     public bool isEnabledCharacterInput { get; set; } = true;
 
@@ -129,10 +126,13 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    private bool _wasPauseOpen = false;
+
     // Update is called once per frame
     void Update() {
         // ポーズ画面を開いている間はキャラクター操作入力を無効化
         if (Pause_UI.IsOpen) {
+            _wasPauseOpen = true;
             // Pause_UIの上下入力イベントを発火
             var pauseUI = GetPauseUI();
             if (pauseUI != null)
@@ -147,6 +147,11 @@ public class PlayerController : MonoBehaviour {
                     pauseUI.MoveMenu(dir);
                     _pauseMenuInputCooldown = PAUSE_MENU_INPUT_COOLDOWN;
                     input.move.y = 0; // 入力を1フレームでリセット
+                }
+
+                if(_isMessageNextPressed)
+                {
+                    pauseUI.ExecuteSelectedMenu();
                 }
             }
             input.Clear();
@@ -175,6 +180,12 @@ public class PlayerController : MonoBehaviour {
         input.abilityAHeld = _isAbilityAHeld;
         input.abilityAReleased = _isAbilityAReleased;
         virtualInput = input;
+
+        if (_wasPauseOpen) {
+            // ポーズ画面を閉じた直後は入力をリセット
+            _wasPauseOpen = false;
+            input.jumpPressed = false;
+        }
 
         // 特定入力のチェック
         if (_inputCompletedCallback != null) {
