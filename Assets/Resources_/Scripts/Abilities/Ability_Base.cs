@@ -109,6 +109,9 @@ public class Ability_Base : MonoBehaviour {
     // ワープエフェクト
     [SerializeField] protected GameObject _warpAnimationPrefab = null;
 
+    // ポーズUI参照キャッシュ
+    private Pause_UI _pauseUIInstance;
+
     protected void Awake() {
         if (_specialTimelinePrefab) {
             var obj = Instantiate(_specialTimelinePrefab.gameObject);
@@ -253,6 +256,8 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     protected virtual void _OnSpecialCutInFinished(PlayableDirector obj) {
         // カットイン終了時に速度を元に戻す
+        var pauseUI = GetPauseUI();
+        if (pauseUI != null) pauseUI.canOpen = true;
         Time.timeScale = 1.0f;
         _isSpecialCutInViewing = false;
         _specialTimelineDirector.time = 0;
@@ -267,6 +272,8 @@ public class Ability_Base : MonoBehaviour {
             return;
         }
         // カットイン演出開始時にゲーム時間をスローにする
+        var pauseUI = GetPauseUI();
+        if (pauseUI != null) pauseUI.canOpen = false;
         Time.timeScale = 0.1f;
         _isSpecialUsing = true;
         _isSpecialCutInViewing = true;
@@ -299,5 +306,13 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     public void ForceCharge(float rate = 1.0f) {
         _currentSpecialChargeTime = _specialChargeTime * rate;
+    }
+    private Pause_UI GetPauseUI()
+    {
+        if (_pauseUIInstance == null)
+        {
+            _pauseUIInstance = FindAnyObjectByType<Pause_UI>();
+        }
+        return _pauseUIInstance;
     }
 }

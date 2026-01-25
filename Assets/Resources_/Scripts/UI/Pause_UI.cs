@@ -15,6 +15,8 @@ public class Pause_UI : MonoBehaviour
     [SerializeField] private AudioClip _seSelect; // メニュー選択音
 
     private static bool isOpen = false;
+    public bool canOpen = true; // ポーズUIを開けるかどうか
+
     private float _originalTimeScale = 1f;
     private float _originalBgmVolume = 1f;
     private static AudioSource s_bgmSource = null; // キャッシュ用
@@ -23,6 +25,11 @@ public class Pause_UI : MonoBehaviour
     private Coroutine _frameMoveCoroutine;
 
     public event Action<int> OnMoveMenu; // 上下入力イベント（+1:下, -1:上）
+
+    private void Awake() {
+        isOpen = false;
+        canOpen = true;
+    }
 
     // BGM AudioSource取得（キャッシュ利用）
     private AudioSource GetBgmSource()
@@ -40,6 +47,12 @@ public class Pause_UI : MonoBehaviour
     // ポーズUIの開閉トグル
     public void UIViewSwitch()
     {
+        // カットイン演出中などで開閉禁止
+        if (!canOpen)
+        {
+            return;
+        }
+
         isOpen = !isOpen;
         if (pausePanel != null)
         {
