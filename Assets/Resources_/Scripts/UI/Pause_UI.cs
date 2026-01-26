@@ -13,7 +13,12 @@ public class Pause_UI : MonoBehaviour
     [SerializeField] private Image[] menuButtonImages; // メニューボタン（0:ゲームに戻る, 1:ステージセレクト）
     [SerializeField] private AudioSource _audioSource; // 効果音再生用AudioSource
     [SerializeField] private AudioClip _seSelect; // メニュー選択音
+    [SerializeField] private AudioClip _seDecide; // メニュー決定音
+    [SerializeField] private GameObject[] menuPanels; // 0:ゲームメニュー, 1:ボタンコンフィグ, 2:その他設定
+    [SerializeField] private GameObject[] subPanels; // サブパネル
 
+    // 現在開いているかどうか（staticでどこからでも参照可能）
+    public static bool IsOpen => isOpen;
     private static bool isOpen = false;
     public bool canOpen = true; // ポーズUIを開けるかどうか
 
@@ -22,6 +27,7 @@ public class Pause_UI : MonoBehaviour
     private static AudioSource s_bgmSource = null; // キャッシュ用
 
     private int _selectedIndex = 0; // 0:ゲームに戻る, 1:ステージセレクト
+    private int _currentPanelIndex = 0;
     private Coroutine _frameMoveCoroutine;
 
     public event Action<int> OnMoveMenu; // 上下入力イベント（+1:下, -1:上）
@@ -29,6 +35,17 @@ public class Pause_UI : MonoBehaviour
     private void Awake() {
         isOpen = false;
         canOpen = true;
+        // 最初のパネルのみ表示
+        if (menuPanels != null && menuPanels.Length > 0)
+        {
+            for (int i = 0; i < menuPanels.Length; i++)
+            {
+                menuPanels[i].SetActive(i == 0);
+                if (subPanels != null && i < subPanels.Length)
+                    subPanels[i].SetActive(i == 0);
+            }
+            _currentPanelIndex = 0;
+        }
     }
 
     // BGM AudioSource取得（キャッシュ利用）
@@ -70,6 +87,17 @@ public class Pause_UI : MonoBehaviour
             }
             _selectedIndex = 0;
             MoveFrameToSelected(true);
+            // 最初のパネルのみ表示
+            if (menuPanels != null && menuPanels.Length > 0)
+            {
+                for (int i = 0; i < menuPanels.Length; i++)
+                {
+                    menuPanels[i].SetActive(i == 0);
+                    if (subPanels != null && i < subPanels.Length)
+                        subPanels[i].SetActive(i == 0);
+                }
+                _currentPanelIndex = 0;
+            }
         }
         else
         {
@@ -97,6 +125,24 @@ public class Pause_UI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// メニューパネル切り替え
+    /// </summary>
+    public void SwitchPanel(int dir)
+    {
+        if (menuPanels == null || menuPanels.Length == 0) return;
+        _currentPanelIndex = (_currentPanelIndex + dir + menuPanels.Length) % menuPanels.Length;
+        for (int i = 0; i < menuPanels.Length; i++)
+        {
+            menuPanels[i].SetActive(i == _currentPanelIndex);
+            if (subPanels != null && i < subPanels.Length)
+                subPanels[i].SetActive(i == _currentPanelIndex);
+        }
+    }
+
+    /// <summary>
+    /// 選択枠を選択中メニューに移動
+    /// </summary>
     private void MoveFrameToSelected(bool instant = false)
     {
         if (selectFrame == null || menuButtonImages == null || _selectedIndex >= menuButtonImages.Length) return;
@@ -116,6 +162,9 @@ public class Pause_UI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 選択枠移動アニメーション
+    /// </summary>
     private IEnumerator FrameMoveAnim(Vector2 targetPos)
     {
         Vector2 start = selectFrame.rectTransform.anchoredPosition;
@@ -135,6 +184,10 @@ public class Pause_UI : MonoBehaviour
     /// </summary>
     public void ExecuteSelectedMenu()
     {
+        // 決定音を再生
+        if (_audioSource != null && _seDecide != null) {
+            _audioSource.PlayOneShot(_seDecide);
+        }
         switch (_selectedIndex)
         {
             case 0: // ゲームに戻る
@@ -146,6 +199,4 @@ public class Pause_UI : MonoBehaviour
         }
     }
 
-    // 現在開いているかどうか（staticでどこからでも参照可能）
-    public static bool IsOpen => isOpen;
 }
