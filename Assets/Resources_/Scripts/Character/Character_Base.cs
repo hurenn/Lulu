@@ -1,8 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Character_Base : MonoBehaviour
-{
+public class Character_Base : MonoBehaviour {
     // 共通パラメータ
     [SerializeField] protected CommonParameter _param;
     // キャラクターパラメータ
@@ -98,8 +97,7 @@ public class Character_Base : MonoBehaviour
     protected bool _isDead = false;
     public bool isDead => _isDead;
 
-    private void Start()
-    {
+    private void Start() {
         _Setup();
     }
 
@@ -154,7 +152,7 @@ public class Character_Base : MonoBehaviour
     /// コントローラ入力
     /// </summary>
     public virtual void UpdateControl(CharacterInputData input) {
-        if( _isDead ) {
+        if (_isDead) {
             input.move = Vector2.zero;
             input.jumpHeld = false;
             input.jumpPressed = false;
@@ -261,8 +259,7 @@ public class Character_Base : MonoBehaviour
     /// <summary>
     /// 地形チェック
     /// </summary>
-    private void _CheckTerrain()
-    {
+    private void _CheckTerrain() {
         _isTouchingLeft = Physics2D.OverlapBox(transform.position + _wallCheckLeftLocalPos, _wallCheckScale, 0, _wallLayer);
         _isTouchingRight = Physics2D.OverlapBox(transform.position + _wallCheckRightLocalPos, _wallCheckScale, 0, _wallLayer);
 
@@ -276,32 +273,26 @@ public class Character_Base : MonoBehaviour
     /// <summary>
     /// 重力適用
     /// </summary>
-    private void _ApplyGravity()
-    {
-        if (!_EnableGravity || _intervalTimer > 0)
-        {
+    private void _ApplyGravity() {
+        if (!_EnableGravity || _intervalTimer > 0) {
             // 重力適用をスキップ
             return;
         }
 
         Vector2 velocity = _rb.linearVelocity;
 
-        if (!_isGrounded)
-        {
+        if (!_isGrounded) {
             float gravity_effect = _param.gravity;
-            if (velocity.y < 0)
-            {
+            if (velocity.y < 0) {
                 gravity_effect *= _param.fallMultiplier;
             }
 
             velocity.y += gravity_effect * Time.fixedDeltaTime;
 
-            if (velocity.y < _param.maxFallSpeed)
-            {
+            if (velocity.y < _param.maxFallSpeed) {
                 velocity.y = _param.maxFallSpeed;
             }
-            if (velocity.y > _param.maxJumpSpeed)
-            {
+            if (velocity.y > _param.maxJumpSpeed) {
                 velocity.y = _param.maxJumpSpeed;
             }
 
@@ -360,6 +351,23 @@ public class Character_Base : MonoBehaviour
         _anim.Play("Die");
 
         yield return null;
+    }
+
+    /// <summary>
+    /// アニメーション再生
+    /// </summary>
+    public void PlayAnim(string anim_name) {
+        if (string.IsNullOrEmpty(anim_name)) {
+            return;
+        }
+        _anim?.Play(anim_name);
+    }
+
+    /// <summary>
+    /// 必殺動作終了トリガーセット
+    /// </summary>
+    protected void _SetEndSpecialTrigger() {
+        _anim?.SetTrigger("SpecialEnd");
     }
 
     /// <summary>

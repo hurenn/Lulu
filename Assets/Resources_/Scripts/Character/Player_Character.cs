@@ -371,6 +371,7 @@ public class Player_Character : Character_Base {
     /// </summary>
     public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot, bool is_effect = true) {
         var ability = AbilityFactory.CreateAbility(ability_type, ability_slot,
+            (special_anim) => PlayAnim(special_anim),
             () => _AbilityResult(eAbilityResult.SpecialEnd, _inputData.move), is_effect);
 
         // スロットにセット
@@ -464,6 +465,7 @@ public class Player_Character : Character_Base {
             case eAbilityResult.SpecialEnd:
                 // 操作可能にする
                 _specialUsing = false;
+                _SetEndSpecialTrigger();
                 break;
             default:
                 break;

@@ -223,8 +223,10 @@ public class Ability_Fire : Ability_Base
     }
 
     protected override void _OnSpecialCutInFinished(PlayableDirector obj) {
+        // カットイン終了直後に_onSpecialAnimを実行
+        _onStartSpecialAnim?.Invoke("Special_Marlica");
+
         base._OnSpecialCutInFinished(obj);
-        
         StartCoroutine(_SpecialAttack());
     }
 
@@ -266,10 +268,10 @@ public class Ability_Fire : Ability_Base
         // 生成地点を画面外左上に固定（画面高さの20%上）
         float spawnHeight = topLeft.y + screenHeight * 0.2f;
         Vector3 spawnPosition = new Vector3(topLeft.x, spawnHeight, 0);
+        bool isEndSpecialAnimCalled = false;
 
         // 攻撃開始前の待機
         yield return new WaitForSeconds(0.5f);
-        
         while (current_time < attack_duration) {
             // 一定間隔で弾を発射
             if (current_time >= next_spawn_time) {
@@ -280,7 +282,6 @@ public class Ability_Fire : Ability_Base
             current_time += Time.deltaTime;
             yield return null;
         }
-
         _onEndSpecialAttack?.Invoke();
     }
 

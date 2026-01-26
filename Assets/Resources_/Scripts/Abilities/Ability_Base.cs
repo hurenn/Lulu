@@ -50,11 +50,17 @@ public class Ability_Base : MonoBehaviour {
 
     // 必殺技終了コールバック
     protected System.Action _onEndSpecialAttack = null;
-    public void SetOnSpecialAttackEndCallback(System.Action callback) {
+    public void SetOnEndSpecialAttack(System.Action callback) {
         _onEndSpecialAttack = callback;
         _onEndSpecialAttack += () => {
             _isSpecialUsing = false;
         };
+    }
+
+    // 必殺技アニメーションコールバック
+    protected System.Action<string> _onStartSpecialAnim = null;
+    public void SetOnStartSpecialAnim(System.Action<string> onAnim) {
+        _onStartSpecialAnim = onAnim;
     }
 
     // 必殺技チャージコールバック

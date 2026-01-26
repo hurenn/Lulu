@@ -26,7 +26,7 @@ public static class AbilityFactory {
     /// <param name="type">能力の種類</param>
     /// <returns>生成した能力</returns>
     public static Ability_Base CreateAbility(
-        eAbilityType type, eAbilitySlot slot, Action onEndSpecial, bool is_effect = true) {
+        eAbilityType type, eAbilitySlot slot, Action<string> onStartSpecialAnim, Action onEndSpecial, bool is_effect = true) {
         if (type == eAbilityType.None) {
             return null;
         }
@@ -52,8 +52,9 @@ public static class AbilityFactory {
             return null;
         }
 
-        // 必殺技終了コールバック設定
-        ability.SetOnSpecialAttackEndCallback(onEndSpecial);
+        // 必殺技コールバック設定
+        ability.SetOnStartSpecialAnim(onStartSpecialAnim);
+        ability.SetOnEndSpecialAttack(onEndSpecial);
 
         // UI更新
         if (_abilityUIManager == null) {
