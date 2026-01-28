@@ -145,7 +145,7 @@ public class PlayerController : MonoBehaviour {
                 if (dir != 0 && _pauseMenuInputCooldown <= 0f)
                 {
                     // メニュー内移動入力
-                    pauseUI.MoveMenu(dir);
+                    pauseUI.InputVerticalDir(dir);
                     _pauseMenuInputCooldown = PAUSE_MENU_INPUT_COOLDOWN;
                     input.move.y = 0; // 入力を1フレームでリセット
                 }
@@ -157,7 +157,7 @@ public class PlayerController : MonoBehaviour {
                 if (dir != 0 && _pauseMenuInputCooldown <= 0f)
                 {
                     // パネル切り替え入力
-                    pauseUI.SwitchPanel(dir);
+                    pauseUI.InputHorizonDir(dir);
                     _pauseMenuInputCooldown = PAUSE_MENU_INPUT_COOLDOWN;
                     input.move.x = 0; // 入力を1フレームでリセット
                 }
@@ -165,7 +165,7 @@ public class PlayerController : MonoBehaviour {
                 if (_isMessageNextPressed)
                 {
                     // メニュー決定入力
-                    pauseUI.ExecuteSelectedMenu();
+                    pauseUI.InputDecide();
                 }
             }
             input.Clear();
