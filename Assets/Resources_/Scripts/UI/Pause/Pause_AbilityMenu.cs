@@ -32,6 +32,12 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     //private eButtonIndex _LightTriggerButton = eButtonIndex.ZR;
     //private eButtonIndex _FireTriggerButton = eButtonIndex.SL;
 
+    // 能力説明文
+    [SerializeField] private GameObject _WarpExplain;
+    [SerializeField] private GameObject _IceExplain;
+    [SerializeField] private GameObject _LightExplain;
+    [SerializeField] private GameObject _FireExplain;
+
     private enum eButtonIndex {
         None = -1,
 
@@ -60,12 +66,20 @@ public class Pause_AbilityMenu : Pause_MenuBase {
 
     // ボタン→アイコンの割り当て管理
     private Dictionary<eButtonIndex, RectTransform> _buttonToIcon = new();
+    // アイコン→説明文の対応
+    private Dictionary<RectTransform, GameObject> _iconToExplain = new();
     // 掴んでいるアイコン
     private RectTransform _grabbedIcon = null;
     private eButtonIndex _grabbedFromButton = eButtonIndex.None;
 
     public override void Open(Action<int> onSwitchMenu, Action onCloseMenu, AudioSource audio_source, AudioClip se_select, AudioClip se_decide) {
         base.Open(onSwitchMenu, onCloseMenu, audio_source, se_select, se_decide);
+
+        // アイコン→説明文の対応を初期化
+        _iconToExplain[_WarpIcon] = _WarpExplain;
+        _iconToExplain[_IceIcon] = _IceExplain;
+        _iconToExplain[_LightIcon] = _LightExplain;
+        _iconToExplain[_FireIcon] = _FireExplain;
 
         // 初期割り当て
         _buttonToIcon[eButtonIndex.B] = _WarpIcon;
@@ -84,6 +98,9 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _currentButton = eButtonIndex.B;
         _grabbedIcon = null;
         _grabbedFromButton = eButtonIndex.None;
+
+        // 説明文を更新
+        _UpdateExplain();
     }
 
     public override void OnInputVertical(int dir) {
@@ -121,6 +138,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                 break;
         }
         _UpdateFrame();
+        // 説明文を更新
+        _UpdateExplain();
     }
 
     public override void ExecuteSelectedMenu() {
@@ -196,6 +215,9 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         // 掴んでいる状態を解除
         _grabbedIcon = null;
         _grabbedFromButton = eButtonIndex.None;
+
+        // 説明文を更新
+        _UpdateExplain();
     }
 
     /// <summary>
@@ -228,6 +250,25 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             eButtonIndex.Reset => _MenuButtonReset,
             _ => null
         };
+    }
+
+    /// <summary>
+    /// 選択中のボタンに対応する説明文を表示
+    /// </summary>
+    private void _UpdateExplain() {
+        // 全ての説明文を非表示
+        _WarpExplain?.SetActive(false);
+        _IceExplain?.SetActive(false);
+        _LightExplain?.SetActive(false);
+        _FireExplain?.SetActive(false);
+
+        // 現在選択中のボタンに対応するアイコンを取得
+        if (_buttonToIcon.TryGetValue(_currentButton, out var currentIcon)) {
+            // そのアイコンに対応する説明文を表示
+            if (_iconToExplain.TryGetValue(currentIcon, out var explain)) {
+                explain?.SetActive(true);
+            }
+        }
     }
 
     // 選択枠の位置更新
