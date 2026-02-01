@@ -21,6 +21,10 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     [SerializeField] private RectTransform _IceIcon;
     [SerializeField] private RectTransform _LightIcon;
     [SerializeField] private RectTransform _FireIcon;
+    [SerializeField] private RectTransform _WarpTriggerIcon;
+    [SerializeField] private RectTransform _IceTriggerIcon;
+    [SerializeField] private RectTransform _LightTriggerIcon;
+    [SerializeField] private RectTransform _FireTriggerIcon;
 
     // 対応ボタン
     private eButtonIndex _WarpButton = eButtonIndex.B;
@@ -37,6 +41,13 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     [SerializeField] private GameObject _IceExplain;
     [SerializeField] private GameObject _LightExplain;
     [SerializeField] private GameObject _FireExplain;
+
+    // システムテキスト
+    [SerializeField] private GameObject _SystemText1;
+    [SerializeField] private GameObject _SystemText2;
+    private bool _isViewSystemText1 = true;
+
+    private bool _isMoveToSR = false;
 
     private enum eButtonIndex {
         None = -1,
@@ -80,18 +91,30 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _iconToExplain[_IceIcon] = _IceExplain;
         _iconToExplain[_LightIcon] = _LightExplain;
         _iconToExplain[_FireIcon] = _FireExplain;
+        _iconToExplain[_WarpTriggerIcon] = _WarpExplain;
+        _iconToExplain[_IceTriggerIcon] = _IceExplain;
+        _iconToExplain[_LightTriggerIcon] = _LightExplain;
+        _iconToExplain[_FireTriggerIcon] = _FireExplain;
 
         // 初期割り当て
         _buttonToIcon[eButtonIndex.B] = _WarpIcon;
         _buttonToIcon[eButtonIndex.Y] = _IceIcon;
         _buttonToIcon[eButtonIndex.X] = _LightIcon;
         _buttonToIcon[eButtonIndex.A] = _FireIcon;
+        _buttonToIcon[eButtonIndex.SR] = _WarpTriggerIcon;
+        _buttonToIcon[eButtonIndex.ZL] = _IceTriggerIcon;
+        _buttonToIcon[eButtonIndex.ZR] = _LightTriggerIcon;
+        _buttonToIcon[eButtonIndex.SL] = _FireTriggerIcon;
 
         // アイコンを各ボタンに配置
         _PlaceIconOnButton(_WarpIcon, _MenuButtonB);
         _PlaceIconOnButton(_IceIcon, _MenuButtonY);
         _PlaceIconOnButton(_LightIcon, _MenuButtonX);
         _PlaceIconOnButton(_FireIcon, _MenuButtonA);
+        _PlaceIconOnButton(_WarpTriggerIcon, _MenuButtonSR);
+        _PlaceIconOnButton(_IceTriggerIcon, _MenuButtonZL);
+        _PlaceIconOnButton(_LightTriggerIcon, _MenuButtonZR);
+        _PlaceIconOnButton(_FireTriggerIcon, _MenuButtonSL);
 
         // 最初の選択肢に枠を移動
         MoveFrameToSelected(_MenuButtonB, true);
@@ -101,6 +124,9 @@ public class Pause_AbilityMenu : Pause_MenuBase {
 
         // 説明文を更新
         _UpdateExplain();
+
+        // システムテキスト表示更新
+        _UpdateSystemText();
     }
 
     public override void OnInputVertical(int dir) {
@@ -117,23 +143,104 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     private void SelectButton(eInputDirection dir) {
         switch (dir) {
             case eInputDirection.Up:
-                _currentButton = eButtonIndex.X;
+                switch (_currentButton) {
+                    case eButtonIndex.B:
+                    case eButtonIndex.Y:
+                    case eButtonIndex.A:
+                        _currentButton = eButtonIndex.X;
+                        break;
+                    case eButtonIndex.X:
+                        if (_isMoveToSR) {
+                            _currentButton = eButtonIndex.SR;
+                        } else {
+                            _currentButton = eButtonIndex.SL;
+                        }
+                        break;
+                    case eButtonIndex.SL:
+                        _currentButton = eButtonIndex.ZL;
+                        break;
+                    case eButtonIndex.SR:
+                        _currentButton = eButtonIndex.ZR;
+                        break;
+                    case eButtonIndex.System:
+                        _currentButton = eButtonIndex.B;
+                        break;
+                    case eButtonIndex.Reset:
+                        _currentButton = eButtonIndex.System;
+                        break;
+                }
                 break;
             case eInputDirection.Down:
-                _currentButton = eButtonIndex.B;
+                switch (_currentButton) {
+                    case eButtonIndex.X:
+                    case eButtonIndex.Y:
+                    case eButtonIndex.A:
+                        _currentButton = eButtonIndex.B;
+                        break;
+                    case eButtonIndex.B:
+                        _currentButton = eButtonIndex.System;
+                        break;
+                    case eButtonIndex.ZL:
+                        _currentButton = eButtonIndex.SL;
+                        break;
+                    case eButtonIndex.ZR:
+                        _currentButton = eButtonIndex.SR;
+                        break;
+                    case eButtonIndex.SR:
+                        _isMoveToSR = true;
+                        _currentButton = eButtonIndex.X;
+                        break;
+                    case eButtonIndex.SL:
+                        _isMoveToSR = false;
+                        _currentButton = eButtonIndex.X;
+                        break;
+                    case eButtonIndex.System:
+                        _currentButton = eButtonIndex.Reset;
+                        break;
+                }
                 break;
             case eInputDirection.Left:
-                if (_currentButton == eButtonIndex.Y) {
-                    OnSwitchMenu(-1);
-                } else {
-                    _currentButton = eButtonIndex.Y;
+                switch (_currentButton) {
+                    case eButtonIndex.ZR:
+                    case eButtonIndex.SL:
+                        _currentButton = eButtonIndex.ZL;
+                        break;
+                    case eButtonIndex.SR:
+                        _currentButton = eButtonIndex.SL;
+                        break;
+                    case eButtonIndex.X:
+                    case eButtonIndex.A:
+                    case eButtonIndex.B:
+                        _currentButton = eButtonIndex.Y;
+                        break;
+                    case eButtonIndex.Y:
+                    case eButtonIndex.ZL:
+                    case eButtonIndex.System:
+                    case eButtonIndex.Reset:
+                        OnSwitchMenu(-1);
+                        break;
                 }
                 break;
             case eInputDirection.Right:
-                if (_currentButton == eButtonIndex.A) {
-                    OnSwitchMenu(1);
-                } else {
-                    _currentButton = eButtonIndex.A;
+                switch (_currentButton) {
+                    case eButtonIndex.SL:
+                        _currentButton = eButtonIndex.SR;
+                        break;
+                    case eButtonIndex.ZL:
+                    case eButtonIndex.SR:
+                        _currentButton = eButtonIndex.ZR;
+                        break;
+                    case eButtonIndex.Y:
+                    case eButtonIndex.B:
+                    case eButtonIndex.X:
+                        _currentButton = eButtonIndex.A;
+                        break;
+                    case eButtonIndex.A:
+                    case eButtonIndex.ZR:
+                    case eButtonIndex.System:
+                    case eButtonIndex.Reset:
+                        OnSwitchMenu(1);
+                        break;
                 }
                 break;
         }
@@ -149,9 +256,24 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             _audioSource.PlayOneShot(_seDecide);
         }
 
-        // B,Y,X,Aボタン以外は何もしない
+        // システムテキスト切り替え
+        if (_currentButton == eButtonIndex.System) {
+            _isViewSystemText1 = !_isViewSystemText1;
+            _UpdateSystemText();
+            return;
+        }
+
+        if(_currentButton == eButtonIndex.Reset) {
+            // リセット：全ての割り当てを初期状態に戻す
+            Open(OnSwitchMenu, OnCloseMenu, _audioSource, _seSelect, _seDecide);
+            return;
+        }
+
+        // B,Y,X,A,SL,SR,ZL,ZRボタン以外は何もしない
         if (_currentButton != eButtonIndex.B && _currentButton != eButtonIndex.Y &&
-            _currentButton != eButtonIndex.X && _currentButton != eButtonIndex.A) {
+            _currentButton != eButtonIndex.X && _currentButton != eButtonIndex.A &&
+            _currentButton != eButtonIndex.SL && _currentButton != eButtonIndex.SR &&
+            _currentButton != eButtonIndex.ZL && _currentButton != eButtonIndex.ZR) {
             return;
         }
 
@@ -287,5 +409,12 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                 eButtonIndex.Reset => _MenuButtonReset,
                 _ => _MenuButtonB
             });
+    }
+
+    private void _UpdateSystemText() {
+        if (_SystemText1 != null && _SystemText2 != null) {
+            _SystemText1.SetActive(_isViewSystemText1);
+            _SystemText2.SetActive(!_isViewSystemText1);
+        }
     }
 }

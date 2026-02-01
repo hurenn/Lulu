@@ -427,9 +427,8 @@ GameObject:
   - component: {fileID: 4914320989647669788}
   - component: {fileID: 5677540904406274266}
   - component: {fileID: 8785279006669607806}
-  - component: {fileID: 6234952019683082713}
   m_Layer: 5
-  m_Name: Ability_Ice
+  m_Name: SubAbility_Ice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -492,25 +491,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.2
---- !u!114 &6234952019683082713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 440668819492529770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 858a4fc0c0af13446b396540f47ca7aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _iconImage: {fileID: 8785279006669607806}
-  _chargeImage: {fileID: 0}
-  _chargedEffect: {fileID: 0}
-  _iceIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _lightIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _fireIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _effectPrefab: {fileID: 6243868953874539640, guid: 51e448857ea34ce4cbca4ffc04681969, type: 3}
 --- !u!1 &493933676966598217
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,9 +577,8 @@ GameObject:
   - component: {fileID: 2179465195290993541}
   - component: {fileID: 4768725545317063054}
   - component: {fileID: 8722664444169292855}
-  - component: {fileID: 4967596315173551038}
   m_Layer: 5
-  m_Name: Ability_Fire
+  m_Name: SubAbility_Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -622,7 +601,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -120, y: 313}
-  m_SizeDelta: {x: 123, y: 59}
+  m_SizeDelta: {x: 128, y: 59}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4768725545317063054
 CanvasRenderer:
@@ -652,7 +631,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2608534806445164875, guid: e57168d01cc76d54592d82a38680c6c2, type: 3}
+  m_Sprite: {fileID: -5663974789534609588, guid: 9bc082e25960fb3408519058b7931f29, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -662,25 +641,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.2
---- !u!114 &4967596315173551038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 558174871712919402}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 858a4fc0c0af13446b396540f47ca7aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _iconImage: {fileID: 8722664444169292855}
-  _chargeImage: {fileID: 0}
-  _chargedEffect: {fileID: 0}
-  _iceIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _lightIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _fireIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _effectPrefab: {fileID: 6243868953874539640, guid: 51e448857ea34ce4cbca4ffc04681969, type: 3}
 --- !u!1 &676779992668756394
 GameObject:
   m_ObjectHideFlags: 0
@@ -1520,7 +1480,6 @@ GameObject:
   - component: {fileID: 2383602187658285753}
   - component: {fileID: 3846064391465031377}
   - component: {fileID: 5698864383013117751}
-  - component: {fileID: 3329068340704369357}
   m_Layer: 5
   m_Name: Ability_Light
   m_TagString: Untagged
@@ -1585,25 +1544,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3329068340704369357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1249365490016015433}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 858a4fc0c0af13446b396540f47ca7aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _iconImage: {fileID: 5698864383013117751}
-  _chargeImage: {fileID: 0}
-  _chargedEffect: {fileID: 0}
-  _iceIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _lightIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _fireIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _effectPrefab: {fileID: 6243868953874539640, guid: 51e448857ea34ce4cbca4ffc04681969, type: 3}
 --- !u!1 &1422264142155756492
 GameObject:
   m_ObjectHideFlags: 0
@@ -3651,7 +3591,6 @@ GameObject:
   - component: {fileID: 8283716578237968826}
   - component: {fileID: 3144420086866465461}
   - component: {fileID: 6994035485097790733}
-  - component: {fileID: 711862770520764952}
   m_Layer: 5
   m_Name: Ability_Fire
   m_TagString: Untagged
@@ -3675,8 +3614,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 126, y: 0}
-  m_SizeDelta: {x: 123, y: 59}
+  m_AnchoredPosition: {x: 150, y: 0}
+  m_SizeDelta: {x: 128, y: 58}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3144420086866465461
 CanvasRenderer:
@@ -3706,7 +3645,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2608534806445164875, guid: e57168d01cc76d54592d82a38680c6c2, type: 3}
+  m_Sprite: {fileID: -5663974789534609588, guid: 9bc082e25960fb3408519058b7931f29, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3716,25 +3655,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &711862770520764952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4069664259255873462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 858a4fc0c0af13446b396540f47ca7aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _iconImage: {fileID: 6994035485097790733}
-  _chargeImage: {fileID: 0}
-  _chargedEffect: {fileID: 0}
-  _iceIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _lightIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _fireIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _effectPrefab: {fileID: 6243868953874539640, guid: 51e448857ea34ce4cbca4ffc04681969, type: 3}
 --- !u!1 &4288473424020660732
 GameObject:
   m_ObjectHideFlags: 0
@@ -3789,7 +3709,6 @@ GameObject:
   - component: {fileID: 6927972340862721946}
   - component: {fileID: 5094734926101713170}
   - component: {fileID: 6894278556605024241}
-  - component: {fileID: 4236191244646839860}
   m_Layer: 5
   m_Name: Ability_Ice
   m_TagString: Untagged
@@ -3854,25 +3773,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4236191244646839860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4302460900097353591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 858a4fc0c0af13446b396540f47ca7aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _iconImage: {fileID: 6894278556605024241}
-  _chargeImage: {fileID: 0}
-  _chargedEffect: {fileID: 0}
-  _iceIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _lightIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _fireIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _effectPrefab: {fileID: 6243868953874539640, guid: 51e448857ea34ce4cbca4ffc04681969, type: 3}
 --- !u!1 &4328447763661500232
 GameObject:
   m_ObjectHideFlags: 0
@@ -3939,10 +3839,16 @@ MonoBehaviour:
   _IceIcon: {fileID: 6927972340862721946}
   _LightIcon: {fileID: 2383602187658285753}
   _FireIcon: {fileID: 8283716578237968826}
+  _WarpTriggerIcon: {fileID: 3556627955076514005}
+  _IceTriggerIcon: {fileID: 4914320989647669788}
+  _LightTriggerIcon: {fileID: 405800413176997495}
+  _FireTriggerIcon: {fileID: 2179465195290993541}
   _WarpExplain: {fileID: 3284473099575512699}
   _IceExplain: {fileID: 5918730402707650289}
   _LightExplain: {fileID: 5955043992245789834}
   _FireExplain: {fileID: 4995597345723468676}
+  _SystemText1: {fileID: 7522264751975301875}
+  _SystemText2: {fileID: 4932479610677171759}
 --- !u!1 &4368455554039714271
 GameObject:
   m_ObjectHideFlags: 0
@@ -4612,9 +4518,8 @@ GameObject:
   - component: {fileID: 405800413176997495}
   - component: {fileID: 8918341816035460619}
   - component: {fileID: 5939490588978968476}
-  - component: {fileID: 1713047631914304851}
   m_Layer: 5
-  m_Name: Ability_Light
+  m_Name: SubAbility_Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4677,25 +4582,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.2
---- !u!114 &1713047631914304851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4736643087801561696}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 858a4fc0c0af13446b396540f47ca7aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _iconImage: {fileID: 5939490588978968476}
-  _chargeImage: {fileID: 0}
-  _chargedEffect: {fileID: 0}
-  _iceIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _lightIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _fireIconSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  _effectPrefab: {fileID: 6243868953874539640, guid: 51e448857ea34ce4cbca4ffc04681969, type: 3}
 --- !u!1 &4880728721586955280
 GameObject:
   m_ObjectHideFlags: 0
@@ -5920,7 +5806,7 @@ GameObject:
   - component: {fileID: 8971047149549544625}
   - component: {fileID: 8677206755607629730}
   m_Layer: 5
-  m_Name: Ability_Warp
+  m_Name: SubAbility_Warp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

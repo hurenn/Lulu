@@ -65,9 +65,13 @@ public class Pause_MenuBase : MonoBehaviour {
 
         if (_frameMoveCoroutine != null) {
             StopCoroutine(_frameMoveCoroutine);
+            _frameMoveCoroutine = null;
         }
-        if (instant) {
+        
+        // GameObjectが非アクティブ、またはinstant=trueの場合は即座に移動
+        if (instant || !gameObject.activeInHierarchy) {
             _selectFrame.rectTransform.anchoredPosition = target.anchoredPosition;
+            _selectFrame.rectTransform.sizeDelta = target.sizeDelta;
         } else {
             _frameMoveCoroutine = StartCoroutine(FrameMoveAnim(target));
         }
