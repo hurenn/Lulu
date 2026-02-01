@@ -266,6 +266,9 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         if(_currentButton == eButtonIndex.Reset) {
             // リセット：全ての割り当てを初期状態に戻す
             Open(OnSwitchMenu, OnCloseMenu, _audioSource, _seSelect, _seDecide);
+            _currentButton = eButtonIndex.Reset;
+            _UpdateExplain();
+            MoveFrameToSelected(_MenuButtonReset, true);
             return;
         }
 
