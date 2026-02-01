@@ -3,15 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Pause_MenuBase : MonoBehaviour {
-    protected const float FRAME_MOVE_TIME = 0.02f; // 枠移動アニメ時間
+    protected const float FRAME_MOVE_TIME = 0.03f; // 枠移動アニメ時間
 
     protected System.Action<int> OnSwitchMenu;  // メニュー切り替えイベント（引数:切り替え方向）
     protected System.Action OnCloseMenu;        // メニューを閉じる
-    protected int _selectedIndex = 0;           // 選択中のメニュー内ボタン
     protected Coroutine _frameMoveCoroutine;    // 枠移動コルーチン
     private bool _isInitialized = false;
 
-    [SerializeField] protected Image[] _menuButtonImages; // メニュー内ボタン
     [SerializeField] protected Image _selectFrame; // 選択枠画像（1つだけ）
 
     protected AudioSource _audioSource; // 効果音再生用AudioSource
@@ -31,15 +29,13 @@ public class Pause_MenuBase : MonoBehaviour {
         _seDecide = se_decide;
     }
 
-    public void Open(System.Action<int> onSwitchMenu, System.Action onCloseMenu,
+    public virtual void Open(System.Action<int> onSwitchMenu, System.Action onCloseMenu,
         AudioSource audio_source, AudioClip se_select, AudioClip se_decide) {
         if (!_isInitialized) {
             Initialize(onSwitchMenu, onCloseMenu, audio_source, se_select, se_decide);
             _isInitialized = true;
         }
         gameObject.SetActive(true);
-        _selectedIndex = 0;
-        MoveFrameToSelected(true);
     }
 
     public void Close() {
@@ -64,33 +60,42 @@ public class Pause_MenuBase : MonoBehaviour {
     /// 選択枠を選択中メニューに移動
     /// </summary>
     /// <param name="instant">即座に移動する</param>
-    protected void MoveFrameToSelected(bool instant = false) {
-        if (_selectFrame == null || _menuButtonImages == null || _selectedIndex >= _menuButtonImages.Length) return;
-        var target = _menuButtonImages[_selectedIndex].GetComponent<RectTransform>();
-        if (target == null) return;
+    protected void MoveFrameToSelected(RectTransform target, bool instant = false) {
+        if (_selectFrame == null) return;
+
         if (_frameMoveCoroutine != null) {
             StopCoroutine(_frameMoveCoroutine);
         }
         if (instant) {
             _selectFrame.rectTransform.anchoredPosition = target.anchoredPosition;
         } else {
-            _frameMoveCoroutine = StartCoroutine(FrameMoveAnim(target.anchoredPosition));
+            _frameMoveCoroutine = StartCoroutine(FrameMoveAnim(target));
         }
     }
 
     /// <summary>
     /// 選択枠移動アニメーション
     /// </summary>
-    protected IEnumerator FrameMoveAnim(Vector2 targetPos) {
-        Vector2 start = _selectFrame.rectTransform.anchoredPosition;
+    protected IEnumerator FrameMoveAnim(RectTransform target) {
+        Vector2 startPos = _selectFrame.rectTransform.anchoredPosition;
+        Vector2 startSize = _selectFrame.rectTransform.sizeDelta;
+        // 移動距離がある場合のみ選択音を再生
+        if (Vector2.Distance(startPos, target.anchoredPosition) > 0.01f) {
+            if (_audioSource != null && _seSelect != null) {
+                _audioSource.PlayOneShot(_seSelect);
+            }
+        }
+
         float t = 0f;
         while (t < FRAME_MOVE_TIME) {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / FRAME_MOVE_TIME);
-            _selectFrame.rectTransform.anchoredPosition = Vector2.Lerp(start, targetPos, rate);
+            _selectFrame.rectTransform.anchoredPosition = Vector2.Lerp(startPos, target.anchoredPosition, rate);
+            _selectFrame.rectTransform.sizeDelta = Vector2.Lerp(startSize, target.sizeDelta, rate);
             yield return null;
         }
-        _selectFrame.rectTransform.anchoredPosition = targetPos;
+        _selectFrame.rectTransform.anchoredPosition = target.anchoredPosition;
+        _selectFrame.rectTransform.sizeDelta = target.sizeDelta;
     }
 
     /// <summary>

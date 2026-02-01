@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour {
 
     // メッセージ送り入力
     private bool _isMessageNextPressed = false;
+    private bool _wasMessageNextPressed = false; // 前フレームのボタン状態
 
     // キャラクター操作入力受付フラグ
     public bool isEnabledCharacterInput { get; set; } = true;
@@ -61,7 +62,9 @@ public class PlayerController : MonoBehaviour {
 
     private Pause_UI _pauseUIInstance;
     private float _pauseMenuInputCooldown = 0f;
-    private const float PAUSE_MENU_INPUT_COOLDOWN = 0.2f;
+    private float _pauseDecideInputCooldown = 0f; // 決定入力のクールタイム
+    private const float PAUSE_MENU_INPUT_COOLDOWN = 0.5f;
+    private const float PAUSE_DECIDE_INPUT_COOLDOWN = 0.3f; // 決定入力のクールタイム
 
     // Pause_UIインスタンスをキャッシュして取得
     private Pause_UI GetPauseUI()
@@ -138,10 +141,18 @@ public class PlayerController : MonoBehaviour {
             if (pauseUI != null)
             {
                 if (_pauseMenuInputCooldown > 0f) _pauseMenuInputCooldown -= Time.unscaledDeltaTime;
+                if (_pauseDecideInputCooldown > 0f) _pauseDecideInputCooldown -= Time.unscaledDeltaTime;
+                
                 float y = _moveInputValue.y;
+                float x = _moveInputValue.x;
+                // 入力無しの場合はクールタイムリセット
+                if (Mathf.Abs(y) < 0.5f && Mathf.Abs(x) < 0.5f) {
+                    _pauseMenuInputCooldown = 0f;
+                }
+
                 int dir = 0;
-                if (y > 0.5f) dir = -1; // 上
-                else if (y < -0.5f) dir = 1; // 下
+                if (y > 0.5f) dir = 1; // 上
+                else if (y < -0.5f) dir = -1; // 下
                 if (dir != 0 && _pauseMenuInputCooldown <= 0f)
                 {
                     // メニュー内移動入力
@@ -150,7 +161,6 @@ public class PlayerController : MonoBehaviour {
                     input.move.y = 0; // 入力を1フレームでリセット
                 }
 
-                float x = _moveInputValue.x;
                 dir = 0;
                 if (x > 0.5f) dir = 1; // 右
                 else if (x < -0.5f) dir = -1; // 左
@@ -162,12 +172,15 @@ public class PlayerController : MonoBehaviour {
                     input.move.x = 0; // 入力を1フレームでリセット
                 }
 
-                if (_isMessageNextPressed)
+                if (_isMessageNextPressed && _pauseDecideInputCooldown <= 0f)
                 {
                     // メニュー決定入力
                     pauseUI.InputDecide();
+                    _pauseDecideInputCooldown = PAUSE_DECIDE_INPUT_COOLDOWN;
                 }
             }
+            // ポーズ画面中は_isMessageNextPressedを必ずfalseにリセット
+            _isMessageNextPressed = false;
             input.Clear();
             character.UpdateControl(input);
             return;
@@ -234,7 +247,10 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void OnJump(InputAction.CallbackContext context) {
-        _isMessageNextPressed = true;
+        if (!_wasMessageNextPressed) {
+            _isMessageNextPressed = true;
+            _wasMessageNextPressed = true; // ここでtrueに設定
+        }
         _isJumpPressed = true;
         _isJumpHeld = true;
     }
@@ -244,10 +260,14 @@ public class PlayerController : MonoBehaviour {
         _isJumpPressed = false;
         _isJumpHeld = false;
         _isJumpReleased = true;
+        _wasMessageNextPressed = false; // Release時にfalseに戻す
     }
 
     private void OnAbilityY(InputAction.CallbackContext context) {
-        _isMessageNextPressed = true;
+        if (!_wasMessageNextPressed) {
+            _isMessageNextPressed = true;
+            _wasMessageNextPressed = true;
+        }
         _isAbilityYPressed = true;
         _isAbilityYHeld = true;
     }
@@ -257,10 +277,14 @@ public class PlayerController : MonoBehaviour {
         _isAbilityYPressed = false;
         _isAbilityYHeld = false;
         _isAbilityYReleased = true;
+        _wasMessageNextPressed = false;
     }
 
     private void OnAbilityX(InputAction.CallbackContext context) {
-        _isMessageNextPressed = true;
+        if (!_wasMessageNextPressed) {
+            _isMessageNextPressed = true;
+            _wasMessageNextPressed = true;
+        }
         _isAbilityXPressed = true;
         _isAbilityXHeld = true;
     }
@@ -269,10 +293,14 @@ public class PlayerController : MonoBehaviour {
         _isAbilityXPressed = false;
         _isAbilityXHeld = false;
         _isAbilityXReleased = true;
+        _wasMessageNextPressed = false;
     }
 
     private void OnAbilityA(InputAction.CallbackContext context) {
-        _isMessageNextPressed = true;
+        if (!_wasMessageNextPressed) {
+            _isMessageNextPressed = true;
+            _wasMessageNextPressed = true;
+        }
         _isAbilityAPressed = true;
         _isAbilityAHeld = true;
     }
@@ -281,6 +309,7 @@ public class PlayerController : MonoBehaviour {
         _isAbilityAPressed = false;
         _isAbilityAHeld = false;
         _isAbilityAReleased = true;
+        _wasMessageNextPressed = false;
     }
 
     bool _insertMoveMode = false;
