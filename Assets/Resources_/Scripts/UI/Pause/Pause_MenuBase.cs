@@ -7,7 +7,6 @@ public class Pause_MenuBase : MonoBehaviour {
     protected const float BUTTON_SCALE_TIME = 0.15f; // ボタン拡縮アニメ時間
     protected const float BUTTON_SCALE_MAX = 1.15f; // ボタンの最大拡大率
     protected const float FRAME_SCALE_MAX = 1.15f; // 選択枠の最大拡大率
-
     protected System.Action<int> OnSwitchMenu;  // メニュー切り替えイベント（引数:切り替え方向）
     protected System.Action OnCloseMenu;        // メニューを閉じる
     protected Coroutine _frameMoveCoroutine;    // 枠移動コルーチン
@@ -16,6 +15,7 @@ public class Pause_MenuBase : MonoBehaviour {
     private bool _isInitialized = false;
 
     [SerializeField] protected Image _selectFrame; // 選択枠画像（1つだけ）
+    public CanvasGroup canvasGroup; // メニュー全体のCanvasGroup（フェード用）
 
     protected AudioSource _audioSource; // 効果音再生用AudioSource
     protected AudioClip _seSelect; // メニュー選択音
