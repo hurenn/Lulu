@@ -16,10 +16,10 @@ public class AbilityUI_Base : MonoBehaviour
     [SerializeField]
     protected GameObject _chargedEffect;
 
-    [SerializeField] protected Sprite _iceIconSprite;
-    [SerializeField] protected Sprite _lightIconSprite;
-    [SerializeField] protected Sprite _fireIconSprite;
-    [SerializeField] protected Sprite _warpIconSprite;
+    //[SerializeField] protected Sprite _iceIconSprite;
+    //[SerializeField] protected Sprite _lightIconSprite;
+    //[SerializeField] protected Sprite _fireIconSprite;
+    //[SerializeField] protected Sprite _warpIconSprite;
 
     // UIキャンバス
     [SerializeField] private GameObject _effectPrefab;
@@ -46,24 +46,24 @@ public class AbilityUI_Base : MonoBehaviour
     }
 
     private void _UpdateUI(eAbilityType ability_type) {
-        // UI表示更新
-        switch (ability_type) {
-            case eAbilityType.Ice:
-                _iconImage.sprite = _iceIconSprite;
-                break;
-            case eAbilityType.Light:
-                _iconImage.sprite = _lightIconSprite;
-                break;
-            case eAbilityType.Fire:
-                _iconImage.sprite = _fireIconSprite;
-                break;
-            case eAbilityType.Warp:
-                _iconImage.sprite = _warpIconSprite;
-                break;
-            default:
-                Debug.LogError("不明な能力タイプ：" + ability_type);
-                break;
-        }
+        //// UI表示更新
+        //switch (ability_type) {
+        //    case eAbilityType.Ice:
+        //        _iconImage.sprite = _iceIconSprite;
+        //        break;
+        //    case eAbilityType.Light:
+        //        _iconImage.sprite = _lightIconSprite;
+        //        break;
+        //    case eAbilityType.Fire:
+        //        _iconImage.sprite = _fireIconSprite;
+        //        break;
+        //    case eAbilityType.Warp:
+        //        _iconImage.sprite = _warpIconSprite;
+        //        break;
+        //    default:
+        //        Debug.LogError("不明な能力タイプ：" + ability_type);
+        //        break;
+        //}
     }
 
     /// <summary>

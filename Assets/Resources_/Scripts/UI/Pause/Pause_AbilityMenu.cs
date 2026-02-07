@@ -381,6 +381,22 @@ public class Pause_AbilityMenu : Pause_MenuBase {
 
         // スロットの能力を入れ替え
         player.SwapAbilitySlot(fromSlot, toSlot);
+
+        // UIも入れ替え
+        _SwapAbilityUI(fromSlot, toSlot);
+    }
+
+    /// <summary>
+    /// AbilityUIを入れ替える
+    /// </summary>
+    private void _SwapAbilityUI(eAbilitySlot slotA, eAbilitySlot slotB) {
+        var abilityUIManager = FindAnyObjectByType<AbilityUIManager>();
+        if (abilityUIManager == null) {
+            Debug.LogWarning("AbilityUIManagerが見つかりません");
+            return;
+        }
+
+        abilityUIManager.SwapAbilityUI(slotA, slotB);
     }
 
     /// <summary>
