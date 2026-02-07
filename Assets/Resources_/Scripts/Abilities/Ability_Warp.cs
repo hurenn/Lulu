@@ -15,11 +15,19 @@ public class Ability_Warp : Ability_Base
 
     public override eAbilityResult ExecuteSimple()
     {
+        // ジャンプボタンフラグを立てる（_AbilityResultで処理される）
         return eAbilityResult.Jump;
+    }
+
+    public override eAbilityResult ExecuteLong()
+    {
+        // ジャンプボタン長押しフラグを立てる（_AbilityResultで処理される）
+        return eAbilityResult.JumpHeld;
     }
 
     public override eAbilityResult ExecuteRelease()
     {
+        // ジャンプボタンリリースフラグを立てる（_AbilityResultで処理される）
         return eAbilityResult.JumpRelease;
     }
 }

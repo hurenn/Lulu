@@ -485,10 +485,13 @@ public class Player_Character : Character_Base {
                 _inputData.isJumpPressed = true;
                 _inputData.isJumpHeld = true;
                 break;
+            case eAbilityResult.JumpHeld:
+                // ジャンプボタンフラグを立てる
+                _inputData.isJumpHeld = true;
+                break;
             case eAbilityResult.JumpRelease:
                 // ジャンプボタンフラグを下ろす
                 _inputData.isJumpReleased = true;
-                _inputData.isJumpHeld = false;
                 break;
             default:
                 break;

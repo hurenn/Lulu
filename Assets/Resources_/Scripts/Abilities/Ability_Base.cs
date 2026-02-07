@@ -15,6 +15,7 @@ public enum eAbilityResult {
     LightDome,
     LightSpecial,
     Jump,
+    JumpHeld,
     JumpRelease,
     SpecialEnd,
 }
