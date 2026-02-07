@@ -3,45 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[iƒ‹ƒ‹j
+/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ï¼ˆãƒ«ãƒ«ï¼‰
 /// </summary>
 public class Player_Character : Character_Base {
     private CharacterParameter_Player _player_charaParam => _charaParam as CharacterParameter_Player;
 
-    // ƒ[ƒvŠÇ—
+    // ãƒ¯ãƒ¼ãƒ—ç®¡ç†
     [SerializeField] private WarpControl _warpControl;
-    // ƒ[ƒvƒGƒtƒFƒNƒg
+    // ãƒ¯ãƒ¼ãƒ—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField] private GameObject _warpEffectPrefab;
-    // ƒ[ƒv‚ÌƒN[ƒ‹ƒ^ƒCƒ€Œv‘ª
+    // ãƒ¯ãƒ¼ãƒ—ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ è¨ˆæ¸¬
     private float _currentWarpCoolTime = 0;
-    // ƒ[ƒvƒ_ƒbƒVƒ…ŠÔŒv‘ª
+    // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥æ™‚é–“è¨ˆæ¸¬
     private float _currentWarpDashTime = 0;
-    // ƒ[ƒvƒ_ƒbƒVƒ…‚Ì•ûŒü
+    // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®æ–¹å‘
     private Vector2 _warpDashDirection = Vector2.zero;
-    // ƒXƒ‰ƒCƒfƒBƒ“ƒOŠÔŒv‘ª
+    // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°æ™‚é–“è¨ˆæ¸¬
     private float _currentSlideTime = 0;
-    // ’…’nƒ_ƒbƒVƒ…ŠÔŒv‘ª
+    // ç€åœ°ãƒ€ãƒƒã‚·ãƒ¥æ™‚é–“è¨ˆæ¸¬
     private float _currentLandingDashTime = 0;
-    // ƒXƒ‰ƒCƒhƒWƒƒƒ“ƒvŠÔŒv‘ª
+    // ã‚¹ãƒ©ã‚¤ãƒ‰ã‚¸ãƒ£ãƒ³ãƒ—æ™‚é–“è¨ˆæ¸¬
     private float _currentSlideJumpTime = 0;
-    // •Ç‚É‰ˆ‚Á‚ÄŠŠ‚é‘¬“x
+    // å£ã«æ²¿ã£ã¦æ»‘ã‚‹é€Ÿåº¦
     private float _currentWallSlideTime = 0;
 
     private bool _isAvoid = false;
     private float _isAvoidTimer = 0.01f;
     private float _currentAvoidTime = 0f;
 
-    // ”\—ÍƒXƒƒbƒg
+    // èƒ½åŠ›ã‚¹ãƒ­ãƒƒãƒˆ
     [SerializeField] protected Ability_Base _abilityY;
     [SerializeField] protected Ability_Base _abilityX;
     [SerializeField] protected Ability_Base _abilityA;
-    // ”\—ÍƒXƒƒbƒgˆê•Û‘¶
+    // èƒ½åŠ›ã‚¹ãƒ­ãƒƒãƒˆä¸€æ™‚ä¿å­˜
     private Dictionary<eAbilityType, eAbilitySlot> _tmpAbilitySlot = new Dictionary<eAbilityType, eAbilitySlot>();
 
-    // ƒŒƒxƒ‹ƒAƒbƒvƒIƒuƒWƒFƒNƒg
+    // ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     [SerializeField] private Animator _levelUpAnimator;
 
-    // ƒI[ƒg•XUŒ‚ƒ`ƒFƒbƒJ[
+    // ã‚ªãƒ¼ãƒˆæ°·æ”»æ’ƒãƒã‚§ãƒƒã‚«ãƒ¼
     [SerializeField] private AutoIceAttackChecker _autoAttackChecker;
 
     private bool _isIceInvincible = false;
@@ -58,7 +58,7 @@ public class Player_Character : Character_Base {
         }
     }
 
-    // ƒvƒŒƒCƒ„[—pƒpƒ‰ƒ[ƒ^[
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç”¨ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼
     private PlayerParameter _playerParam;
 
     protected override void _Setup() {
@@ -72,7 +72,7 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// æ“¾Ï‚İ”\—Í‚ÌƒZƒbƒgƒAƒbƒv
+    /// å–å¾—æ¸ˆã¿èƒ½åŠ›ã®ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—
     /// </summary>
     private void _SetupHadAbility() {
         var had_ability = _playerParam.Abilities;
@@ -88,16 +88,16 @@ public class Player_Character : Character_Base {
         _UpdateWallSlideMove();
         _UpdateSlideJump();
 
-        // ©“®”­Œõİ’è
+        // è‡ªå‹•ç™ºå…‰è¨­å®š
         _SetAutoLight(_isWarpDashing);
 
-        // •X–³“GŠÔŒv‘ª
+        // æ°·ç„¡æ•µæ™‚é–“è¨ˆæ¸¬
         if (_isIceInvincible) {
-            // –³“G•ÛáŠÔŒv‘ª
+            // ç„¡æ•µä¿éšœæ™‚é–“è¨ˆæ¸¬
             _currentIceInvincibleTime -= Time.fixedDeltaTime;
             if (_currentIceInvincibleTime <= 0) {
                 if (!_isWarpDashing) {
-                    // –³“GI—¹
+                    // ç„¡æ•µçµ‚äº†
                     _isIceInvincible = false;
                 }
             }
@@ -118,25 +118,25 @@ public class Player_Character : Character_Base {
             }
         }
 
-        // ’…’nMP‰ñ•œ
+        // ç€åœ°æ™‚MPå›å¾©
         if (_isGrounded && !_player_charaParam.isMaxMP) {
             _player_charaParam.RecoverMP();
         }
 
-        // ’n–Ê’£‚è•t‚«ó‘ÔŒv‘ª
+        // åœ°é¢å¼µã‚Šä»˜ãçŠ¶æ…‹è¨ˆæ¸¬
         if (_currentLandingDashTime < _param.maxLandingDashTime && _isGroundSticking) {
             _currentLandingDashTime += Time.fixedDeltaTime;
             if (_currentLandingDashTime >= _param.maxLandingDashTime) {
-                _isGroundSticking = false; // ’£‚è•t‚«ó‘Ô‚ğ‰ğœ
+                _isGroundSticking = false; // å¼µã‚Šä»˜ãçŠ¶æ…‹ã‚’è§£é™¤
             }
         }
     }
 
     /// <summary>
-    /// MP‰ñ•œ
+    /// MPå›å¾©
     /// </summary>
-    /// <param name="amount">‰ñ•œ’l</param>
-    /// <param name="force">‹­§‰ñ•œ</param>
+    /// <param name="amount">å›å¾©å€¤</param>
+    /// <param name="force">å¼·åˆ¶å›å¾©</param>
     public void RecoverMP(float amount, bool force) {
         if (_player_charaParam == null) {
             return;
@@ -145,14 +145,14 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒ[ƒvƒ_ƒbƒVƒ…‚ÌXVˆ—
+    /// ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®æ›´æ–°å‡¦ç†
     /// </summary>
     private void _UpdateWarpDash() {
         if (!_isWarpDashing) {
-            return; // ƒ[ƒvƒ_ƒbƒVƒ…’†‚Å‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
+            return; // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ä¸­ã§ãªã„å ´åˆã¯ä½•ã‚‚ã—ãªã„
         }
 
-        // ƒI[ƒgUŒ‚‘ÎÛ‚ª‚¢‚éê‡‚ÍƒI[ƒgUŒ‚‚ğÀs
+        // ã‚ªãƒ¼ãƒˆæ”»æ’ƒå¯¾è±¡ãŒã„ã‚‹å ´åˆã¯ã‚ªãƒ¼ãƒˆæ”»æ’ƒã‚’å®Ÿè¡Œ
         var target_enemy = _autoAttackChecker.PopTargetEnemy();
         if (target_enemy != null && _HasAbility<Ability_Ice>()) {
             _isWarpDashing = false;
@@ -160,48 +160,48 @@ public class Player_Character : Character_Base {
             return;
         }
 
-        // ƒ[ƒvƒ_ƒbƒVƒ…‚ÌÅ‘åŠÔ‚ğ’´‚¦‚½ê‡‚ÍI—¹
+        // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®æœ€å¤§æ™‚é–“ã‚’è¶…ãˆãŸå ´åˆã¯çµ‚äº†
         if (_currentWarpDashTime > _param.maxWarpDashTime) {
-            _isWarpDashing = false; // ƒ[ƒvƒ_ƒbƒVƒ…I—¹
-            return; // ƒ[ƒvƒ_ƒbƒVƒ…‚ÌƒN[ƒ‹ƒ^ƒCƒ€’†‚Í‰½‚à‚µ‚È‚¢
+            _isWarpDashing = false; // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥çµ‚äº†
+            return; // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ä¸­ã¯ä½•ã‚‚ã—ãªã„
         }
         _currentWarpDashTime += Time.deltaTime;
 
-        // ƒ[ƒvƒ_ƒbƒVƒ…ˆÚ“®
+        // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ç§»å‹•
         var dash_velocity = _warpDashDirection;
         _rb.linearVelocity = dash_velocity;
-        // ƒ[ƒvƒ_ƒbƒVƒ…—Í‚ğŒ¸Š‚³‚¹‚é
+        // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥åŠ›ã‚’æ¸›è¡°ã•ã›ã‚‹
         _warpDashDirection *= _param.warpDashDamping;
         if (_warpDashDirection.magnitude < 0.2f) {
-            _warpDashDirection = Vector2.zero; // ƒ_ƒbƒVƒ…—Í‚ª¬‚³‚­‚È‚Á‚½‚çƒŠƒZƒbƒg
+            _warpDashDirection = Vector2.zero; // ãƒ€ãƒƒã‚·ãƒ¥åŠ›ãŒå°ã•ããªã£ãŸã‚‰ãƒªã‚»ãƒƒãƒˆ
         }
 
-        // ’n–Ê‚ÉÚG‚µ‚Ä‚¢‚é‚©ƒ`ƒFƒbƒN
+        // åœ°é¢ã«æ¥è§¦ã—ã¦ã„ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
         if (_isGrounded) {
             if (_warpDashDirection.x != 0) {
-                // ’n–Ê‚É‘Î‚µ‚ÄÎ‚ß‚ÉˆÚ“®‚µ‚Ä‚¢‚éê‡‚ÍƒXƒ‰ƒCƒfƒBƒ“ƒO‚ğÀs
-                _ExecuteSlide(); // ƒXƒ‰ƒCƒfƒBƒ“ƒOÀs
+                // åœ°é¢ã«å¯¾ã—ã¦æ–œã‚ã«ç§»å‹•ã—ã¦ã„ã‚‹å ´åˆã¯ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚’å®Ÿè¡Œ
+                _ExecuteSlide(); // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°å®Ÿè¡Œ
             } else {
-                // ’n–Ê‚É‘Î‚µ‚Ä‚’¼‚ÉˆÚ“®‚µ‚Ä‚¢‚éê‡‚Í’£‚è•t‚«ó‘Ô‚ÉˆÚs
+                // åœ°é¢ã«å¯¾ã—ã¦å‚ç›´ã«ç§»å‹•ã—ã¦ã„ã‚‹å ´åˆã¯å¼µã‚Šä»˜ãçŠ¶æ…‹ã«ç§»è¡Œ
                 _isGroundSticking = true;
                 _currentLandingDashTime = 0;
             }
-            _player_charaParam.OnRecoverOverheat(); // ƒI[ƒo[ƒq[ƒg‰ñ•œ
-            _isWarpDashing = false; // ƒ[ƒvƒ_ƒbƒVƒ…I—¹
+            _player_charaParam.OnRecoverOverheat(); // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆå›å¾©
+            _isWarpDashing = false; // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥çµ‚äº†
             return;
         }
-        // •Ç‚ÉÚG‚µ‚Ä‚¢‚é‚©ƒ`ƒFƒbƒN
+        // å£ã«æ¥è§¦ã—ã¦ã„ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
         if ((_isTouchingLeft && _warpDashDirection.x < 0) || (_isTouchingRight && _warpDashDirection.x > 0)) {
-            _ExecuteWallSlide(); // •ÇŠŠ‚èÀs
+            _ExecuteWallSlide(); // å£æ»‘ã‚Šå®Ÿè¡Œ
             return;
         }
     }
 
     /// <summary>
-    /// •ÇŠŠ‚è‚ÌXVˆ—
+    /// å£æ»‘ã‚Šã®æ›´æ–°å‡¦ç†
     /// </summary>
     private void _UpdateWallSlideMove() {
-        // •ÇŠŠ‚è’†‚Å‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
+        // å£æ»‘ã‚Šä¸­ã§ãªã„å ´åˆã¯ä½•ã‚‚ã—ãªã„
         if (!_isWallDash) {
             return;
         }
@@ -212,19 +212,19 @@ public class Player_Character : Character_Base {
         }
         _currentWallSlideTime += Time.deltaTime;
 
-        // •Ç‚É‰ˆ‚Á‚ÄŠŠ‚éˆ—
+        // å£ã«æ²¿ã£ã¦æ»‘ã‚‹å‡¦ç†
         Vector2 velocity = Vector2.zero;
         if (_warpDashDirection.y < 0) {
-            // •Ç‚É‰ˆ‚Á‚Ä‰º•ûŒü‚ÉŠŠ‚é
+            // å£ã«æ²¿ã£ã¦ä¸‹æ–¹å‘ã«æ»‘ã‚‹
             velocity.y = -_param.wallSlideSpeed;
         } else {
-            // •Ç‚É‰ˆ‚Á‚Äã•ûŒü‚ÉŠŠ‚é
+            // å£ã«æ²¿ã£ã¦ä¸Šæ–¹å‘ã«æ»‘ã‚‹
             velocity.y = _param.wallSlideSpeed;
         }
         _SetWallDash(_isWallDash, velocity.y >= 0);
         _rb.linearVelocity = velocity;
 
-        // •Ç‚Æ‚ÌÚG‚ª–³‚­‚È‚Á‚½ê‡‚Í•ÇŠŠ‚è‚ğI—¹‚µ‚ÄƒWƒƒƒ“ƒv‚·‚é
+        // å£ã¨ã®æ¥è§¦ãŒç„¡ããªã£ãŸå ´åˆã¯å£æ»‘ã‚Šã‚’çµ‚äº†ã—ã¦ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹
         if (!_isTouchingLeft && !_isTouchingRight) {
             _SetWallDash(false);
             _isJumping = true;
@@ -233,17 +233,17 @@ public class Player_Character : Character_Base {
             }
 
             velocity.y = _param.jumpForce;
-            _rb.linearVelocity = velocity; // ƒWƒƒƒ“ƒv—Í‚ğ“K—p
+            _rb.linearVelocity = velocity; // ã‚¸ãƒ£ãƒ³ãƒ—åŠ›ã‚’é©ç”¨
         }
 
-        // ’…’n‚µ‚½ê‡‚Í•ÇŠŠ‚è‚ğI—¹
+        // ç€åœ°ã—ãŸå ´åˆã¯å£æ»‘ã‚Šã‚’çµ‚äº†
         if (_isGrounded) {
             _SetWallDash(false);
         }
     }
 
     /// <summary>
-    /// ƒXƒ‰ƒCƒfƒBƒ“ƒOÀs
+    /// ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°å®Ÿè¡Œ
     /// </summary>
     private void _ExecuteSlide() {
         _isDashing = true;
@@ -251,7 +251,7 @@ public class Player_Character : Character_Base {
         _currentSlideTime = 0;
     }
     /// <summary>
-    /// ƒ_ƒbƒVƒ…Às
+    /// ãƒ€ãƒƒã‚·ãƒ¥å®Ÿè¡Œ
     /// </summary>
     private void _ExecuteDash() {
         _isDashing = true;
@@ -259,10 +259,10 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// •Çƒ_ƒbƒVƒ…Às
+    /// å£ãƒ€ãƒƒã‚·ãƒ¥å®Ÿè¡Œ
     /// </summary>
     private void _ExecuteWallSlide() {
-        // •Ç•ûŒü‚Ö‚Ì“ü—Í‚ª–³‚¯‚ê‚ÎƒLƒƒƒ“ƒZƒ‹
+        // å£æ–¹å‘ã¸ã®å…¥åŠ›ãŒç„¡ã‘ã‚Œã°ã‚­ãƒ£ãƒ³ã‚»ãƒ«
         if (!((_isTouchingLeft && _inputData.move.x < 0) || (_isTouchingRight && _inputData.move.x > 0))) {
             return;
         }
@@ -274,7 +274,7 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒ[ƒvƒ_ƒbƒVƒ…Às
+    /// ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥å®Ÿè¡Œ
     /// </summary>
     private void _ExecuteWarpDash() {
         _isDashing = true;
@@ -283,20 +283,20 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒXƒ‰ƒCƒfƒBƒ“ƒOˆ—
+    /// ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°å‡¦ç†
     /// </summary>
     private void _UpdateSliding() {
         if (_isSliding) {
-            // ƒI[ƒgUŒ‚‘ÎÛ‚ª‚¢‚éê‡‚ÍƒI[ƒgUŒ‚‚ğÀs
+            // ã‚ªãƒ¼ãƒˆæ”»æ’ƒå¯¾è±¡ãŒã„ã‚‹å ´åˆã¯ã‚ªãƒ¼ãƒˆæ”»æ’ƒã‚’å®Ÿè¡Œ
             var target_enemy = _autoAttackChecker.PopTargetEnemy();
             if (target_enemy != null && _HasAbility<Ability_Ice>()) {
-                _SetSliding(false); // ƒXƒ‰ƒCƒfƒBƒ“ƒOI—¹
+                _SetSliding(false); // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°çµ‚äº†
                 _currentSlideTime = 0;
                 _OnExecuteIceAutoAttack(target_enemy);
                 return;
             }
 
-            // ƒXƒ‰ƒCƒhƒ_ƒbƒVƒ…’†‚ÍƒLƒƒƒ‰ƒNƒ^[‚ÌˆÊ’u‚ğXV
+            // ã‚¹ãƒ©ã‚¤ãƒ‰ãƒ€ãƒƒã‚·ãƒ¥ä¸­ã¯ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ä½ç½®ã‚’æ›´æ–°
             Vector2 velocity = _rb.linearVelocity;
             var dash_dir = _warpDashDirection.normalized;
             velocity.x = dash_dir.x * _param.slideSpeed;
@@ -304,10 +304,10 @@ public class Player_Character : Character_Base {
 
             _currentSlideTime += Time.deltaTime;
             if (_currentSlideTime >= _param.maxSlideTime) {
-                _SetSliding(false); // ƒXƒ‰ƒCƒfƒBƒ“ƒOI—¹
+                _SetSliding(false); // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°çµ‚äº†
                 _currentSlideTime = 0;
             }
-            // •Ç‚ÉÚG‚µ‚Ä‚¢‚éê‡‚ÍƒXƒ‰ƒCƒfƒBƒ“ƒOI—¹
+            // å£ã«æ¥è§¦ã—ã¦ã„ã‚‹å ´åˆã¯ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°çµ‚äº†
             if ((_isTouchingLeft && velocity.x < 0) || (_isTouchingRight && velocity.x > 0)) {
                 _SetSliding(false);
                 _currentSlideTime = 0;
@@ -319,7 +319,7 @@ public class Player_Character : Character_Base {
             Vector2 velocity = _rb.linearVelocity;
             velocity.x *= _param.slideCancelDamping;
 
-            // ˆê’èˆÈ‰º‚É‚È‚Á‚½‚çŠ®‘S’â~
+            // ä¸€å®šä»¥ä¸‹ã«ãªã£ãŸã‚‰å®Œå…¨åœæ­¢
             if (Mathf.Abs(velocity.x) < 0.1f) {
                 velocity.x = 0;
                 _isSlidingCanceling = false;
@@ -329,19 +329,19 @@ public class Player_Character : Character_Base {
     }
 
     private void _UpdateSlideJump() {
-        // ƒXƒ‰ƒCƒhƒWƒƒƒ“ƒvŠÔŒv‘ª
+        // ã‚¹ãƒ©ã‚¤ãƒ‰ã‚¸ãƒ£ãƒ³ãƒ—æ™‚é–“è¨ˆæ¸¬
         if (!_isSlidingJump) {
             return;
         }
 
-        // ’…’n‚µ‚½ê‡‚ÍƒXƒ‰ƒCƒhƒWƒƒƒ“ƒvI—¹
+        // ç€åœ°ã—ãŸå ´åˆã¯ã‚¹ãƒ©ã‚¤ãƒ‰ã‚¸ãƒ£ãƒ³ãƒ—çµ‚äº†
         if (_isGrounded && _currentSlideJumpTime > 0.1f) {
             _isSlidingJump = false;
             return;
         }
         _currentSlideJumpTime += Time.fixedDeltaTime;
 
-        // •Ç‚É“–‚½‚Á‚½ê‡‚Í•Çƒ_ƒbƒVƒ…‚ÉˆÚs
+        // å£ã«å½“ãŸã£ãŸå ´åˆã¯å£ãƒ€ãƒƒã‚·ãƒ¥ã«ç§»è¡Œ
         if ((_isTouchingLeft && _warpDashDirection.x < 0) || (_isTouchingRight && _warpDashDirection.x > 0)) {
             _ExecuteWallSlide();
             return;
@@ -367,14 +367,14 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ”\—ÍƒXƒƒbƒg‚ÉƒZƒbƒg
+    /// èƒ½åŠ›ã‚¹ãƒ­ãƒƒãƒˆã«ã‚»ãƒƒãƒˆ
     /// </summary>
     public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot, bool is_effect = true) {
         var ability = AbilityFactory.CreateAbility(ability_type, ability_slot,
             (special_anim) => PlayAnim(special_anim),
             () => _AbilityResult(eAbilityResult.SpecialEnd, _inputData.move), is_effect);
 
-        // ƒXƒƒbƒg‚ÉƒZƒbƒg
+        // ã‚¹ãƒ­ãƒƒãƒˆã«ã‚»ãƒƒãƒˆ
         switch (ability_slot) {
             case eAbilitySlot.Y:
                 _abilityY = ability;
@@ -398,29 +398,29 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ”\—Í‚ÌXVˆ—
+    /// èƒ½åŠ›ã®æ›´æ–°å‡¦ç†
     /// </summary>
     private void _UpdateAbility(Ability_Base ability, Vector2 dir_input, bool button_pressed, bool button_held, bool button_released, CharacterInputData input) {
         if (ability == null) {
             return;
         }
 
-        // ’P‰Ÿ‚µg—p
+        // å˜æŠ¼ã—ä½¿ç”¨
         if (button_pressed) {
             _AbilityResult(ability.ExecuteSimple(), dir_input);
         }
-        // ’·‰Ÿ‚µg—p
+        // é•·æŠ¼ã—ä½¿ç”¨
         if (button_held) {
             _AbilityResult(ability.ExecuteLong(), dir_input);
         }
-        // ƒ{ƒ^ƒ“‚ğ—£‚µ‚½‚Æ‚«‚Ìˆ—
+        // ãƒœã‚¿ãƒ³ã‚’é›¢ã—ãŸã¨ãã®å‡¦ç†
         if (button_released) {
             ability.ExecuteRelease();
         }
     }
 
     /// <summary>
-    /// ”\—Í‚ÌÀsŒ‹‰Êˆ—
+    /// èƒ½åŠ›ã®å®Ÿè¡Œçµæœå‡¦ç†
     /// </summary>
     private void _AbilityResult(eAbilityResult result, Vector2 dir_input) {
         switch (result) {
@@ -430,10 +430,10 @@ public class Player_Character : Character_Base {
             case eAbilityResult.IceSlash2:
             case eAbilityResult.IceSlash3:
             case eAbilityResult.IceSeparate:
-                // aŒ‚Œ„
+                // æ–¬æ’ƒéš™
                 _intervalTimer = _param.iceSlashInterval;
                 _rb.linearVelocity = Vector2.zero;
-                _isWarpDashing = false; // ƒ[ƒvƒ_ƒbƒVƒ…I—¹
+                _isWarpDashing = false; // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥çµ‚äº†
                 Vector2 slash_bounce_move = Vector2.right * dir_input.x * _param.slashMoveForce;
                 if (!_isGrounded) {
                     slash_bounce_move.y = _param.slashRebound;
@@ -442,28 +442,28 @@ public class Player_Character : Character_Base {
                 _rb.linearVelocity = slash_bounce_move;
                 break;
             case eAbilityResult.IceLockonSlash:
-                // aŒ‚Œ„
+                // æ–¬æ’ƒéš™
                 _intervalTimer = _param.iceSlashInterval;
                 _rb.linearVelocity = Vector2.zero;
 
-                // ƒƒbƒNƒIƒ“‘ÎÛ‚Ì•ûŒü‚ğŒü‚­
+                // ãƒ­ãƒƒã‚¯ã‚ªãƒ³å¯¾è±¡ã®æ–¹å‘ã‚’å‘ã
                 var lockon = LockonManager.Instance;
                 Vector3 to_target = lockon.targetTransform.position - transform.position;
-                to_target.y = 0; // …•½¬•ª‚Ì‚İ
+                to_target.y = 0; // æ°´å¹³æˆåˆ†ã®ã¿
                 _isRight = to_target.x > 0;
 
-                LockonManager.Instance.ClearTarget(); // ƒƒbƒNƒIƒ“‰ğœ
+                LockonManager.Instance.ClearTarget(); // ãƒ­ãƒƒã‚¯ã‚ªãƒ³è§£é™¤
                 break;
             case eAbilityResult.FireSpecial:
             case eAbilityResult.IceSpecial:
             case eAbilityResult.LightSpecial:
-                // ‘€ì•s”\‚É‚·‚é
+                // æ“ä½œä¸èƒ½ã«ã™ã‚‹
                 _specialUsing = true;
-                // Šµ«‚ğƒŠƒZƒbƒg
+                // æ…£æ€§ã‚’ãƒªã‚»ãƒƒãƒˆ
                 _rb.linearVelocity = Vector2.zero;
                 break;
             case eAbilityResult.SpecialEnd:
-                // ‘€ì‰Â”\‚É‚·‚é
+                // æ“ä½œå¯èƒ½ã«ã™ã‚‹
                 _specialUsing = false;
                 _SetEndSpecialTrigger();
                 break;
@@ -481,24 +481,24 @@ public class Player_Character : Character_Base {
             return false;
         }
 
-        // •X‚Ì”\—Í‚Å–³“Gi‰¼‘Î‰j
+        // æ°·ã®èƒ½åŠ›ã§ç„¡æ•µï¼ˆä»®å¯¾å¿œï¼‰
         if ( _isIceInvincible) {
             return false;
         }
 
-        // Œõ‚Ì”\—Í‚Å–³“G‰ñ”ğ
+        // å…‰ã®èƒ½åŠ›ã§ç„¡æ•µå›é¿
         bool is_light_avoid = _player_charaParam.isLightInvincible || _player_charaParam.isAutoLightInvincible;
         if (is_light_avoid && !_player_charaParam.isOverheat) {
-            // MPÁ”ï
+            // MPæ¶ˆè²»
             _player_charaParam.ConsumeMP(_player_charaParam.isLightInvincible ? eAbilityType.LightAvoid : eAbilityType.LightAutoAvoid);
 
-            // ©“®”­Œõ‰ñ”ğ
+            // è‡ªå‹•ç™ºå…‰å›é¿
             if (_player_charaParam.isAutoLightInvincible && !_player_charaParam.isLightInvincible) {
                 _OnAvoidAutoLight();
             }
 
-            _anim.Play("Warp_Enter");       // ƒ[ƒvƒAƒjƒÄ¶
-            _anim.SetBool("Avoid", true);   // ƒ[ƒvƒAƒjƒƒtƒ‰ƒO
+            _anim.Play("Warp_Enter");       // ãƒ¯ãƒ¼ãƒ—ã‚¢ãƒ‹ãƒ¡å†ç”Ÿ
+            _anim.SetBool("Avoid", true);   // ãƒ¯ãƒ¼ãƒ—ã‚¢ãƒ‹ãƒ¡ãƒ•ãƒ©ã‚°
             _isAvoid = true;
             _currentAvoidTime = _isAvoidTimer;
 
@@ -510,15 +510,15 @@ public class Player_Character : Character_Base {
         }
 
         if (_isSliding || _isEventInvincible) {
-            return false; // ƒ_ƒ[ƒW–³Œø
+            return false; // ãƒ€ãƒ¡ãƒ¼ã‚¸ç„¡åŠ¹
         }
 
-        _isWarpDashing = false; // ƒ[ƒvƒ_ƒbƒVƒ…I—¹
+        _isWarpDashing = false; // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥çµ‚äº†
         _SetSliding(false);
-        _isSlidingJump = false; // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒWƒƒƒ“ƒvI—¹
+        _isSlidingJump = false; // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚¸ãƒ£ãƒ³ãƒ—çµ‚äº†
         _SetWallDash(false);
-        _isGroundSticking = false; // ’n–Ê’£‚è•t‚«ó‘ÔI—¹
-        _isJumping = false; // ƒWƒƒƒ“ƒvI—¹
+        _isGroundSticking = false; // åœ°é¢å¼µã‚Šä»˜ãçŠ¶æ…‹çµ‚äº†
+        _isJumping = false; // ã‚¸ãƒ£ãƒ³ãƒ—çµ‚äº†
 
         return base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
     }
@@ -533,12 +533,12 @@ public class Player_Character : Character_Base {
 
         yield return new WaitForSeconds(1.0f);
 
-        // ƒV[ƒ“Ä“Ç‚İ‚İ
+        // ã‚·ãƒ¼ãƒ³å†èª­ã¿è¾¼ã¿
         ChangeScene.LoadScene(false);
     }
 
     /// <summary>
-    /// ˆÚ“®“ü—Í
+    /// ç§»å‹•å…¥åŠ›
     /// </summary>
     protected override void _UpdateMotor() {
         Vector2 velocity = _rb.linearVelocity;
@@ -547,36 +547,36 @@ public class Player_Character : Character_Base {
             return;
         }
 
-        // •ÇŠŠ‚è’†‚Ì“ü—Í
+        // å£æ»‘ã‚Šä¸­ã®å…¥åŠ›
         if (_isWallDash) {
-            // •Ç‚Æ”½‘Î•ûŒü‚ÉˆÚ“®‚µ‚æ‚¤‚Æ‚·‚é“ü—Í‚ª‚ ‚ê‚Î•ÇŠŠ‚è‚ğI—¹
+            // å£ã¨åå¯¾æ–¹å‘ã«ç§»å‹•ã—ã‚ˆã†ã¨ã™ã‚‹å…¥åŠ›ãŒã‚ã‚Œã°å£æ»‘ã‚Šã‚’çµ‚äº†
             if (_inputData.move.x != 0 && Mathf.Sign(_inputData.move.x) != Mathf.Sign(_warpDashDirection.x)) {
                 _SetWallDash(false);
                 return;
             }
         }
 
-        // ƒXƒ‰ƒCƒfƒBƒ“ƒO’†‚É‹t•ûŒü“ü—Í‚ÅƒLƒƒƒ“ƒZƒ‹
+        // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ä¸­ã«é€†æ–¹å‘å…¥åŠ›ã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«
         if (_isSliding && _inputData.move.x != 0 && Mathf.Sign(_inputData.move.x) != Mathf.Sign(_warpDashDirection.x)) {
-            _isSlidingCanceling = true; // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒLƒƒƒ“ƒZƒ‹’†ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+            _isSlidingCanceling = true; // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚­ãƒ£ãƒ³ã‚»ãƒ«ä¸­ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
             _currentSlideTime = 0;
             return;
         }
 
-        // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒLƒƒƒ“ƒZƒ‹’†‚ÉƒWƒƒƒ“ƒv‚ÅƒLƒƒƒ“ƒZƒ‹
+        // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚­ãƒ£ãƒ³ã‚»ãƒ«ä¸­ã«ã‚¸ãƒ£ãƒ³ãƒ—ã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«
         if (_isSlidingCanceling && _inputData.jumpPressed) {
-            _isSlidingCanceling = false; // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒLƒƒƒ“ƒZƒ‹I—¹
+            _isSlidingCanceling = false; // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚­ãƒ£ãƒ³ã‚»ãƒ«çµ‚äº†
         }
 
-        // ’n–Ê’£‚è•t‚«ó‘Ô‚Ì“ü—Í
+        // åœ°é¢å¼µã‚Šä»˜ãçŠ¶æ…‹ã®å…¥åŠ›
         if (_isGroundSticking) {
             if (_inputData.move.x != 0) {
-                // ’£‚è•t‚«ó‘Ô‚ÅˆÚ“®“ü—Í‚ª‚ ‚ê‚Î’£‚è•t‚«ó‘Ô‚ğ‰ğœ
+                // å¼µã‚Šä»˜ãçŠ¶æ…‹ã§ç§»å‹•å…¥åŠ›ãŒã‚ã‚Œã°å¼µã‚Šä»˜ãçŠ¶æ…‹ã‚’è§£é™¤
                 _isGroundSticking = false;
                 _warpDashDirection = _inputData.move.x > 0 ? _param.warpDashDownRight : _param.warpDashDownLeft;
-                _ExecuteDash(); // ƒ_ƒbƒVƒ…Às
+                _ExecuteDash(); // ãƒ€ãƒƒã‚·ãƒ¥å®Ÿè¡Œ
             } else if (_inputData.jumpPressed) {
-                // ’£‚è•t‚«ó‘Ô‚ÅƒWƒƒƒ“ƒv“ü—Í‚ª‚ ‚ê‚ÎƒWƒƒƒ“ƒv
+                // å¼µã‚Šä»˜ãçŠ¶æ…‹ã§ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›ãŒã‚ã‚Œã°ã‚¸ãƒ£ãƒ³ãƒ—
                 _isGroundSticking = false;
             }
         }
@@ -585,17 +585,17 @@ public class Player_Character : Character_Base {
             return;
         }
 
-        // ƒWƒƒƒ“ƒv
+        // ã‚¸ãƒ£ãƒ³ãƒ—
         if (_inputData.jumpPressed && _isGrounded && !(_inputData.move.y < -0.5f && _inputData.move.x == 0)) {
-            // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒWƒƒƒ“ƒv
+            // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚¸ãƒ£ãƒ³ãƒ—
             if (_isSliding) {
                 _SetSliding(false);
                 _isSlidingJump = true;
 
-                // y•ûŒü‚Ì‰Á‘¬‚ğ–³‹
+                // yæ–¹å‘ã®åŠ é€Ÿã‚’ç„¡è¦–
                 _warpDashDirection.y = 0;
 
-                // ƒXƒ‰ƒCƒfƒBƒ“ƒOŠÔƒŠƒZƒbƒg
+                // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°æ™‚é–“ãƒªã‚»ãƒƒãƒˆ
                 _currentSlideTime = 0;
                 _currentSlideJumpTime = 0;
             }
@@ -609,48 +609,48 @@ public class Player_Character : Character_Base {
                 _audioSource?.PlayOneShot(_seJump);
             }
         }
-        // ƒWƒƒƒ“ƒvƒŠƒŠ[ƒX
+        // ã‚¸ãƒ£ãƒ³ãƒ—ãƒªãƒªãƒ¼ã‚¹
         if ((!_inputData.jumpHeld && _isJumping) || _currentJumpTime <= 0) {
             _isJumping = false;
         }
-        // ’·‰Ÿ‚µƒWƒƒƒ“ƒv
+        // é•·æŠ¼ã—ã‚¸ãƒ£ãƒ³ãƒ—
         if (_inputData.jumpHeld && _isJumping) {
             velocity.y = _jumpForce;
             _currentJumpTime -= Time.deltaTime;
         }
 
-        //ó‘Ô‚É‰‚¶‚½ƒtƒ‰ƒOŠÇ—
+        //çŠ¶æ…‹ã«å¿œã˜ãŸãƒ•ãƒ©ã‚°ç®¡ç†
         _anim?.SetBool("Jump", _isJumping);
         _anim?.SetBool("Fall", !_isGrounded);
 
-        // ˆÚ“®“ü—Í
+        // ç§»å‹•å…¥åŠ›
         if (_inputData.move.x != 0) {
-            // ’¼‘O‚Ü‚Å“ü—Í‚È‚µ
+            // ç›´å‰ã¾ã§å…¥åŠ›ãªã—
             if (!_isWalking) {
-                // “¯‚¶•ûŒü‚É‚·‚®Ä“ü—Í‚Åƒ_ƒbƒVƒ…
+                // åŒã˜æ–¹å‘ã«ã™ãå†å…¥åŠ›ã§ãƒ€ãƒƒã‚·ãƒ¥
                 if (_currentStopMoveInputTime < _param.dashInputThreshold && (
                     (Mathf.Sign(_inputData.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
                     (Mathf.Sign(_inputData.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing))) {
-                    _ExecuteDash(); // ƒ_ƒbƒVƒ…Às
+                    _ExecuteDash(); // ãƒ€ãƒƒã‚·ãƒ¥å®Ÿè¡Œ
                 }
                 _isWalking = true;
                 _anim?.SetBool("Walk", true);
             }
 
-            // ˆÚ“®’†‚Íí‚Éƒtƒ‰ƒOƒŠƒZƒbƒg
+            // ç§»å‹•ä¸­ã¯å¸¸ã«ãƒ•ãƒ©ã‚°ãƒªã‚»ãƒƒãƒˆ
             _lastWalkDirection = _inputData.move;
             _currentStopMoveInputTime = 0;
-        } else // “ü—Í’â~
+        } else // å…¥åŠ›åœæ­¢
           {
             if (_isWalking) {
-                // •às‚©‚ç’â~
+                // æ­©è¡Œã‹ã‚‰åœæ­¢
                 _isWalking = false;
                 _currentStopMoveInputTime = 0;
-                //ˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“’â~
+                //ç§»å‹•ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åœæ­¢
                 _anim?.SetBool("Walk", false);
                 _anim?.SetBool("Dash", false);
             } else {
-                // ’â~’†‚Íƒ^ƒCƒ}[XV
+                // åœæ­¢ä¸­ã¯ã‚¿ã‚¤ãƒãƒ¼æ›´æ–°
                 _currentStopMoveInputTime += Time.deltaTime;
                 if (_currentStopMoveInputTime > _param.dashInputThreshold) {
                     _isDashing = false;
@@ -663,12 +663,12 @@ public class Player_Character : Character_Base {
             _isSliding ? _param.slideSpeed :
             _isDashing ? _param.dashSpeed : _param.moveSpeed);
 
-        // •Ç‚ÉÚG‚µ‚Ä‚¢‚éê‡‚Í‰¡ˆÚ“®‚ğ0‚É‚·‚é
+        // å£ã«æ¥è§¦ã—ã¦ã„ã‚‹å ´åˆã¯æ¨ªç§»å‹•ã‚’0ã«ã™ã‚‹
         if ((_isTouchingLeft && _inputData.move.x < 0) || (_isTouchingRight && _inputData.move.x > 0)) {
             velocity.x = 0;
         }
 
-        // Œü‚«‚ÌXV
+        // å‘ãã®æ›´æ–°
         if (_inputData.move.x > 0) {
             _isRight = true;
         } else if (_inputData.move.x < 0) {
@@ -676,7 +676,7 @@ public class Player_Character : Character_Base {
         }
         _warpControl.isRight = _isRight;
 
-        // ©“®UŒ‚”»’è‚ÌˆÊ’u’²®
+        // è‡ªå‹•æ”»æ’ƒåˆ¤å®šã®ä½ç½®èª¿æ•´
         if (_autoAttackChecker != null) {
             var auto_attack_pos = _autoAttackChecker.transform.localPosition;
             auto_attack_pos.x = Mathf.Abs(auto_attack_pos.x) * (_isRight ? 1 : -1);
@@ -687,37 +687,37 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒ[ƒv”\—Í
+    /// ãƒ¯ãƒ¼ãƒ—èƒ½åŠ›
     /// </summary>
     private void _Warp() {
         if (_warpControl == null || _currentWarpCoolTime > 0 || _specialUsing) {
             return;
         }
 
-        // ƒ[ƒv“ü—Í
+        // ãƒ¯ãƒ¼ãƒ—å…¥åŠ›
         if ((!_isGrounded && _inputData.jumpPressed) ||
             (_isGrounded && _inputData.move.y < -0.5f && _inputData.move.x == 0 && _inputData.jumpPressed)) {
-            // ƒGƒtƒFƒNƒg¶¬
+            // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
             Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
 
             if (_inputData.move.magnitude == 0 && !_warpControl.GetCoinWarpCheck().HasValue) {
-                // “ü—Í‚ª–³‚­AƒRƒCƒ“ƒ[ƒv‚à‚Å‚«‚È‚¢ê‡‚Íƒ[ƒv‚µ‚È‚¢
+                // å…¥åŠ›ãŒç„¡ãã€ã‚³ã‚¤ãƒ³ãƒ¯ãƒ¼ãƒ—ã‚‚ã§ããªã„å ´åˆã¯ãƒ¯ãƒ¼ãƒ—ã—ãªã„
                 return;
             }
 
-            // ƒ[ƒvˆ—ŠJn
+            // ãƒ¯ãƒ¼ãƒ—å‡¦ç†é–‹å§‹
             StartCoroutine(WarpStart());
         }
 
         IEnumerator WarpStart() {
-            // MPÁ”ï
+            // MPæ¶ˆè²»
             var is_success = _player_charaParam.ConsumeMP(eAbilityType.Warp);
 
             if (!is_success) {
-                yield break; // ¸”s
+                yield break; // å¤±æ•—
             }
             if(_GetAbility<Ability_Ice>() != null) {
-                // •X–³“G•t—^
+                // æ°·ç„¡æ•µä»˜ä¸
                 _isIceInvincible = true;
             }
             _currentIceInvincibleTime = _iceInvincibleTime;
@@ -725,21 +725,21 @@ public class Player_Character : Character_Base {
             WarpControl.eWarpDirection dash_direction = _warpDirection;
 
             if (_inputData.move.magnitude != 0) {
-                // “ü—Í•ûŒü‚Éƒ[ƒv
+                // å…¥åŠ›æ–¹å‘ã«ãƒ¯ãƒ¼ãƒ—
                 yield return _warpControl.DirectionWarp(_warpDirection, _OnExecuteIceAutoAttack);
             } else if (_warpControl.GetCoinWarpCheck().HasValue) {
-                // ƒRƒCƒ“ƒ[ƒv
+                // ã‚³ã‚¤ãƒ³ãƒ¯ãƒ¼ãƒ—
                 yield return _warpControl.CoinWarp();
             }
 
-            // ƒ[ƒvƒ_ƒbƒVƒ…•ûŒüŒˆ’è
+            // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥æ–¹å‘æ±ºå®š
             if (_warpDirection != WarpControl.eWarpDirection.Neutral) {
                 dash_direction = _warpDirection;
             } else {
-                dash_direction = _warpControl.lastWarpDir; // ’¼‘O‚Ìƒ[ƒv•ûŒü‚ğg—p
+                dash_direction = _warpControl.lastWarpDir; // ç›´å‰ã®ãƒ¯ãƒ¼ãƒ—æ–¹å‘ã‚’ä½¿ç”¨
             }
 
-            // ƒ[ƒvƒ_ƒbƒVƒ…‚Ì•ûŒü‚ğİ’è
+            // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®æ–¹å‘ã‚’è¨­å®š
             _warpDashDirection = dash_direction switch {
                 WarpControl.eWarpDirection.Up => _param.warpDashUp,
                 WarpControl.eWarpDirection.UpRight => _param.warpDashUpRight,
@@ -754,7 +754,7 @@ public class Player_Character : Character_Base {
 
             yield return null;
 
-            // ƒ[ƒvƒ_ƒbƒVƒ…Às
+            // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥å®Ÿè¡Œ
             _ExecuteWarpDash();
         }
     }
@@ -772,33 +772,33 @@ public class Player_Character : Character_Base {
     };
 
     void _OnPreWarpCommon() {
-        // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒŠƒZƒbƒg
+        // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ãƒªã‚»ãƒƒãƒˆ
         _SetSliding(false);
-        // d—Í‚ğ–³Œø‰»
+        // é‡åŠ›ã‚’ç„¡åŠ¹åŒ–
         _isWarpDelay = true;
-        // ‘¬“x‚ğƒŠƒZƒbƒg
+        // é€Ÿåº¦ã‚’ãƒªã‚»ãƒƒãƒˆ
         _rb.linearVelocity = Vector2.zero;
-        // ƒ[ƒvƒ_ƒbƒVƒ…‚Ì•ûŒüƒŠƒZƒbƒg
+        // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®æ–¹å‘ãƒªã‚»ãƒƒãƒˆ
         _warpDashDirection = Vector2.zero;
 
-        //ƒAƒjƒ[ƒVƒ‡ƒ“ŠÇ—
-        _anim.SetBool("Warp", true);    // ƒ[ƒvƒAƒjƒƒtƒ‰ƒO
-        _anim.SetBool("Fall", true);    // ‹ó’†ƒAƒjƒƒtƒ‰ƒO
-        _anim.Play("Warp_Enter");       // ƒ[ƒvƒAƒjƒÄ¶
+        //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ç®¡ç†
+        _anim.SetBool("Warp", true);    // ãƒ¯ãƒ¼ãƒ—ã‚¢ãƒ‹ãƒ¡ãƒ•ãƒ©ã‚°
+        _anim.SetBool("Fall", true);    // ç©ºä¸­ã‚¢ãƒ‹ãƒ¡ãƒ•ãƒ©ã‚°
+        _anim.Play("Warp_Enter");       // ãƒ¯ãƒ¼ãƒ—ã‚¢ãƒ‹ãƒ¡å†ç”Ÿ
     }
     void _OnWarpEndCommon() {
         _anim.SetBool("Warp", false);
 
-        // ƒ[ƒvƒ_ƒbƒVƒ…‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚ğƒŠƒZƒbƒg
+        // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚’ãƒªã‚»ãƒƒãƒˆ
         _currentWarpCoolTime = _param.warpCoolTime;
-        // ƒXƒ‰ƒCƒhƒWƒƒƒ“ƒvƒŠƒZƒbƒg
+        // ã‚¹ãƒ©ã‚¤ãƒ‰ã‚¸ãƒ£ãƒ³ãƒ—ãƒªã‚»ãƒƒãƒˆ
         _isSlidingJump = false;
-        // d—Í‚ğ—LŒø‰»
+        // é‡åŠ›ã‚’æœ‰åŠ¹åŒ–
         _isWarpDelay = false;
     }
 
     /// <summary>
-    /// ŒoŒ±’l’Ç‰Á
+    /// çµŒé¨“å€¤è¿½åŠ 
     /// </summary>
     public void AddExp(int value) {
         var is_level_up = _playerParam.AddExp(value, ApplyPlayerParameter);
@@ -808,14 +808,14 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒŒƒxƒ‹ƒAƒbƒv‰‰o
+    /// ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ¼”å‡º
     /// </summary>
     private IEnumerator _levelUpCoroutine() {
         if( _levelUpAnimator == null) {
             yield break;
         }
 
-        // ƒŒƒxƒ‹ƒAƒbƒvƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        // ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         _levelUpAnimator.gameObject.SetActive(true);
         var length = _levelUpAnimator.GetCurrentAnimatorStateInfo(0).length;
         _levelUpAnimator.Play("LevelUp", -1, 0f);
@@ -824,7 +824,7 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒŒƒxƒ‹‚É‰‚¶‚½ƒpƒ‰ƒ[ƒ^‚ğ“K—p
+    /// ãƒ¬ãƒ™ãƒ«ã«å¿œã˜ãŸãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’é©ç”¨
     /// </summary>
     public void ApplyPlayerParameter() {
         if (_player_charaParam != null) {
@@ -834,7 +834,7 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒI[ƒg”­ŒõŠJn
+    /// ã‚ªãƒ¼ãƒˆç™ºå…‰é–‹å§‹
     /// </summary>
     private void _SetAutoLight(bool enable) {
         var ability = _GetAbility<Ability_Light>();
@@ -844,7 +844,7 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒI[ƒg‰ÎUŒ‚ŠÔŠuƒŠƒZƒbƒg
+    /// ã‚ªãƒ¼ãƒˆç«æ”»æ’ƒé–“éš”ãƒªã‚»ãƒƒãƒˆ
     /// </summary>
     private void _OnResetFireInterval() {
         var ability = _GetAbility<Ability_Fire>();
@@ -854,7 +854,7 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ƒI[ƒg”­Œõ‰ñ”ğÀs
+    /// ã‚ªãƒ¼ãƒˆç™ºå…‰å›é¿å®Ÿè¡Œ
     /// </summary>
     private void _OnAvoidAutoLight() {
         var ability = _GetAbility<Ability_Light>();
@@ -864,13 +864,13 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// •X©“®UŒ‚Às
+    /// æ°·è‡ªå‹•æ”»æ’ƒå®Ÿè¡Œ
     /// </summary>
     private void _OnExecuteIceAutoAttack(Enemy_Base target_enemy) {
         var ability = _GetAbility<Ability_Ice>();
         if (ability != null) {
 
-            // ˆÚ“®êŠ’Tõ
+            // ç§»å‹•å ´æ‰€æ¢ç´¢
             WarpControl.eWarpDirection warp_dir =
                 _inputData.move.x > 0 ? WarpControl.eWarpDirection.Right : 
                 _inputData.move.x < 0 ? WarpControl.eWarpDirection.Left : WarpControl.eWarpDirection.Neutral;
@@ -881,21 +881,21 @@ public class Player_Character : Character_Base {
 
             var player_warp_target = target_enemy.GetWarpChecker(warp_dir, true);
 
-            // UŒ‚êŠ’Tõ
+            // æ”»æ’ƒå ´æ‰€æ¢ç´¢
             WarpControl.eWarpDirection attack_warp_dir = warp_dir == WarpControl.eWarpDirection.Right ? 
                 WarpControl.eWarpDirection.Left : WarpControl.eWarpDirection.Right;
             var attack_warp_target = target_enemy.GetWarpChecker(attack_warp_dir, true);
 
             if (player_warp_target == null) {
-                // ©“®UŒ‚¸”s
+                // è‡ªå‹•æ”»æ’ƒå¤±æ•—
                 return;
             }
 
-            // –Ú•W‚Éƒ[ƒv
+            // ç›®æ¨™ã«ãƒ¯ãƒ¼ãƒ—
             _warpControl.TargetWarp(player_warp_target);
             _ExecuteWarpDash();
 
-            // ƒI[ƒgUŒ‚Às
+            // ã‚ªãƒ¼ãƒˆæ”»æ’ƒå®Ÿè¡Œ
             if (attack_warp_target != null) {
                 ability.ExecuteAutoAttack(attack_warp_target, target_enemy.transform.position);
             }
@@ -903,10 +903,10 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// ‘•”õÏ‚İ‚Ì”\—Í‚ğŒ^‚Åæ“¾iƒWƒFƒlƒŠƒbƒNj
+    /// è£…å‚™æ¸ˆã¿ã®èƒ½åŠ›ã‚’å‹ã§å–å¾—ï¼ˆã‚¸ã‚§ãƒãƒªãƒƒã‚¯ï¼‰
     /// </summary>
-    /// <typeparam name="T">æ“¾‚µ‚½‚¢”\—Í‚ÌŒ^</typeparam>
-    /// <returns>Œ©‚Â‚©‚Á‚½”\—ÍA‚È‚¯‚ê‚Înull</returns>
+    /// <typeparam name="T">å–å¾—ã—ãŸã„èƒ½åŠ›ã®å‹</typeparam>
+    /// <returns>è¦‹ã¤ã‹ã£ãŸèƒ½åŠ›ã€ãªã‘ã‚Œã°null</returns>
     private T _GetAbility<T>() where T : Ability_Base {
         if (_abilityY is T abilityY) return abilityY;
         if (_abilityX is T abilityX) return abilityX;
@@ -915,27 +915,77 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// “Á’è‚Ì”\—Í‚ª‘•”õ‚³‚ê‚Ä‚¢‚é‚©Šm”F
+    /// ç‰¹å®šã®èƒ½åŠ›ãŒè£…å‚™ã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèª
     /// </summary>
-    /// <typeparam name="T">Šm”F‚µ‚½‚¢”\—Í‚ÌŒ^</typeparam>
-    /// <returns>‘•”õ‚³‚ê‚Ä‚¢‚ê‚Îtrue</returns>
+    /// <typeparam name="T">ç¢ºèªã—ãŸã„èƒ½åŠ›ã®å‹</typeparam>
+    /// <returns>è£…å‚™ã•ã‚Œã¦ã„ã‚Œã°true</returns>
     private bool _HasAbility<T>() where T : Ability_Base {
         return _GetAbility<T>() != null;
     }
 
-    // ƒvƒŒƒCƒ„[ƒpƒ‰ƒ[ƒ^‚ÌƒXƒiƒbƒvƒVƒ‡ƒbƒg‚ğæ“¾
+    /// <summary>
+    /// ã‚¹ãƒ­ãƒƒãƒˆã®å‚ç…§ã‚’ã‚¯ãƒªã‚¢
+    /// </summary>
+    /// <param name="slot">ã‚¯ãƒªã‚¢ã™ã‚‹ã‚¹ãƒ­ãƒƒãƒˆ</param>
+    public void ClearAbilitySlotReference(eAbilitySlot slot) {
+        // ã‚¹ãƒ­ãƒƒãƒˆã®å‚ç…§ã‚’nullã«è¨­å®š
+        switch (slot) {
+            case eAbilitySlot.Y:
+                _abilityY = null;
+                break;
+            case eAbilitySlot.X:
+                _abilityX = null;
+                break;
+            case eAbilitySlot.A:
+                _abilityA = null;
+                break;
+        }
+
+        // ä¸€æ™‚ä¿å­˜ç”¨Dictionaryã‹ã‚‰ã‚‚å‰Šé™¤
+        if (_tmpAbilitySlot != null) {
+            eAbilityType targetType = eAbilityType.None;
+            foreach (var kvp in _tmpAbilitySlot) {
+                if (kvp.Value == slot) {
+                    targetType = kvp.Key;
+                    break;
+                }
+            }
+            if (targetType != eAbilityType.None) {
+                _tmpAbilitySlot.Remove(targetType);
+            }
+        }
+    }
+
+    /// <summary>
+    /// èƒ½åŠ›ã‚’å‰Šé™¤ã™ã‚‹ï¼ˆäº’æ›æ€§ã®ãŸã‚ã«æ®‹ã™ï¼‰
+    /// </summary>
+    /// <param name="slot">å¤–ã™ã‚¹ãƒ­ãƒƒãƒˆ</param>
+    public void RemoveAbility(eAbilitySlot slot) {
+        var ability = slot switch {
+            eAbilitySlot.Y => _abilityY,
+            eAbilitySlot.X => _abilityX,
+            eAbilitySlot.A => _abilityA,
+            _ => null
+        };
+
+        AbilityFactory.DestroyAbility(ability, slot);
+
+        ClearAbilitySlotReference(slot);
+    }
+
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ã‚¹ãƒŠãƒƒãƒ—ã‚·ãƒ§ãƒƒãƒˆã‚’å–å¾—
     public PlayerParameterSnapshot GetParameterSnapshot() {
         var snapshot = new PlayerParameterSnapshot();
         if (_player_charaParam != null) {
-            snapshot.Lv = _playerParam.levelParameter.hpLevel; // ƒŒƒxƒ‹‚ğ•Û‘¶
+            snapshot.Lv = _playerParam.levelParameter.hpLevel; // ãƒ¬ãƒ™ãƒ«ã‚’ä¿å­˜
         }
         return snapshot;
     }
 
-    // ƒvƒŒƒCƒ„[ƒpƒ‰ƒ[ƒ^‚ğƒXƒiƒbƒvƒVƒ‡ƒbƒg‚©‚ç•œŒ³
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ã‚¹ãƒŠãƒƒãƒ—ã‚·ãƒ§ãƒƒãƒˆã‹ã‚‰å¾©å…ƒ
     public void RestoreParameter(PlayerParameterSnapshot snapshot) {
         if (_playerParam != null && snapshot != null) {
-            // ƒŒƒxƒ‹‚ğ•œŒ³iSetLevel“™‚ª‚È‚¯‚ê‚Î’¼Ú‘ã“ü‚âAddExp‚Å’²®j
+            // ãƒ¬ãƒ™ãƒ«ã‚’å¾©å…ƒï¼ˆSetLevelç­‰ãŒãªã‘ã‚Œã°ç›´æ¥ä»£å…¥ã‚„AddExpã§èª¿æ•´ï¼‰
             _playerParam.levelParameter.hpLevel = snapshot.Lv;
             _playerParam.levelParameter.mpLevel = snapshot.Lv;
             _playerParam.levelParameter.attackLevel = snapshot.Lv;
@@ -943,7 +993,7 @@ public class Player_Character : Character_Base {
         }
     }
 
-    // ƒpƒ‰ƒ[ƒ^‚ÆƒAƒrƒŠƒeƒBƒXƒƒbƒg‚ğ‚Ü‚Æ‚ß‚Ä•Û‘¶‚·‚é
+    // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¨ã‚¢ãƒ“ãƒªãƒ†ã‚£ã‚¹ãƒ­ãƒƒãƒˆã‚’ã¾ã¨ã‚ã¦ä¿å­˜ã™ã‚‹
     public void SavePlayerState()
     {
         var snapshot = GetParameterSnapshot();

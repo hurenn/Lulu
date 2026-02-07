@@ -7,7 +7,7 @@ public enum eAbilityType {
     Ice,
     Fire,
     Light,
-    // ‚±‚±‚Ü‚ÅŒÅ’è
+    // ã“ã“ã¾ã§å›ºå®š
 
     LockonSlash,
     AutoSlash,
@@ -17,21 +17,32 @@ public enum eAbilityType {
 }
 
 public static class AbilityFactory {
-    // ”\—ÍUI‘S‘ÌŠÇ—
-    private static AbilityUIManager _abilityUIManager = null;
+    // èƒ½åŠ›UIå…¨ä½“ç®¡ç†
+    private static AbilityUIManager _AUMInstance = null;
+    private static AbilityUIManager _AbilityUIManager {
+        get {
+            if (_AUMInstance == null) {
+                _AUMInstance = GameObject.FindAnyObjectByType<AbilityUIManager>();
+                if(_AUMInstance == null) {
+                    Debug.LogError("AbilityUIManagerãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
+                }
+            }
+            return _AUMInstance;
+        }
+    }
 
     /// <summary>
-    /// ”\—Í¶¬
+    /// èƒ½åŠ›ç”Ÿæˆ
     /// </summary>
-    /// <param name="type">”\—Í‚Ìí—Ş</param>
-    /// <returns>¶¬‚µ‚½”\—Í</returns>
+    /// <param name="type">èƒ½åŠ›ã®ç¨®é¡</param>
+    /// <returns>ç”Ÿæˆã—ãŸèƒ½åŠ›</returns>
     public static Ability_Base CreateAbility(
         eAbilityType type, eAbilitySlot slot, Action<string> onStartSpecialAnim, Action onEndSpecial, bool is_effect = true) {
         if (type == eAbilityType.None) {
             return null;
         }
 
-        // ”\—Í¶¬
+        // èƒ½åŠ›ç”Ÿæˆ
         Ability_Base ability = null;
         switch (type) {
             case eAbilityType.Ice:
@@ -44,28 +55,40 @@ public static class AbilityFactory {
                 ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Light>("Prefabs/Abilities/Ability_Light"));
                 break;
             default:
-                Debug.LogError("”\—Íƒ^ƒCƒv‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
+                Debug.LogError("èƒ½åŠ›ã‚¿ã‚¤ãƒ—ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ");
                 break;
         }
         if(ability == null) {
-            Debug.LogError("”\—Í¶¬¸”sF" + type);
+            Debug.LogError("èƒ½åŠ›ç”Ÿæˆå¤±æ•—ï¼š" + type);
             return null;
         }
 
-        // •KE‹ZƒR[ƒ‹ƒoƒbƒNİ’è
+        // å¿…æ®ºæŠ€ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯è¨­å®š
         ability.SetOnStartSpecialAnim(onStartSpecialAnim);
         ability.SetOnEndSpecialAttack(onEndSpecial);
 
-        // UIXV
-        if (_abilityUIManager == null) {
-            _abilityUIManager = GameObject.FindAnyObjectByType<AbilityUIManager>();
-            if(_abilityUIManager == null) {
-                Debug.LogError("AbilityUIManager‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
-                return ability;
-            }
-        }
-        _abilityUIManager.SetAbilityUI(slot, type, ability, is_effect);
+        // UIæ›´æ–°
+        _AbilityUIManager?.SetAbilityUI(slot, type, ability, is_effect);
 
         return ability;
+    }
+
+    /// <summary>
+    /// ç‰¹å®šã®èƒ½åŠ›ãŒè£…å‚™ã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèª
+    /// </summary>
+    /// <typeparam name="T">ç¢ºèªã—ãŸã„èƒ½åŠ›ã®å‹</typeparam>
+    /// <returns>è£…å‚™ã•ã‚Œã¦ã„ã‚Œã°true</returns>
+    public static void DestroyAbility(Ability_Base ability, eAbilitySlot slot) {
+        // ã‚·ãƒ¼ãƒ³ä¸­ã‹ã‚‰å¯¾è±¡ã®èƒ½åŠ›ã‚’æ¢ã™
+        ability.DestroyAbility();
+
+        // UIæ›´æ–°
+        _AbilityUIManager?.RemoveAbilityUI(slot);
+
+        // PlayerParameterã‹ã‚‰å‰Šé™¤
+        var playerParam = PlayerParameter.Instance;
+        if (playerParam != null) {
+            playerParam.RemoveAbility(slot);
+        }
     }
 }

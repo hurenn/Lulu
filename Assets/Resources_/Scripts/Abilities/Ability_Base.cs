@@ -321,4 +321,15 @@ public class Ability_Base : MonoBehaviour {
         }
         return _pauseUIInstance;
     }
+
+    /// <summary>
+    /// ”\—Í”jŠü
+    /// </summary>
+    public virtual void DestroyAbility() {
+        if (_specialTimelineDirector != null) {
+            Destroy(_specialTimelineDirector.gameObject);
+        }
+        Destroy(this.gameObject);
+    }
+
 }

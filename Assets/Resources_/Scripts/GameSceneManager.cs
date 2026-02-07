@@ -7,7 +7,7 @@ public class GameSceneManager : MonoBehaviour
     private string _titleSceneName = "Title";
 
     private void Start() {
-        // ƒV[ƒ“Ä“Ç‚İ‚İ‚Ì‚İƒŠƒXƒ|[ƒ“’n“_‚ÉˆÚ“®
+        // ã‚·ãƒ¼ãƒ³å†èª­ã¿è¾¼ã¿æ™‚ã®ã¿ãƒªã‚¹ãƒãƒ¼ãƒ³åœ°ç‚¹ã«ç§»å‹•
         var player = FindAnyObjectByType<Player_Character>();
         var checkpointManager = CheckpointManager.Instance;
         if (player != null && checkpointManager != null && checkpointManager.ShouldRespawnInCurrentScene())
@@ -22,17 +22,17 @@ public class GameSceneManager : MonoBehaviour
             return;
         }
 
-        // ESCƒL[‚Åƒ^ƒCƒgƒ‹‚Ö–ß‚é
+        // ESCã‚­ãƒ¼ã§ã‚¿ã‚¤ãƒˆãƒ«ã¸æˆ»ã‚‹
         if (keyboard.escapeKey.wasPressedThisFrame) {
             GameRestart();
         }
 
-        // RƒL[‚ÅƒXƒe[ƒWÄƒXƒ^[ƒg
+        // Rã‚­ãƒ¼ã§ã‚¹ãƒ†ãƒ¼ã‚¸å†ã‚¹ã‚¿ãƒ¼ãƒˆ
         if (keyboard.rKey.wasPressedThisFrame) {
             StageRestart(false);
         }
 
-        // ƒfƒoƒbƒO—pFPƒL[‚ÅŒoŒ±’l200Šl“¾
+        // ãƒ‡ãƒãƒƒã‚°ç”¨ï¼šPã‚­ãƒ¼ã§çµŒé¨“å€¤200ç²å¾—
         if (keyboard.pKey.wasPressedThisFrame) {
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {
@@ -40,7 +40,7 @@ public class GameSceneManager : MonoBehaviour
             }
         }
 
-        // ƒfƒoƒbƒO—pFNumpad9ƒL[‚Å•KEƒ`ƒƒ[ƒW
+        // ãƒ‡ãƒãƒƒã‚°ç”¨ï¼šNumpad9ã‚­ãƒ¼ã§å¿…æ®ºãƒãƒ£ãƒ¼ã‚¸
         if (keyboard.numpad9Key.wasPressedThisFrame) {
             Ability_Base[] abilities = FindObjectsByType<Ability_Base>(FindObjectsSortMode.None);
             foreach (var ability in abilities) {
@@ -50,36 +50,48 @@ public class GameSceneManager : MonoBehaviour
             }
         }
 
-        // ƒfƒoƒbƒO—pF”šƒL[‚Å”\—Í‚Ì•t—^/‰ğœ
+        // ãƒ‡ãƒãƒƒã‚°ç”¨ï¼šæ•°å­—ã‚­ãƒ¼ã§èƒ½åŠ›ã®ä»˜ä¸/è§£é™¤
         if (keyboard.numpad4Key.wasPressedThisFrame) {
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {
                 var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Ice);
-                player.SetAbilitySlot(had_ability ? eAbilityType.None : eAbilityType.Ice, eAbilitySlot.Y);
+                if (had_ability) {
+                    player.RemoveAbility(eAbilitySlot.Y);
+                } else {
+                    player.SetAbilitySlot(eAbilityType.Ice, eAbilitySlot.Y);
+                }
             }
         }
         if (keyboard.numpad8Key.wasPressedThisFrame) {
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {
                 var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Light);
-                player.SetAbilitySlot(had_ability ? eAbilityType.None : eAbilityType.Light, eAbilitySlot.X);
+                if (had_ability) {
+                    player.RemoveAbility(eAbilitySlot.X);
+                } else {
+                    player.SetAbilitySlot(eAbilityType.Light, eAbilitySlot.X);
+                }
             }
         }
         if (keyboard.numpad6Key.wasPressedThisFrame) {
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {
                 var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Fire);
-                player.SetAbilitySlot(had_ability ? eAbilityType.None : eAbilityType.Fire, eAbilitySlot.A);
+                if (had_ability) {
+                    player.RemoveAbility(eAbilitySlot.A);
+                } else {
+                    player.SetAbilitySlot(eAbilityType.Fire, eAbilitySlot.A);
+                }
             }
         }
         if (keyboard.numpad5Key.wasPressedThisFrame) {
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {
-                player.SaveAbilitySlot(); // ”\—ÍƒXƒƒbƒgƒZ[ƒu
+                player.SaveAbilitySlot(); // èƒ½åŠ›ã‚¹ãƒ­ãƒƒãƒˆã‚»ãƒ¼ãƒ–
             }
         }
 
-        // ƒfƒoƒbƒO—pFLƒL[‚ÅŒ¾ŒêØ‚è‘Ö‚¦
+        // ãƒ‡ãƒãƒƒã‚°ç”¨ï¼šLã‚­ãƒ¼ã§è¨€èªåˆ‡ã‚Šæ›¿ãˆ
         if (keyboard.lKey.wasPressedThisFrame) {
             var player_param = PlayerParameter.Instance;
             var new_language = player_param.language == PlayerParameter.eLanguage.Japanese ?
@@ -89,7 +101,7 @@ public class GameSceneManager : MonoBehaviour
     }
 
     public void StageRestart(bool is_ability_save) {
-        // ƒV[ƒ“Ä“Ç‚İ‚İ
+        // ã‚·ãƒ¼ãƒ³å†èª­ã¿è¾¼ã¿
         ChangeScene.LoadScene(is_ability_save);
     }
 

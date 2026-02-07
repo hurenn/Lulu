@@ -12,10 +12,10 @@ public class AbilityUIManager : MonoBehaviour {
     [SerializeField] private AbilityUI_Base _abilityUI_A;
 
     /// <summary>
-    /// ”\—ÍUI‚Ìİ’è
+    /// èƒ½åŠ›UIã®è¨­å®š
     /// </summary>
-    /// <param name="slot">ƒXƒƒbƒgw’è</param>
-    /// <param name="ability_type">”\—Íƒ^ƒCƒv</param>
+    /// <param name="slot">ã‚¹ãƒ­ãƒƒãƒˆæŒ‡å®š</param>
+    /// <param name="ability_type">èƒ½åŠ›ã‚¿ã‚¤ãƒ—</param>
     public void SetAbilityUI(eAbilitySlot slot, eAbilityType ability_type, Ability_Base ability, bool is_effect = true) {
         switch (slot) {
             case eAbilitySlot.Y:
@@ -34,7 +34,25 @@ public class AbilityUIManager : MonoBehaviour {
                 ability.SetOnChargeSpecialCallback(_abilityUI_A.OnChargeSpecial);
                 break;
             default:
-                Debug.LogError("•s–¾‚ÈƒXƒƒbƒgF" + slot);
+                Debug.LogError("ä¸æ˜ãªã‚¹ãƒ­ãƒƒãƒˆï¼š" + slot);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// èƒ½åŠ›UIã®å‰Šé™¤ï¼ˆéè¡¨ç¤ºï¼‰
+    /// </summary>
+    /// <param name="slot">ã‚¹ãƒ­ãƒƒãƒˆæŒ‡å®š</param>
+    public void RemoveAbilityUI(eAbilitySlot slot) {
+        switch (slot) {
+            case eAbilitySlot.Y:
+                _abilityUI_Y.gameObject.SetActive(false);
+                break;
+            case eAbilitySlot.X:
+                _abilityUI_X.gameObject.SetActive(false);
+                break;
+            case eAbilitySlot.A:
+                _abilityUI_A.gameObject.SetActive(false);
                 break;
         }
     }
