@@ -79,6 +79,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     private Dictionary<eButtonIndex, RectTransform> _buttonToIcon = new();
     // アイコン→説明文の対応
     private Dictionary<RectTransform, GameObject> _iconToExplain = new();
+    // アイコン→能力タイプの対応
+    private Dictionary<RectTransform, eAbilityType> _iconToAbilityType = new();
     // 掴んでいるアイコン
     private RectTransform _grabbedIcon = null;
     private eButtonIndex _grabbedFromButton = eButtonIndex.None;
@@ -95,6 +97,16 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _iconToExplain[_IceTriggerIcon] = _IceExplain;
         _iconToExplain[_LightTriggerIcon] = _LightExplain;
         _iconToExplain[_FireTriggerIcon] = _FireExplain;
+
+        // アイコン→能力タイプの対応を初期化
+        _iconToAbilityType[_WarpIcon] = eAbilityType.Warp;
+        _iconToAbilityType[_IceIcon] = eAbilityType.Ice;
+        _iconToAbilityType[_LightIcon] = eAbilityType.Light;
+        _iconToAbilityType[_FireIcon] = eAbilityType.Fire;
+        _iconToAbilityType[_WarpTriggerIcon] = eAbilityType.Warp;
+        _iconToAbilityType[_IceTriggerIcon] = eAbilityType.Ice;
+        _iconToAbilityType[_LightTriggerIcon] = eAbilityType.Light;
+        _iconToAbilityType[_FireTriggerIcon] = eAbilityType.Fire;
 
         // 初期割り当て
         _buttonToIcon[eButtonIndex.B] = _WarpIcon;
@@ -337,12 +349,59 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         // 掴んでいたアイコンを配置
         _PlaceIconOnButton(_grabbedIcon, _GetButtonRect(targetButton));
 
+        // PlayerCharacterの能力も入れ替える
+        _SwapPlayerAbility(_grabbedFromButton, targetButton);
+
         // 掴んでいる状態を解除
         _grabbedIcon = null;
         _grabbedFromButton = eButtonIndex.None;
 
         // 説明文を更新
         _UpdateExplain();
+    }
+
+    /// <summary>
+    /// PlayerCharacterの能力を入れ替える
+    /// </summary>
+    private void _SwapPlayerAbility(eButtonIndex fromButton, eButtonIndex toButton) {
+        // B,Y,X,Aボタンのみ対応（SL,SR,ZL,ZRは除外）
+        if (!_IsMainButton(fromButton) || !_IsMainButton(toButton)) {
+            return;
+        }
+
+        var player = FindAnyObjectByType<Player_Character>();
+        if (player == null) {
+            Debug.LogWarning("Player_Characterが見つかりません");
+            return;
+        }
+
+        // ボタンIndexからeAbilitySlotに変換
+        eAbilitySlot fromSlot = _ButtonIndexToAbilitySlot(fromButton);
+        eAbilitySlot toSlot = _ButtonIndexToAbilitySlot(toButton);
+
+        // スロットの能力を入れ替え
+        player.SwapAbilitySlot(fromSlot, toSlot);
+    }
+
+    /// <summary>
+    /// メインボタン（B,Y,X,A）かどうかを判定
+    /// </summary>
+    private bool _IsMainButton(eButtonIndex button) {
+        return button == eButtonIndex.B || button == eButtonIndex.Y ||
+               button == eButtonIndex.X || button == eButtonIndex.A;
+    }
+
+    /// <summary>
+    /// ボタンIndexをeAbilitySlotに変換
+    /// </summary>
+    private eAbilitySlot _ButtonIndexToAbilitySlot(eButtonIndex button) {
+        return button switch {
+            eButtonIndex.B => eAbilitySlot.B,
+            eButtonIndex.Y => eAbilitySlot.Y,
+            eButtonIndex.X => eAbilitySlot.X,
+            eButtonIndex.A => eAbilitySlot.A,
+            _ => eAbilitySlot.B // デフォルト
+        };
     }
 
     /// <summary>

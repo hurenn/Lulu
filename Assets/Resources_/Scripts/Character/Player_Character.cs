@@ -987,6 +987,90 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
+    /// 二つのスロットの能力を入れ替える
+    /// </summary>
+    /// <param name="slotA">スロットA</param>
+    /// <param name="slotB">スロットB</param>
+    public void SwapAbilitySlot(eAbilitySlot slotA, eAbilitySlot slotB) {
+        // 同じスロットを指定した場合は何もしない
+        if (slotA == slotB) {
+            Debug.LogWarning("同じスロットを指定しています");
+            return;
+        }
+
+        // スロットAとスロットBの能力を取得
+        Ability_Base abilityA = slotA switch {
+            eAbilitySlot.Y => _abilityY,
+            eAbilitySlot.X => _abilityX,
+            eAbilitySlot.A => _abilityA,
+            eAbilitySlot.B => _abilityB,
+            _ => null
+        };
+
+        Ability_Base abilityB = slotB switch {
+            eAbilitySlot.Y => _abilityY,
+            eAbilitySlot.X => _abilityX,
+            eAbilitySlot.A => _abilityA,
+            eAbilitySlot.B => _abilityB,
+            _ => null
+        };
+
+        // スロットAとスロットBの能力タイプを取得
+        eAbilityType abilityTypeA = eAbilityType.None;
+        eAbilityType abilityTypeB = eAbilityType.None;
+
+        foreach (var kvp in _tmpAbilitySlot) {
+            if (kvp.Value == slotA) {
+                abilityTypeA = kvp.Key;
+            }
+            if (kvp.Value == slotB) {
+                abilityTypeB = kvp.Key;
+            }
+        }
+
+        // 一時保存用Dictionaryを更新
+        if (abilityTypeA != eAbilityType.None) {
+            _tmpAbilitySlot[abilityTypeA] = slotB;
+        }
+        if (abilityTypeB != eAbilityType.None) {
+            _tmpAbilitySlot[abilityTypeB] = slotA;
+        }
+
+        // スロットの参照を入れ替え
+        switch (slotA) {
+            case eAbilitySlot.Y:
+                _abilityY = abilityB;
+                break;
+            case eAbilitySlot.X:
+                _abilityX = abilityB;
+                break;
+            case eAbilitySlot.A:
+                _abilityA = abilityB;
+                break;
+            case eAbilitySlot.B:
+                _abilityB = abilityB;
+                break;
+        }
+
+        switch (slotB) {
+            case eAbilitySlot.Y:
+                _abilityY = abilityA;
+                break;
+            case eAbilitySlot.X:
+                _abilityX = abilityA;
+                break;
+            case eAbilitySlot.A:
+                _abilityA = abilityA;
+                break;
+            case eAbilitySlot.B:
+                _abilityB = abilityA;
+                break;
+        }
+
+        Debug.Log($"スロット{slotA}({abilityTypeA})とスロット{slotB}({abilityTypeB})を入れ替えました");
+    }
+
+    /// <summary>
     /// 能力を削除する（互換性のために残す）
     /// </summary>
     /// <param name="slot">外すスロット</param>
