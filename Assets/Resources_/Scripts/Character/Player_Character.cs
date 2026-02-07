@@ -35,6 +35,7 @@ public class Player_Character : Character_Base {
     [SerializeField] protected Ability_Base _abilityY;
     [SerializeField] protected Ability_Base _abilityX;
     [SerializeField] protected Ability_Base _abilityA;
+    [SerializeField] protected Ability_Base _abilityB;
     // 能力スロット一時保存
     private Dictionary<eAbilityType, eAbilitySlot> _tmpAbilitySlot = new Dictionary<eAbilityType, eAbilitySlot>();
 
@@ -69,6 +70,9 @@ public class Player_Character : Character_Base {
         _playerParam = PlayerParameter.Instance;
         ApplyPlayerParameter();
         _SetupHadAbility();
+        
+        // Bスロットに常にAbility_Warpを設定
+        SetAbilitySlot(eAbilityType.Warp, eAbilitySlot.B, false);
     }
 
     /// <summary>
@@ -106,6 +110,7 @@ public class Player_Character : Character_Base {
         _abilityX?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
         _abilityY?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
         _abilityA?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
+        _abilityB?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
 
         if (_currentWarpCoolTime > 0) {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
@@ -356,12 +361,17 @@ public class Player_Character : Character_Base {
             input.abilityYPressed = false;
             input.abilityAHeld = false;
             input.abilityAPressed = false;
+            input.abilityBHeld = false;
+            input.abilityBPressed = false;
         }
-        base.UpdateControl(input);
-
+        _inputData = input;
         _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld, input.abilityYReleased, input);
         _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld, input.abilityXReleased, input);
         _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld, input.abilityAReleased, input);
+        _UpdateAbility(_abilityB, input.move, input.abilityBPressed, input.abilityBHeld, input.abilityBReleased, input);
+        input = _inputData;
+
+        base.UpdateControl(input);
 
         _Warp();
     }
@@ -384,6 +394,9 @@ public class Player_Character : Character_Base {
                 break;
             case eAbilitySlot.A:
                 _abilityA = ability;
+                break;
+            case eAbilitySlot.B:
+                _abilityB = ability;
                 break;
             default:
                 break;
@@ -415,7 +428,7 @@ public class Player_Character : Character_Base {
         }
         // ボタンを離したときの処理
         if (button_released) {
-            ability.ExecuteRelease();
+            _AbilityResult(ability.ExecuteRelease(), dir_input);
         }
     }
 
@@ -466,6 +479,16 @@ public class Player_Character : Character_Base {
                 // 操作可能にする
                 _specialUsing = false;
                 _SetEndSpecialTrigger();
+                break;
+            case eAbilityResult.Jump:
+                // ジャンプボタンフラグを立てる
+                _inputData.isJumpPressed = true;
+                _inputData.isJumpHeld = true;
+                break;
+            case eAbilityResult.JumpRelease:
+                // ジャンプボタンフラグを下ろす
+                _inputData.isJumpReleased = true;
+                _inputData.isJumpHeld = false;
                 break;
             default:
                 break;
@@ -564,7 +587,7 @@ public class Player_Character : Character_Base {
         }
 
         // スライディングキャンセル中にジャンプでキャンセル
-        if (_isSlidingCanceling && _inputData.jumpPressed) {
+        if (_isSlidingCanceling && _inputData.isJumpPressed) {
             _isSlidingCanceling = false; // スライディングキャンセル終了
         }
 
@@ -575,7 +598,7 @@ public class Player_Character : Character_Base {
                 _isGroundSticking = false;
                 _warpDashDirection = _inputData.move.x > 0 ? _param.warpDashDownRight : _param.warpDashDownLeft;
                 _ExecuteDash(); // ダッシュ実行
-            } else if (_inputData.jumpPressed) {
+            } else if (_inputData.isJumpPressed) {
                 // 張り付き状態でジャンプ入力があればジャンプ
                 _isGroundSticking = false;
             }
@@ -586,7 +609,7 @@ public class Player_Character : Character_Base {
         }
 
         // ジャンプ
-        if (_inputData.jumpPressed && _isGrounded && !(_inputData.move.y < -0.5f && _inputData.move.x == 0)) {
+        if (_inputData.isJumpPressed && _isGrounded && !(_inputData.move.y < -0.5f && _inputData.move.x == 0)) {
             // スライディングジャンプ
             if (_isSliding) {
                 _SetSliding(false);
@@ -610,11 +633,11 @@ public class Player_Character : Character_Base {
             }
         }
         // ジャンプリリース
-        if ((!_inputData.jumpHeld && _isJumping) || _currentJumpTime <= 0) {
+        if ((!_inputData.isJumpHeld && _isJumping) || _currentJumpTime <= 0) {
             _isJumping = false;
         }
         // 長押しジャンプ
-        if (_inputData.jumpHeld && _isJumping) {
+        if (_inputData.isJumpHeld && _isJumping) {
             velocity.y = _jumpForce;
             _currentJumpTime -= Time.deltaTime;
         }
@@ -695,8 +718,8 @@ public class Player_Character : Character_Base {
         }
 
         // ワープ入力
-        if ((!_isGrounded && _inputData.jumpPressed) ||
-            (_isGrounded && _inputData.move.y < -0.5f && _inputData.move.x == 0 && _inputData.jumpPressed)) {
+        if ((!_isGrounded && _inputData.isJumpPressed) ||
+            (_isGrounded && _inputData.move.y < -0.5f && _inputData.move.x == 0 && _inputData.isJumpPressed)) {
             // エフェクト生成
             Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
 
@@ -711,7 +734,7 @@ public class Player_Character : Character_Base {
 
         IEnumerator WarpStart() {
             // MP消費
-            var is_success = _player_charaParam.ConsumeMP(eAbilityType.Warp);
+            var is_success = _player_charaParam.ConsumeMP(eAbilityType.WarpExecute);
 
             if (!is_success) {
                 yield break; // 失敗
@@ -911,6 +934,7 @@ public class Player_Character : Character_Base {
         if (_abilityY is T abilityY) return abilityY;
         if (_abilityX is T abilityX) return abilityX;
         if (_abilityA is T abilityA) return abilityA;
+        if (_abilityB is T abilityB) return abilityB;
         return null;
     }
 
@@ -939,6 +963,9 @@ public class Player_Character : Character_Base {
             case eAbilitySlot.A:
                 _abilityA = null;
                 break;
+            case eAbilitySlot.B:
+                _abilityB = null;
+                break;
         }
 
         // 一時保存用Dictionaryからも削除
@@ -965,6 +992,7 @@ public class Player_Character : Character_Base {
             eAbilitySlot.Y => _abilityY,
             eAbilitySlot.X => _abilityX,
             eAbilitySlot.A => _abilityA,
+            eAbilitySlot.B => _abilityB,
             _ => null
         };
 

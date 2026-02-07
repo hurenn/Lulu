@@ -111,9 +111,9 @@ public class Ability_Light : Ability_Base
         return eAbilityResult.LightDome;
     }
 
-    public override void ExecuteRelease() {
+    public override eAbilityResult ExecuteRelease() {
         if (_charaParam == null) {
-            return;
+            return eAbilityResult.None;
         }
 
         // 手動発光解除
@@ -131,6 +131,7 @@ public class Ability_Light : Ability_Base
             // ゴールマーカー非表示
             _goalMarker.SetMarkerActive(false);
         }
+        return eAbilityResult.None;
     }
 
     // 自動発光回避

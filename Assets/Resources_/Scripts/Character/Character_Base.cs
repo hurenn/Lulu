@@ -154,8 +154,8 @@ public class Character_Base : MonoBehaviour {
     public virtual void UpdateControl(CharacterInputData input) {
         if (_isDead) {
             input.move = Vector2.zero;
-            input.jumpHeld = false;
-            input.jumpPressed = false;
+            input.abilityBHeld = false;
+            input.abilityBPressed = false;
         }
         // 入力データ保存
         _inputData = input;
@@ -175,7 +175,7 @@ public class Character_Base : MonoBehaviour {
         }
 
         // ジャンプ
-        if (input.jumpPressed && _isGrounded) {
+        if (input.abilityBPressed && _isGrounded) {
             velocity.y = _jumpForce;
             _currentJumpTime = _param.maxJumpHoldTime;
             _isJumping = true;
@@ -183,11 +183,11 @@ public class Character_Base : MonoBehaviour {
             _anim?.Play("Jump");
         }
         // ジャンプリリース
-        if ((!input.jumpHeld && _isJumping) || _currentJumpTime <= 0) {
+        if ((!input.abilityBHeld && _isJumping) || _currentJumpTime <= 0) {
             _isJumping = false;
         }
         // 長押しジャンプ
-        if (input.jumpHeld && _isJumping) {
+        if (input.abilityBHeld && _isJumping) {
             velocity.y = _jumpForce;
             _currentJumpTime -= Time.deltaTime;
         }

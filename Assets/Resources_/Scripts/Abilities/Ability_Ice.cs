@@ -245,9 +245,10 @@ public class Ability_Ice : Ability_Base {
         }
     }
 
-    public override void ExecuteRelease() {
+    public override eAbilityResult ExecuteRelease() {
         _pressHoldTime = 0f;
         _isHoldExecuted = false;
+        return eAbilityResult.None;
     }
 
     /// <summary>

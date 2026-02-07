@@ -14,6 +14,8 @@ public enum eAbilityResult {
     LightParry,
     LightDome,
     LightSpecial,
+    Jump,
+    JumpRelease,
     SpecialEnd,
 }
 
@@ -243,7 +245,7 @@ public class Ability_Base : MonoBehaviour {
     /// <summary>
     /// ボタンを離したときの処理
     /// </summary>
-    public virtual void ExecuteRelease() { }
+    public virtual eAbilityResult ExecuteRelease() { return eAbilityResult.None; }
 
     /// <summary>
     /// ワープ実行時の処理

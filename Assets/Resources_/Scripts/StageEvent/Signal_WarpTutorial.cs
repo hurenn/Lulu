@@ -62,7 +62,7 @@ public class Signal_WarpTutorial : MonoBehaviour
 
         CharacterInputData specific_input = new CharacterInputData();
         specific_input.move = any_dir ? Vector2.zero : dir_input;
-        specific_input.jumpPressed = jump_input;
+        specific_input.isJumpPressed = jump_input;
         playerController.SetSpecificInput(specific_input, () => {
             // “ü—ÍŠ®—¹Œã‚Ìˆ—
             _isTutorialActive = false;

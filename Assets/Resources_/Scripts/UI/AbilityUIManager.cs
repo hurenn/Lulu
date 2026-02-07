@@ -4,12 +4,14 @@ public enum eAbilitySlot {
     Y,
     X,
     A,
+    B,
 }
 
 public class AbilityUIManager : MonoBehaviour {
     [SerializeField] private AbilityUI_Base _abilityUI_Y;
     [SerializeField] private AbilityUI_Base _abilityUI_X;
     [SerializeField] private AbilityUI_Base _abilityUI_A;
+    [SerializeField] private AbilityUI_Base _abilityUI_B;
 
     /// <summary>
     /// 能力UIの設定
@@ -33,6 +35,13 @@ public class AbilityUIManager : MonoBehaviour {
                 _abilityUI_A.SetAbilityUI(ability_type, is_effect);
                 ability.SetOnChargeSpecialCallback(_abilityUI_A.OnChargeSpecial);
                 break;
+            case eAbilitySlot.B:
+                if (_abilityUI_B != null) {
+                    _abilityUI_B.gameObject.SetActive(true);
+                    _abilityUI_B.SetAbilityUI(ability_type, is_effect);
+                    ability.SetOnChargeSpecialCallback(_abilityUI_B.OnChargeSpecial);
+                }
+                break;
             default:
                 Debug.LogError("不明なスロット：" + slot);
                 break;
@@ -53,6 +62,11 @@ public class AbilityUIManager : MonoBehaviour {
                 break;
             case eAbilitySlot.A:
                 _abilityUI_A.gameObject.SetActive(false);
+                break;
+            case eAbilitySlot.B:
+                if (_abilityUI_B != null) {
+                    _abilityUI_B.gameObject.SetActive(false);
+                }
                 break;
         }
     }

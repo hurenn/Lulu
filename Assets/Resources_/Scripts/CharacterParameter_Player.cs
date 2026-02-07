@@ -143,7 +143,7 @@ public class CharacterParameter_Player : CharacterParameter {
         }
 
         switch (ability_type) {
-            case eAbilityType.Warp:
+            case eAbilityType.WarpExecute:
                 DecreaseMP(_warpCost);
                 break;
             case eAbilityType.Ice:

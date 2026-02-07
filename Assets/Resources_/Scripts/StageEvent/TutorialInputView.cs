@@ -24,7 +24,7 @@ public class TutorialInputView : MonoBehaviour {
         bool is_right = input.move.x > 0.5f || _rightInputView == null;
         bool is_down = input.move.y < -0.5f || _downInputView == null;
 
-        bool is_button = input.jumpPressed;
+        bool is_button = input.isJumpPressed;
 
         // 十字キー入力表示
         if (_rightInputView != null) {

@@ -86,9 +86,9 @@ public struct CharacterInputData
     public void Clear()
     {
         move = Vector2.zero;
-        jumpPressed = false;
-        jumpHeld = false;
-        jumpReleased = false;
+        abilityBPressed = false;
+        abilityBHeld = false;
+        abilityBReleased = false;
         abilityYPressed = false;
         abilityYHeld = false;
         abilityYReleased = false;
@@ -102,9 +102,13 @@ public struct CharacterInputData
     }
 
     public Vector2 move;     // 方向入力
-    public bool jumpPressed; // ジャンプボタンを押した瞬間
-    public bool jumpHeld;    // ジャンプボタンを押し続ける
-    public bool jumpReleased; // ジャンプボタンを離した瞬間
+    public bool isJumpPressed;  // ジャンプボタンを押した瞬間
+    public bool isJumpHeld;     // ジャンプボタンを押し続ける
+    public bool isJumpReleased; // ジャンプボタンを離した瞬間
+
+    public bool abilityBPressed; // Bボタンを押した瞬間
+    public bool abilityBHeld;    // Bボタンを押し続ける
+    public bool abilityBReleased; // Bボタンを離した瞬間
 
     public bool abilityYPressed; // Yボタンを押した瞬間
     public bool abilityYHeld;    // Yボタンを押し続ける

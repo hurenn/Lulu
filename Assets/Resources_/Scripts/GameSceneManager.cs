@@ -84,6 +84,18 @@ public class GameSceneManager : MonoBehaviour
                 }
             }
         }
+        if (keyboard.numpad2Key.wasPressedThisFrame) {
+            var player = FindAnyObjectByType<Player_Character>();
+            if (player != null) {
+                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Warp);
+                if (had_ability) {
+                    player.RemoveAbility(eAbilitySlot.B);
+                } else {
+                    player.SetAbilitySlot(eAbilityType.Warp, eAbilitySlot.B);
+                }
+            }
+        }
+
         if (keyboard.numpad5Key.wasPressedThisFrame) {
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {

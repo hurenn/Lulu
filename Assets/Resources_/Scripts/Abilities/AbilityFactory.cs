@@ -7,13 +7,14 @@ public enum eAbilityType {
     Ice,
     Fire,
     Light,
+    Warp,
     // ここまで固定
 
     LockonSlash,
     AutoSlash,
     LightAvoid,
     LightAutoAvoid,
-    Warp,
+    WarpExecute,
 }
 
 public static class AbilityFactory {
@@ -53,6 +54,9 @@ public static class AbilityFactory {
                 break;
             case eAbilityType.Light:
                 ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Light>("Prefabs/Abilities/Ability_Light"));
+                break;
+            case eAbilityType.Warp:
+                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Warp>("Prefabs/Abilities/Ability_Warp"));
                 break;
             default:
                 Debug.LogError("能力タイプが見つかりませんでした");

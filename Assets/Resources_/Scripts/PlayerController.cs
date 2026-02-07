@@ -10,9 +10,6 @@ public class PlayerController : MonoBehaviour {
 
     // 方向入力
     private Vector2 _moveInputValue;
-    private bool _isJumpPressed = false;
-    private bool _isJumpHeld = false;
-    private bool _isJumpReleased = false;
 
     // Abilityボタンの状態
     private bool _isAbilityYPressed = false;
@@ -24,6 +21,9 @@ public class PlayerController : MonoBehaviour {
     private bool _isAbilityAPressed = false;
     private bool _isAbilityAHeld = false;
     private bool _isAbilityAReleased = false;
+    private bool _isAbilityBPressed = false;
+    private bool _isAbilityBHeld = false;
+    private bool _isAbilityBReleased = false;
 
     // メッセージ送り入力
     private bool _isMessageNextPressed = false;
@@ -92,8 +92,6 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Enable();
         _inputActions.Player.Move.performed += _OnMove;
         _inputActions.Player.Move.canceled += _OnMove;
-        _inputActions.Player.Jump.performed += OnJump;
-        _inputActions.Player.Jump.canceled += OnJumpRelease;
 
         _inputActions.Player.AbilityY.performed += OnAbilityY;
         _inputActions.Player.AbilityY.canceled += OnAbilityYRelease;
@@ -101,6 +99,8 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.AbilityX.canceled += OnAbilityXRelease;
         _inputActions.Player.AbilityA.performed += OnAbilityA;
         _inputActions.Player.AbilityA.canceled += OnAbilityARelease;
+        _inputActions.Player.AbilityB.performed += OnAbilityB;
+        _inputActions.Player.AbilityB.canceled += OnAbilityBRelease;
         // Pauseアクション購読
         _inputActions.Player.Pause.performed += OnPause;
     }
@@ -108,14 +108,14 @@ public class PlayerController : MonoBehaviour {
     private void OnDisable() {
         _inputActions.Player.Move.performed -= _OnMove;
         _inputActions.Player.Move.canceled -= _OnMove;
-        _inputActions.Player.Jump.performed -= OnJump;
-        _inputActions.Player.Jump.canceled -= OnJumpRelease;
         _inputActions.Player.AbilityY.performed -= OnAbilityY;
         _inputActions.Player.AbilityY.canceled -= OnAbilityYRelease;
         _inputActions.Player.AbilityX.performed -= OnAbilityX;
         _inputActions.Player.AbilityX.canceled -= OnAbilityXRelease;
         _inputActions.Player.AbilityA.performed -= OnAbilityA;
         _inputActions.Player.AbilityA.canceled -= OnAbilityARelease;
+        _inputActions.Player.AbilityB.performed -= OnAbilityB;
+        _inputActions.Player.AbilityB.canceled -= OnAbilityBRelease;
         // Pauseアクション解除
         _inputActions.Player.Pause.performed -= OnPause;
         _inputActions.Player.Disable();
@@ -194,9 +194,9 @@ public class PlayerController : MonoBehaviour {
         if (_moveInputValue.y < -0.5f) move_input.y = -1f;
         input.move = move_input;
 
-        input.jumpPressed = _isJumpPressed;
-        input.jumpHeld = _isJumpHeld;
-        input.jumpReleased = _isJumpReleased;
+        input.abilityBPressed = _isAbilityBPressed;
+        input.abilityBHeld = _isAbilityBHeld;
+        input.abilityBReleased = _isAbilityBReleased;
         input.abilityYPressed = _isAbilityYPressed;
         input.abilityYHeld = _isAbilityYHeld;
         input.abilityYReleased = _isAbilityYReleased;
@@ -206,12 +206,14 @@ public class PlayerController : MonoBehaviour {
         input.abilityAPressed = _isAbilityAPressed;
         input.abilityAHeld = _isAbilityAHeld;
         input.abilityAReleased = _isAbilityAReleased;
+        input.isJumpPressed = false;
+        input.isJumpReleased = false;
         virtualInput = input;
 
         if (_wasPauseOpen) {
             // ポーズ画面を閉じた直後は入力をリセット
             _wasPauseOpen = false;
-            input.jumpPressed = false;
+            input.abilityBPressed = false;
         }
 
         // 特定入力のチェック
@@ -232,8 +234,8 @@ public class PlayerController : MonoBehaviour {
         character.IsEventInvincible = !isEnabledCharacterInput;
         character.UpdateControl(input);
 
-        _isJumpPressed = false;
-        _isJumpReleased = false;
+        _isAbilityBPressed = false;
+        _isAbilityBReleased = false;
         _isAbilityYPressed = false;
         _isAbilityYReleased = false;
         _isAbilityXPressed = false;
@@ -246,20 +248,20 @@ public class PlayerController : MonoBehaviour {
         _moveInputValue = context.ReadValue<Vector2>();
     }
 
-    private void OnJump(InputAction.CallbackContext context) {
+    private void OnAbilityB(InputAction.CallbackContext context) {
         if (!_wasMessageNextPressed) {
             _isMessageNextPressed = true;
             _wasMessageNextPressed = true; // ここでtrueに設定
         }
-        _isJumpPressed = true;
-        _isJumpHeld = true;
+        _isAbilityBPressed = true;
+        _isAbilityBHeld = true;
     }
 
-    private void OnJumpRelease(InputAction.CallbackContext context) {
+    private void OnAbilityBRelease(InputAction.CallbackContext context) {
         _isMessageNextPressed = false;
-        _isJumpPressed = false;
-        _isJumpHeld = false;
-        _isJumpReleased = true;
+        _isAbilityBPressed = false;
+        _isAbilityBHeld = false;
+        _isAbilityBReleased = true;
         _wasMessageNextPressed = false; // Release時にfalseに戻す
     }
 
@@ -331,17 +333,17 @@ public class PlayerController : MonoBehaviour {
         _insertMoveMode = insertMove.magnitude > 0.5f;
 
         // ジャンプ入力
-        if (insertJumpHeld && !_isJumpHeld) {
-            _isJumpPressed = true;
-            _isJumpHeld = true;
-            input.jumpPressed = _isJumpPressed;
-            input.jumpHeld = _isJumpHeld;
+        if (insertJumpHeld && !_isAbilityBHeld) {
+            _isAbilityBPressed = true;
+            _isAbilityBHeld = true;
+            input.abilityBPressed = _isAbilityBPressed;
+            input.abilityBHeld = _isAbilityBHeld;
         }
-        if (!insertJumpHeld && _isJumpHeld) {
-            _isJumpPressed = false;
-            _isJumpHeld = false;
-            input.jumpPressed = _isJumpPressed;
-            input.jumpHeld = _isJumpHeld;
+        if (!insertJumpHeld && _isAbilityBHeld) {
+            _isAbilityBPressed = false;
+            _isAbilityBHeld = false;
+            input.abilityBPressed = _isAbilityBPressed;
+            input.abilityBHeld = _isAbilityBHeld;
         }
 
         // メッセージ送り入力
@@ -368,8 +370,8 @@ public class PlayerController : MonoBehaviour {
             isInputReceived = true; // 方向入力が無い場合は常にtrue
         }
         // ジャンプ入力のチェック
-        if (specific_input.jumpPressed && isInputReceived == true) {
-            if (input.jumpPressed) {
+        if (specific_input.abilityBPressed && isInputReceived == true) {
+            if (input.abilityBPressed) {
                 isInputReceived = true;
             } else {
                 isInputReceived = false;
@@ -404,9 +406,9 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     private void _ResetInput() {
         _moveInputValue = Vector2.zero;
-        _isJumpPressed = false;
-        _isJumpHeld = false;
-        _isJumpReleased = false;
+        _isAbilityBPressed = false;
+        _isAbilityBHeld = false;
+        _isAbilityBReleased = false;
         _isAbilityYPressed = false;
         _isAbilityYHeld = false;
         _isAbilityYReleased = false;
