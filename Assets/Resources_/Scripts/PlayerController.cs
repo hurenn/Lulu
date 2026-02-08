@@ -255,6 +255,9 @@ public class PlayerController : MonoBehaviour {
         }
         _isAbilityBPressed = true;
         _isAbilityBHeld = true;
+        
+        // UIフラッシュ演出
+        _FlashAbilityUI(eAbilitySlot.B);
     }
 
     private void OnAbilityBRelease(InputAction.CallbackContext context) {
@@ -272,6 +275,9 @@ public class PlayerController : MonoBehaviour {
         }
         _isAbilityYPressed = true;
         _isAbilityYHeld = true;
+        
+        // UIフラッシュ演出
+        _FlashAbilityUI(eAbilitySlot.Y);
     }
 
     private void OnAbilityYRelease(InputAction.CallbackContext context) {
@@ -289,7 +295,11 @@ public class PlayerController : MonoBehaviour {
         }
         _isAbilityXPressed = true;
         _isAbilityXHeld = true;
+        
+        // UIフラッシュ演出
+        _FlashAbilityUI(eAbilitySlot.X);
     }
+    
     private void OnAbilityXRelease(InputAction.CallbackContext context) {
         _isMessageNextPressed = false;
         _isAbilityXPressed = false;
@@ -305,13 +315,32 @@ public class PlayerController : MonoBehaviour {
         }
         _isAbilityAPressed = true;
         _isAbilityAHeld = true;
+        
+        // UIフラッシュ演出
+        _FlashAbilityUI(eAbilitySlot.A);
     }
+    
     private void OnAbilityARelease(InputAction.CallbackContext context) {
         _isMessageNextPressed = false;
         _isAbilityAPressed = false;
         _isAbilityAHeld = false;
         _isAbilityAReleased = true;
         _wasMessageNextPressed = false;
+    }
+
+    /// <summary>
+    /// 能力UIを光らせる
+    /// </summary>
+    private void _FlashAbilityUI(eAbilitySlot slot) {
+        // ポーズ中やキャラクター操作無効時は演出をスキップ
+        if (Pause_UI.IsOpen || !isEnabledCharacterInput) {
+            return;
+        }
+
+        var abilityUIManager = FindAnyObjectByType<AbilityUIManager>();
+        if (abilityUIManager != null) {
+            abilityUIManager.FlashAbilityUI(slot);
+        }
     }
 
     bool _insertMoveMode = false;
