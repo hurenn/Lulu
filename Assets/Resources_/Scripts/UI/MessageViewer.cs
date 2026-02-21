@@ -16,9 +16,11 @@ public class MessageViewer : MonoBehaviour {
         {"Pepe", "ペペ"},
         {"Milly", "ミリー"},
     };
-    private const float _BASE_SHOW_TIME = 4.0f; // 基本表示時間
-    private const float _AUTO_MESSAGE_SHOW_TIME = 0.01f; // 1文字あたりの追加表示時間
-    private const float _AUTO_ENG_MESSAGE_SHOW_TIME = 0.001f; // 英語1文字あたりの追加表示時間
+    private const float _BASE_SHOW_TIME = 2.0f; // 基本表示時間
+    private const float _ADD_SHOW_TIME = 0.1f;  // 1文字あたりの追加表示時間
+    private const float _ADD_ENG_SHOW_TIME = 0.05f;  // 1文字あたりの追加表示時間
+    private const float _AUTO_MESSAGE_SHOW_TIME = 0.01f; // メッセージ表示の早さ
+    private const float _AUTO_ENG_MESSAGE_SHOW_TIME = 0.001f; // 英語メッセージ表示の早さ
     private const float _COOL_TIME = 0.5f;  // メッセージ表示クールタイム
     private const float _FORCE_COOL_TIME = 0.1f; // 強制メッセージ表示クールタイム
 
@@ -104,7 +106,8 @@ public class MessageViewer : MonoBehaviour {
         } else if (_currentShowTime > 0) {
             // メッセージ表示の残り時間表示
             _currentShowTime -= Time.unscaledDeltaTime;
-            _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentText.Length * _AUTO_MESSAGE_SHOW_TIME));
+            _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentText.Length *
+                (_playerParameter.language == PlayerParameter.eLanguage.English ? _ADD_ENG_SHOW_TIME : _ADD_SHOW_TIME)));
             if (_currentShowTime <= 0f) {
                 // 表示時間終了
                 _HideOrNext();
@@ -156,7 +159,9 @@ public class MessageViewer : MonoBehaviour {
         _iconImage.sprite = chara_icon;   // キャラクターアイコンをセット
         _isSeries = _messageListScript.HasMessages();   // 次のメッセージがあるかどうか
 
-        _currentShowTime = _BASE_SHOW_TIME + (_currentText.Length * _AUTO_MESSAGE_SHOW_TIME) + _currentMessage.addShowTime; // 基本3秒 + 文字数に応じた追加時間 + メッセージ固有の追加時間
+        _currentShowTime = _BASE_SHOW_TIME + (_currentText.Length *
+            (_playerParameter.language == PlayerParameter.eLanguage.English ? _ADD_ENG_SHOW_TIME : _ADD_SHOW_TIME))
+            + _currentMessage.addShowTime; // 基本3秒 + 文字数に応じた追加時間 + メッセージ固有の追加時間
 
         if (_currentShowTime < 0) {
             _nextIcon.gameObject.SetActive(false); // 次のメッセージアイコンを非表示

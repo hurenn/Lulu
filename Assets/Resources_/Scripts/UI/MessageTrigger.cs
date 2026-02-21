@@ -13,15 +13,15 @@ public class MessageTrigger : MonoBehaviour {
     private PlayerController _playerController; // プレイヤーコントローラー
     private bool _isPlayerInside = false; // プレイヤーがトリガー内にいるかどうか
 
-    private void Reset() {
-        // リセット時にメッセージリストを自動設定
-        _messageListScript = FindAnyObjectByType<MessageList>();
-    }
-
     // メッセージを追加する
     private IEnumerator _AddMessage() {
+        if(_messageListScript == null) {
+            Debug.LogError("メッセージリストが設定されていません。自動取得しますが後程設定してください");
+            _messageListScript = FindAnyObjectByType<MessageList>();
+        }
+
         // メッセージ表示機能を探す (WIP)
-        while(_messageViewer == null) {
+        while (_messageViewer == null) {
             _messageViewer = FindAnyObjectByType<MessageViewer>();
             yield return null;
         }
