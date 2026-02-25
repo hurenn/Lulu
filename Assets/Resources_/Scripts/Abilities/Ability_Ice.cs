@@ -284,7 +284,8 @@ public class Ability_Ice : Ability_Base {
         // ƒtƒ‰ƒbƒVƒ…
         Color flash_color = Color.white;
         flash_color.a = 0.5f;
-        ScreenFlash.Instance.Flash(color: flash_color);
+        var flash = ScreenFlash.Instance;
+        flash?.Flash(color: flash_color);
 
         // MPÁ”ï
         _AppearCheck(ability_type, force_appear: true);
