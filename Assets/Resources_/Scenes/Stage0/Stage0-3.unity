@@ -3379,11 +3379,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f4d394dfa3cb8843abd0b49267d6b65, type: 3}
---- !u!95 &682987608 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 6963313008921988316, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
-  m_PrefabInstance: {fileID: 3533117522502050626}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &703166040
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4169,7 +4164,7 @@ PlayableDirector:
   m_InitialTime: 0
   m_SceneBindings:
   - key: {fileID: 6397241911199985752, guid: 9d6ba07df8eb2de48852f35962f34b9e, type: 2}
-    value: {fileID: 682987608}
+    value: {fileID: 0}
   - key: {fileID: -8363009465995978598, guid: 9d6ba07df8eb2de48852f35962f34b9e, type: 2}
     value: {fileID: 2097828340}
   - key: {fileID: 4537704934767451189, guid: 9d6ba07df8eb2de48852f35962f34b9e, type: 2}
@@ -4861,9 +4856,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveData:
   - {fileID: 11400000, guid: 7c4865e880611874fbc3e7afbd1a366c, type: 2}
-  - {fileID: 11400000, guid: ee5eace1c4a4ee44ea05cc53c13a1569, type: 2}
-  - {fileID: 11400000, guid: 05d1ba22e659fb14c90875fb6d28a2b1, type: 2}
-  - {fileID: 11400000, guid: 6bc81acae45777349a75b8e1bbdbf1fa, type: 2}
   spawnPoints:
   - {fileID: 1209372316}
   - {fileID: 1453007717}
@@ -179926,7 +179918,7 @@ MonoBehaviour:
   _isAlwaysAnimated: 0
   _animator: {fileID: 0}
   _sceneAsset: {fileID: 102900000, guid: 73b94183d2f1ec44483a8cc163c81280, type: 3}
-  _sceneName: Stage1-4
+  _sceneName: Stage0-4
   characterController: {fileID: 1050631893}
 --- !u!61 &1853570549
 BoxCollider2D:

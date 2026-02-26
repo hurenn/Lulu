@@ -231,12 +231,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageToPlayer: 1
   _damageToEnemy: 0
-  _invincibleTime: 1
+  _invincibleTime: 3
   _blowPowerRight: {x: 5, y: 5}
   _damageReactionTime: 0.5
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _selfCharacter: {fileID: 1953610159386184731}
+  _damageToSelf: 5
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 1
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 0
   _hitEffectSize: 1
@@ -654,6 +658,7 @@ MonoBehaviour:
   _seJump: {fileID: 0}
   _seDamage: {fileID: 8300000, guid: 49310710ade74f04abaf99a4bc9ef99c, type: 3}
   _seDead: {fileID: 8300000, guid: ae9ed51805db1a34d98ba0dd085be0b3, type: 3}
+  _damageFriction: 0.9
   _isRight: 0
   enableGravity: 1
   _exp: 5

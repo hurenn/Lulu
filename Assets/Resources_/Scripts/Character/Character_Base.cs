@@ -28,6 +28,9 @@ public class Character_Base : MonoBehaviour {
     [SerializeField] protected AudioClip _seDamage;
     [SerializeField] protected AudioClip _seDead;
 
+    // ダメージ吹っ飛び時の摩擦力（地面での速度減衰率）
+    [SerializeField] protected float _damageFriction = 0.9f;
+
     // チェッカーパラメータ
     protected Vector3 _groundCheckLocalPos = default;
     protected Vector3 _groundCheckScale = default;
@@ -133,6 +136,9 @@ public class Character_Base : MonoBehaviour {
             _damageReactionTimer -= Time.deltaTime;
         }
 
+        // ダメージリアクション中の速度減衰
+        _ApplyDamageFriction();
+
         // 向きの更新
         if (_sprite != null) {
             _sprite.flipX = _isRight;
@@ -146,6 +152,25 @@ public class Character_Base : MonoBehaviour {
         _motorStates.isSliding = _isSliding;
         _motorStates.isDashing = _isDashing;
         _motorStates.isWarpDashing = _isWarpDashing;
+    }
+
+    /// <summary>
+    /// ダメージリアクション中の速度減衰処理
+    /// </summary>
+    private void _ApplyDamageFriction() {
+        // ダメージリアクション中かつ地面に接地している場合
+        if (_damageReactionTimer > 0 && _isGrounded) {
+            Vector2 velocity = _rb.linearVelocity;
+            // 横方向の速度を減衰
+            velocity.x *= _damageFriction;
+            
+            // 速度が非常に小さくなったら完全に停止
+            if (Mathf.Abs(velocity.x) < 0.1f) {
+                velocity.x = 0f;
+            }
+            
+            _rb.linearVelocity = velocity;
+        }
     }
 
     /// <summary>

@@ -24,6 +24,16 @@ public class DamageZone : MonoBehaviour {
     // 一度だけダメージを与えるかどうか
     [SerializeField] private bool _isOnceHit = true;
 
+    [Header("Self Damage Settings")]
+    // このDamageZoneの所有者（設定した場合、ダメージを与えた時に自分にもダメージを与える）
+    [SerializeField] private Character_Base _selfCharacter = null;
+    // 自分自身に与えるダメージ量
+    [SerializeField] private int _damageToSelf = 0;
+    // 自分自身への吹っ飛ばし力
+    [SerializeField] private Vector2 _blowPowerToSelf = new Vector2(3.0f, 5.0f);
+    // 自分自身にダメージを与えるかどうか
+    [SerializeField] private bool _enableSelfDamage = false;
+
     // ヒット済みキャラの管理
     Dictionary<Character_Base, float> _hitCharacters = new Dictionary<Character_Base, float>();
     private const float _hitInterval = 0.5f; // 同じキャラに連続ヒットさせない時間
@@ -58,6 +68,14 @@ public class DamageZone : MonoBehaviour {
     /// <param name="callback">ヒット時のコールバック設定</param>
     public void Setup(System.Action<Character_Base> callback) {
         _hitCallback = callback;
+    }
+
+    /// <summary>
+    /// 自分自身のキャラクターを設定
+    /// </summary>
+    /// <param name="character">このDamageZoneの所有者</param>
+    public void SetSelfCharacter(Character_Base character) {
+        _selfCharacter = character;
     }
 
     // Update is called once per frame
@@ -142,11 +160,39 @@ public class DamageZone : MonoBehaviour {
             // ヒットストップ
             LocalTimePause hit_target = other.GetComponent<LocalTimePause>();
             _HitStop(hit_target, target_effect);
+
+            // 自分自身にもダメージを与える
+            if (_enableSelfDamage && _selfCharacter != null && _damageToSelf > 0) {
+                _ApplySelfDamage(other.transform.position);
+            }
         }
 
         if (_isHitDestroy && _destroyObject != null) {
             Destroy(_destroyObject);
         }
+    }
+
+    /// <summary>
+    /// 自分自身にダメージを与える
+    /// </summary>
+    /// <param name="hitPosition">ヒットした相手の位置</param>
+    private void _ApplySelfDamage(Vector3 hitPosition) {
+        if (_selfCharacter == null || _selfCharacter.isInvincible) {
+            return;
+        }
+
+        // 相手の位置に応じて吹っ飛ばし方向を決定
+        var blowPower = _blowPowerToSelf;
+        if (hitPosition.x < _selfCharacter.transform.position.x) {
+            // 相手が左側にいる場合、自分は右に吹っ飛ぶ
+            blowPower.x = Mathf.Abs(blowPower.x);
+        } else {
+            // 相手が右側にいる場合、自分は左に吹っ飛ぶ
+            blowPower.x = -Mathf.Abs(blowPower.x);
+        }
+
+        // 自分自身にダメージを与える
+        _selfCharacter.Damage(_damageToSelf, blowPower, _invincibleTime, _damageReactionTime);
     }
 
     private GameObject _SpawnHitEffect(Vector3 position, HitEffect.eType type) {
