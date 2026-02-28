@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6602521645817527136}
   - component: {fileID: 1390485788023597283}
   - component: {fileID: 6480122847032637891}
-  - component: {fileID: 2466023340580212925}
   m_Layer: 0
   m_Name: WaveBattleArea
   m_TagString: Untagged
@@ -109,22 +108,6 @@ MonoBehaviour:
   walls:
   - {fileID: 7723769620956553031}
   - {fileID: 3726956008275362950}
---- !u!114 &2466023340580212925
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 307364692046662022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f0bd4cfdd6545b4080efbcca05462a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isAlwaysAnimated: 0
-  _animator: {fileID: 0}
-  _targetObjects:
-  - {fileID: 0}
 --- !u!1 &1042561419330815994
 GameObject:
   m_ObjectHideFlags: 0

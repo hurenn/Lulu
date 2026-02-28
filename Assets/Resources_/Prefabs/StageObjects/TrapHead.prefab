@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 721846363026802860}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.06, y: 3.15, z: 0}
-  m_LocalScale: {x: 124.248, y: 323.0448, z: 1.0354}
+  m_LocalPosition: {x: 0.06, y: 8.5832, z: 0}
+  m_LocalScale: {x: 124.248, y: 866.37384, z: 1.0354}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 366558902852132885}
@@ -381,7 +381,7 @@ Transform:
   m_GameObject: {fileID: 6342002518144872966}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.05, y: 3.1200016, z: 0}
+  m_LocalPosition: {x: 0.05, y: 8.6602, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -436,7 +436,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 4.3127775, y: 8.123775}
+  m_Size: {x: 4.3127775, y: 19.204142}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -462,6 +462,10 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _selfCharacter: {fileID: 0}
+  _damageToSelf: 0
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 1
   _hitEffectSize: 2
@@ -511,12 +515,12 @@ BoxCollider2D:
     border: {x: 2, y: 1.17, z: 2, w: 1.28}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 5.12, y: 2.56}
-    newSize: {x: 4.3127775, y: 8.123775}
+    newSize: {x: 4.3127775, y: 19.204142}
     adaptiveTilingThreshold: 0.5
     drawMode: 2
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2, y: 6}
+  m_Size: {x: 2, y: 17.23}
   m_EdgeRadius: 0
 --- !u!82 &2541725573867644471
 AudioSource:
