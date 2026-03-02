@@ -52,10 +52,22 @@ PrefabInstance:
       propertyPath: _selfCharacter
       value: 
       objectReference: {fileID: 3012119659080927163}
+    - target: {fileID: 8560854206794719696, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8560854206794719696, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 36aee5b34d8b64140908a243785b9a7f, type: 2}
     - target: {fileID: 8859113190306904744, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
       propertyPath: m_Name
       value: Walk_Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 9099040648427971505, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 127015226081211854, guid: 6a826dedc007c324983d3c4a7536250c, type: 3}
     m_RemovedComponents:
     - {fileID: 1953610159386184731, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
     m_RemovedGameObjects: []
