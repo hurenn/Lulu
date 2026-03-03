@@ -289,6 +289,9 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void OnAbilityX(InputAction.CallbackContext context) {
+        OnAbilityX();
+    }
+    public void OnAbilityX() {
         if (!_wasMessageNextPressed) {
             _isMessageNextPressed = true;
             _wasMessageNextPressed = true;
@@ -406,6 +409,14 @@ public class PlayerController : MonoBehaviour {
                 isInputReceived = false;
             }
         }
+        // Xボタン入力のチェック
+        if (specific_input.abilityXPressed && isInputReceived == true) {
+            if (input.abilityXPressed) {
+                isInputReceived = true;
+            } else {
+                isInputReceived = false;
+            }
+        }
 
         // 入力完了コールバックの呼び出し
         if (isInputReceived && _inputCompletedCallback != null) {
@@ -413,6 +424,10 @@ public class PlayerController : MonoBehaviour {
             _inputCompletedCallback = null;
             _specificInput = new CharacterInputData();
         }
+    }
+
+    public void SetInput(CharacterInputData input) {
+        this.input = input;
     }
 
     #region Inspector Control Methods

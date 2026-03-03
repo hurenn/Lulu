@@ -52,6 +52,9 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private float _manualShakeDuration = 0.5f;
     [SerializeField] private float _hitCameraShakeIntensity = 0f;
 
+    [SerializeField] private GameObject[] _hitPlayerEvent;    // ヒット時に発生させるイベントオブジェクト
+    [SerializeField] private GameObject[] _avoidPlayerEvent;  // 回避時に発生させるイベントオブジェクト
+
     // ダメージ判定の有効無効
     private bool _isEnable = true;
 
@@ -165,6 +168,19 @@ public class DamageZone : MonoBehaviour {
             if (_enableSelfDamage && _selfCharacter != null && _damageToSelf > 0) {
                 _ApplySelfDamage(other.transform.position);
             }
+        }
+                
+        // プレイヤーヒット状態に応じたイベント発生
+        bool isAvoid = false;
+        Player_Character player = other.GetComponent<Player_Character>();
+        if (player != null) {
+            isAvoid = player.PlayerCharaParam.isLightInvincible || player.PlayerCharaParam.isAutoLightInvincible;
+        }
+        foreach (var obj in _avoidPlayerEvent) {
+            if (obj != null) obj.SetActive(isAvoid);
+        }
+        foreach (var obj in _hitPlayerEvent) {
+            if (obj != null) obj.SetActive(!isAvoid);
         }
 
         if (_isHitDestroy && _destroyObject != null) {

@@ -79,7 +79,7 @@ public class MessageViewer : MonoBehaviour {
         }
 
         if (_currentCoolTime > 0) {
-            _currentCoolTime -= Time.unscaledDeltaTime;
+            _currentCoolTime -= Time.deltaTime;
             return;
         }
 
@@ -105,7 +105,7 @@ public class MessageViewer : MonoBehaviour {
             }
         } else if (_currentShowTime > 0) {
             // メッセージ表示の残り時間表示
-            _currentShowTime -= Time.unscaledDeltaTime;
+            _currentShowTime -= Time.deltaTime;
             _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentText.Length *
                 (_playerParameter.language == PlayerParameter.eLanguage.English ? _ADD_ENG_SHOW_TIME : _ADD_SHOW_TIME)));
             if (_currentShowTime <= 0f) {
@@ -228,7 +228,7 @@ public class MessageViewer : MonoBehaviour {
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
                 var color = window.color;
-                color.a = Mathf.Lerp(color.a, _fadeAlpha, Time.unscaledDeltaTime * 5f);
+                color.a = Mathf.Lerp(color.a, _fadeAlpha, Time.deltaTime * 5f);
                 window.color = color;
             }
         } else {
@@ -236,7 +236,7 @@ public class MessageViewer : MonoBehaviour {
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
                 var color = window.color;
-                color.a = Mathf.Lerp(color.a, _normalAlpha, Time.unscaledDeltaTime * 5f);
+                color.a = Mathf.Lerp(color.a, _normalAlpha, Time.deltaTime * 5f);
                 window.color = color;
             }
         }

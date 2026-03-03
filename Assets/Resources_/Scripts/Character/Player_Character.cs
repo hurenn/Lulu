@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class Player_Character : Character_Base {
     private CharacterParameter_Player _player_charaParam => _charaParam as CharacterParameter_Player;
+    public CharacterParameter_Player PlayerCharaParam => _player_charaParam;
 
     // ワープ管理
     [SerializeField] private WarpControl _warpControl;

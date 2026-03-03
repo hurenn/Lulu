@@ -28,7 +28,10 @@ public class MessagePlayableBehaviour : PlayableBehaviour {
         if (shown) return;
         shown = true;
 
-        director.Pause();
+        // 手動メッセージの場合は再生を一時停止
+        if (!messageDatas[0].isAutoForce) {
+            director.Pause();
+        }
 
         _AddMessage();
     }
