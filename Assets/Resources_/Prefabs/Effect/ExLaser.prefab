@@ -130,7 +130,7 @@ Animator:
   m_GameObject: {fileID: 605466143074066808}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9f8897b3f3d8d4046bf019f5184af0a0, type: 2}
+  m_Controller: {fileID: 9100000, guid: 352b0effcbfe8e24abde29aa4273f653, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -368,6 +368,10 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _selfCharacter: {fileID: 0}
+  _damageToSelf: 0
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 1
   _hitEffectSize: 2
@@ -378,6 +382,8 @@ MonoBehaviour:
   _manualShakeIntensity: 0.5
   _manualShakeDuration: 0.5
   _hitCameraShakeIntensity: 0.1
+  _hitPlayerEvent: []
+  _avoidPlayerEvent: []
 --- !u!61 &2020714752910909934
 BoxCollider2D:
   m_ObjectHideFlags: 0
