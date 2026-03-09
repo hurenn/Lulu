@@ -24,6 +24,7 @@ public class MessageData {
         set { _playableDirector = value; }
     }
     public bool isAutoForce = false;
+    public bool isUnScaledTime = false;
 }
 
 /// <summary>

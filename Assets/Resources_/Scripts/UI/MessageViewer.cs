@@ -78,8 +78,14 @@ public class MessageViewer : MonoBehaviour {
             return;
         }
 
+        // isUnScaledTimeに応じてdeltaTimeを選択
+        float deltaTime = Time.deltaTime;
+        if (_currentMessage != null && _currentMessage.isUnScaledTime) {
+            deltaTime = Time.unscaledDeltaTime;
+        }
+
         if (_currentCoolTime > 0) {
-            _currentCoolTime -= Time.deltaTime;
+            _currentCoolTime -= deltaTime;
             return;
         }
 
@@ -105,7 +111,7 @@ public class MessageViewer : MonoBehaviour {
             }
         } else if (_currentShowTime > 0) {
             // メッセージ表示の残り時間表示
-            _currentShowTime -= Time.deltaTime;
+            _currentShowTime -= deltaTime;
             _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentText.Length *
                 (_playerParameter.language == PlayerParameter.eLanguage.English ? _ADD_ENG_SHOW_TIME : _ADD_SHOW_TIME)));
             if (_currentShowTime <= 0f) {
@@ -191,7 +197,14 @@ public class MessageViewer : MonoBehaviour {
                     (_playerParameter.language == PlayerParameter.eLanguage.English && _messageText.text.Length % 2 == 0)) {
                 }
                 _messageText.text += c;
-                yield return new WaitForSecondsRealtime(message_show_time);
+                
+                // isUnScaledTimeに応じて待機方法を変更
+                if (_currentMessage.isUnScaledTime) {
+                    yield return new WaitForSecondsRealtime(message_show_time);
+                } else {
+                    yield return new WaitForSeconds(message_show_time);
+                }
+                
                 while (_isStopMessage) {
                     yield return null;
                 }
@@ -228,7 +241,7 @@ public class MessageViewer : MonoBehaviour {
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
                 var color = window.color;
-                color.a = Mathf.Lerp(color.a, _fadeAlpha, Time.deltaTime * 5f);
+                color.a = Mathf.Lerp(color.a, _fadeAlpha, Time.unscaledDeltaTime * 5f);
                 window.color = color;
             }
         } else {
@@ -236,7 +249,7 @@ public class MessageViewer : MonoBehaviour {
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
                 var color = window.color;
-                color.a = Mathf.Lerp(color.a, _normalAlpha, Time.deltaTime * 5f);
+                color.a = Mathf.Lerp(color.a, _normalAlpha, Time.unscaledDeltaTime * 5f);
                 window.color = color;
             }
         }
