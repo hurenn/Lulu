@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class CharacterParameter_Player : CharacterParameter {
     private const float _warpCost = 30.0f; // ワープに必要なMP
     private const float _iceCost = 10.0f; // 氷の能力に必要なMP
-    private const float _lockonSlashCost = 30.0f; // ロックオン攻撃に必要なMP
+    private const float _lockonSlashCost = 10.0f; // ロックオン攻撃に必要なMP
     private const float _autoSlash = 5.0f; // 氷自動攻撃に必要なMP
     private const float _fireCost = 5.0f; // 炎の能力に必要なMP
     private const float _lightCost = 15.0f; // 光の能力に必要なMP

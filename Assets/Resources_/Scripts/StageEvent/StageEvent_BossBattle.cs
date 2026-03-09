@@ -9,10 +9,12 @@ public class StageEvent_BossBattle : MonoBehaviour {
         public MessageTrigger messageTrigger;
         public float delay = 0f;
         public bool isHalfHPTrigger = false;
+        public bool isSeriouslyTrigger = false;
     }
     [SerializeField] private MessageTriggerActivator[] _messageTriggerActivators;
     private float _currentMessageTriggerDelay = 0f;
     private bool _isHalfHp = false;
+    private bool _isSeriously = false;
 
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private Enemy_Base _bossEnemy;
@@ -41,11 +43,16 @@ public class StageEvent_BossBattle : MonoBehaviour {
             if (activator.isHalfHPTrigger != _isHalfHp) {
                 continue;
             }
-            if(activator.messageTrigger == null) {
+            // 本気条件が合わない場合はスキップ
+            if (activator.isSeriouslyTrigger != _isSeriously) {
+                continue;
+            }
+            if (activator.messageTrigger == null) {
                 continue;
             }
 
             if (_currentMessageTriggerDelay >= activator.delay) {
+                // 追加メッセージを有効化
                 activator.messageTrigger.gameObject.SetActive(true);
                 activator.messageTrigger = null; // 一度だけ有効化するためにnullに設定
             }
@@ -57,14 +64,20 @@ public class StageEvent_BossBattle : MonoBehaviour {
             _bossEnemy.OnDied += _OnBossDied;
             _bossEnemy.OnDieEnded += _OnBossDieEnded;
             _bossEnemy.OnDowned += _OnBossDowned;
+            _bossEnemy.OnSeriously += _OnBossSeriously;
         }
     }
 
     private void _OnBossDowned() {
-        _messageViewer?.ForceReset();
+        //_messageViewer?.ForceReset();
         _currentMessageTriggerDelay = 0f;
         _isHalfHp = true;
-        StartCoroutine(_BossDownedRoutine());
+        //StartCoroutine(_BossDownedRoutine());
+    }
+    private void _OnBossSeriously() {
+        _messageViewer?.ForceReset();
+        //_currentMessageTriggerDelay = 0f;
+        _isSeriously = true;
     }
     private IEnumerator _BossDownedRoutine() {
         // プレイヤーの操作を停止
@@ -73,13 +86,15 @@ public class StageEvent_BossBattle : MonoBehaviour {
         }
         if (_sparkEffect != null) _sparkEffect.SetActive(true);
 
-        yield return new WaitForSeconds(2.0f);
+        // yield return new WaitForSeconds(2.0f);
 
         // プレイヤーの操作を再開
         if (_playerController != null) {
             _playerController.isEnabledCharacterInput = true;
         }
         if(_sparkEffect != null) _sparkEffect.SetActive(false);
+
+        yield break;
     }
 
     private void _OnBossDied() {

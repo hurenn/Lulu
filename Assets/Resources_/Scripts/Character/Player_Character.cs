@@ -499,9 +499,9 @@ public class Player_Character : Character_Base {
         }
 
         if (result != eAbilityResult.LightDome &&
-            result != eAbilityResult.Jump &&
             result != eAbilityResult.JumpHeld &&
-            result != eAbilityResult.JumpRelease) {
+            result != eAbilityResult.JumpRelease ||
+            (result == eAbilityResult.Jump && !isGrounded)) {
             _OnResetFireInterval();
         }
     }

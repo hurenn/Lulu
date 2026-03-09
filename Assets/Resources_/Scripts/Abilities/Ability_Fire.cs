@@ -31,6 +31,7 @@ public class Ability_Fire : Ability_Base
     private List<Enemy_Base> _enemiesInRange = new List<Enemy_Base>();
     // 自動攻撃間隔
     private float _autoAttackInterval = 0.4f;
+    private float _autoAttackResetTime = 0.8f;
     private float _currentAutoAttackInterval = 0.0f;
     
     // トリガーヘルパー参照
@@ -128,7 +129,7 @@ public class Ability_Fire : Ability_Base
     /// オート攻撃タイマーリセット
     /// </summary>
     public void ResetAutoAttackInterval() {
-        _currentAutoAttackInterval = _autoAttackInterval;
+        _currentAutoAttackInterval = _autoAttackResetTime;
     }
 
     public override eAbilityResult ExecuteSimple() {

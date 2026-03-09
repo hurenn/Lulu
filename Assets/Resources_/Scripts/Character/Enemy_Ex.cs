@@ -31,8 +31,10 @@ public class Enemy_Ex : Enemy_Base {
 
     // パラメータ
     [SerializeField] private ExParameter _exParameter;
-    private bool _isHalfHp => _charaParam.CurrentHP <= _charaParam.MaxHP / 2;
+    private bool _isHalfHp => _charaParam.CurrentHP <= _charaParam.MaxHP / 2.0f;
     private bool _isDowned = false;
+    private float _seriousHpThreshold => _charaParam.MaxHP * 0.35f;
+    private bool _isSeriously = false;
 
     [SerializeField] private Transform[] _fastRainShoot;
     [SerializeField] private Transform[] _fastRainShootReverse;
@@ -83,7 +85,7 @@ public class Enemy_Ex : Enemy_Base {
         }
 
         // いずれかの行動を実行
-        var action = _isHalfHp ? _ChooseSeriousAction() : _ChooseAction();
+        var action = _isSeriously ? _ChooseSeriousAction() : _ChooseAction();
         if (_playerTransform != null) {
             _isRight = _playerTransform.position.x > transform.position.x;
         }
@@ -96,34 +98,34 @@ public class Enemy_Ex : Enemy_Base {
             }
         }
 
-        // HP半分以下で強制爆発攻撃カウントダウン
-        if (_isHalfHp && _forceBurstCount > 0) {
-            _forceBurstCount--;
-            if (_forceBurstCount == 0) {
-                action = eExAction.BurstShoot;
-            }
-        }
+        //// HP半分以下で強制爆発攻撃カウントダウン
+        //if (_isHalfHp && _forceBurstCount > 0) {
+        //    _forceBurstCount--;
+        //    if (_forceBurstCount == 0) {
+        //        action = eExAction.BurstShoot;
+        //    }
+        //}
 
-        // HP半分以下でスペシャル攻撃
-        if (_isHalfHp && _isSpecialActioned == false) {
-            action = eExAction.SpecialAttack;
-            _isSpecialActioned = true;
-        }
+        //// HP半分以下でスペシャル攻撃
+        //if (_isHalfHp && _isSpecialActioned == false) {
+        //    action = eExAction.SpecialAttack;
+        //    _isSpecialActioned = true;
+        //}
 
         _anim.Play("Stand");
         switch (action) {
             case eExAction.LaserShoot:
                 bool is_reverse = Random.value > 0.5f;
                 _currentActionCoroutine = (_ExecuteLaser(_exParameter.ShootTime, is_reverse ? _fastRainShootReverse : _fastRainShoot,
-                    count: _isHalfHp ? _fastRainShoot.Length : 2, is_random: _isHalfHp ? false : true,
+                    count: _isSeriously ? _fastRainShoot.Length : 2, is_random: _isSeriously ? false : true,
                     interval_rate: 0.5f, reset_time: -1.0f, is_thin: true));
                 break;
             case eExAction.RainShoot:
                 _currentActionCoroutine = (_ExecuteLaser(_exParameter.RainShootTime, _rainShootPoints,
-                    _isHalfHp ? 5 : 3, is_random: true));
+                    _isSeriously ? 5 : 3, is_random: true));
                 break;
             case eExAction.BurstShoot:
-                _currentActionCoroutine = (_ExecuteBurst(_isHalfHp ? _burstExplosionPoints.Length : 3, _burstExplosionPoints, is_special_burst: true));
+                _currentActionCoroutine = (_ExecuteBurst(_isSeriously ? _burstExplosionPoints.Length : 3, _burstExplosionPoints, is_special_burst: true));
                 break;
             case eExAction.FastBurst:
                 _currentActionCoroutine = (_ExecuteBurst(1, _fastBurstPoints, reset_time: -1.0f, is_random:true, is_special_burst: false));
@@ -328,6 +330,13 @@ public class Enemy_Ex : Enemy_Base {
             StartCoroutine(_Down());
             _isDowned = true;
         }
+
+        // HPが一定以下で本気モードに移行
+        if (_charaParam.CurrentHP <= _seriousHpThreshold && !_isSeriously) {
+            _isSeriously = true;
+            StartCoroutine(_Seriously());
+        }
+
         return result;
     }
 
@@ -371,6 +380,14 @@ public class Enemy_Ex : Enemy_Base {
         // 現在の行動をリセット
         _nextActionTime = _exParameter.FastActionInterval;
         _ResetAction();
+    }
+
+    /// <summary>
+    /// 本気モード移行
+    /// </summary>
+    private IEnumerator _Seriously() {
+        OnSeriously?.Invoke();
+        yield return null;
     }
 
     protected override IEnumerator Die() {

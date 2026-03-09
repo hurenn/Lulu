@@ -108,7 +108,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1960725399
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -7792780358079084222, guid: f3a6c8ce5c0946843bc876288ee79461, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -361,6 +361,10 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _selfCharacter: {fileID: 0}
+  _damageToSelf: 0
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 0
   _hitEffectSize: 1
@@ -370,6 +374,8 @@ MonoBehaviour:
   _manualShakeIntensity: 0.5
   _manualShakeDuration: 0.5
   _hitCameraShakeIntensity: 0
+  _hitPlayerEvent: []
+  _avoidPlayerEvent: []
 --- !u!1 &4195711307215913643
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,7 +503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f5d22f392f9bc4783351c9001c6734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultMaxHP: 1000
+  _defaultMaxHP: 800
   attackPower: 1
   _rend: {fileID: 3639660798774829809}
 --- !u!82 &2955557832317331329
@@ -628,6 +634,7 @@ MonoBehaviour:
   _seJump: {fileID: 0}
   _seDamage: {fileID: 8300000, guid: 49310710ade74f04abaf99a4bc9ef99c, type: 3}
   _seDead: {fileID: 8300000, guid: ae9ed51805db1a34d98ba0dd085be0b3, type: 3}
+  _damageFriction: 0.9
   _isRight: 1
   enableGravity: 1
   _exp: 0
