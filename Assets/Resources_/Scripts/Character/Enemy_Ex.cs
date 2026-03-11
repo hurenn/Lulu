@@ -98,19 +98,19 @@ public class Enemy_Ex : Enemy_Base {
             }
         }
 
-        //// HP半分以下で強制爆発攻撃カウントダウン
-        //if (_isHalfHp && _forceBurstCount > 0) {
-        //    _forceBurstCount--;
-        //    if (_forceBurstCount == 0) {
-        //        action = eExAction.BurstShoot;
-        //    }
-        //}
+        // HP半分以下で強制爆発攻撃カウントダウン
+        if (_isHalfHp && _forceBurstCount > 0) {
+            _forceBurstCount--;
+            if (_forceBurstCount == 0) {
+                action = eExAction.BurstShoot;
+            }
+        }
 
-        //// HP半分以下でスペシャル攻撃
-        //if (_isHalfHp && _isSpecialActioned == false) {
-        //    action = eExAction.SpecialAttack;
-        //    _isSpecialActioned = true;
-        //}
+        // HP半分以下でスペシャル攻撃
+        if (_isHalfHp && _isSpecialActioned == false) {
+            action = eExAction.SpecialAttack;
+            _isSpecialActioned = true;
+        }
 
         _anim.Play("Stand");
         switch (action) {
