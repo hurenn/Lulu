@@ -69,10 +69,10 @@ public class StageEvent_BossBattle : MonoBehaviour {
     }
 
     private void _OnBossDowned() {
-        //_messageViewer?.ForceReset();
         _currentMessageTriggerDelay = 0f;
+        _messageViewer?.ForceReset();
         _isHalfHp = true;
-        //StartCoroutine(_BossDownedRoutine());
+        StartCoroutine(_BossDownedRoutine());
     }
     private void _OnBossSeriously() {
         _messageViewer?.ForceReset();
@@ -86,7 +86,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
         }
         if (_sparkEffect != null) _sparkEffect.SetActive(true);
 
-        // yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(2.0f);
 
         // プレイヤーの操作を再開
         if (_playerController != null) {

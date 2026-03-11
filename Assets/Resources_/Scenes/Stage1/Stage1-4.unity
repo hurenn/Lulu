@@ -584,11 +584,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].text
-      value: "\u4F55\u304B\u6765\u308B\u305E\uFF01\n\u59EB\u3001\u8B66\u6212\u3092\uFF01"
+      value: "\u4F55\u304B\u6765\u308B\u305E\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].text
-      value: "\u3048\uFF1F"
+      value: "X\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u7D9A\u3051\u3066\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].text
@@ -640,19 +640,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].addShowTime
-      value: -1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
-      propertyPath: _messageDatas.messageDatas.Array.data[0].englishText
-      value: "Something\u2019s coming!\nPrincess, stay alert!"
-      objectReference: {fileID: 0}
-    - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
-      propertyPath: _messageDatas.messageDatas.Array.data[1].addShowTime
       value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
+      propertyPath: _messageDatas.messageDatas.Array.data[0].englishText
+      value: "Something\u2019s coming!"
+      objectReference: {fileID: 0}
+    - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
+      propertyPath: _messageDatas.messageDatas.Array.data[1].addShowTime
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].englishText
-      value: Huh?
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].englishText
@@ -709,7 +709,7 @@ PrefabInstance:
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: e5cca281e95e8b947a7142c492d6eb7b, type: 3}
+      objectReference: {fileID: 21300000, guid: d22f1f60a0428d742becfe99c34dcac2, type: 3}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].characterIcon
       value: 
@@ -13262,37 +13262,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8369236170261667002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 72}
---- !u!1 &1043605365
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1043605366}
-  m_Layer: 0
-  m_Name: LainShootPoints (5)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1043605366
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1043605365}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -15.75, y: -12.6, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1755475312}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!114 &1050631893 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2299489186063564634, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
@@ -14149,21 +14118,27 @@ MonoBehaviour:
   - messageTrigger: {fileID: 6652014}
     delay: 8
     isHalfHPTrigger: 0
+    isSeriouslyTrigger: 0
   - messageTrigger: {fileID: 1270250264}
     delay: 27
     isHalfHPTrigger: 0
+    isSeriouslyTrigger: 0
   - messageTrigger: {fileID: 175356546}
     delay: 0
     isHalfHPTrigger: 1
+    isSeriouslyTrigger: 0
   - messageTrigger: {fileID: 66588967}
-    delay: 5
+    delay: 4
     isHalfHPTrigger: 1
+    isSeriouslyTrigger: 0
   - messageTrigger: {fileID: 1007262945}
     delay: 14
     isHalfHPTrigger: 1
+    isSeriouslyTrigger: 0
   - messageTrigger: {fileID: 1815407930}
     delay: 27
     isHalfHPTrigger: 1
+    isSeriouslyTrigger: 1
   _playerController: {fileID: 1050631893}
   _bossEnemy: {fileID: 7847810510814536981}
   _stageClearTimeline: {fileID: 213862685}
@@ -21117,7 +21092,6 @@ Transform:
   - {fileID: 2128179011}
   - {fileID: 1416408385}
   - {fileID: 1369311725}
-  - {fileID: 1043605366}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &1756728357
@@ -21365,7 +21339,7 @@ PrefabInstance:
       objectReference: {fileID: 544547198}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.size
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].text
@@ -21381,15 +21355,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[3].text
-      value: "\u5168\u90E8\u30DA\u30DA\u306B\u4EFB\u305B\u3066\u3061\u3087\u3063\u3068\u4F11\u61A9\u3057\u306A\u3044\uFF1F\n30\u5206\u304F\u3089\u3044\u3002"
+      value: "\u5927\u4E08\u592B\uFF1F\u4F11\u61A9\u3059\u308B\uFF1F"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[4].text
-      value: "\u3046\u30FC\u30FC\u30FC\u30FC\u30FC\u30FC\u30FC\u30FC\u30FC\u3080\uFF01"
+      value: "\u5927\u4E08\u592B\u3060\u3088\u3002\u3053\u3053\u307E\u3067\u6765\u305F\u3089\u4E00\u6C17\u306B\u884C\u3053\u3046\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[5].text
-      value: "\u5927\u4E08\u592B\u3002\u3053\u3053\u307E\u3067\u6765\u305F\u3089\u4E00\u6C17\u306B\u884C\u3053\u3046\uFF01"
+      value: "\u3053\u306E\u753A\u3092\u5B88\u308B\u6B63\u7FA9\u306E\u5473\u65B9\uFF01\n\u3042\u305F\u3057\u305F\u3061\u5B66\u5712\u9632\u885B\u90E8\u304C\u3001\u60AA\u306E\u7D44\u7E54\u3092\u6210\u6557\u3059\u308B\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[6].text
@@ -21447,16 +21421,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[3].englishText
-      value: "How about letting Pepe handle it all and we take a short break? Like\u2026
-        30 minutes?"
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[4].englishText
-      value: Hmmmmmmmm...!
+      value: "It\u2019s fine! We've made it this far, so let\u2019s go all out!"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[5].englishText
-      value: "It\u2019s fine! We've made it this far, so let\u2019s go all out!"
+      value: "We\u2019re the heroes who protect this town!\nThe School Defense Club
+        will defeat all the evil enemies!"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[6].englishText
@@ -21506,15 +21480,15 @@ PrefabInstance:
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[3].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: fc7693bdc9c27c54f807d516e0905714, type: 3}
+      objectReference: {fileID: 21300000, guid: 3a358e054af59bb4d8188da9d8fd5afe, type: 3}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[4].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: f199f40227e7a524db48ac9fe8783f27, type: 3}
+      objectReference: {fileID: 21300000, guid: f92ba2d58c0b7cd4fa97841037b02a80, type: 3}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[5].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: f92ba2d58c0b7cd4fa97841037b02a80, type: 3}
+      objectReference: {fileID: 21300000, guid: fca1f8d1651fb6e4a9554c78063a242c, type: 3}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[6].characterIcon
       value: 
@@ -23590,7 +23564,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5967606465264471647, guid: 06569f1f502a1f1409bb5fdc5480980c, type: 3}
       propertyPath: _rainShootPoints.Array.size
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5967606465264471647, guid: 06569f1f502a1f1409bb5fdc5480980c, type: 3}
       propertyPath: '_fastRainShoot.Array.data[0]'
@@ -23655,11 +23629,11 @@ PrefabInstance:
     - target: {fileID: 5967606465264471647, guid: 06569f1f502a1f1409bb5fdc5480980c, type: 3}
       propertyPath: '_rainShootPoints.Array.data[5]'
       value: 
-      objectReference: {fileID: 1043605366}
+      objectReference: {fileID: 1935849582}
     - target: {fileID: 5967606465264471647, guid: 06569f1f502a1f1409bb5fdc5480980c, type: 3}
       propertyPath: '_rainShootPoints.Array.data[6]'
       value: 
-      objectReference: {fileID: 1935849582}
+      objectReference: {fileID: 1369311725}
     - target: {fileID: 5967606465264471647, guid: 06569f1f502a1f1409bb5fdc5480980c, type: 3}
       propertyPath: '_rainShootPoints.Array.data[7]'
       value: 

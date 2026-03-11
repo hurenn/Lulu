@@ -125,7 +125,7 @@ public class Enemy_Ex : Enemy_Base {
                     _isSeriously ? 5 : 3, is_random: true));
                 break;
             case eExAction.BurstShoot:
-                _currentActionCoroutine = (_ExecuteBurst(_isSeriously ? _burstExplosionPoints.Length : 3, _burstExplosionPoints, is_special_burst: true));
+                _currentActionCoroutine = (_ExecuteBurst(_burstExplosionPoints.Length, _burstExplosionPoints, is_special_burst: true));
                 break;
             case eExAction.FastBurst:
                 _currentActionCoroutine = (_ExecuteBurst(1, _fastBurstPoints, reset_time: -1.0f, is_random:true, is_special_burst: false));
