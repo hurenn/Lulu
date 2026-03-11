@@ -498,10 +498,14 @@ public class Player_Character : Character_Base {
                 break;
         }
 
+        // 炎自動攻撃間隔リセット
         if (result != eAbilityResult.LightDome &&
             result != eAbilityResult.JumpHeld &&
-            result != eAbilityResult.JumpRelease ||
-            (result == eAbilityResult.Jump && !isGrounded)) {
+            result != eAbilityResult.JumpRelease &&
+            result != eAbilityResult.Jump) {
+            _OnResetFireInterval();
+        } else if (result == eAbilityResult.Jump && !_isGrounded) {
+            // ワープ時も呼び出す
             _OnResetFireInterval();
         }
     }
