@@ -230,6 +230,7 @@ public class MessageViewer : MonoBehaviour {
         // 強制メッセージが来たら即座に表示をリセット
         _messagePanel.SetActive(false);
         _isShowing = false;
+        _messageListScript.Clear();
         if(_typingCoroutine != null)
             StopCoroutine(_typingCoroutine);
         _currentCoolTime = _FORCE_COOL_TIME;

@@ -208,7 +208,7 @@ public class DamageZone : MonoBehaviour {
         }
 
         // 自分自身にダメージを与える
-        _selfCharacter.Damage(_damageToSelf, blowPower, _invincibleTime, _damageReactionTime);
+        _selfCharacter.Damage(_damageToSelf, blowPower, 1.0f, _damageReactionTime);
     }
 
     private GameObject _SpawnHitEffect(Vector3 position, HitEffect.eType type) {

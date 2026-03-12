@@ -67,6 +67,7 @@ public class Enemy_Ex : Enemy_Base {
             _audioBGM.enabled = false;
         }
         _nextActionTime = _exParameter.ActionInterval;
+        _currentActionTime = _nextActionTime - 4.5f; // Å‰‚Ìs“®‚ğ­‚µ’x‚ç‚¹‚é
         _playerTransform = GameObject.FindAnyObjectByType<Player_Character>()?.transform;
         _laserParent = new GameObject("LaserBeams").transform;
     }
