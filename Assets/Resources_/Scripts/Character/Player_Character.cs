@@ -1123,7 +1123,8 @@ public class Player_Character : Character_Base {
         var checkpointManager = CheckpointManager.Instance;
         if (checkpointManager != null && snapshot != null)
         {
-            checkpointManager.SaveCheckpoint(transform.position, snapshot);
+            // 空のリストを渡す（Checkpoint以外から呼ばれる場合）
+            checkpointManager.SaveCheckpoint(transform.position, snapshot, new List<string>(), new List<string>());
         }
         else
         {
