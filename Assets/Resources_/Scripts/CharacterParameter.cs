@@ -84,4 +84,11 @@ public class CharacterParameter : MonoBehaviour {
 
         is_die = CurrentHP <= 0;
     }
+
+    /// <summary>
+    /// ‰ñ•œ”­¶
+    /// </summary>
+    public void RecoverHP(int recover_amount) {
+        CurrentHP += recover_amount;
+    }
 }

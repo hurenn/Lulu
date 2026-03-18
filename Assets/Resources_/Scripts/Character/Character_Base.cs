@@ -27,6 +27,7 @@ public class Character_Base : MonoBehaviour {
     [SerializeField] protected AudioClip _seJump;
     [SerializeField] protected AudioClip _seDamage;
     [SerializeField] protected AudioClip _seDead;
+    [SerializeField] protected AudioClip _seRecover;
 
     // ダメージ吹っ飛び時の摩擦力（地面での速度減衰率）
     [SerializeField] protected float _damageFriction = 0.9f;
@@ -322,6 +323,21 @@ public class Character_Base : MonoBehaviour {
             }
 
             _rb.linearVelocity = velocity;
+        }
+    }
+
+    /// <summary>
+    /// 回復処理
+    /// </summary>
+    public virtual void RecoverHP(int recover_amount) {
+        if (_charaParam == null || _isDead) {
+            return;
+        }
+        _charaParam.RecoverHP(recover_amount);
+
+        // 効果音
+        if (_seRecover != null) {
+            _audioSource?.PlayOneShot(_seRecover);
         }
     }
 

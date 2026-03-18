@@ -330,6 +330,8 @@ MonoBehaviour:
   _seJump: {fileID: 8300000, guid: ba2aec84cf544e543bab0e6a7fd2cc35, type: 3}
   _seDamage: {fileID: 8300000, guid: 49310710ade74f04abaf99a4bc9ef99c, type: 3}
   _seDead: {fileID: 8300000, guid: ae9ed51805db1a34d98ba0dd085be0b3, type: 3}
+  _seRecover: {fileID: 8300000, guid: 6455a6af56e1ccd409e2cf272d21da39, type: 3}
+  _damageFriction: 0.9
   _isRight: 1
   enableGravity: 1
   _warpControl: {fileID: 8695738934329559163}
@@ -337,6 +339,7 @@ MonoBehaviour:
   _abilityY: {fileID: 0}
   _abilityX: {fileID: 0}
   _abilityA: {fileID: 0}
+  _abilityB: {fileID: 0}
   _levelUpAnimator: {fileID: 3229794863365798266}
   _autoAttackChecker: {fileID: 6490863225246899097}
 --- !u!114 &8695738934329559163
