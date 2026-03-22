@@ -45,6 +45,7 @@ public class Character_Base : MonoBehaviour {
     protected bool _isDashing;
     protected bool _isWarpDelay;
     protected bool _isWarpDashing;
+    protected bool _isWarpChecking;
     protected bool _isSliding;      // スライディング中かどうか
 
     public MotorStates _motorStates = new MotorStates();
@@ -71,7 +72,7 @@ public class Character_Base : MonoBehaviour {
     protected bool _specialUsing = false;
 
     // 通常移動可能かどうか
-    protected bool _CanMove => !_isWarpDashing && !_isSlidingCanceling;
+    protected virtual bool _CanMove => !_isWarpDashing && !_isSlidingCanceling && !_isWarpChecking;
     // 重力を適用するかどうか
     protected bool _EnableGravity => !_isWarpDashing && !_isWallDash && !_isWarpDelay && enableGravity && !_specialUsing;
     public bool enableGravity = true;

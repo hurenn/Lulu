@@ -758,13 +758,15 @@ public class Player_Character : Character_Base {
 
             WarpControl.eWarpDirection dash_direction = _warpDirection;
 
+            _isWarpChecking = true;
             if (_inputData.move.magnitude != 0) {
                 // 入力方向にワープ
                 yield return _warpControl.DirectionWarp(_warpDirection, _OnExecuteIceAutoAttack);
             } else if (_warpControl.GetCoinWarpCheck().HasValue) {
-                // コインワープ
+                // コインワープ(方向入力なしでコインワープ可能な場合)
                 yield return _warpControl.CoinWarp();
             }
+            _isWarpChecking = false;
 
             // ワープダッシュ方向決定
             if (_warpDirection != WarpControl.eWarpDirection.Neutral) {
