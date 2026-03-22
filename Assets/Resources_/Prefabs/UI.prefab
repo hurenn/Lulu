@@ -9930,7 +9930,7 @@ MonoBehaviour:
   _selectFrame: {fileID: 1272708616717523452}
   canvasGroup: {fileID: 4024281157075242012}
   _MenuReturnGame: {fileID: 7268688282140386561}
-  _MenuStageSelect: {fileID: 5177843626448324465}
+  _MenuStageRetry: {fileID: 5177843626448324465}
 --- !u!225 &4024281157075242012
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11736,11 +11736,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5244136386842631049, guid: 1c4683e36ed44204eae5f813a1745380, type: 3}
       propertyPath: m_text
-      value: "\u30B9\u30C6\u30FC\u30B8\u30BB\u30EC\u30AF\u30C8"
+      value: "\u3084\u308A\u306A\u304A\u3059"
       objectReference: {fileID: 0}
     - target: {fileID: 5761550034978488464, guid: 1c4683e36ed44204eae5f813a1745380, type: 3}
       propertyPath: m_Name
-      value: StageSelectButton
+      value: RetryButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

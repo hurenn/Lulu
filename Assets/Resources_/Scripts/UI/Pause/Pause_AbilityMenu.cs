@@ -292,6 +292,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             return;
         }
 
+        // ボタンコンフィグ機能：オミット中
+        /*
         // 1回目の決定：アイコンを掴む
         if (_grabbedIcon == null) {
             _GrabIcon(_currentButton);
@@ -300,6 +302,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         else {
             _SwapIcon(_currentButton);
         }
+        */
     }
 
     /// <summary>

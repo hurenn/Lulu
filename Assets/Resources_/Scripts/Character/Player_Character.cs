@@ -654,8 +654,10 @@ public class Player_Character : Character_Base {
         }
 
         //状態に応じたフラグ管理
-        _anim?.SetBool("Jump", _isJumping);
-        _anim?.SetBool("Fall", !_isGrounded);
+        if (_anim != null && _anim.isActiveAndEnabled) {
+            _anim.SetBool("Jump", _isJumping);
+            _anim.SetBool("Fall", !_isGrounded);
+        }
 
         // 移動入力
         if (_inputData.move.x != 0) {

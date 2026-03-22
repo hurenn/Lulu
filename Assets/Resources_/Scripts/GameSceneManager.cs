@@ -3,7 +3,24 @@ using UnityEngine.InputSystem;
 
 public class GameSceneManager : MonoBehaviour
 {
-    public static GameSceneManager Instance { get; private set; }
+    private static GameSceneManager _instance;
+    public static GameSceneManager Instance {
+        get {
+            // シーン上のGameSceneManagerを探す
+            if (_instance == null) {
+                _instance = FindAnyObjectByType<GameSceneManager>();
+                if (_instance == null) {
+                    // 見つからなければ新規作成
+                    _instance = new GameObject("GameSceneManager").AddComponent<GameSceneManager>();
+                    DontDestroyOnLoad(_instance.gameObject);
+                }
+            }
+            return _instance;
+        }
+        set {
+            _instance = value;
+        }
+    }
     private string _titleSceneName = "Title";
 
     private void Start() {

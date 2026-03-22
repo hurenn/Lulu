@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class Pause_GameMenu : Pause_MenuBase {
     [SerializeField] private RectTransform _MenuReturnGame;     // ゲームに戻るメニュー
-    [SerializeField] private RectTransform _MenuStageSelect;    // ステージセレクトメニュー
+    [SerializeField] private RectTransform _MenuStageRetry;     // リトライメニュー
 
     private enum eMenuIndex {
         ReturnGame = 0,
-        StageSelect = 1,
+        Retry = 1,
     }
     private eMenuIndex _currentMenu = eMenuIndex.ReturnGame;
 
@@ -34,8 +34,8 @@ public class Pause_GameMenu : Pause_MenuBase {
             _currentMenu = eMenuIndex.ReturnGame;
         } else if (dir < 0) {
             // 下入力
-            MoveFrameToSelected(_MenuStageSelect);
-            _currentMenu = eMenuIndex.StageSelect;
+            MoveFrameToSelected(_MenuStageRetry);
+            _currentMenu = eMenuIndex.Retry;
         }
     }
 
@@ -49,8 +49,9 @@ public class Pause_GameMenu : Pause_MenuBase {
             case eMenuIndex.ReturnGame: // ゲームに戻る
                 OnCloseMenu();
                 break;
-            case eMenuIndex.StageSelect: // ステージセレクト
-                // 空の動作
+            case eMenuIndex.Retry: // リトライ
+                GameSceneManager.Instance.StageRestart(false);
+                OnCloseMenu();
                 break;
         }
     }
