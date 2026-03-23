@@ -465,8 +465,10 @@ public class Enemy_Ex : Enemy_Base {
         foreach (Transform child in _laserParent) {
             Destroy(child.gameObject);
         }
-        StopCoroutine(_currentActionCoroutine);
-        _currentActionCoroutine = null;
+        if (_currentActionCoroutine != null) {
+            StopCoroutine(_currentActionCoroutine);
+            _currentActionCoroutine = null;
+        }
     }
 
 }

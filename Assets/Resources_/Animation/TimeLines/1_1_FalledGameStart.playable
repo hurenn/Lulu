@@ -415,20 +415,24 @@ MonoBehaviour:
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   messageDatas:
-  - text: "\u2026\u2026\u3044\u304D\u306A\u308A\u3053\u3093\u306A\u3068\u3053\u3067\u30D3\u30C3\u30AF\u30EA\u3057\u305F\uFF1F\n\u30D3\u30EB\u306E\u7A74\u306B\u843D\u3061\u3061\u3083\u3063\u3066\u2026\u2026"
-    englishText: 
+  - text: "\u2026\u2026\u3063\u3066\u3001\u6328\u62F6\u3057\u3066\u308B\u5834\u5408\u3058\u3083\u306A\u3044\u3093\u3060\u3088\u306D\u3002\n\u30D3\u30EB\u306E\u7A74\u306B\u843D\u3061\u3061\u3083\u3063\u3066\u2026\u2026"
+    englishText: "\u2026Wait, this isn\u2019t the time for introductions.\nI fell
+      straight into this hole in the building\u2026"
     characterIcon: {fileID: 21300000, guid: f92ba2d58c0b7cd4fa97841037b02a80, type: 3}
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
-  - text: "\u2026\u2026\u7A74\u3092\u98DB\u3073\u8D8A\u3048\u3088\u3046\u3068\u3057\u305F\u77AC\u9593\u306B\u30AD\u30DF\u304C\u6765\u3066\u3001\n\u6C17\u3092\u53D6\u3089\u308C\u3061\u3083\u3063\u305F\u3093\u3060\u3088\u3002\n\u3044\u3064\u3082\u306A\u3089\u3001\u3053\u3093\u306A\u5931\u6557\u3057\u306A\u3044\u3093\u3060\u304B\u3089\uFF01"
-    englishText: 
+  - text: "\u2026\u2026\u3053\u306E\u7A74\u3092\u98DB\u3073\u8D8A\u3048\u3088\u3046\u3068\u3057\u305F\u77AC\u9593\u306B\u30AD\u30DF\u304C\u6765\u3066\u3001\n\u6C17\u3092\u53D6\u3089\u308C\u3066\u843D\u3061\u3061\u3083\u3063\u305F\u3093\u3060\u3088\uFF01\n\u3044\u3064\u3082\u306A\u3089\u3001\u3053\u3093\u306A\u5931\u6557\u3057\u306A\u3044\u3093\u3060\u304B\u3089\uFF01"
+    englishText: '...I was about to jump over it, but then you showed up and totally
+      threw me off!
+
+      I never mess up like that, okay!?'
     characterIcon: {fileID: 21300000, guid: 07539e5e326a4ed4abf74227884b33a0, type: 3}
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
   - text: "\u2026\u2026\u3048\u30FC\u3063\u3068\u3001\u3068\u306B\u304B\u304F\u3053\u3053\u304B\u3089\u65E9\u304F\u51FA\u306A\u3044\u3068\u306D\u3002"
-    englishText: 
+    englishText: "\u2026Anyway, we gotta get outta here, fast."
     characterIcon: {fileID: 21300000, guid: e5cca281e95e8b947a7142c492d6eb7b, type: 3}
     addShowTime: 0
     isAutoForce: 0
@@ -3400,7 +3404,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageDatas:
   - text: "\u3059\u3054\u3044\u3059\u3054\u3044\uFF01\u307B\u3093\u3068\u306B\u7E4B\u304C\u3063\u305F\uFF01\n\u3042\u3002\u3042\u305F\u3057\u306F\u30EB\u30EB\uFF01\u3088\u308D\u3057\u304F\u306D\uFF01"
-    englishText: 
+    englishText: "Whoa, no way! It actually worked!\nI\u2019m Lulu! Nice to meet
+      you!"
     characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
     addShowTime: 0
     isAutoForce: 0
@@ -4238,7 +4243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageDatas:
   - text: "\u2026\u2026\u3042\uFF01\n\u30AD\u30DF\u3001\u30D7\u30EC\u30A4\u30E4\u30FC\uFF01\uFF1F"
-    englishText: 
+    englishText: "\u2026Oh! \nYou\u2019re the Player!?"
     characterIcon: {fileID: 21300000, guid: 32bafaaf813207c4aabc302fdca056f4, type: 3}
     addShowTime: 0
     isAutoForce: 0
@@ -4257,7 +4262,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageDatas:
   - text: "\u3044\u3063\u305F\u3041\uFF5E\u2026\u2026"
-    englishText: 
+    englishText: "Ow, that hurt\u2026"
     characterIcon: {fileID: 21300000, guid: 7208d2215ae4b304392f6ab10ec173f7, type: 3}
     addShowTime: 0
     isAutoForce: 0
@@ -4362,7 +4367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageDatas:
   - text: "\u4E0B\u5165\u529B\u3057\u306A\u304C\u3089B\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u3066\u307F\u3066\uFF01"
-    englishText: 
+    englishText: Hold down and hit the B button!
     characterIcon: {fileID: 21300000, guid: 32bafaaf813207c4aabc302fdca056f4, type: 3}
     addShowTime: -100
     isAutoForce: 1
@@ -5776,7 +5781,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageDatas:
   - text: "\u308F\u3042\u3042\u3042\uFF01\uFF01"
-    englishText: 
+    englishText: Waaahhh!!
     characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
     addShowTime: -1.5
     isAutoForce: 1
@@ -5998,13 +6003,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageDatas:
   - text: "\u3053\u3053\u306E\u5E8A\u306F\u8584\u305D\u3046\u3060\u304B\u3089\u901A\u308A\u629C\u3051\u3089\u308C\u305D\u3046\u3060\u3088\u3002"
-    englishText: 
+    englishText: This floor looks thin enough to pass through.
     characterIcon: {fileID: 21300000, guid: 32bafaaf813207c4aabc302fdca056f4, type: 3}
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
   - text: "\u4E00\u7DD2\u306B\u884C\u3053\u3046\u3001\u30D7\u30EC\u30A4\u30E4\u30FC\uFF01\n\u3042\u305F\u3057\u3001\u30AD\u30DF\u306E\u64CD\u4F5C\u306B\u5F93\u3046\u306D\uFF01"
-    englishText: 
+    englishText: "Let\u2019s go together, Player! I\u2019ll follow your inputs!"
     characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
     addShowTime: 0
     isAutoForce: 0
