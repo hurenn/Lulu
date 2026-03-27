@@ -36,6 +36,7 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private Image[] _messageWindows;         // メッセージパネルのCanvasGroup
     [SerializeField] private float _fadeAlpha = 0.3f;      // フェード時の透明度
     [SerializeField] private float _normalAlpha = 0.9f;    // 通常時の透明度
+    [SerializeField] private Animator _messagePanelAnimator;   // メッセージパネルのAnimator
     private RectTransform _messagePanelRect; // メッセージパネルのRectTransform
     private RectTransform _iconRect;         // キャラクターアイコンのRectTransform
 
@@ -97,6 +98,8 @@ public class MessageViewer : MonoBehaviour {
         if (!_isShowing && _messageListScript.HasMessages()) {
             _ShowNext();
         }
+        _SwitchShowAnimation(_isShowing);
+
         if (!_isShowing) return;
 
         // ボタン表示切替
@@ -122,7 +125,7 @@ public class MessageViewer : MonoBehaviour {
     }
 
     private void _ShowNext() {
-        _messagePanel.SetActive(true);                  // パネルを表示
+        _messagePanel.SetActive(true);                  // パネルを表示                
         if (_typingCoroutine != null)
             StopCoroutine(_typingCoroutine);            // 表示中のコルーチンを停止
 
@@ -221,8 +224,19 @@ public class MessageViewer : MonoBehaviour {
             if(_currentMessage.playableDirector != null) {
                 _currentMessage.playableDirector.Resume(); // Timelineを再開
             }
-            _messagePanel.SetActive(false); // パネルを非表示
+            _SwitchShowAnimation(_isShowing);
             _currentCoolTime = _COOL_TIME;  // クールタイム設定
+        }
+    }
+
+    /// <summary>
+    /// メッセージウィンドウ表示開始アニメーション再生
+    /// </summary>
+    private void _SwitchShowAnimation(bool is_show) {
+        if (_messagePanelAnimator != null) {
+            _messagePanelAnimator.SetBool("Show", is_show);
+        } else {
+            _messagePanel.SetActive(is_show);
         }
     }
 
@@ -231,7 +245,9 @@ public class MessageViewer : MonoBehaviour {
         _messagePanel.SetActive(false);
         _isShowing = false;
         _messageListScript.Clear();
-        if(_typingCoroutine != null)
+        _SwitchShowAnimation(false);
+
+        if (_typingCoroutine != null)
             StopCoroutine(_typingCoroutine);
         _currentCoolTime = _FORCE_COOL_TIME;
     }

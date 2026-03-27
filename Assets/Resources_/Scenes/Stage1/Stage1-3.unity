@@ -199062,6 +199062,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 544547198}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
+      propertyPath: _messageDatas.isForced
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -199071,7 +199075,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].text
-      value: "Y\u30DC\u30BF\u30F3\u9023\u6253\u3067\u30B3\u30F3\u30DC\u653B\u6483\u3060\uFF01"
+      value: "Y\u30DC\u30BF\u30F3\u9023\u6253\u3067\u30B3\u30F3\u30DC\u653B\u6483\u304C\u51FA\u6765\u308B\u3088\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].text
@@ -199113,7 +199117,7 @@ PrefabInstance:
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 32bafaaf813207c4aabc302fdca056f4, type: 3}
+      objectReference: {fileID: 21300000, guid: fca1f8d1651fb6e4a9554c78063a242c, type: 3}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].characterIcon
       value: 
@@ -378891,7 +378895,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].text
-      value: "\u3055\u3042\u3001\u3069\u3093\u3069\u3093\u884C\u304F\u3088\uFF01"
+      value: "\u3055\u3042\u3001\u3069\u3093\u3069\u3093\u884C\u3053\u3046\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].text
@@ -378937,7 +378941,7 @@ PrefabInstance:
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: fca1f8d1651fb6e4a9554c78063a242c, type: 3}
+      objectReference: {fileID: 21300000, guid: 6a8e9ac36434ff24d935c3aab7895299, type: 3}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].characterIcon
       value: 
