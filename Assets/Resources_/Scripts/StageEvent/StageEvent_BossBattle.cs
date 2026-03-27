@@ -75,7 +75,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
         StartCoroutine(_BossDownedRoutine());
     }
     private void _OnBossSeriously() {
-        _messageViewer?.ForceReset();
+        //_messageViewer?.ForceReset();
         //_currentMessageTriggerDelay = 0f;
         _isSeriously = true;
     }
