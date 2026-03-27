@@ -33,7 +33,7 @@ public class Enemy_Ex : Enemy_Base {
     [SerializeField] private ExParameter _exParameter;
     private bool _isHalfHp => _charaParam.CurrentHP <= _charaParam.MaxHP / 2.0f;
     private bool _isDowned = false;
-    private float _seriousHpThreshold => _charaParam.MaxHP * 0.43f;
+    private float _seriousHpThreshold => _charaParam.MaxHP * 0.4f;
     private bool _isSeriously = false;
 
     [SerializeField] private Transform[] _fastRainShoot;

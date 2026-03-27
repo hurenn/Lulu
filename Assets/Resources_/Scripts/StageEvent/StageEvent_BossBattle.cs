@@ -44,7 +44,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
                 continue;
             }
             // 本気条件が合わない場合はスキップ
-            if (activator.isSeriouslyTrigger != _isSeriously) {
+            if (activator.isSeriouslyTrigger && !_isSeriously) {
                 continue;
             }
             if (activator.messageTrigger == null) {
