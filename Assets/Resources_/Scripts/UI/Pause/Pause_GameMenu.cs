@@ -16,6 +16,7 @@ public class Pause_GameMenu : Pause_MenuBase {
 
         // Å‰‚Ì‘I‘ğˆ‚É˜g‚ğˆÚ“®
         MoveFrameToSelected(_MenuReturnGame, true);
+        _currentMenu = eMenuIndex.ReturnGame;
     }
 
     public override void OnInputVertical(int dir) {
