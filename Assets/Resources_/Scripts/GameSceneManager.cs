@@ -36,7 +36,7 @@ public class GameSceneManager : MonoBehaviour
         }
         // 死亡によるリトライの場合のみ必殺チャージを50%に設定
         if (_isDeathRetry) {
-            StartCoroutine(_ChargeAbilitiesOnRespawn(0.7f));
+            StartCoroutine(_ChargeAbilitiesOnRespawn(0.5f));
             _isDeathRetry = false; // フラグをリセット
         }
     }

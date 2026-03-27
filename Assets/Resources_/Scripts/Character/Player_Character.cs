@@ -6,6 +6,8 @@ using UnityEngine;
 /// プレイヤーキャラクター（ルル）
 /// </summary>
 public class Player_Character : Character_Base {
+    private const float _SPECIAL_GAGE_DAMAGE_RATE = 0.1f; // ダメージによる必殺技ゲージ増加率
+
     private CharacterParameter_Player _player_charaParam => _charaParam as CharacterParameter_Player;
     public CharacterParameter_Player PlayerCharaParam => _player_charaParam;
 
@@ -553,6 +555,14 @@ public class Player_Character : Character_Base {
         _SetWallDash(false);
         _isGroundSticking = false; // 地面張り付き状態終了
         _isJumping = false; // ジャンプ終了
+
+        if (damage > 0) {
+            // 必殺技チャージ
+            _abilityA?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
+            _abilityB?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
+            _abilityX?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
+            _abilityY?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
+        }
 
         return base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
     }

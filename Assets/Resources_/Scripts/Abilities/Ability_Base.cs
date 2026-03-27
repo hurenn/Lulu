@@ -316,6 +316,19 @@ public class Ability_Base : MonoBehaviour {
     public void ForceCharge(float rate = 1.0f) {
         _currentSpecialChargeTime = _specialChargeTime * rate;
     }
+
+    /// <summary>
+    /// 必殺チャージを追加（現在のチャージに加算）
+    /// </summary>
+    /// <param name="rate">追加するチャージ率（0.0～1.0）</param>
+    public void AddSpecialCharge(float rate) {
+        _currentSpecialChargeTime += _specialChargeTime * rate;
+        // 最大値を超えないように制限
+        if (_currentSpecialChargeTime > _specialChargeTime) {
+            _currentSpecialChargeTime = _specialChargeTime;
+        }
+    }
+
     private Pause_UI GetPauseUI()
     {
         if (_pauseUIInstance == null)
