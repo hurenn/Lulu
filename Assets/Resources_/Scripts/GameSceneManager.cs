@@ -64,8 +64,8 @@ public class GameSceneManager : MonoBehaviour
             return;
         }
 
-        // ESCキーでタイトルへ戻る
-        if (keyboard.escapeKey.wasPressedThisFrame) {
+        // Tキーでタイトルへ戻る
+        if (keyboard.tKey.wasPressedThisFrame) {
             GameRestart();
         }
 
@@ -74,8 +74,8 @@ public class GameSceneManager : MonoBehaviour
             StageRestart(false, false); // ポーズからのリトライ扱い（チャージなし）
         }
 
-        // デバッグ用：Pキーで経験値200獲得
-        if (keyboard.pKey.wasPressedThisFrame) {
+        // デバッグ用：Eキーで経験値200獲得
+        if (keyboard.eKey.wasPressedThisFrame) {
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {
                 player.AddExp(200);
