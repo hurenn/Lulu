@@ -41,7 +41,7 @@ public class Pause_GameMenu : Pause_MenuBase {
 
     public override void ExecuteSelectedMenu() {
         base.ExecuteSelectedMenu();
-        // 決定音を再生
+        // 決定音再生
         if (_audioSource != null && _seDecide != null) {
             _audioSource.PlayOneShot(_seDecide);
         }
@@ -49,8 +49,8 @@ public class Pause_GameMenu : Pause_MenuBase {
             case eMenuIndex.ReturnGame: // ゲームに戻る
                 OnCloseMenu();
                 break;
-            case eMenuIndex.Retry: // リトライ
-                GameSceneManager.Instance.StageRestart(false);
+            case eMenuIndex.Retry: // やり直し（ポーズからのリトライなので必殺チャージなし）
+                GameSceneManager.Instance.StageRestart(false, false);
                 OnCloseMenu();
                 break;
         }

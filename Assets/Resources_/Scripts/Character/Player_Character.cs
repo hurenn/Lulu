@@ -567,8 +567,8 @@ public class Player_Character : Character_Base {
 
         yield return new WaitForSeconds(1.0f);
 
-        // シーン再読み込み
-        ChangeScene.LoadScene(false);
+        // ステージリトライ（死亡によるリトライなので必殺チャージ50%付与）
+        GameSceneManager.Instance.StageRestart(false, true);
     }
 
     /// <summary>

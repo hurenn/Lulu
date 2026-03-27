@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,14 +23,38 @@ public class GameSceneManager : MonoBehaviour
         }
     }
     private string _titleSceneName = "Title";
+    
+    // リトライ種別を記憶
+    private static bool _isDeathRetry = false;
 
     private void Start() {
         // シーン再読み込み時のみリスポーン地点に移動
         var player = FindAnyObjectByType<Player_Character>();
         var checkpointManager = CheckpointManager.Instance;
-        if (player != null && checkpointManager != null && checkpointManager.ShouldRespawnInCurrentScene())
-        {
+        if (player != null && checkpointManager != null && checkpointManager.ShouldRespawnInCurrentScene()) {
             checkpointManager.RespawnPlayer(player);
+        }
+        // 死亡によるリトライの場合のみ必殺チャージを50%に設定
+        if (_isDeathRetry) {
+            StartCoroutine(_ChargeAbilitiesOnRespawn(0.7f));
+            _isDeathRetry = false; // フラグをリセット
+        }
+    }
+
+    /// <summary>
+    /// リスポーン時にすべてのアビリティに必殺チャージを付与
+    /// </summary>
+    /// <param name="chargeRate">チャージ率（0.0～1.0）</param>
+    private IEnumerator _ChargeAbilitiesOnRespawn(float chargeRate) {
+        Ability_Base[] abilities = new Ability_Base[0];
+        while (abilities.Length == 0) {
+            abilities = FindObjectsByType<Ability_Base>(FindObjectsSortMode.None);
+            yield return null;
+        }
+        foreach (var ability in abilities) {
+            if (ability != null) {
+                ability.ForceCharge(chargeRate);
+            }
         }
     }
 
@@ -46,7 +71,7 @@ public class GameSceneManager : MonoBehaviour
 
         // Rキーでステージ再スタート
         if (keyboard.rKey.wasPressedThisFrame) {
-            StageRestart(false);
+            StageRestart(false, false); // ポーズからのリトライ扱い（チャージなし）
         }
 
         // デバッグ用：Pキーで経験値200獲得
@@ -129,12 +154,21 @@ public class GameSceneManager : MonoBehaviour
         }
     }
 
-    public void StageRestart(bool is_ability_save) {
+    /// <summary>
+    /// ステージリトライ
+    /// </summary>
+    /// <param name="is_ability_save">能力を保存するか</param>
+    /// <param name="is_death_retry">死亡によるリトライか（trueの場合必殺チャージ50%で復帰）</param>
+    public void StageRestart(bool is_ability_save, bool is_death_retry = false) {
+        // 死亡リトライフラグを設定
+        _isDeathRetry = is_death_retry;
+        
         // シーン再読み込み
         ChangeScene.LoadScene(is_ability_save);
     }
 
     public void GameRestart() {
+        _isDeathRetry = false; // タイトルに戻る場合はフラグをクリア
         ChangeScene.LoadScene(false, _titleSceneName);
     }
 }
