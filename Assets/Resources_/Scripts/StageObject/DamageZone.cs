@@ -29,6 +29,8 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private Character_Base _selfCharacter = null;
     // 自分自身に与えるダメージ量
     [SerializeField] private int _damageToSelf = 0;
+    // 自傷ダメージの無敵時間
+    [SerializeField] private float _invincibleTimeToSelf = 0.5f;
     // 自分自身への吹っ飛ばし力
     [SerializeField] private Vector2 _blowPowerToSelf = new Vector2(3.0f, 5.0f);
     // 自分自身にダメージを与えるかどうか
@@ -208,7 +210,7 @@ public class DamageZone : MonoBehaviour {
         }
 
         // 自分自身にダメージを与える
-        _selfCharacter.Damage(_damageToSelf, blowPower, 1.0f, _damageReactionTime);
+        _selfCharacter.Damage(_damageToSelf, blowPower, _invincibleTimeToSelf, _damageReactionTime);
     }
 
     private GameObject _SpawnHitEffect(Vector3 position, HitEffect.eType type) {
