@@ -648,7 +648,11 @@ public class Player_Character : Character_Base {
             _currentJumpTime = _param.maxJumpHoldTime;
             _isJumping = true;
             _anim?.SetBool("Jump", true);
-            _anim?.Play("Jump");
+            if (_isSlidingJump) {
+                _anim?.Play("SlidingJump");
+            } else {
+                _anim?.Play("Jump");
+            }
             if (_seJump != null) {
                 _audioSource?.PlayOneShot(_seJump);
             }
