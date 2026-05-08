@@ -366,6 +366,9 @@ public class Character_Base : MonoBehaviour {
                     _audioSource?.PlayOneShot(_seDead);
                 }
                 StartCoroutine(Die());
+
+                // êÅÇ¡îÚÇ—
+                _rb.linearVelocity = blow_power_right;
                 return true;
             }
 

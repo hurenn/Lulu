@@ -570,7 +570,7 @@ public class Player_Character : Character_Base {
     protected override IEnumerator Die() {
         yield return base.Die();
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
 
         Instantiate(_warpEffectPrefab, transform.position, Quaternion.identity);
         _sprite.enabled = false;
