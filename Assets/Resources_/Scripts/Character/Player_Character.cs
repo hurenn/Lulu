@@ -277,7 +277,7 @@ public class Player_Character : Character_Base {
 
         _SetWallDash(true, _rb.linearVelocity.y >= 0);
         _currentWallSlideTime = 0;
-        _isSlidingJump = false;
+        _SetSlidingJump(false); // スライディングジャンプ終了
         _isWarpDashing = false;
     }
 
@@ -344,7 +344,7 @@ public class Player_Character : Character_Base {
 
         // 着地した場合はスライドジャンプ終了
         if (_isGrounded && _currentSlideJumpTime > 0.1f) {
-            _isSlidingJump = false;
+            _SetSlidingJump(false); // スライディングジャンプ終了
             return;
         }
         _currentSlideJumpTime += Time.fixedDeltaTime;
@@ -551,7 +551,7 @@ public class Player_Character : Character_Base {
 
         _isWarpDashing = false; // ワープダッシュ終了
         _SetSliding(false);
-        _isSlidingJump = false; // スライディングジャンプ終了
+        _SetSlidingJump(false); // スライディングジャンプ終了
         _SetWallDash(false);
         _isGroundSticking = false; // 地面張り付き状態終了
         _isJumping = false; // ジャンプ終了
@@ -634,7 +634,7 @@ public class Player_Character : Character_Base {
             // スライディングジャンプ
             if (_isSliding) {
                 _SetSliding(false);
-                _isSlidingJump = true;
+                _SetSlidingJump(true);
 
                 // y方向の加速を無視
                 _warpDashDirection.y = 0;
@@ -648,11 +648,7 @@ public class Player_Character : Character_Base {
             _currentJumpTime = _param.maxJumpHoldTime;
             _isJumping = true;
             _anim?.SetBool("Jump", true);
-            if (_isSlidingJump) {
-                _anim?.Play("SlidingJump");
-            } else {
-                _anim?.Play("Jump");
-            }
+            _anim?.Play("Jump");
             if (_seJump != null) {
                 _audioSource?.PlayOneShot(_seJump);
             }
@@ -844,7 +840,7 @@ public class Player_Character : Character_Base {
         // ワープダッシュのクールタイムをリセット
         _currentWarpCoolTime = _param.warpCoolTime;
         // スライドジャンプリセット
-        _isSlidingJump = false;
+        _SetSlidingJump(false);
         // 重力を有効化
         _isWarpDelay = false;
     }

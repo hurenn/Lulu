@@ -56,6 +56,10 @@ public class Character_Base : MonoBehaviour {
     }
     protected bool _isSlidingCanceling; // スライディングキャンセル中かどうか
     protected bool _isSlidingJump;  // スライディングジャンプ中かどうか
+    protected void _SetSlidingJump(bool is_sliding_jump, bool is_play_anim = true) {
+        _isSlidingJump = is_sliding_jump;
+        _anim?.SetBool("SlidingJump", _isSlidingJump);
+    }
     protected bool _isGroundSticking; // 地面に張り付いている状態
     protected bool _isWallDash;  // 壁に沿って滑っている状態
     protected void _SetWallDash(bool is_wall_sliding, bool is_play_anim = true) {
