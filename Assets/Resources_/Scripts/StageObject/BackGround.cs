@@ -3,15 +3,17 @@ using UnityEngine;
 [System.Serializable]
 public class ParallaxLayer {
     public string name;
-    public Transform[] objects;    // ƒ‹[ƒv‚³‚¹‚éƒIƒuƒWƒFƒNƒgiè‘OŒš•¨‚È‚Çj
+    public Transform[] objects;    // ï¿½ï¿½ï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½iï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½È‚Çj
     [Range(0f, 1f)]
-    public float parallaxFactor = 0.5f;  // 0=‰“ŒiA1=è‘O
-    public bool loop = false;      // ƒ‹[ƒv‚·‚é‚©
+    public float parallaxFactor = 0.5f;  // 0=ï¿½ï¿½ï¿½iï¿½A1=ï¿½ï¿½O
+    public bool loop = false;      // ï¿½ï¿½ï¿½[ï¿½vï¿½ï¿½ï¿½é‚©
 }
 
 public class BackGround : MonoBehaviour {
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private ParallaxLayer[] layers;
+    [Tooltip("è‡ªå‹•ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«é€Ÿåº¦ï¼ˆå˜ä½/ç§’ï¼‰ã€‚0ã§ç„¡åŠ¹")]
+    [SerializeField] private float autoScrollSpeed = 0f;
 
     private Vector3 lastCamPos;
     private float[] spriteWidths;
@@ -22,13 +24,13 @@ public class BackGround : MonoBehaviour {
 
         lastCamPos = cameraTransform.position;
 
-        // ŠeƒŒƒCƒ„[‚ÌƒIƒuƒWƒFƒNƒg•‚ğæ“¾
+        // ï¿½eï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½æ“¾
         spriteWidths = new float[layers.Length];
         for (int i = 0; i < layers.Length; i++) {
             var layer = layers[i];
             if (layer.loop && layer.objects.Length >= 2) {
                 spriteWidths[i] = layer.objects[0].GetComponent<SpriteRenderer>().bounds.size.x;
-                // ‰¡‚É•À‚×‚é
+                // ï¿½ï¿½ï¿½É•ï¿½ï¿½×‚ï¿½
                 for (int j = 0; j < layer.objects.Length; j++) {
                     var pos = layer.objects[j].localPosition;
                     pos.x = j * spriteWidths[i] * layer.objects[j].localScale.x;
@@ -45,11 +47,11 @@ public class BackGround : MonoBehaviour {
             var layer = layers[i];
 
             foreach (var obj in layer.objects) {
-                // ”½‘Î•ûŒüƒpƒ‰ƒ‰ƒbƒNƒX
-                obj.position += Vector3.right * (-deltaX * layer.parallaxFactor);
+                // ï¿½ï¿½ï¿½Î•ï¿½ï¿½ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½bï¿½Nï¿½X
+                obj.position += Vector3.right * (-deltaX * layer.parallaxFactor - autoScrollSpeed * layer.parallaxFactor * Time.deltaTime);
             }
 
-            // ƒ‹[ƒvˆ—
+            // ï¿½ï¿½ï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½
             if (layer.loop) {
                 float width = spriteWidths[i];
                 foreach (var obj in layer.objects) {
@@ -72,11 +74,11 @@ public class BackGround : MonoBehaviour {
     //[SerializeField, Range(0f, 1f)] private float _vistaBuildingParallax = 0.5f;
     //[SerializeField, Range(0f, 1f)] private float _closeBuildingParallax = 0.8f;
 
-    //// ”wŒi‚Ì•iƒ‹[ƒv—pj
+    //// ï¿½wï¿½iï¿½Ì•ï¿½ï¿½iï¿½ï¿½ï¿½[ï¿½vï¿½pï¿½j
     //[SerializeField] private float _vistaBuildingWidth = 1.0f;
     //[SerializeField] private float _closeBuildingWidth = 1.0f;
 
-    //// ‰ŠúˆÊ’u‚ğ‹L˜^
+    //// ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½Lï¿½^
     //private Vector3[] _vistaInitialPositions;
     //private Vector3[] _closeInitialPositions;
     //private Vector3 _initialCameraPosition;
@@ -84,12 +86,12 @@ public class BackGround : MonoBehaviour {
     //private void Reset() {
     //    _mainCamera = Camera.main;
 
-    //    // "VistaBuilding"‚ğ–¼‘O‚ÉŠÜ‚ŞqƒIƒuƒWƒFƒNƒg‚ğ‚·‚×‚Äæ“¾
+    //    // "VistaBuilding"ï¿½ğ–¼‘Oï¿½ÉŠÜ‚Şqï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½×‚Äæ“¾
     //    _vistaBuildings = transform.GetComponentsInChildren<Transform>()
     //        .Where(t => t.gameObject.name.Contains("VistaBuilding"))
     //        .Select(t => t.gameObject)
     //        .ToArray() ?? new GameObject[0];
-    //    // "CloseBuilding"‚ğ–¼‘O‚ÉŠÜ‚ŞqƒIƒuƒWƒFƒNƒg‚ğ‚·‚×‚Äæ“¾
+    //    // "CloseBuilding"ï¿½ğ–¼‘Oï¿½ÉŠÜ‚Şqï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½×‚Äæ“¾
     //    _closeBuildings = transform.GetComponentsInChildren<Transform>()
     //        .Where(t => t.gameObject.name.Contains("CloseBuilding"))
     //        .Select(t => t.gameObject)
@@ -116,12 +118,12 @@ public class BackGround : MonoBehaviour {
     //}
 
     ///// <summary>
-    ///// ‰ŠúˆÊ’u‚ğ‹L˜^
+    ///// ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½Lï¿½^
     ///// </summary>
     //private void _RecordInitialPositions() {
     //    _initialCameraPosition = _mainCamera.transform.position;
 
-    //    // VistaŒš•¨‚Ì‰ŠúˆÊ’u‚ğ‹L˜^
+    //    // Vistaï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½Lï¿½^
     //    _vistaInitialPositions = new Vector3[_vistaBuildings.Length];
     //    for (int i = 0; i < _vistaBuildings.Length; i++) {
     //        if (_vistaBuildings[i] != null) {
@@ -129,7 +131,7 @@ public class BackGround : MonoBehaviour {
     //        }
     //    }
 
-    //    // CloseŒš•¨‚Ì‰ŠúˆÊ’u‚ğ‹L˜^
+    //    // Closeï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½Lï¿½^
     //    _closeInitialPositions = new Vector3[_closeBuildings.Length];
     //    for (int i = 0; i < _closeBuildings.Length; i++) {
     //        if (_closeBuildings[i] != null) {
@@ -139,45 +141,45 @@ public class BackGround : MonoBehaviour {
     //}
 
     ///// <summary>
-    ///// ƒ[ƒJƒ‹ˆÊ’u‚Åƒpƒ‰ƒ‰ƒbƒNƒXŒø‰Ê‚ğÀ‘•
+    ///// ï¿½ï¿½ï¿½[ï¿½Jï¿½ï¿½ï¿½Ê’uï¿½Åƒpï¿½ï¿½ï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½ï¿½
     ///// </summary>
     //private void _LoopBuildings(GameObject[] buildings, Vector3[] initialPositions, float buildingWidth, float parallax) {
     //    if (buildings == null || buildings.Length == 0 || initialPositions == null) {
     //        return;
     //    }
 
-    //    // ƒJƒƒ‰‚ÌˆÚ“®—Ê‚ğŒvZ
+    //    // ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌˆÚ“ï¿½ï¿½Ê‚ï¿½ï¿½vï¿½Z
     //    Vector3 cameraDelta = _mainCamera.transform.position - _initialCameraPosition;
 
-    //    // ƒpƒ‰ƒ‰ƒbƒNƒXŒø‰Ê‚ğ“K—p‚µ‚½ƒIƒtƒZƒbƒg
+    //    // ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ê‚ï¿½Kï¿½pï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½tï¿½Zï¿½bï¿½g
     //    Vector3 parallaxOffset = new Vector3(
     //        cameraDelta.x * parallax,
-    //        cameraDelta.y * parallax * 0.1f, // Y²‚Íã‚ß‚Ìƒpƒ‰ƒ‰ƒbƒNƒX
+    //        cameraDelta.y * parallax * 0.1f, // Yï¿½ï¿½ï¿½Íï¿½ß‚Ìƒpï¿½ï¿½ï¿½ï¿½ï¿½bï¿½Nï¿½X
     //        0f
     //    );
 
-    //    // ŠeŒš•¨‚ÌˆÊ’u‚ğXV
+    //    // ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ÌˆÊ’uï¿½ï¿½ï¿½Xï¿½V
     //    for (int i = 0; i < buildings.Length; i++) {
     //        if (buildings[i] == null || i >= initialPositions.Length) continue;
 
-    //        // ‰ŠúˆÊ’u‚Éƒpƒ‰ƒ‰ƒbƒNƒXƒIƒtƒZƒbƒg‚ğ“K—p
+    //        // ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½Éƒpï¿½ï¿½ï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½Iï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½Kï¿½p
     //        Vector3 targetPosition = initialPositions[i] + parallaxOffset;
 
-    //        // ƒ‹[ƒvˆ—‚Ì‚½‚ß‚Ì”ÍˆÍŒvZ
+    //        // ï¿½ï¿½ï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚Ì”ÍˆÍŒvï¿½Z
     //        float totalWidth = buildingWidth * buildings.Length;
     //        float cameraHalfWidth = _mainCamera.orthographicSize * _mainCamera.aspect;
     //        float visibleRange = cameraHalfWidth + buildingWidth;
 
-    //        // ƒ‹[ƒv”»’è‚ÆˆÊ’u’²®
+    //        // ï¿½ï¿½ï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½ÆˆÊ’uï¿½ï¿½ï¿½ï¿½
     //        float relativeX = targetPosition.x - (_mainCamera.transform.position.x * parallax);
 
-    //        // ¶‘¤‚Éo‚·‚¬‚½ê‡
+    //        // ï¿½ï¿½ï¿½ï¿½ï¿½Éoï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡
     //        while (relativeX < -visibleRange) {
     //            targetPosition.x += totalWidth;
     //            relativeX += totalWidth;
     //        }
 
-    //        // ‰E‘¤‚Éo‚·‚¬‚½ê‡
+    //        // ï¿½Eï¿½ï¿½ï¿½Éoï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡
     //        while (relativeX > visibleRange + totalWidth) {
     //            targetPosition.x -= totalWidth;
     //            relativeX -= totalWidth;
@@ -188,7 +190,7 @@ public class BackGround : MonoBehaviour {
     //}
 
     ///// <summary>
-    ///// ‰ŠúˆÊ’u‚ğƒŠƒZƒbƒgiƒfƒoƒbƒO—pj
+    ///// ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½iï¿½fï¿½oï¿½bï¿½Oï¿½pï¿½j
     ///// </summary>
     //[ContextMenu("Reset Initial Positions")]
     //public void ResetInitialPositions() {
@@ -198,7 +200,7 @@ public class BackGround : MonoBehaviour {
     //}
 
     ///// <summary>
-    ///// ƒpƒ‰ƒ‰ƒbƒNƒXŒø‰Ê‚ğƒŠƒZƒbƒgiƒfƒoƒbƒO—pj
+    ///// ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½iï¿½fï¿½oï¿½bï¿½Oï¿½pï¿½j
     ///// </summary>
     //[ContextMenu("Reset Parallax")]
     //public void ResetParallax() {
