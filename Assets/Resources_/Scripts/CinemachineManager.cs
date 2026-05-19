@@ -19,17 +19,20 @@ public class CinemachineManager : MonoBehaviour {
 
     public void ZoomOnTarget(Transform target) {
         _zoomCam.Follow = target;
-        _zoomCam.Priority = 20; // プレイヤーカメラより高く
+        _zoomCam.Priority = 20; // 繝励Ξ繧､繝､繝ｼ繧ｫ繝｡繝ｩ繧医ｊ鬮倥￥
     }
 
     public void ReturnToPlayer() {
         _zoomCam.Priority = -1;
     }
 
+    public static event System.Action<float, float> OnShake;
+
     public void ShakeCamera(float intensity = 1.0f, float duration = 0.1f) {
         _impulseSource.ImpulseDefinition.AmplitudeGain = intensity;
         _impulseSource.ImpulseDefinition.ImpulseDuration = duration;
         _impulseSource.GenerateImpulse();
+        OnShake?.Invoke(intensity, duration);
     }
 
 }

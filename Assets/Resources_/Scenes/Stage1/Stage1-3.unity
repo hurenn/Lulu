@@ -197084,7 +197084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ApplyAfter: 2
-  ChannelMask: 1
+  ChannelMask: 4
   Gain: 1
   Use2DDistance: 0
   UseCameraSpace: 1
@@ -387830,15 +387830,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1043259105586490740, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
       propertyPath: field of view
-      value: 29
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1305744817508693893, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 405.5
+      value: 230.40001
       objectReference: {fileID: 0}
     - target: {fileID: 1305744817508693893, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.299999
+      value: -3.5599995
       objectReference: {fileID: 0}
     - target: {fileID: 1305744817508693893, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -387888,6 +387888,14 @@ PrefabInstance:
       propertyPath: character
       value: 
       objectReference: {fileID: 8369236170261666990}
+    - target: {fileID: 3232880176650287743, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
+      propertyPath: shakeMultiplier
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3267661099966493576, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
+      propertyPath: ChannelMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3991352847102460822, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
       propertyPath: m_Name
       value: Required Objects
@@ -387924,6 +387932,10 @@ PrefabInstance:
       propertyPath: _eventCam
       value: 
       objectReference: {fileID: 610312840}
+    - target: {fileID: 8803286371402163706, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
+      propertyPath: ImpulseDefinition.ImpulseChannel
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

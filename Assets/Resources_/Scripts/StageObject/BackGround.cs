@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [System.Serializable]
@@ -14,15 +15,23 @@ public class BackGround : MonoBehaviour {
     [SerializeField] private ParallaxLayer[] layers;
     [Tooltip("自動スクロール速度（単位/秒）。0で無効")]
     [SerializeField] private float autoScrollSpeed = 0f;
+    [Tooltip("シェイク強度の倍率")]
+    [SerializeField] private float shakeMultiplier = 0.3f;
 
     private Vector3 lastCamPos;
     private float[] spriteWidths;
+    private Coroutine _shakeCo;
+    private Vector3[] _shakeOffsets;
+
+    void OnEnable()  => CinemachineManager.OnShake += _StartShake;
+    void OnDisable() => CinemachineManager.OnShake -= _StartShake;
 
     void Start() {
         if (cameraTransform == null)
             cameraTransform = Camera.main.transform;
 
         lastCamPos = cameraTransform.position;
+        _shakeOffsets = new Vector3[layers.Length];
 
         // �e���C���[�̃I�u�W�F�N�g�����擾
         spriteWidths = new float[layers.Length];
@@ -66,6 +75,42 @@ public class BackGround : MonoBehaviour {
         }
 
         lastCamPos = cameraTransform.position;
+    }
+
+    private void _StartShake(float intensity, float duration) {
+        if (_shakeCo != null) StopCoroutine(_shakeCo);
+        _shakeCo = StartCoroutine(_ShakeCo(intensity, duration));
+    }
+
+    private IEnumerator _ShakeCo(float intensity, float duration) {
+        float elapsed = 0f;
+        while (elapsed < duration) {
+            elapsed += Time.deltaTime;
+            float current = intensity * shakeMultiplier * (1f - elapsed / duration);
+
+            for (int i = 0; i < layers.Length; i++) {
+                float layerIntensity = current * layers[i].parallaxFactor;
+                Vector3 newOffset = new Vector3(
+                    Random.Range(-layerIntensity, layerIntensity),
+                    Random.Range(-layerIntensity, layerIntensity),
+                    0f);
+                Vector3 delta = newOffset - _shakeOffsets[i];
+                _shakeOffsets[i] = newOffset;
+                foreach (var obj in layers[i].objects) {
+                    if (obj != null) obj.position += delta;
+                }
+            }
+            yield return null;
+        }
+
+        // オフセットをリセット
+        for (int i = 0; i < layers.Length; i++) {
+            foreach (var obj in layers[i].objects) {
+                if (obj != null) obj.position -= _shakeOffsets[i];
+            }
+            _shakeOffsets[i] = Vector3.zero;
+        }
+        _shakeCo = null;
     }
 }
     //[SerializeField] private GameObject[] _vistaBuildings;
