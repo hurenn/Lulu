@@ -5,52 +5,53 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// ƒƒbƒZ[ƒW•\¦ƒNƒ‰ƒX
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã‚¯ãƒ©ã‚¹
 /// </summary>
 public class MessageViewer : MonoBehaviour {
-    // ƒLƒƒƒ‰ƒNƒ^[–¼‚Ì«‘
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åã®è¾æ›¸
     private Dictionary<string, string> _CHARACTER_NAME_DIC = new Dictionary<string, string>() {
-        {"Lulu", "ƒ‹ƒ‹"},
-        {"Marlica", "ƒ}ƒ‹ƒŠƒJ"},
-        {"Node", "ƒm[ƒh"},
-        {"Pepe", "ƒyƒy"},
-        {"Milly", "ƒ~ƒŠ["},
+        {"Lulu", "ãƒ«ãƒ«"},
+        {"Marlica", "ãƒãƒ«ãƒªã‚«"},
+        {"Node", "ãƒãƒ¼ãƒ‰"},
+        {"Pepe", "ãƒšãƒš"},
+        {"Milly", "ãƒŸãƒªãƒ¼"},
     };
-    private const float _BASE_SHOW_TIME = 2.0f; // Šî–{•\¦ŠÔ
-    private const float _ADD_SHOW_TIME = 0.1f;  // 1•¶š‚ ‚½‚è‚Ì’Ç‰Á•\¦ŠÔ
-    private const float _ADD_ENG_SHOW_TIME = 0.05f;  // 1•¶š‚ ‚½‚è‚Ì’Ç‰Á•\¦ŠÔ
-    private const float _AUTO_MESSAGE_SHOW_TIME = 0.01f; // ƒƒbƒZ[ƒW•\¦‚Ì‘‚³
-    private const float _AUTO_ENG_MESSAGE_SHOW_TIME = 0.001f; // ‰pŒêƒƒbƒZ[ƒW•\¦‚Ì‘‚³
-    private const float _COOL_TIME = 0.5f;  // ƒƒbƒZ[ƒW•\¦ƒN[ƒ‹ƒ^ƒCƒ€
-    private const float _FORCE_COOL_TIME = 0.1f; // ‹­§ƒƒbƒZ[ƒW•\¦ƒN[ƒ‹ƒ^ƒCƒ€
+    private const float _BASE_SHOW_TIME = 2.0f; // åŸºæœ¬è¡¨ç¤ºæ™‚é–“
+    private const float _ADD_SHOW_TIME = 0.1f;  // 1æ–‡å­—ã‚ãŸã‚Šã®è¿½åŠ è¡¨ç¤ºæ™‚é–“
+    private const float _ADD_ENG_SHOW_TIME = 0.05f;  // 1æ–‡å­—ã‚ãŸã‚Šã®è¿½åŠ è¡¨ç¤ºæ™‚é–“
+    private const float _AUTO_MESSAGE_SHOW_TIME = 0.01f; // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã®æ—©ã•
+    private const float _AUTO_ENG_MESSAGE_SHOW_TIME = 0.001f; // è‹±èªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã®æ—©ã•
+    private const float _COOL_TIME = 0.5f;  // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+    private const float _FORCE_COOL_TIME = 0.1f; // å¼·åˆ¶ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 
-    [SerializeField] private PlayerController _playerController; // ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[
-    [SerializeField] private MessageList _messageListScript;    // ƒƒbƒZ[ƒWƒŠƒXƒgŠÇ—
-    [SerializeField] private TMP_Text _messageText;             // ƒƒbƒZ[ƒW•\¦—pƒeƒLƒXƒg
-    [SerializeField] private GameObject _namePanel;             // ƒLƒƒƒ‰ƒNƒ^[–¼ƒpƒlƒ‹
-    [SerializeField] private TMP_Text _characterText;           // ƒLƒƒƒ‰ƒNƒ^[–¼•\¦—pƒeƒLƒXƒg
-    [SerializeField] private Image _iconImage;                  // ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“•\¦—pƒCƒ[ƒW
-    [SerializeField] private GameObject _messagePanel;          // ƒƒbƒZ[ƒWƒpƒlƒ‹
-    [SerializeField] private Image _nextIcon;                   // Ÿ‚ÌƒƒbƒZ[ƒW‚ğ‘£‚·ƒAƒCƒRƒ“
-    [SerializeField] private Image _nextButtonIcon;             // Ÿ‚ÌƒƒbƒZ[ƒW‚ğ‘£‚·ƒ{ƒ^ƒ“ƒAƒCƒRƒ“
-    [SerializeField] private Image[] _messageWindows;         // ƒƒbƒZ[ƒWƒpƒlƒ‹‚ÌCanvasGroup
-    [SerializeField] private float _fadeAlpha = 0.3f;      // ƒtƒF[ƒh‚Ì“§–¾“x
-    [SerializeField] private float _normalAlpha = 0.9f;    // ’Êí‚Ì“§–¾“x
-    [SerializeField] private Animator _messagePanelAnimator;   // ƒƒbƒZ[ƒWƒpƒlƒ‹‚ÌAnimator
-    private RectTransform _messagePanelRect; // ƒƒbƒZ[ƒWƒpƒlƒ‹‚ÌRectTransform
-    private RectTransform _iconRect;         // ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“‚ÌRectTransform
+    [SerializeField] private PlayerController _playerController; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
+    [SerializeField] private MessageList _messageListScript;    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒªã‚¹ãƒˆç®¡ç†
+    [SerializeField] private TMP_Text _messageText;             // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºç”¨ãƒ†ã‚­ã‚¹ãƒˆ
+    [SerializeField] private GameObject _namePanel;             // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åãƒ‘ãƒãƒ«
+    [SerializeField] private TMP_Text _characterText;           // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åè¡¨ç¤ºç”¨ãƒ†ã‚­ã‚¹ãƒˆ
+    [SerializeField] private Image _iconImage;                  // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¢ã‚¤ã‚³ãƒ³è¡¨ç¤ºç”¨ã‚¤ãƒ¡ãƒ¼ã‚¸
+    [SerializeField] private GameObject _messageViewer;         // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ“ãƒ¥ãƒ¼ã‚¢å…¨ä½“
+    [SerializeField] private GameObject _messagePanel;          // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ‘ãƒãƒ«
+    [SerializeField] private Image _nextIcon;                   // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä¿ƒã™ã‚¢ã‚¤ã‚³ãƒ³
+    [SerializeField] private Image _nextButtonIcon;             // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä¿ƒã™ãƒœã‚¿ãƒ³ã‚¢ã‚¤ã‚³ãƒ³
+    [SerializeField] private Image[] _messageWindows;         // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ‘ãƒãƒ«ã®CanvasGroup
+    [SerializeField] private float _fadeAlpha = 0.3f;      // ãƒ•ã‚§ãƒ¼ãƒ‰æ™‚ã®é€æ˜åº¦
+    [SerializeField] private float _normalAlpha = 0.9f;    // é€šå¸¸æ™‚ã®é€æ˜åº¦
+    [SerializeField] private Animator _messagePanelAnimator;   // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ‘ãƒãƒ«ã®Animator
+    private RectTransform _messagePanelRect; // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ‘ãƒãƒ«ã®RectTransform
+    private RectTransform _iconRect;         // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¢ã‚¤ã‚³ãƒ³ã®RectTransform
 
     private string _currentText = string.Empty;
-    private MessageData _currentMessage;  // Œ»İ•\¦’†‚ÌƒƒbƒZ[ƒW
-    private float _currentShowTime; // Œ»İ‚Ì•\¦ŠÔ
-    private bool _isShowing;        // ƒƒbƒZ[ƒW•\¦’†ƒtƒ‰ƒO
-    public bool IsShowing => _isShowing; // ƒƒbƒZ[ƒW•\¦’†ƒtƒ‰ƒO‚ÌŒöŠJ—p
-    private bool _isSeries;         // ˆê˜A‚ÌƒƒbƒZ[ƒWƒtƒ‰ƒO
-    private bool _isEventMessage;    // ƒCƒxƒ“ƒgƒƒbƒZ[ƒWƒtƒ‰ƒO
-    private float _currentCoolTime; // Ÿ‚ÌƒƒbƒZ[ƒW‚ğ•\¦‚·‚é‚Ü‚Å‚ÌƒN[ƒ‹ƒ^ƒCƒ€
-    private IEnumerator _typingCoroutine; // •¶š‚ğ1‚Â‚¸‚Â•\¦‚·‚éƒRƒ‹[ƒ`ƒ“
+    private MessageData _currentMessage;  // ç¾åœ¨è¡¨ç¤ºä¸­ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+    private float _currentShowTime; // ç¾åœ¨ã®è¡¨ç¤ºæ™‚é–“
+    private bool _isShowing;        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºä¸­ãƒ•ãƒ©ã‚°
+    public bool IsShowing => _isShowing; // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºä¸­ãƒ•ãƒ©ã‚°ã®å…¬é–‹ç”¨
+    private bool _isSeries;         // ä¸€é€£ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ•ãƒ©ã‚°
+    private bool _isEventMessage;    // ã‚¤ãƒ™ãƒ³ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ•ãƒ©ã‚°
+    private float _currentCoolTime; // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã™ã‚‹ã¾ã§ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+    private IEnumerator _typingCoroutine; // æ–‡å­—ã‚’1ã¤ãšã¤è¡¨ç¤ºã™ã‚‹ã‚³ãƒ«ãƒ¼ãƒãƒ³
 
-    private bool _isStopMessage = false;    // ƒƒbƒZ[ƒW•\¦’â~ƒtƒ‰ƒO
+    private bool _isStopMessage = false;    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºåœæ­¢ãƒ•ãƒ©ã‚°
     public void SetIsStopMessage(bool enable) {
         _isStopMessage = enable;
     }
@@ -62,7 +63,7 @@ public class MessageViewer : MonoBehaviour {
     private PlayerParameter _playerParameter;
 
     private void OnEnable() {
-        _messagePanel.SetActive(false); // ƒpƒlƒ‹‚ğ”ñ•\¦
+        _messagePanel.SetActive(false); // ãƒ‘ãƒãƒ«ã‚’éè¡¨ç¤º
         if(_playerController == null) {
             _playerController = FindAnyObjectByType<PlayerController>();
         }
@@ -71,7 +72,7 @@ public class MessageViewer : MonoBehaviour {
 
     private void Update() {
         UpdateWindowAlpha();
-        // ƒ|[ƒYUI‚ªŠJ‚¢‚Ä‚¢‚éŠÔ‚ÍƒƒbƒZ[ƒW•\¦ŠÔŒo‰ß‚ğ~‚ß‚é
+        // ãƒãƒ¼ã‚ºUIãŒé–‹ã„ã¦ã„ã‚‹é–“ã¯ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºæ™‚é–“çµŒéã‚’æ­¢ã‚ã‚‹
         if (Pause_UI.IsOpen == true) {
             return;
         }
@@ -79,7 +80,7 @@ public class MessageViewer : MonoBehaviour {
             return;
         }
 
-        // isUnScaledTime‚É‰‚¶‚ÄdeltaTime‚ğ‘I‘ğ
+        // isUnScaledTimeã«å¿œã˜ã¦deltaTimeã‚’é¸æŠ
         float deltaTime = Time.deltaTime;
         if (_currentMessage != null && _currentMessage.isUnScaledTime) {
             deltaTime = Time.unscaledDeltaTime;
@@ -94,7 +95,7 @@ public class MessageViewer : MonoBehaviour {
             _isEventMessage = false;
         }
 
-        // Ÿ‚ÌƒƒbƒZ[ƒW‚ğ•\¦
+        // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤º
         if (!_isShowing && _messageListScript.HasMessages()) {
             _ShowNext();
         }
@@ -102,92 +103,97 @@ public class MessageViewer : MonoBehaviour {
 
         if (!_isShowing) return;
 
-        // ƒ{ƒ^ƒ“•\¦Ø‘Ö
+        // ãƒœã‚¿ãƒ³è¡¨ç¤ºåˆ‡æ›¿
         var is_event_message = _currentMessage.playableDirector != null && !_currentMessage.isAutoForce;
         _nextButtonIcon.gameObject.SetActive(is_event_message);
         _nextIcon.gameObject.SetActive(!is_event_message);
 
         if (is_event_message) {
-            // ƒCƒxƒ“ƒgƒƒbƒZ[ƒW‚Ìê‡Aƒ†[ƒU[“ü—Í‘Ò‚¿
+            // ã‚¤ãƒ™ãƒ³ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®å ´åˆã€ãƒ¦ãƒ¼ã‚¶ãƒ¼å…¥åŠ›å¾…ã¡
             if (_isShowing && _playerController.Input.messageNextPressed) {
                 _HideOrNext();
             }
         } else if (_currentShowTime > 0) {
-            // ƒƒbƒZ[ƒW•\¦‚Ìc‚èŠÔ•\¦
+            // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºã®æ®‹ã‚Šæ™‚é–“è¡¨ç¤º
             _currentShowTime -= deltaTime;
             _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentText.Length *
                 (_playerParameter.language == PlayerParameter.eLanguage.English ? _ADD_ENG_SHOW_TIME : _ADD_SHOW_TIME)));
             if (_currentShowTime <= 0f) {
-                // •\¦ŠÔI—¹
+                // è¡¨ç¤ºæ™‚é–“çµ‚äº†
                 _HideOrNext();
             }
         }
     }
 
     private void _ShowNext() {
-        _messagePanel.SetActive(true);                  // ƒpƒlƒ‹‚ğ•\¦                
+        _messagePanel.SetActive(true);                  // ãƒ‘ãƒãƒ«ã‚’è¡¨ç¤º                
         if (_typingCoroutine != null)
-            StopCoroutine(_typingCoroutine);            // •\¦’†‚ÌƒRƒ‹[ƒ`ƒ“‚ğ’â~
+            StopCoroutine(_typingCoroutine);            // è¡¨ç¤ºä¸­ã®ã‚³ãƒ«ãƒ¼ãƒãƒ³ã‚’åœæ­¢
 
-        _currentMessage = _messageListScript.Dequeue(); // Ÿ‚ÌƒƒbƒZ[ƒW‚ğæ“¾
+        _currentMessage = _messageListScript.Dequeue(); // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å–å¾—
         _currentText = _playerParameter.language == PlayerParameter.eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
         if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
-            //_currentMessage.playableDirector.Pause(); // Timeline‚ğˆê’â~
+            //_currentMessage.playableDirector.Pause(); // Timelineã‚’ä¸€æ™‚åœæ­¢
 
             _isEventMessage = true;
-            // ƒƒbƒZ[ƒW‚ğˆê‹C‚É•\¦
+            // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä¸€æ°—ã«è¡¨ç¤º
             _typingCoroutine = _TypeText(_currentText, 0);
             StartCoroutine(_typingCoroutine);
         } else {
-            // ƒƒbƒZ[ƒW‚ğ1•¶š‚¸‚Â•\¦‚·‚éƒRƒ‹[ƒ`ƒ“ŠJn
+            // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’1æ–‡å­—ãšã¤è¡¨ç¤ºã™ã‚‹ã‚³ãƒ«ãƒ¼ãƒãƒ³é–‹å§‹
             _typingCoroutine = _TypeText(_currentText, _playerParameter.language == PlayerParameter.eLanguage.Japanese ? _AUTO_MESSAGE_SHOW_TIME : _AUTO_ENG_MESSAGE_SHOW_TIME);
             StartCoroutine(_typingCoroutine);
         }
 
-        // ƒLƒƒƒ‰ƒNƒ^[–¼‚ÆƒAƒCƒRƒ“‚Ìİ’è
+        // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åã¨ã‚¢ã‚¤ã‚³ãƒ³ã®è¨­å®š
         Sprite chara_icon = _currentMessage.characterIcon;
         var character_name = chara_icon ? chara_icon.name : string.Empty;
 
-        // Å‰‚ÌƒAƒ“ƒ_[ƒ‰ƒCƒ“‚Ü‚Å‚ğƒLƒƒƒ‰ƒNƒ^[–¼‚Æ‚µ‚Ä«‘‚©‚çæ“¾
+        // æœ€åˆã®ã‚¢ãƒ³ãƒ€ãƒ¼ãƒ©ã‚¤ãƒ³ã¾ã§ã‚’ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åã¨ã—ã¦è¾æ›¸ã‹ã‚‰å–å¾—
         character_name = character_name.Split('_')[0];
 
-        // ƒLƒƒƒ‰ƒNƒ^[–¼‚ğƒZƒbƒg
+        // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åã‚’ã‚»ãƒƒãƒˆ
         if(_playerParameter.language == PlayerParameter.eLanguage.English) {
             _characterText.text = character_name;
             _namePanel.SetActive(!string.IsNullOrEmpty(character_name));
         } else {
             if (_CHARACTER_NAME_DIC.ContainsKey(character_name)) {
                 _characterText.text = _CHARACTER_NAME_DIC[character_name];
-                _namePanel?.SetActive(true); // –¼‘Oƒpƒlƒ‹‚ğ•\¦
+                _namePanel?.SetActive(true); // åå‰ãƒ‘ãƒãƒ«ã‚’è¡¨ç¤º
             } else {
                 _characterText.text = string.Empty;
-                _namePanel?.SetActive(false); // –¼‘Oƒpƒlƒ‹‚ğ”ñ•\¦
+                _namePanel?.SetActive(false); // åå‰ãƒ‘ãƒãƒ«ã‚’éè¡¨ç¤º
             }
         }
 
-        _iconImage.sprite = chara_icon;   // ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“‚ğƒZƒbƒg
-        _isSeries = _messageListScript.HasMessages();   // Ÿ‚ÌƒƒbƒZ[ƒW‚ª‚ ‚é‚©‚Ç‚¤‚©
+        _iconImage.sprite = chara_icon;   // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¢ã‚¤ã‚³ãƒ³ã‚’ã‚»ãƒƒãƒˆ
+        _isSeries = _messageListScript.HasMessages();   // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒã‚ã‚‹ã‹ã©ã†ã‹
 
         _currentShowTime = _BASE_SHOW_TIME + (_currentText.Length *
             (_playerParameter.language == PlayerParameter.eLanguage.English ? _ADD_ENG_SHOW_TIME : _ADD_SHOW_TIME))
-            + _currentMessage.addShowTime; // Šî–{3•b + •¶š”‚É‰‚¶‚½’Ç‰ÁŠÔ + ƒƒbƒZ[ƒWŒÅ—L‚Ì’Ç‰ÁŠÔ
+            + _currentMessage.addShowTime; // åŸºæœ¬3ç§’ + æ–‡å­—æ•°ã«å¿œã˜ãŸè¿½åŠ æ™‚é–“ + ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å›ºæœ‰ã®è¿½åŠ æ™‚é–“
 
         if (_currentShowTime < 0) {
-            _nextIcon.gameObject.SetActive(false); // Ÿ‚ÌƒƒbƒZ[ƒWƒAƒCƒRƒ“‚ğ”ñ•\¦
+            _nextIcon.gameObject.SetActive(false); // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¢ã‚¤ã‚³ãƒ³ã‚’éè¡¨ç¤º
         } else {
-            _nextIcon.gameObject.SetActive(true);  // Ÿ‚ÌƒƒbƒZ[ƒWƒAƒCƒRƒ“‚ğ•\¦
-            _nextIcon.fillAmount = 1.0f; // Ÿ‚ÌƒƒbƒZ[ƒWƒAƒCƒRƒ“‚ğƒŠƒZƒbƒg
+            _nextIcon.gameObject.SetActive(true);  // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¢ã‚¤ã‚³ãƒ³ã‚’è¡¨ç¤º
+            _nextIcon.fillAmount = 1.0f; // æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¢ã‚¤ã‚³ãƒ³ã‚’ãƒªã‚»ãƒƒãƒˆ
         }
 
         _isShowing = true;
+        if (_pendingInstantShake) {
+            _pendingInstantShake = false;
+            if (_messagePanelAnimator != null) { _messagePanelAnimator.SetBool("Show", true); _messagePanelAnimator.Update(999f); }
+            ShakeWindow(_pendingShakeIntensity, _pendingShakeDuration);
+        }
     }
 
-    // 1•¶š‚¸‚Â•\¦‚·‚éê‡‚ÌƒRƒ‹[ƒ`ƒ“
+    // 1æ–‡å­—ãšã¤è¡¨ç¤ºã™ã‚‹å ´åˆã®ã‚³ãƒ«ãƒ¼ãƒãƒ³
     private IEnumerator _TypeText(string message, float message_show_time) {
         _audioSource.Stop();
         _messageText.text = "";
         _audioSource.PlayOneShot(_seSpeak);
-        if (message_show_time <= 0) { // ˆê‹C‚É•\¦
+        if (message_show_time <= 0) { // ä¸€æ°—ã«è¡¨ç¤º
             var view_message = message.Length / 3;
             _messageText.text = message.Substring(0, view_message);
             yield return new WaitForSecondsRealtime(0.01f);
@@ -195,13 +201,13 @@ public class MessageViewer : MonoBehaviour {
             yield return new WaitForSecondsRealtime(0.01f);
             _messageText.text = message;
         } else {
-            foreach (char c in message) { // 1•¶š‚¸‚Â•\¦
+            foreach (char c in message) { // 1æ–‡å­—ãšã¤è¡¨ç¤º
                 if (_playerParameter.language == PlayerParameter.eLanguage.Japanese ||
                     (_playerParameter.language == PlayerParameter.eLanguage.English && _messageText.text.Length % 2 == 0)) {
                 }
                 _messageText.text += c;
                 
-                // isUnScaledTime‚É‰‚¶‚Ä‘Ò‹@•û–@‚ğ•ÏX
+                // isUnScaledTimeã«å¿œã˜ã¦å¾…æ©Ÿæ–¹æ³•ã‚’å¤‰æ›´
                 if (_currentMessage.isUnScaledTime) {
                     yield return new WaitForSecondsRealtime(message_show_time);
                 } else {
@@ -219,18 +225,18 @@ public class MessageViewer : MonoBehaviour {
     private void _HideOrNext() {
         _isShowing = false;
 
-        // ˆê˜A‚ÌƒƒbƒZ[ƒW•\¦’†‚Å–³‚¯‚ê‚Îˆê’Uƒpƒlƒ‹‚ğÁ‚·
+        // ä¸€é€£ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºä¸­ã§ç„¡ã‘ã‚Œã°ä¸€æ—¦ãƒ‘ãƒãƒ«ã‚’æ¶ˆã™
         if (!_isSeries) {
             if(_currentMessage.playableDirector != null) {
-                _currentMessage.playableDirector.Resume(); // Timeline‚ğÄŠJ
+                _currentMessage.playableDirector.Resume(); // Timelineã‚’å†é–‹
             }
             _SwitchShowAnimation(_isShowing);
-            _currentCoolTime = _COOL_TIME;  // ƒN[ƒ‹ƒ^ƒCƒ€İ’è
+            _currentCoolTime = _COOL_TIME;  // ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ è¨­å®š
         }
     }
 
     /// <summary>
-    /// ƒƒbƒZ[ƒWƒEƒBƒ“ƒhƒE•\¦ŠJnƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+    /// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºé–‹å§‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
     /// </summary>
     private void _SwitchShowAnimation(bool is_show) {
         if (_messagePanelAnimator != null) {
@@ -241,7 +247,7 @@ public class MessageViewer : MonoBehaviour {
     }
 
     public void ForceReset() {
-        // ‹­§ƒƒbƒZ[ƒW‚ª—ˆ‚½‚ç‘¦À‚É•\¦‚ğƒŠƒZƒbƒg
+        // å¼·åˆ¶ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒæ¥ãŸã‚‰å³åº§ã«è¡¨ç¤ºã‚’ãƒªã‚»ãƒƒãƒˆ
         _messagePanel.SetActive(false);
         _isShowing = false;
         _messageListScript.Clear();
@@ -254,7 +260,7 @@ public class MessageViewer : MonoBehaviour {
 
     private void UpdateWindowAlpha() {
         if (_IsIconOverlapping()) {
-            // ƒvƒŒƒCƒ„[‚ªƒƒbƒZ[ƒWƒEƒBƒ“ƒhƒE‚Æd‚È‚Á‚Ä‚¢‚éê‡A“§–¾“x‚ğ‰º‚°‚é
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¨é‡ãªã£ã¦ã„ã‚‹å ´åˆã€é€æ˜åº¦ã‚’ä¸‹ã’ã‚‹
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
                 var color = window.color;
@@ -262,7 +268,7 @@ public class MessageViewer : MonoBehaviour {
                 window.color = color;
             }
         } else {
-            // ’Êí‚Ì“§–¾“x‚É–ß‚·
+            // é€šå¸¸ã®é€æ˜åº¦ã«æˆ»ã™
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
                 var color = window.color;
@@ -275,11 +281,11 @@ public class MessageViewer : MonoBehaviour {
     Camera mainCamera => Camera.main;
     Character_Base player => _playerController.Character;
     private bool _IsIconOverlapping() {
-        // ƒvƒŒƒCƒ„[‚ªƒƒbƒZ[ƒWƒEƒBƒ“ƒhƒE‚Æd‚È‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğ”»’è
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¨é‡ãªã£ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’åˆ¤å®š
         if (player == null) return false;
         var playerPos = mainCamera.WorldToScreenPoint(player.transform.position);
 
-        // RectTransform‚Ìæ“¾
+        // RectTransformã®å–å¾—
         if (_iconRect == null) {
             _iconRect = _iconImage.GetComponent<RectTransform>();
         }
@@ -291,5 +297,33 @@ public class MessageViewer : MonoBehaviour {
         var is_window_overlap = RectTransformUtility.RectangleContainsScreenPoint(_messagePanelRect, playerPos, null);
 
         return is_icon_overlap || is_window_overlap;
+    }
+
+    private bool _pendingInstantShake;
+    private float _pendingShakeIntensity;
+    private float _pendingShakeDuration;
+
+    public void PrepareShakeOnShow(float intensity, float duration) {
+        _pendingInstantShake = true;
+        _pendingShakeIntensity = intensity;
+        _pendingShakeDuration = duration;
+    }
+
+    public void ShakeWindow(float intensity, float duration) {
+        var rect = _messageViewer != null ? _messageViewer.GetComponent<RectTransform>() : null;
+        if (rect == null) return;
+        StartCoroutine(_ShakeWindowCo(rect, intensity, duration));
+    }
+
+    private System.Collections.IEnumerator _ShakeWindowCo(RectTransform target, float intensity, float duration) {
+        float elapsed = 0f;
+        Vector2 basePos = target.anchoredPosition;
+        while (elapsed < duration) {
+            elapsed += Time.unscaledDeltaTime;
+            float current = intensity * (1f - elapsed / duration);
+            target.anchoredPosition = basePos + Random.insideUnitCircle * current;
+            yield return null;
+        }
+        target.anchoredPosition = basePos;
     }
 }

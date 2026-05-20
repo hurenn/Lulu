@@ -3,7 +3,11 @@ using UnityEngine.Playables;
 
 [System.Serializable]
 public class MessagePlayableAsset : PlayableAsset {
-    [SerializeField] private MessageData[] messageDatas;  //ƒƒbƒZ[ƒWƒf[ƒ^”z—ñ
+    [SerializeField] private MessageData[] messageDatas;  //ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿é…åˆ—
+    [Header("ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æŒ¯å‹•")]
+    [SerializeField] private bool shakeWindow = false;
+    [SerializeField] private float shakeIntensity = 20f;
+    [SerializeField] private float shakeDuration = 0.4f;
 
     public override Playable CreatePlayable(PlayableGraph graph, GameObject owner) {
         var playable = ScriptPlayable<MessagePlayableBehaviour>.Create(graph);
@@ -15,6 +19,9 @@ public class MessagePlayableAsset : PlayableAsset {
             behaviour.director = director;
         }
         behaviour.messageDatas = messageDatas;
+        behaviour.shakeWindow = shakeWindow;
+        behaviour.shakeIntensity = shakeIntensity;
+        behaviour.shakeDuration = shakeDuration;
         return playable;
     }
 }
@@ -22,30 +29,38 @@ public class MessagePlayableAsset : PlayableAsset {
 public class MessagePlayableBehaviour : PlayableBehaviour {
     public MessageData[] messageDatas;
     public PlayableDirector director;
+    public bool shakeWindow;
+    public float shakeIntensity;
+    public float shakeDuration;
     private bool shown = false;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info) {
         if (shown) return;
         shown = true;
 
-        // è“®ƒƒbƒZ[ƒW‚Ìê‡‚ÍÄ¶‚ğˆê’â~
+        // æ‰‹å‹•ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®å ´åˆã¯å†ç”Ÿã‚’ä¸€æ™‚åœæ­¢
         if (!messageDatas[0].isAutoForce) {
             director.Pause();
+        }
+
+        if (shakeWindow) {
+            var viewer = GameObject.FindAnyObjectByType<MessageViewer>();
+            viewer?.PrepareShakeOnShow(shakeIntensity, shakeDuration);
         }
 
         _AddMessage();
     }
 
     private void _AddMessage() {
-        // ƒƒbƒZ[ƒW•\¦‹@”\‚ğ’T‚· (WIP)
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºæ©Ÿèƒ½ã‚’æ¢ã™ (WIP)
         MessageViewer messageViewer = GameObject.FindAnyObjectByType<MessageViewer>(); ;
         MessageList _messageListScript = GameObject.FindAnyObjectByType<MessageList>();
 
-        // ‘¼‚ÌƒƒbƒZ[ƒW‚ğƒNƒŠƒA
+        // ä»–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ã‚¯ãƒªã‚¢
         _messageListScript.Clear();
         messageViewer.ForceReset();
 
-        // ƒƒbƒZ[ƒW‚ğ’Ç‰Á
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¿½åŠ 
         foreach (MessageData message in messageDatas) {
             _messageListScript.Enqueue(message);
         }
