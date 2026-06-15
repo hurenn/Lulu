@@ -2037,6 +2037,12 @@ PlayableDirector:
     value: {fileID: 6540925307692065707}
   - key: {fileID: 2764898451960149666, guid: 016e9d27523d3a048bb3f107c6bd6269, type: 2}
     value: {fileID: 2082920689}
+  - key: {fileID: -7811678028440387179, guid: 016e9d27523d3a048bb3f107c6bd6269, type: 2}
+    value: {fileID: 8864619}
+  - key: {fileID: -8834574490143581895, guid: 016e9d27523d3a048bb3f107c6bd6269, type: 2}
+    value: {fileID: 3533117522502050629}
+  - key: {fileID: -8364318801736304058, guid: 016e9d27523d3a048bb3f107c6bd6269, type: 2}
+    value: {fileID: 3533117522502050628}
   m_ExposedReferences:
     m_References: []
 --- !u!1 &227958746
@@ -31138,6 +31144,10 @@ PrefabInstance:
       propertyPath: _messageListScript
       value: 
       objectReference: {fileID: 544547198}
+    - target: {fileID: 3761538894906864661, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3992601494861558044, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: _iceIconSprite
       value: 
@@ -31246,6 +31256,10 @@ PrefabInstance:
       propertyPath: m_text
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5179492327519004165, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5226130904454453899, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -31331,6 +31345,16 @@ PrefabInstance:
 --- !u!224 &3533117522502050627 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4421373631291310206, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+  m_PrefabInstance: {fileID: 3533117522502050626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3533117522502050628 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5179492327519004165, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+  m_PrefabInstance: {fileID: 3533117522502050626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &3533117522502050629 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3516740844522429073, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
   m_PrefabInstance: {fileID: 3533117522502050626}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6540925307692065706
