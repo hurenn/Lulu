@@ -106,6 +106,13 @@ public class Character_Base : MonoBehaviour {
     protected bool _isDead = false;
     public bool isDead => _isDead;
 
+    // ジャンプエフェクト
+    [SerializeField]
+    protected GameObject _jumpEffect = null;
+    // 着地エフェクト
+    [SerializeField]
+    protected GameObject _landEffect = null;
+
     private void Start() {
         _Setup();
     }
@@ -294,10 +301,23 @@ public class Character_Base : MonoBehaviour {
         _isTouchingLeft = Physics2D.OverlapBox(transform.position + _wallCheckLeftLocalPos, _wallCheckScale, 0, _wallLayer);
         _isTouchingRight = Physics2D.OverlapBox(transform.position + _wallCheckRightLocalPos, _wallCheckScale, 0, _wallLayer);
 
+        var last_grounded = _isGrounded;
         _isGrounded = Physics2D.OverlapBox(transform.position + _groundCheckLocalPos, _groundCheckScale, 0, _groundLayer);
         // AnimatorControllerがセットされている場合のみ実行
         if (_anim != null && _anim.isActiveAndEnabled && _anim.runtimeAnimatorController != null) {
             _anim.SetBool("IsGround", _isGrounded); //接地フラグ
+        }
+        if (_isGrounded && !last_grounded) {
+            // 着地エフェクト生成
+            if (_landEffect != null) {
+                var footPos = transform.position + Vector3.down * (GetCharacterSize().y / 2f);
+                var effect = EffectPool.Instance.Spawn(_landEffect, footPos, Quaternion.identity);
+
+                // エフェクトの向きをキャラクターの向きに合わせる
+                Vector3 effectScale = effect.transform.localScale;
+                effectScale.x = _isRight ? Mathf.Abs(effectScale.x) : -Mathf.Abs(effectScale.x);
+                effect.transform.localScale = effectScale;
+            }
         }
     }
 

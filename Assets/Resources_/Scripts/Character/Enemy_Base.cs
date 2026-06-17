@@ -12,7 +12,7 @@ public class Enemy_Base : Character_Base
     [SerializeField] private WarpChecker _rightWarpChecker;
 
     // ロックオンマーカー
-    [SerializeField] private GameObject _lockonMarker;
+    [SerializeField] private Animator _lockonMarkerAnim;
     [SerializeField] private DamageZone _damageZone;
 
     [SerializeField] protected GameObject _dieExplosion = null;
@@ -24,6 +24,13 @@ public class Enemy_Base : Character_Base
     // 次の行動までの時間
     protected float _nextActionTime = 0f;
     protected float _currentActionTime = 0f;
+
+    protected override void _Setup() {
+        base._Setup();
+        if (_lockonMarkerAnim != null) {
+            _lockonMarkerAnim.gameObject.SetActive(false);
+        }
+    }
 
     protected override IEnumerator Die() {
         yield return base.Die();
@@ -106,6 +113,12 @@ public class Enemy_Base : Character_Base
     /// ロックオン表示切替
     /// </summary>
     public void EnableLockOnMarker(bool enable) {
-        _lockonMarker.SetActive(enable);
+        if(_lockonMarkerAnim == null) {
+            return;
+        }
+        _lockonMarkerAnim.gameObject.SetActive(enable);
+        if(enable) {
+            _lockonMarkerAnim.Play("LockOnMarker_Enable", 0, 0);
+        }
     }
 }

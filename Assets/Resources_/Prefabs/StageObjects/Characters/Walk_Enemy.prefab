@@ -88,9 +88,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f5d22f392f9bc4783351c9001c6734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &294152504942953478 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4132797384308099191, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
+--- !u!95 &287755857898330703 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4517672394917336638, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
   m_PrefabInstance: {fileID: 4417942681262722161}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &327615283581623156 stripped
@@ -174,7 +174,7 @@ MonoBehaviour:
   _coinSpawner: {fileID: 5595030639930435267}
   _leftWarpChecker: {fileID: 327615283581623156}
   _rightWarpChecker: {fileID: 7222648001186840077}
-  _lockonMarker: {fileID: 294152504942953478}
+  _lockonMarkerAnim: {fileID: 287755857898330703}
   _damageZone: {fileID: 1923659627119773074}
   _dieExplosion: {fileID: 0}
   _walkSpeed: 2.5

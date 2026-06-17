@@ -649,6 +649,11 @@ public class Player_Character : Character_Base {
             _isJumping = true;
             _anim?.SetBool("Jump", true);
             _anim?.Play("Jump");
+            // ジャンプエフェクト生成
+            if (_jumpEffect != null) {
+                var footPos = transform.position + Vector3.down * (GetCharacterSize().y / 2f);
+                EffectPool.Instance.Spawn(_jumpEffect, footPos, Quaternion.identity);
+            }
             if (_seJump != null) {
                 _audioSource?.PlayOneShot(_seJump);
             }
