@@ -18,7 +18,7 @@ public class EffectPool : MonoBehaviour {
 
     private readonly Dictionary<GameObject, Queue<PooledEffect>> _pools = new();
 
-    public PooledEffect Spawn(GameObject prefab, Vector3 position, Quaternion rotation = default) {
+    public PooledEffect Spawn(GameObject prefab, Vector3 position, bool is_reverse = false, Quaternion rotation = default) {
         if (!_pools.TryGetValue(prefab, out var pool)) {
             pool = new Queue<PooledEffect>();
             _pools[prefab] = pool;
@@ -38,6 +38,12 @@ public class EffectPool : MonoBehaviour {
             }
             effect.SetPrefabKey(prefab);
         }
+
+        // 反転処理
+        var scale = effect.transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * (is_reverse ? -1 : 1);
+        effect.transform.localScale = scale;
+
         return effect;
     }
 

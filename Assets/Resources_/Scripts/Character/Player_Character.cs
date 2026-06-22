@@ -29,6 +29,8 @@ public class Player_Character : Character_Base {
     private float _currentSlideJumpTime = 0;
     // 壁に沿って滑る速度
     private float _currentWallSlideTime = 0;
+    // ダッシュ終了直後の逆方向ダッシュ受付タイマー
+    private float _dashEndTimer = 0f;
 
     private bool _isAvoid = false;
     private float _isAvoidTimer = 0.01f;
@@ -254,16 +256,20 @@ public class Player_Character : Character_Base {
     /// スライディング実行
     /// </summary>
     private void _ExecuteSlide() {
-        _isDashing = true;
+        _SetDash(_isRight, is_effect: false);
         _SetSliding(true);
         _currentSlideTime = 0;
     }
     /// <summary>
     /// ダッシュ実行
     /// </summary>
-    private void _ExecuteDash() {
-        _isDashing = true;
-        _anim?.SetBool("Dash", true);
+    private void _SetDash(bool is_right, bool enable = true, bool is_effect = true) {
+        _isDashing = enable;
+        _anim?.SetBool("Dash", enable);
+        if (is_effect && enable && _isGrounded && _dashEffect != null) {
+            var footPos = transform.position + Vector3.down * (GetCharacterSize().y / 2f);
+            EffectPool.Instance.Spawn(_dashEffect, footPos, !is_right);
+        }
     }
 
     /// <summary>
@@ -285,7 +291,7 @@ public class Player_Character : Character_Base {
     /// ワープダッシュ実行
     /// </summary>
     private void _ExecuteWarpDash() {
-        _isDashing = true;
+        _SetDash(_isRight, is_effect: false);
         _isWarpDashing = true;
         _currentWarpDashTime = 0;
     }
@@ -618,7 +624,7 @@ public class Player_Character : Character_Base {
                 // 張り付き状態で移動入力があれば張り付き状態を解除
                 _isGroundSticking = false;
                 _warpDashDirection = _inputData.move.x > 0 ? _param.warpDashDownRight : _param.warpDashDownLeft;
-                _ExecuteDash(); // ダッシュ実行
+                _SetDash(_isRight); // ダッシュ実行
             } else if (_inputData.isJumpPressed) {
                 // 張り付き状態でジャンプ入力があればジャンプ
                 _isGroundSticking = false;
@@ -652,7 +658,7 @@ public class Player_Character : Character_Base {
             // ジャンプエフェクト生成
             if (_jumpEffect != null) {
                 var footPos = transform.position + Vector3.down * (GetCharacterSize().y / 2f);
-                EffectPool.Instance.Spawn(_jumpEffect, footPos, Quaternion.identity);
+                EffectPool.Instance.Spawn(_jumpEffect, footPos);
             }
             if (_seJump != null) {
                 _audioSource?.PlayOneShot(_seJump);
@@ -679,10 +685,13 @@ public class Player_Character : Character_Base {
             // 直前まで入力なし
             if (!_isWalking) {
                 // 同じ方向にすぐ再入力でダッシュ
-                if (_currentStopMoveInputTime < _param.dashInputThreshold && (
-                    (Mathf.Sign(_inputData.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
-                    (Mathf.Sign(_inputData.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing))) {
-                    _ExecuteDash(); // ダッシュ実行
+                bool isOppositeDir = _lastWalkDirection.x != 0 &&
+                    Mathf.Sign(_inputData.move.x) != Mathf.Sign(_lastWalkDirection.x);
+                if ((_currentStopMoveInputTime < _param.dashInputThreshold && (
+                        (Mathf.Sign(_inputData.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
+                        (isOppositeDir && _isDashing))) ||
+                    (isOppositeDir && _dashEndTimer > 0)) {
+                    _SetDash(_inputData.move.x > 0); // ダッシュ実行
                 }
                 _isWalking = true;
                 _anim?.SetBool("Walk", true);
@@ -691,6 +700,7 @@ public class Player_Character : Character_Base {
             // 移動中は常にフラグリセット
             _lastWalkDirection = _inputData.move;
             _currentStopMoveInputTime = 0;
+            _dashEndTimer = 0;
         } else // 入力停止
           {
             if (_isWalking) {
@@ -699,12 +709,14 @@ public class Player_Character : Character_Base {
                 _currentStopMoveInputTime = 0;
                 //移動アニメーション停止
                 _anim?.SetBool("Walk", false);
-                _anim?.SetBool("Dash", false);
+                if (_isDashing) _dashEndTimer = _param.dashInputThreshold;
+                _SetDash(_isRight, false);
             } else {
                 // 停止中はタイマー更新
                 _currentStopMoveInputTime += Time.deltaTime;
+                if (_dashEndTimer > 0) _dashEndTimer -= Time.deltaTime;
                 if (_currentStopMoveInputTime > _param.dashInputThreshold) {
-                    _isDashing = false;
+                    _SetDash(_isRight, false);
                 }
             }
         }

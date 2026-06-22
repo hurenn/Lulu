@@ -112,6 +112,9 @@ public class Character_Base : MonoBehaviour {
     // 着地エフェクト
     [SerializeField]
     protected GameObject _landEffect = null;
+    // ダッシュエフェクト
+    [SerializeField]
+    protected GameObject _dashEffect = null;
 
     private void Start() {
         _Setup();
@@ -311,7 +314,7 @@ public class Character_Base : MonoBehaviour {
             // 着地エフェクト生成
             if (_landEffect != null) {
                 var footPos = transform.position + Vector3.down * (GetCharacterSize().y / 2f);
-                var effect = EffectPool.Instance.Spawn(_landEffect, footPos, Quaternion.identity);
+                var effect = EffectPool.Instance.Spawn(_landEffect, footPos, !_isRight);
 
                 // エフェクトの向きをキャラクターの向きに合わせる
                 Vector3 effectScale = effect.transform.localScale;
