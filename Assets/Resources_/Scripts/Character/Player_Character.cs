@@ -570,7 +570,11 @@ public class Player_Character : Character_Base {
             _abilityY?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
         }
 
-        return base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
+        bool isDamaged = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
+        if (isDamaged) {
+            ScreenFlash.Instance?.Flash(0.4f, new Color(1f, 0f, 0f, 0.2f));
+        }
+        return isDamaged;
     }
 
     protected override IEnumerator Die() {
