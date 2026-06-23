@@ -246,11 +246,11 @@ MonoBehaviour:
   _hitEffectType: 0
   _hitEffectSize: 1
   _localTimePauses: []
-  _hitStopTime: 0.05
+  _hitStopTime: 0.2
   _manualCameraShake: 0
   _manualShakeIntensity: 0.5
   _manualShakeDuration: 0.5
-  _hitCameraShakeIntensity: 0
+  _hitCameraShakeIntensity: 0.2
   _hitPlayerEvent: []
   _avoidPlayerEvent: []
 --- !u!1 &4430313698620811339
@@ -578,6 +578,10 @@ MonoBehaviour:
   _damageFriction: 0.9
   _isRight: 0
   enableGravity: 1
+  _jumpEffect: {fileID: 0}
+  _landEffect: {fileID: 0}
+  _dashEffect: {fileID: 0}
+  _wallDashEffect: {fileID: 0}
   _exp: 5
   _coinSpawner: {fileID: 8136357248638741170}
   _leftWarpChecker: {fileID: 4162525808674248453}

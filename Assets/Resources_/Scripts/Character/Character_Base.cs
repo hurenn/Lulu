@@ -62,9 +62,21 @@ public class Character_Base : MonoBehaviour {
     }
     protected bool _isGroundSticking; // 地面に張り付いている状態
     protected bool _isWallDash;  // 壁に沿って滑っている状態
+    private float _wallDashEffectTimer = 0f;
+    private const float WALL_DASH_EFFECT_INTERVAL = 0.2f;
     protected void _SetWallDash(bool is_wall_sliding, bool is_play_anim = true) {
         _isWallDash = is_wall_sliding;
         _anim?.SetBool("WallDash", is_wall_sliding && is_play_anim);
+
+        if (_isWallDash && _wallDashEffect != null) {
+            if (_wallDashEffectTimer > WALL_DASH_EFFECT_INTERVAL) {
+                // 壁ダッシュ開始時に即時生成＆タイマーリセット
+                var footPos = transform.position + Vector3.right * (GetCharacterSize().x / 2f) * (_isRight ? 1 : -1);
+                EffectPool.Instance.Spawn(_wallDashEffect, footPos, !_isRight);
+                _wallDashEffectTimer = 0;
+            }
+        }
+        _wallDashEffectTimer += Time.fixedDeltaTime;
     }
     protected bool _isGrounded;
     public bool isGrounded => _isGrounded;
@@ -115,6 +127,9 @@ public class Character_Base : MonoBehaviour {
     // ダッシュエフェクト
     [SerializeField]
     protected GameObject _dashEffect = null;
+    // 壁ダッシュエフェクト
+    [SerializeField]
+    protected GameObject _wallDashEffect = null;
 
     private void Start() {
         _Setup();

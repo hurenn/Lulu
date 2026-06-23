@@ -624,7 +624,7 @@ public class Player_Character : Character_Base {
                 // 張り付き状態で移動入力があれば張り付き状態を解除
                 _isGroundSticking = false;
                 _warpDashDirection = _inputData.move.x > 0 ? _param.warpDashDownRight : _param.warpDashDownLeft;
-                _SetDash(_isRight); // ダッシュ実行
+                _SetDash(_inputData.move.x > 0); // ダッシュ実行
             } else if (_inputData.isJumpPressed) {
                 // 張り付き状態でジャンプ入力があればジャンプ
                 _isGroundSticking = false;
