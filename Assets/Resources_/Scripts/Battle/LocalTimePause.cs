@@ -26,6 +26,11 @@ public class LocalTimePause : MonoBehaviour
         }
     }
 
+    // 自身のコルーチンとして起動することで、DamageZone が無効化されても継続できる
+    public void StartPause(float duration) {
+        StartCoroutine(Pause(duration));
+    }
+
     public IEnumerator Pause(float duration) {
         if (IsPaused) yield break;
         yield return new WaitForSeconds(_hitStopWait); // 一瞬待ってから停止

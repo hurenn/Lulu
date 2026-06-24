@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -23,10 +24,14 @@ public class HitEffect : MonoBehaviour {
 
     // パーティクル
     [SerializeField] private ParticleSystem _particle = null;
+    private float _defaultSize = 0f;
 
     public void Setup(eType type, float size_rate = 1.0f) {
         if (_particle == null) {
             _particle = GetComponent<ParticleSystem>();
+        }
+        if(_defaultSize == 0f) {
+            _defaultSize = _particle.main.startSize.constant;
         }
 
         var main = _particle.main;
@@ -36,6 +41,6 @@ public class HitEffect : MonoBehaviour {
             main.startColor = Color.white;
         }
 
-        main.startSize = new ParticleSystem.MinMaxCurve(main.startSize.constant * size_rate);
+        main.startSize = new ParticleSystem.MinMaxCurve(_defaultSize * size_rate);
     }
 }

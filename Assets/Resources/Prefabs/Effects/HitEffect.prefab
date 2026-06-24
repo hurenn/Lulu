@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7017754683701328623}
   - component: {fileID: 7185826913144432842}
   - component: {fileID: 2089936367190136435}
+  - component: {fileID: 1429808588789320454}
   m_Layer: 0
   m_Name: HitEffect
   m_TagString: FxTemporaire
@@ -4742,7 +4743,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7017754683694747407}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fd2e8874f60266498a388d7229a1bac, type: 3}
   m_Name: 
@@ -4778,3 +4779,17 @@ MonoBehaviour:
   _rigidbody2D: {fileID: 0}
   _particleSystems:
   - {fileID: 7017754683709724271}
+--- !u!114 &1429808588789320454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7017754683694747407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 263b28c4ea561dd4aab9494ba2573d65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 0}
+  _particleSystem: {fileID: 7017754683709724271}

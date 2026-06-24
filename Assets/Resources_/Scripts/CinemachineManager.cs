@@ -30,6 +30,7 @@ public class CinemachineManager : MonoBehaviour {
 
     public void ShakeCamera(float intensity = 1.0f, float duration = 0.1f) {
         _impulseSource.ImpulseDefinition.AmplitudeGain = intensity;
+        _impulseSource.DefaultVelocity = Vector3.down * intensity;
         _impulseSource.ImpulseDefinition.ImpulseDuration = duration;
         _impulseSource.GenerateImpulse();
         OnShake?.Invoke(intensity, duration);

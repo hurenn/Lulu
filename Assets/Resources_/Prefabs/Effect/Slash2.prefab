@@ -375,18 +375,19 @@ MonoBehaviour:
   _isOnceHit: 1
   _selfCharacter: {fileID: 0}
   _damageToSelf: 0
+  _invincibleTimeToSelf: 0.5
   _blowPowerToSelf: {x: 3, y: 5}
   _enableSelfDamage: 0
-  _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
+  _hitEffectPrefab: {fileID: 7185826913144432842, guid: 56d7091366b6cf4478ab095e6f5eae72, type: 3}
   _hitEffectType: 3
   _hitEffectSize: 1
   _localTimePauses:
   - {fileID: 5709971862930202264}
-  _hitStopTime: 0.2
+  _hitStopTime: 0.1
   _manualCameraShake: 0
   _manualShakeIntensity: 0.5
   _manualShakeDuration: 0.5
-  _hitCameraShakeIntensity: 0
+  _hitCameraShakeIntensity: 0.1
   _hitPlayerEvent: []
   _avoidPlayerEvent: []
 --- !u!1 &8629385896329156652
@@ -457,8 +458,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.15499999, y: -0.185, z: 0}
-    m_Extent: {x: 0.485, y: 0.255, z: 0}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 1.28, y: 1.26, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0

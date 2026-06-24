@@ -459,17 +459,18 @@ MonoBehaviour:
   _isOnceHit: 1
   _selfCharacter: {fileID: 0}
   _damageToSelf: 0
+  _invincibleTimeToSelf: 0.5
   _blowPowerToSelf: {x: 3, y: 5}
   _enableSelfDamage: 0
-  _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
+  _hitEffectPrefab: {fileID: 7185826913144432842, guid: 56d7091366b6cf4478ab095e6f5eae72, type: 3}
   _hitEffectType: 3
   _hitEffectSize: 1
   _localTimePauses:
   - {fileID: 4934009630043631025}
-  _hitStopTime: 0.1
+  _hitStopTime: 0.2
   _manualCameraShake: 0
-  _manualShakeIntensity: 0.5
-  _manualShakeDuration: 0.5
-  _hitCameraShakeIntensity: 0
+  _manualShakeIntensity: 0
+  _manualShakeDuration: 0
+  _hitCameraShakeIntensity: 0.2
   _hitPlayerEvent: []
   _avoidPlayerEvent: []

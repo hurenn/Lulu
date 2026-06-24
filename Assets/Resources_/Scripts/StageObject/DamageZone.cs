@@ -216,8 +216,13 @@ public class DamageZone : MonoBehaviour {
     private GameObject _SpawnHitEffect(Vector3 position, HitEffect.eType type) {
         if (_hitEffectPrefab == null) return null;
 
-        var effect = Instantiate(_hitEffectPrefab, position, Quaternion.identity);
-        effect.Setup(type, _hitEffectSize);
+        var effect = EffectPool.Instance.Spawn(_hitEffectPrefab.gameObject, position);
+        if (effect != null) {
+            var hitEffects = effect.GetComponentsInChildren<HitEffect>();
+            foreach (var hitEffect in hitEffects) {
+                hitEffect.Setup(type, _hitEffectSize);
+            }
+        }
         return effect.gameObject;
     }
 
@@ -226,7 +231,7 @@ public class DamageZone : MonoBehaviour {
         if (hit_target) _localTimePauses.Add(hit_target);
         // ヒットストップ実行
         foreach (var pause in _localTimePauses) {
-            StartCoroutine(pause?.Pause(_hitStopTime));
+            pause?.StartPause(_hitStopTime);
         }
         // カメラシェイク
         if (_hitCameraShakeIntensity > 0) {
