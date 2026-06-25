@@ -389380,6 +389380,68 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 784869042385548296, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
   m_PrefabInstance: {fileID: 2097828339}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2105496141
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6540925307692065710}
+    m_Modifications:
+    - target: {fileID: 5055253369673046740, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_Name
+      value: BackGroundParticles
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+--- !u!4 &2105496142 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7188933672472111496, guid: 9b3bb32aaa278e24297e7aadaf9bc2ef, type: 3}
+  m_PrefabInstance: {fileID: 2105496141}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2127445427
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -390203,6 +390265,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 578660834055653215, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 610312835}
+    - targetCorrespondingSourceObject: {fileID: 721702726967730803, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2105496142}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6108543092880215991, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
       insertIndex: -1
@@ -390227,6 +390292,11 @@ Camera:
 --- !u!4 &6540925307692065709 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 578660834055653215, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
+  m_PrefabInstance: {fileID: 6540925307692065706}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6540925307692065710 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 721702726967730803, guid: 5f041ece479ec9a4c8a54e425627b16f, type: 3}
   m_PrefabInstance: {fileID: 6540925307692065706}
   m_PrefabAsset: {fileID: 0}
 --- !u!212 &6554501651911816166
