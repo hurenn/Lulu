@@ -121,7 +121,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -98
   m_Sprite: {fileID: -5536716976669685523, guid: fdd2630fee00c854795771dfc614e936, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.85396224, b: 0.8132075, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -232,8 +232,8 @@ Transform:
   m_GameObject: {fileID: 643954162471761676}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 100}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalPosition: {x: 0, y: 14, z: 100}
+  m_LocalScale: {x: 9, y: 5, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3628510773260573516}
@@ -282,7 +282,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -100
-  m_Sprite: {fileID: -5144550811072785018, guid: 20eaf7007fb261b428153256732508dd, type: 3}
+  m_Sprite: {fileID: 2410671940745902572, guid: 9aaece389d056c2479da234551630f12, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -370,7 +370,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -98
   m_Sprite: {fileID: -5536716976669685523, guid: fdd2630fee00c854795771dfc614e936, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.85396224, b: 0.8132075, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -482,6 +482,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 0}
   layers: []
+  autoScrollSpeed: 0
+  shakeMultiplier: 0.3
 --- !u!1 &1855569267313228916
 GameObject:
   m_ObjectHideFlags: 0
@@ -757,7 +759,7 @@ Transform:
   m_GameObject: {fileID: 2094117631861887264}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -8.5, z: 100}
+  m_LocalPosition: {x: 0, y: -35, z: 100}
   m_LocalScale: {x: 3.5, y: 3.5, z: 3.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -808,7 +810,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -99
   m_Sprite: {fileID: -2504955965959050618, guid: 479f476f84c72e048a6f8d534a64d39e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.9792453, b: 0.9792453, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1590,7 +1592,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 0}
-  pauseUI: {fileID: 0}
   insertMoveLeft: 0
   insertMoveRight: 0
   insertMoveUp: 0
@@ -1645,7 +1646,7 @@ Transform:
   m_GameObject: {fileID: 5456123315916650981}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 269, y: -8.5, z: 100}
+  m_LocalPosition: {x: 269, y: -35, z: 100}
   m_LocalScale: {x: 3.5, y: 3.5, z: 3.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1696,7 +1697,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -99
   m_Sprite: {fileID: -2504955965959050618, guid: 479f476f84c72e048a6f8d534a64d39e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.9792453, b: 0.9792453, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1928,6 +1929,8 @@ MonoBehaviour:
     - {fileID: 3799018749414169070}
     parallaxFactor: 0.5
     loop: 1
+  autoScrollSpeed: 0
+  shakeMultiplier: 0.3
 --- !u!1 &6108543092880215991
 GameObject:
   m_ObjectHideFlags: 0
@@ -1998,6 +2001,8 @@ MonoBehaviour:
     - {fileID: 8454734602259120743}
     parallaxFactor: 0.5
     loop: 1
+  autoScrollSpeed: 0
+  shakeMultiplier: 0.3
 --- !u!1 &6849500081224587085
 GameObject:
   m_ObjectHideFlags: 0
@@ -2450,6 +2455,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 0}
   layers: []
+  autoScrollSpeed: 0
+  shakeMultiplier: 0.3
 --- !u!1 &7490228909593292784
 GameObject:
   m_ObjectHideFlags: 0
@@ -2639,6 +2646,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 0}
   layers: []
+  autoScrollSpeed: 0
+  shakeMultiplier: 0.3
 --- !u!1 &8833649675652292646
 GameObject:
   m_ObjectHideFlags: 0
@@ -2847,3 +2856,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 0}
   layers: []
+  autoScrollSpeed: 0
+  shakeMultiplier: 0.3
