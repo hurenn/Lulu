@@ -165,14 +165,14 @@ public class Player_Character : Character_Base {
         // オート攻撃対象がいる場合はオート攻撃を実行
         var target_enemy = _autoAttackChecker.PopTargetEnemy();
         if (target_enemy != null && _HasAbility<Ability_Ice>()) {
-            _isWarpDashing = false;
+            _SetWarpDashing(false);
             _OnExecuteIceAutoAttack(target_enemy);
             return;
         }
 
         // ワープダッシュの最大時間を超えた場合は終了
         if (_currentWarpDashTime > _param.maxWarpDashTime) {
-            _isWarpDashing = false; // ワープダッシュ終了
+            _SetWarpDashing(false);
             return; // ワープダッシュのクールタイム中は何もしない
         }
         _currentWarpDashTime += Time.deltaTime;
@@ -197,7 +197,7 @@ public class Player_Character : Character_Base {
                 _currentLandingDashTime = 0;
             }
             _player_charaParam.OnRecoverOverheat(); // オーバーヒート回復
-            _isWarpDashing = false; // ワープダッシュ終了
+            _SetWarpDashing(false);
             return;
         }
         // 壁に接触しているかチェック
@@ -284,7 +284,7 @@ public class Player_Character : Character_Base {
         _SetWallDash(true, _rb.linearVelocity.y >= 0);
         _currentWallSlideTime = 0;
         _SetSlidingJump(false); // スライディングジャンプ終了
-        _isWarpDashing = false;
+        _SetWarpDashing(false);
     }
 
     /// <summary>
@@ -292,7 +292,7 @@ public class Player_Character : Character_Base {
     /// </summary>
     private void _ExecuteWarpDash() {
         _SetDash(_isRight, is_effect: false);
-        _isWarpDashing = true;
+        _SetWarpDashing(true);
         _currentWarpDashTime = 0;
     }
 
@@ -455,7 +455,7 @@ public class Player_Character : Character_Base {
                 // 斬撃隙
                 _intervalTimer = _param.iceSlashInterval;
                 _rb.linearVelocity = Vector2.zero;
-                _isWarpDashing = false; // ワープダッシュ終了
+                _SetWarpDashing(false);
                 Vector2 slash_bounce_move = Vector2.right * dir_input.x * _param.slashMoveForce;
                 if (!_isGrounded) {
                     slash_bounce_move.y = _param.slashRebound;
@@ -555,7 +555,7 @@ public class Player_Character : Character_Base {
             return false; // ダメージ無効
         }
 
-        _isWarpDashing = false; // ワープダッシュ終了
+        _SetWarpDashing(false);
         _SetSliding(false);
         _SetSlidingJump(false); // スライディングジャンプ終了
         _SetWallDash(false);
@@ -1166,5 +1166,9 @@ public class Player_Character : Character_Base {
             Debug.LogError("CheckpointManager or PlayerParameterSnapshot is null.");
         }
         SaveAbilitySlot();
+    }
+
+    protected override void _SetWarpDashing(bool is_warp_dashing) {
+        base._SetWarpDashing(is_warp_dashing);
     }
 }

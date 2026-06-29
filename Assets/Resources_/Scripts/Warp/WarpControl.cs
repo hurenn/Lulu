@@ -44,12 +44,23 @@ public class WarpControl : MonoBehaviour {
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _seWarp;
 
+    // 集中線エフェクト
+    [SerializeField] protected ParticleSystem _warpFocusEffect;
+    public void PlayWarpFocusEffect() {
+        if (_warpFocusEffect != null) {
+            _warpFocusEffect.Play();
+        }
+    }
+
     /// <summary>
     /// セットアップ
     /// </summary>
     public void Setup(System.Action on_pre_warp, System.Action on_warp_end) {
         _onPreWarpCommon = on_pre_warp;
         _onWarpEndCommon = on_warp_end;
+        if(_warpFocusEffect == null) {
+            _warpFocusEffect = GameObject.Find("WarpFocusEffect")?.GetComponent<ParticleSystem>();
+        }
     }
 
     // --- デバッグ用: ジャスト回避判定の可視化 ---
@@ -139,6 +150,9 @@ public class WarpControl : MonoBehaviour {
             _audioSource.PlayOneShot(_seWarp);
         }
         transform.position = safe_point;
+
+        // ワープ集中線エフェクト再生
+        PlayWarpFocusEffect();
 
         // 最後にワープした方向を保存
         WarpChecker nearest_checker = null;

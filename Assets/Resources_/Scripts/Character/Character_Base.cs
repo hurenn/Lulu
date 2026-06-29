@@ -50,6 +50,9 @@ public class Character_Base : MonoBehaviour {
 
     public MotorStates _motorStates = new MotorStates();
 
+    protected virtual void _SetWarpDashing(bool is_warp_dashing) {
+        _isWarpDashing = is_warp_dashing;
+    }
     protected void _SetSliding(bool is_sliding, bool is_play_anim = true) {
         _isSliding = is_sliding;
         _anim?.SetBool("Sliding", _isSliding);
