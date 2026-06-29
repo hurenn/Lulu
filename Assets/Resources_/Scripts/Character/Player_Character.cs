@@ -653,6 +653,12 @@ public class Player_Character : Character_Base {
                 _currentSlideTime = 0;
                 _currentSlideJumpTime = 0;
             }
+            // ダッシュジャンプをスライディングジャンプと統合（壁ダッシュ判定を共有）
+            else if (_isDashing) {
+                _SetSlidingJump(true);
+                _warpDashDirection = new Vector2(_isRight ? 1f : -1f, 0f);
+                _currentSlideJumpTime = 0;
+            }
 
             velocity.y = _jumpForce;
             _currentJumpTime = _param.maxJumpHoldTime;
