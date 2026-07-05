@@ -191,22 +191,23 @@ public class MessageViewer : MonoBehaviour {
     // 1文字ずつ表示する場合のコルーチン
     private IEnumerator _TypeText(string message, float message_show_time) {
         _audioSource.Stop();
-        _messageText.text = "";
+        _messageText.text = message;
+        _messageText.maxVisibleCharacters = 0;
         _audioSource.PlayOneShot(_seSpeak);
         if (message_show_time <= 0) { // 一気に表示
             var view_message = message.Length / 3;
-            _messageText.text = message.Substring(0, view_message);
+            _messageText.maxVisibleCharacters = view_message;
             yield return new WaitForSecondsRealtime(0.01f);
-            _messageText.text = message.Substring(0, view_message * 2);
+            _messageText.maxVisibleCharacters = view_message * 2;
             yield return new WaitForSecondsRealtime(0.01f);
-            _messageText.text = message;
+            _messageText.maxVisibleCharacters = message.Length;
         } else {
             foreach (char c in message) { // 1文字ずつ表示
                 if (_playerParameter.language == PlayerParameter.eLanguage.Japanese ||
                     (_playerParameter.language == PlayerParameter.eLanguage.English && _messageText.text.Length % 2 == 0)) {
                 }
-                _messageText.text += c;
-                
+                _messageText.maxVisibleCharacters++;
+
                 // isUnScaledTimeに応じて待機方法を変更
                 if (_currentMessage.isUnScaledTime) {
                     yield return new WaitForSecondsRealtime(message_show_time);
@@ -218,6 +219,7 @@ public class MessageViewer : MonoBehaviour {
                     yield return null;
                 }
             }
+            _messageText.maxVisibleCharacters = message.Length; // 念のため最後に全表示
         }
         _typingCoroutine = null;
     }
