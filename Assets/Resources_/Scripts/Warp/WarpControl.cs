@@ -48,6 +48,9 @@ public class WarpControl : MonoBehaviour {
     [SerializeField] protected ParticleSystem _warpFocusEffect;
     public void PlayWarpFocusEffect() {
         if (_warpFocusEffect != null) {
+            if (_warpFocusEffect.gameObject.activeSelf == false) {
+                _warpFocusEffect.gameObject.SetActive(true);
+            }
             _warpFocusEffect.Play();
         }
     }
