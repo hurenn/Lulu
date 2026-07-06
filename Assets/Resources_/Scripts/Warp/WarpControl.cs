@@ -64,6 +64,9 @@ public class WarpControl : MonoBehaviour {
         if(_warpFocusEffect == null) {
             _warpFocusEffect = GameObject.Find("WarpFocusEffect")?.GetComponent<ParticleSystem>();
         }
+        if(_warpFocusEffect != null) {
+            _warpFocusEffect.gameObject.SetActive(false);
+        }
     }
 
     // --- デバッグ用: ジャスト回避判定の可視化 ---
