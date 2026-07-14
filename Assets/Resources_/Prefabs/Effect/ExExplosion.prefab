@@ -232,6 +232,11 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 1
+  _selfCharacter: {fileID: 0}
+  _damageToSelf: 0
+  _invincibleTimeToSelf: 0.5
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 1
   _hitEffectSize: 2
@@ -239,9 +244,11 @@ MonoBehaviour:
   - {fileID: 8121132203644737018}
   _hitStopTime: 0.3
   _manualCameraShake: 0
-  _manualShakeIntensity: 0.01
+  _manualShakeIntensity: 1.5
   _manualShakeDuration: 0.1
   _hitCameraShakeIntensity: 0
+  _hitPlayerEvent: []
+  _avoidPlayerEvent: []
 --- !u!1 &5891395673387587722
 GameObject:
   m_ObjectHideFlags: 0
