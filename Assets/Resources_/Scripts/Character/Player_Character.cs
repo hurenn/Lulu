@@ -212,11 +212,11 @@ public class Player_Character : Character_Base {
 
         // 地面に接触しているかチェック
         if (_isGrounded) {
-            if (_warpDashDirection.x != 0) {
-                // 地面に対して斜めに移動している場合はスライディングを実行
+            if (!_isVerticalWarpDash) {
+                // 斜めワープの場合はスライディングを実行
                 _ExecuteSlide(); // スライディング実行
             } else {
-                // 地面に対して垂直に移動している場合は張り付き状態に移行
+                // 上下ワープの場合は張り付き状態に移行
                 _isGroundSticking = true;
                 _currentLandingDashTime = 0;
             }
