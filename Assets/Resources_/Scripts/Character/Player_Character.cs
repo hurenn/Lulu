@@ -33,6 +33,8 @@ public class Player_Character : Character_Base {
     private float _dashEndTimer = 0f;
     // 上下ワープダッシュフラグ（横ズレ許可判定用）
     private bool _isVerticalWarpDash = false;
+    // 下方向ワープフラグ（時間終了無効化用）
+    private bool _isDownwardWarpDash = false;
 
     private bool _isAvoid = false;
     private float _isAvoidTimer = 0.01f;
@@ -172,10 +174,10 @@ public class Player_Character : Character_Base {
             return;
         }
 
-        // ワープダッシュの最大時間を超えた場合は終了
-        if (_currentWarpDashTime > _param.maxWarpDashTime) {
+        // ワープダッシュの最大時間を超えた場合は終了（下方向ワープは時間終了なし）
+        if (!_isDownwardWarpDash && _currentWarpDashTime > _param.maxWarpDashTime) {
             _SetWarpDashing(false);
-            return; // ワープダッシュのクールタイム中は何もしない
+            return;
         }
         _currentWarpDashTime += Time.deltaTime;
 
@@ -204,10 +206,12 @@ public class Player_Character : Character_Base {
         // ワープダッシュ移動
         var dash_velocity = _warpDashDirection;
         _rb.linearVelocity = dash_velocity;
-        // ワープダッシュ力を減衰させる
-        _warpDashDirection *= _param.warpDashDamping;
-        if (_warpDashDirection.magnitude < 0.2f) {
-            _warpDashDirection = Vector2.zero; // ダッシュ力が小さくなったらリセット
+        // ワープダッシュ力を減衰させる（下方向ワープは減衰なし）
+        if (!_isDownwardWarpDash) {
+            _warpDashDirection *= _param.warpDashDamping;
+            if (_warpDashDirection.magnitude < 0.2f) {
+                _warpDashDirection = Vector2.zero;
+            }
         }
 
         // 地面に接触しているかチェック
@@ -316,6 +320,7 @@ public class Player_Character : Character_Base {
     /// </summary>
     private void _ExecuteWarpDash() {
         _isVerticalWarpDash = Mathf.Approximately(_warpDashDirection.x, 0f);
+        _isDownwardWarpDash = _isVerticalWarpDash && _warpDashDirection.y < 0f;
         _SetDash(_isRight, is_effect: false);
         _SetWarpDashing(true);
         _currentWarpDashTime = 0;
