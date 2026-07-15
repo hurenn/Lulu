@@ -608,6 +608,11 @@ public class Player_Character : Character_Base {
                 _SetWallDash(false);
                 return;
             }
+            // 下入力で即座に壁上りを終了
+            if (_inputData.move.y < -0.5f) {
+                _SetWallDash(false);
+                return;
+            }
         }
 
         // スライディング中に逆方向入力でキャンセル
