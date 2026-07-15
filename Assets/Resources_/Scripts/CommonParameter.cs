@@ -48,6 +48,11 @@ public class CommonParameter : ScriptableObject
 
     [Header("ワープダッシュ時間")]
     public float maxWarpDashTime = 0.5f; // ワープダッシュの最大時間
+    
+    [Header("ワープ慣性制御")]
+    public float warpDashControlAccel = 10.0f;  // 加速力
+    public float warpDashControlDecel = 20.0f;  // 減速力
+    public float warpDashControlSteer = 2.0f;   // カーブ力
 
     [Header("スライディング時間")]
     public float maxSlideTime = 1f;

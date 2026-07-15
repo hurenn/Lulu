@@ -31,6 +31,8 @@ public class Player_Character : Character_Base {
     private float _currentWallSlideTime = 0;
     // ダッシュ終了直後の逆方向ダッシュ受付タイマー
     private float _dashEndTimer = 0f;
+    // 上下ワープダッシュフラグ（横ズレ許可判定用）
+    private bool _isVerticalWarpDash = false;
 
     private bool _isAvoid = false;
     private float _isAvoidTimer = 0.01f;
@@ -177,6 +179,28 @@ public class Player_Character : Character_Base {
         }
         _currentWarpDashTime += Time.deltaTime;
 
+        // 方向入力による慣性制御
+        if (_inputData.move != Vector2.zero && _warpDashDirection.sqrMagnitude > 0f) {
+            Vector2 dashDir = _warpDashDirection.normalized;
+            Vector2 input = _inputData.move;
+
+            // 横方向ワープ中のみ加速・減速
+            float speed = _warpDashDirection.magnitude;
+            if (!_isVerticalWarpDash) {
+                float axialInput = Vector2.Dot(input, dashDir);
+                float speedDelta = axialInput > 0f
+                    ? axialInput * _param.warpDashControlAccel
+                    : axialInput * _param.warpDashControlDecel;
+                speed = Mathf.Max(speed + speedDelta * Time.deltaTime, 0f);
+            }
+            _warpDashDirection = dashDir * speed;
+
+            // 上下ワープ中のみ左右入力で横方向ズレ
+            if (_isVerticalWarpDash) {
+                _warpDashDirection.x += input.x * _param.warpDashControlSteer * Time.deltaTime;
+            }
+        }
+
         // ワープダッシュ移動
         var dash_velocity = _warpDashDirection;
         _rb.linearVelocity = dash_velocity;
@@ -291,6 +315,7 @@ public class Player_Character : Character_Base {
     /// ワープダッシュ実行
     /// </summary>
     private void _ExecuteWarpDash() {
+        _isVerticalWarpDash = Mathf.Approximately(_warpDashDirection.x, 0f);
         _SetDash(_isRight, is_effect: false);
         _SetWarpDashing(true);
         _currentWarpDashTime = 0;

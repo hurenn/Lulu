@@ -34,8 +34,10 @@ MonoBehaviour:
   warpDashDamping: 0.975
   warpWaitTime: 0.1
   warpCoolTime: 0.1
-  coinWarpInterval: 0.1
   maxWarpDashTime: 0.5
+  warpDashControlAccel: 0
+  warpDashControlDecel: 30
+  warpDashControlSteer: 20
   maxSlideTime: 1
   slideCancelDamping: 0.8
   maxWallSlideTime: 0.5
