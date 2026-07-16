@@ -213,6 +213,14 @@ public class WarpControl : MonoBehaviour {
         // ジャスト回避の確認
         SpawnJustAvoidZone();
 
+        // コインワープチェック（指定方向）
+        var coin_in_dir = GetCoinInWarpDirection(direction);
+        if (coin_in_dir.HasValue) {
+            yield return _ExecuteWarpCommon(coin_in_dir.Value, is_warp_camera: false, end_delay: _coinWarpInterval);
+            yield return CoinWarp();
+            yield break;
+        }
+
         // ワープ先に移動
         yield return _ExecuteWarpCommon(safe_point);
 
@@ -291,7 +299,26 @@ public class WarpControl : MonoBehaviour {
             coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.down, _coinCheckSize.y * _otherCheckRate * 0.5f);
         return coin_pos;
     }
-    
+
+    /// <summary>
+    ///　コインワープが出来るか確認（指定方向）
+    /// </summary>
+    public Vector3? GetCoinInWarpDirection(eWarpDirection direction) {
+        Vector2 dir = direction switch {
+            eWarpDirection.Up => Vector2.up,
+            eWarpDirection.UpRight => new Vector2(1f, 1f).normalized,
+            eWarpDirection.Right => Vector2.right,
+            eWarpDirection.DownRight => new Vector2(1f, -1f).normalized,
+            eWarpDirection.Down => Vector2.down,
+            eWarpDirection.DownLeft => new Vector2(-1f, -1f).normalized,
+            eWarpDirection.Left => Vector2.left,
+            eWarpDirection.UpLeft => new Vector2(-1f, 1f).normalized,
+            _ => Vector2.zero
+        };
+        if (dir == Vector2.zero) return null;
+        return _GetNearestCoin(_coinCheckSize, dir, _coinCheckSize.magnitude * 0.5f);
+    }
+
     /// <summary>
     /// 一番近くのコインを取得
     /// </summary>
