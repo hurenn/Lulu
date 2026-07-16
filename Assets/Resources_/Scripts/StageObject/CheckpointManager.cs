@@ -77,6 +77,17 @@ public class CheckpointManager : MonoBehaviour
     }
 
     /// <summary>
+    /// チェックポイントをクリア
+    /// </summary>
+    public void ClearCheckpoint() {
+        _respawnSceneName = null;
+        _respawnPosition = Vector3.zero;
+        _playerSnapshot = null;
+        _unableObjectPaths.Clear();
+        _enableObjectPaths.Clear();
+    }
+
+    /// <summary>
     /// ヒエラルキーパスからGameObjectを検索
     /// </summary>
     private GameObject _FindGameObjectByPath(string path)

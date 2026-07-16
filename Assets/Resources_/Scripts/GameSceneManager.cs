@@ -169,6 +169,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void GameRestart() {
         _isDeathRetry = false; // タイトルに戻る場合はフラグをクリア
+        CheckpointManager.Instance.ClearCheckpoint(); // タイトルに戻る場合はチェックポイントをクリア
         ChangeScene.LoadScene(false, _titleSceneName);
     }
 }
