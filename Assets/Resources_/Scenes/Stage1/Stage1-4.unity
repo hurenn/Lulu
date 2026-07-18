@@ -164,11 +164,11 @@ PrefabInstance:
       objectReference: {fileID: 544547198}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].text
-      value: "\u5149\u304C\u898B\u3048\u305F\u3089\u30EC\u30FC\u30B6\u30FC\u304C\u98DB\u3093\u3067\u304F\u308B\u305E\u3002"
+      value: "\u5149\u7DDA\u304C\u898B\u3048\u305F\u3089\u30EC\u30FC\u30B6\u30FC\u304C\u98DB\u3093\u3067\u304F\u308B\u305E\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].text
@@ -176,15 +176,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].text
-      value: "\u30EB\u30EB\u3061\u3083\u3093\u306A\u3089\u5149\u3089\u306A\u304F\u3066\u3082\n\u907F\u3051\u3089\u308C\u308B\u3093\u3058\u3083\u306A\u3044\uFF1F"
+      value: "\u30EB\u30EB\u3061\u3083\u3093\u306A\u3089\u7121\u6575\u306B\u306A\u3089\u306A\u304F\u3066\u3082\n\u907F\u3051\u3089\u308C\u308B\u3093\u3058\u3083\u306A\u3044\uFF1F"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[3].text
-      value: "\u7279\u306B\u30C7\u30E1\u30EA\u30C3\u30C8\u306F\u306A\u3044\u304B\u3089\n\u50D5\u306E\u80FD\u529B\u3082\u4F7F\u3063\u3066\u3084\u3063\u3066\u304F\u308C\uFF01"
+      value: "\u4EFB\u305B\u3066\uFF01\n\u5149\u7DDA\u3092\u907F\u3051\u308C\u3070\u3044\u3044\u3093\u3060\u3088\u306D\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[4].text
-      value: "\u2026\u2026\u6C37\u304C\u71B1\u3067\u6EB6\u3051\u3066\u3001\u5439\u3063\u98DB\u3070\u3055\u308C\u3066\u8CA0\u3051\u305F\u3093\u3060\uFF1F"
+      value: "\u7279\u306B\u30C7\u30E1\u30EA\u30C3\u30C8\u306F\u306A\u3044\u304B\u3089\n\u50D5\u306E\u80FD\u529B\u3082\u4F7F\u3063\u3066\u3084\u3063\u3066\u304F\u308C\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[5].text
@@ -224,17 +224,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].englishText
-      value: When you see a flash, a laser's coming.
+      value: When you see the warning beam, the laser's coming.
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].addShowTime
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].englishText
       value: 'Don''t forget!
 
-        <color=yellow>Hold X</color> to become <color=yellow>invincible</color>!'
+        <color=yellow>Hold X to become invincible!</color>'
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].addShowTime
@@ -242,15 +242,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].englishText
-      value: Couldn't Lulu-chan  just dodge them without glowing?
+      value: Lulu-chan, couldn't you dodge them even without becoming invincible?
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[3].englishText
-      value: There's really no downside, so make good use of my power too!
+      value: 'Leave it to me!
+
+        I just have to dodge the warning beam, right?'
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[4].englishText
-      value: 
+      value: There's no downside, so make good use of my ability too!
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[5].englishText
@@ -304,11 +306,11 @@ PrefabInstance:
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[3].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 846575d3ed56a44438cac6995f860ebe, type: 3}
+      objectReference: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[4].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: fc7693bdc9c27c54f807d516e0905714, type: 3}
+      objectReference: {fileID: 21300000, guid: 846575d3ed56a44438cac6995f860ebe, type: 3}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[5].characterIcon
       value: 
