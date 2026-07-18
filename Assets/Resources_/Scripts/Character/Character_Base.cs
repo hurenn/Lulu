@@ -6,7 +6,7 @@ public class Character_Base : MonoBehaviour {
     [SerializeField] protected CommonParameter _param;
     // キャラクターパラメータ
     [SerializeField] protected CharacterParameter _charaParam;
-    public bool isInvincible => _charaParam != null && _charaParam.isInvincible;
+    public bool isInvincible => (_charaParam != null && _charaParam.isInvincible) || _isEventInvincible;
 
     // 入力データ
     protected CharacterInputData _inputData = new CharacterInputData();

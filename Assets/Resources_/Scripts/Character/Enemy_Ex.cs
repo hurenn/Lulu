@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ƒ{ƒX“GƒLƒƒƒ‰ƒNƒ^[‚ÌAI
+/// ãƒœã‚¹æ•µã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®AI
 /// </summary>
 public class Enemy_Ex : Enemy_Base {
     private enum eExAction {
@@ -22,14 +22,14 @@ public class Enemy_Ex : Enemy_Base {
     [SerializeField] private AudioClip _bgmSerious;
     [SerializeField] private AudioClip _bgmFlower;
 
-    // ƒŒ[ƒU[ƒr[ƒ€‚ÌƒvƒŒƒnƒu
+    // ãƒ¬ãƒ¼ã‚¶ãƒ¼ãƒ“ãƒ¼ãƒ ã®ãƒ—ãƒ¬ãƒãƒ–
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _thinLaserPrefab;
-    // ”š”­‚ÌƒvƒŒƒnƒu
+    // çˆ†ç™ºã®ãƒ—ãƒ¬ãƒãƒ–
     [SerializeField] private GameObject _explosionPrefab;
     [SerializeField] private GameObject _explosionNotShakePrefab;
 
-    // ƒpƒ‰ƒ[ƒ^
+    // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
     [SerializeField] private ExParameter _exParameter;
     private bool _isHalfHp => _charaParam.CurrentHP <= _charaParam.MaxHP / 2.0f;
     private bool _isDowned = false;
@@ -50,15 +50,26 @@ public class Enemy_Ex : Enemy_Base {
     private Transform _playerTransform;
     private Transform _laserParent;
 
-    // s“®’†ƒtƒ‰ƒO
+    // è¡Œå‹•ä¸­ãƒ•ãƒ©ã‚°
     private bool _isExecutingAction = false;
     private bool _isSpecialActioned = false;
     private IEnumerator _currentActionCoroutine = null;
 
-    // ‹­§”š”­UŒ‚‚Ü‚Å‚ÌƒJƒEƒ“ƒg
+    // å¼·åˆ¶çˆ†ç™ºæ”»æ’ƒã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆ
     int _forceBurstCount = 3;
     private float _currentBGMVolume = 0.7f;
     private bool _startBGM = false;
+    
+    private float _waitDebt = 0f;
+    /// <summary>
+    /// WaitForSecondsã®ç²¾åº¦ã‚’ä¸Šã’ã‚‹ãŸã‚ã®ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    /// </summary>
+    private IEnumerator _PreciseWait(float seconds) {
+        float wait = Mathf.Max(0f, seconds - _waitDebt);
+        float start = Time.time;
+        yield return new WaitForSeconds(wait);
+        _waitDebt = (Time.time - start) - wait;
+    }
 
     protected override void _Setup() {
         base._Setup();
@@ -67,7 +78,7 @@ public class Enemy_Ex : Enemy_Base {
             _audioBGM.enabled = false;
         }
         _nextActionTime = _exParameter.ActionInterval;
-        _currentActionTime = _nextActionTime - 4.5f; // Å‰‚Ìs“®‚ğ­‚µ’x‚ç‚¹‚é
+        _currentActionTime = _nextActionTime - 4.5f; // æœ€åˆã®è¡Œå‹•ã‚’å°‘ã—é…ã‚‰ã›ã‚‹
         _playerTransform = GameObject.FindAnyObjectByType<Player_Character>()?.transform;
         _laserParent = new GameObject("LaserBeams").transform;
     }
@@ -75,7 +86,7 @@ public class Enemy_Ex : Enemy_Base {
     protected override void _UpdateSpecials() {
         if (_isDead) return;
 
-        // s“®ƒ^ƒCƒ}[XV
+        // è¡Œå‹•ã‚¿ã‚¤ãƒãƒ¼æ›´æ–°
         if (_currentActionTime < _nextActionTime) {
             _currentActionTime += Time.deltaTime;
             return;
@@ -85,13 +96,13 @@ public class Enemy_Ex : Enemy_Base {
             return;
         }
 
-        // ‚¢‚¸‚ê‚©‚Ìs“®‚ğÀs
+        // ã„ãšã‚Œã‹ã®è¡Œå‹•ã‚’å®Ÿè¡Œ
         var action = _isSeriously ? _ChooseSeriousAction() : _ChooseAction();
         if (_playerTransform != null) {
             _isRight = _playerTransform.position.x > transform.position.x;
         }
         if (_startBGM == false) {
-            // BGMƒXƒ^[ƒg
+            // BGMã‚¹ã‚¿ãƒ¼ãƒˆ
             _startBGM = true;
             if (_audioBGM != null) {
                 _audioBGM.enabled = true;
@@ -99,7 +110,7 @@ public class Enemy_Ex : Enemy_Base {
             }
         }
 
-        // HP”¼•ªˆÈ‰º‚Å‹­§”š”­UŒ‚ƒJƒEƒ“ƒgƒ_ƒEƒ“
+        // HPåŠåˆ†ä»¥ä¸‹ã§å¼·åˆ¶çˆ†ç™ºæ”»æ’ƒã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
         if (_isHalfHp && _forceBurstCount > 0) {
             _forceBurstCount--;
             if (_forceBurstCount == 0) {
@@ -107,7 +118,7 @@ public class Enemy_Ex : Enemy_Base {
             }
         }
 
-        // HP”¼•ªˆÈ‰º‚ÅƒXƒyƒVƒƒƒ‹UŒ‚
+        // HPåŠåˆ†ä»¥ä¸‹ã§ã‚¹ãƒšã‚·ãƒ£ãƒ«æ”»æ’ƒ
         if (_isHalfHp && _isSpecialActioned == false) {
             action = eExAction.SpecialAttack;
             _isSpecialActioned = true;
@@ -185,11 +196,11 @@ public class Enemy_Ex : Enemy_Base {
     }
     private IEnumerator _ExecuteLaser(float waitTimer, Transform[] startTranses, int count = 1,
         bool is_random = false, bool is_thin = false, float interval_rate = 1.0f, float reset_time = 0f) {
-        // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         _anim.SetTrigger("Shoot");
-        yield return new WaitForSeconds(waitTimer);
+        yield return _PreciseWait(waitTimer);
 
-        // ƒŒ[ƒU[ƒr[ƒ€¶¬
+        // ãƒ¬ãƒ¼ã‚¶ãƒ¼ãƒ“ãƒ¼ãƒ ç”Ÿæˆ
         _anim.SetTrigger("Shoot");
 
         var set_transforms = _GetTransforms(count, startTranses, is_random);
@@ -202,16 +213,16 @@ public class Enemy_Ex : Enemy_Base {
                 trans.position, Quaternion.identity);
             laser_obj.transform.rotation = trans.transform.rotation;
             laser_obj.transform.parent = _laserParent;
-            yield return new WaitForSeconds(_exParameter.ShootInterval * interval_rate);
+            yield return _PreciseWait(_exParameter.ShootInterval * interval_rate);
         }
         _ResetAction(reset_time);
     }
 
     private Transform[] _GetTransforms(int count, Transform[] target_transes, bool is_random = false) {
         List<Transform> set_transforms = new List<Transform>();
-        // ƒ‰ƒ“ƒ_ƒ€‚Å•¡”‘I‘ğ
+        // ãƒ©ãƒ³ãƒ€ãƒ ã§è¤‡æ•°é¸æŠ
         for (int i = 0; i < count; i++) {
-            // ‘I‘ğ”‚ªÅ‘å‚É’B‚µ‚½‚çI—¹
+            // é¸æŠæ•°ãŒæœ€å¤§ã«é”ã—ãŸã‚‰çµ‚äº†
             if (set_transforms.Count >= target_transes.Length) {
                 break;
             }
@@ -224,7 +235,7 @@ public class Enemy_Ex : Enemy_Base {
                 rand_index = i % target_transes.Length;
             }
 
-            // d•¡ƒ`ƒFƒbƒN
+            // é‡è¤‡ãƒã‚§ãƒƒã‚¯
             if (set_transforms.Contains(target_transes[rand_index])) {
                 i--;
                 continue;
@@ -235,27 +246,27 @@ public class Enemy_Ex : Enemy_Base {
     }
 
     private IEnumerator _ExecuteJumpLaser() {
-        // \‚¦
+        // æ§‹ãˆ
         _anim.SetTrigger("JumpShoot");
         _anim.SetBool("Jumping", true);
-        yield return new WaitForSeconds(_exParameter.JumpShootTime);
+        yield return _PreciseWait(_exParameter.JumpShootTime);
 
-        // ƒŒ[ƒU[ƒr[ƒ€¶¬
+        // ãƒ¬ãƒ¼ã‚¶ãƒ¼ãƒ“ãƒ¼ãƒ ç”Ÿæˆ
         _anim.SetTrigger("JumpShoot");
         var laser_obj = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
         laser_obj.transform.rotation = _jumpShootPoint.transform.rotation;
 
-        // ”š”­¶¬
+        // çˆ†ç™ºç”Ÿæˆ
         if (_jumpShootExplosionPoint != null) {
-            yield return new WaitForSeconds(_exParameter.ShootExplosionTime);
+            yield return _PreciseWait(_exParameter.ShootExplosionTime);
             Instantiate(_explosionPrefab, _jumpShootExplosionPoint.position, Quaternion.identity);
         }
 
         _anim.SetBool("Jumping", false);
 
-        // ”š”­¶¬
+        // çˆ†ç™ºç”Ÿæˆ
         if (_jumpShootExplosionPoint != null) {
-            yield return new WaitForSeconds(_exParameter.ShootExplosionTime);
+            yield return _PreciseWait(_exParameter.ShootExplosionTime);
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
         }
 
@@ -264,7 +275,7 @@ public class Enemy_Ex : Enemy_Base {
     }
 
     private IEnumerator _ExecuteBurst(int count, Transform[] trans, float reset_time = 0f, bool is_random = false, bool is_special_burst = false) {
-        // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         _anim.SetTrigger("Burst");
 
         var set_transforms = _GetTransforms(count, trans, is_random);
@@ -272,15 +283,15 @@ public class Enemy_Ex : Enemy_Base {
         yield return _ExecuteExplosion(set_transforms, set_transforms.Length == 1 ? true : false);
 
         if (is_special_burst) {
-            yield return new WaitForSeconds(1.5f);
+            yield return _PreciseWait(1.5f);
 
             yield return _ExecuteExplosion(_specialExposionPoint, 1.7f);
         }
 
-        // ”š”­¶¬
+        // çˆ†ç™ºç”Ÿæˆ
         _anim.SetTrigger("Burst");
 
-        // ‹­§”š”­ƒJƒEƒ“ƒgI—¹
+        // å¼·åˆ¶çˆ†ç™ºã‚«ã‚¦ãƒ³ãƒˆçµ‚äº†
         if(_isHalfHp) {
             _forceBurstCount = -1;
         }
@@ -288,7 +299,7 @@ public class Enemy_Ex : Enemy_Base {
         _ResetAction(reset_time);
     }
 
-    // •KEUŒ‚
+    // å¿…æ®ºæ”»æ’ƒ
     private IEnumerator _ExecuteSpecialAttack() {
         var camera = CinemachineManager.Instance;
         camera.ShakeCamera(duration: 0.1f, intensity: 0.1f);
@@ -299,7 +310,7 @@ public class Enemy_Ex : Enemy_Base {
         yield return _ExecuteExplosion(_specialExposionPoint, 1.7f);
     }
 
-    // ŠÈˆÕ•KEUŒ‚
+    // ç°¡æ˜“å¿…æ®ºæ”»æ’ƒ
     private IEnumerator _FastSpecialAttack() {
         yield return (_ExecuteLaser(_exParameter.ShootTime, _specialShootPoints, _exParameter.SpecialLaserCount / 2, is_thin: true,
             is_random: true, interval_rate: 0.5f, reset_time: -_exParameter.FastActionInterval));
@@ -308,14 +319,14 @@ public class Enemy_Ex : Enemy_Base {
     private IEnumerator _ExecuteExplosion(Transform startTrans, float scale_rate = 1.0f) {
         return _ExecuteExplosion(new Transform[] { startTrans }, true, scale_rate);
     }
-    // ˜A”š
+    // é€£çˆ†
     private IEnumerator _ExecuteExplosion(Transform[] startTranses, bool is_shake, float scale_rate = 1.0f) {
         for (int i = 0; i < startTranses.Length; i++) {
             var explosion_obj = Instantiate(
                 is_shake ? _explosionPrefab : _explosionNotShakePrefab, 
                 startTranses[i].position, Quaternion.identity);
             explosion_obj.transform.localScale *= scale_rate;
-            yield return new WaitForSeconds(_exParameter.ShootInterval / 2);
+            yield return _PreciseWait(_exParameter.ShootInterval / 2);
         }
     }
 
@@ -332,7 +343,7 @@ public class Enemy_Ex : Enemy_Base {
             _isDowned = true;
         }
 
-        // HP‚ªˆê’èˆÈ‰º‚Å–{‹Cƒ‚[ƒh‚ÉˆÚs
+        // HPãŒä¸€å®šä»¥ä¸‹ã§æœ¬æ°—ãƒ¢ãƒ¼ãƒ‰ã«ç§»è¡Œ
         if (_charaParam.CurrentHP <= _seriousHpThreshold && !_isSeriously) {
             _isSeriously = true;
             StartCoroutine(_Seriously());
@@ -342,13 +353,14 @@ public class Enemy_Ex : Enemy_Base {
     }
 
     /// <summary>
-    /// ƒ_ƒEƒ“‰‰o
+    /// ãƒ€ã‚¦ãƒ³æ¼”å‡º
     /// </summary>
     private IEnumerator _Down() {
         var cinemachineManager = CinemachineManager.Instance;
         var flash = ScreenFlash.Instance;
 
         _isExecutingAction = true;
+        IsEventInvincible = true;
 
         if (_seFinish != null) {
             _audioSource?.PlayOneShot(_seDead);
@@ -361,7 +373,7 @@ public class Enemy_Ex : Enemy_Base {
             _audioBGM.volume = 0f;
         }
 
-        // === 1. ƒqƒbƒg‰‰o ===
+        // === 1. ãƒ’ãƒƒãƒˆæ™‚æ¼”å‡º ===
         flash?.Flash();
         _anim.Play("Down");
         yield return new WaitForSeconds(0.2f);
@@ -371,20 +383,22 @@ public class Enemy_Ex : Enemy_Base {
 
         _coinSpawner.SpawnCoin(200);
 
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
+        IsEventInvincible = false;
+        yield return new WaitForSeconds(1.0f);
 
-        // BGMØ‚è‘Ö‚¦
+        // BGMåˆ‡ã‚Šæ›¿ãˆ
         _audioBGM.volume = _currentBGMVolume;
         _audioBGM.clip = _bgmSerious;
         _audioBGM.Play();
 
-        // Œ»İ‚Ìs“®‚ğƒŠƒZƒbƒg
+        // ç¾åœ¨ã®è¡Œå‹•ã‚’ãƒªã‚»ãƒƒãƒˆ
         _nextActionTime = _exParameter.FastActionInterval;
         _ResetAction();
     }
 
     /// <summary>
-    /// –{‹Cƒ‚[ƒhˆÚs
+    /// æœ¬æ°—ãƒ¢ãƒ¼ãƒ‰ç§»è¡Œ
     /// </summary>
     private IEnumerator _Seriously() {
         OnSeriously?.Invoke();
@@ -403,18 +417,18 @@ public class Enemy_Ex : Enemy_Base {
         var cinemachineManager = CinemachineManager.Instance;
         var flash = ScreenFlash.Instance;
 
-        // === 2. ƒJƒƒ‰ƒY[ƒ€ ===
+        // === 2. ã‚«ãƒ¡ãƒ©ã‚ºãƒ¼ãƒ  ===
         cinemachineManager.ZoomOnTarget(transform);
         yield return new WaitForSeconds(0.05f);
 
-        // === 1. ƒqƒbƒg‰‰o ===
+        // === 1. ãƒ’ãƒƒãƒˆæ™‚æ¼”å‡º ===
         Time.timeScale = 0.1f;
         flash?.Flash();
         _anim.Play("Die");
         yield return new WaitForSecondsRealtime(0.2f);
         flash?.Flash(3.0f);
 
-        // BGM’â~
+        // BGMåœæ­¢
         if (_audioBGM != null) {
             _audioBGM.volume = 0f;
         }
@@ -423,7 +437,7 @@ public class Enemy_Ex : Enemy_Base {
 
         cinemachineManager.ReturnToPlayer();
 
-        // ™X‚ÉŠÔ‚ğ–ß‚·
+        // å¾ã€…ã«æ™‚é–“ã‚’æˆ»ã™
         float timeScale = Time.timeScale;
         while (timeScale < 1f) {
             timeScale += Time.unscaledDeltaTime;
@@ -433,9 +447,9 @@ public class Enemy_Ex : Enemy_Base {
 
         yield return new WaitForSecondsRealtime(0.5f);
 
-        // === 4. ”š”­ ===
+        // === 4. çˆ†ç™º ===
         if (_dieExplosion != null) {
-            // ”š”­ƒGƒtƒFƒNƒg¶¬
+            // çˆ†ç™ºã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
             flash?.Flash();
             yield return new WaitForSecondsRealtime(0.2f);
             flash?.Flash();
@@ -452,14 +466,14 @@ public class Enemy_Ex : Enemy_Base {
 
         yield return new WaitForSeconds(5.0f);
 
-        // BGMØ‚è‘Ö‚¦
+        // BGMåˆ‡ã‚Šæ›¿ãˆ
         _audioBGM.volume = _currentBGMVolume;
         _audioBGM.clip = _bgmFlower;
         _audioBGM.Play();
     }
 
     private void _ResetLaser() {
-        // ƒŒ[ƒU[ƒr[ƒ€íœ
+        // ãƒ¬ãƒ¼ã‚¶ãƒ¼ãƒ“ãƒ¼ãƒ å‰Šé™¤
         foreach (Transform child in _laserParent) {
             Destroy(child.gameObject);
         }
