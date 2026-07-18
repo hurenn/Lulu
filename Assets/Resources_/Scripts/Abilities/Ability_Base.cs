@@ -290,6 +290,11 @@ public class Ability_Base : MonoBehaviour {
         _specialTimelineDirector.Evaluate();
         _specialTimelineDirector.Play();
         _currentSpecialChargeTime = 0;
+
+        // ë¶ç¿Ç…ãAä“
+        if (_isAppearing) {
+            _ResetReturnTimer(0.01f);
+        }
     }
 
     /// <summary>
