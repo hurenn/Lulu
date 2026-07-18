@@ -60,16 +60,7 @@ public class Enemy_Ex : Enemy_Base {
     private float _currentBGMVolume = 0.7f;
     private bool _startBGM = false;
     
-    private float _waitDebt = 0f;
-    /// <summary>
-    /// WaitForSecondsの精度を上げるためのコルーチン
-    /// </summary>
-    private IEnumerator _PreciseWait(float seconds) {
-        float wait = Mathf.Max(0f, seconds - _waitDebt);
-        float start = Time.time;
-        yield return new WaitForSeconds(wait);
-        _waitDebt = (Time.time - start) - wait;
-    }
+    private readonly PreciseWaitTimer _waitTimer = new PreciseWaitTimer();
 
     protected override void _Setup() {
         base._Setup();
@@ -198,7 +189,7 @@ public class Enemy_Ex : Enemy_Base {
         bool is_random = false, bool is_thin = false, float interval_rate = 1.0f, float reset_time = 0f) {
         // アニメーション再生
         _anim.SetTrigger("Shoot");
-        yield return _PreciseWait(waitTimer);
+        yield return _waitTimer.Wait(waitTimer);
 
         // レーザービーム生成
         _anim.SetTrigger("Shoot");
@@ -213,7 +204,7 @@ public class Enemy_Ex : Enemy_Base {
                 trans.position, Quaternion.identity);
             laser_obj.transform.rotation = trans.transform.rotation;
             laser_obj.transform.parent = _laserParent;
-            yield return _PreciseWait(_exParameter.ShootInterval * interval_rate);
+            yield return _waitTimer.Wait(_exParameter.ShootInterval * interval_rate);
         }
         _ResetAction(reset_time);
     }
@@ -249,7 +240,7 @@ public class Enemy_Ex : Enemy_Base {
         // 構え
         _anim.SetTrigger("JumpShoot");
         _anim.SetBool("Jumping", true);
-        yield return _PreciseWait(_exParameter.JumpShootTime);
+        yield return _waitTimer.Wait(_exParameter.JumpShootTime);
 
         // レーザービーム生成
         _anim.SetTrigger("JumpShoot");
@@ -258,7 +249,7 @@ public class Enemy_Ex : Enemy_Base {
 
         // 爆発生成
         if (_jumpShootExplosionPoint != null) {
-            yield return _PreciseWait(_exParameter.ShootExplosionTime);
+            yield return _waitTimer.Wait(_exParameter.ShootExplosionTime);
             Instantiate(_explosionPrefab, _jumpShootExplosionPoint.position, Quaternion.identity);
         }
 
@@ -266,7 +257,7 @@ public class Enemy_Ex : Enemy_Base {
 
         // 爆発生成
         if (_jumpShootExplosionPoint != null) {
-            yield return _PreciseWait(_exParameter.ShootExplosionTime);
+            yield return _waitTimer.Wait(_exParameter.ShootExplosionTime);
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
         }
 
@@ -283,7 +274,7 @@ public class Enemy_Ex : Enemy_Base {
         yield return _ExecuteExplosion(set_transforms, set_transforms.Length == 1 ? true : false);
 
         if (is_special_burst) {
-            yield return _PreciseWait(1.5f);
+            yield return _waitTimer.Wait(1.5f);
 
             yield return _ExecuteExplosion(_specialExposionPoint, 1.7f);
         }
@@ -326,7 +317,7 @@ public class Enemy_Ex : Enemy_Base {
                 is_shake ? _explosionPrefab : _explosionNotShakePrefab, 
                 startTranses[i].position, Quaternion.identity);
             explosion_obj.transform.localScale *= scale_rate;
-            yield return _PreciseWait(_exParameter.ShootInterval / 2);
+            yield return _waitTimer.Wait(_exParameter.ShootInterval / 2);
         }
     }
 
