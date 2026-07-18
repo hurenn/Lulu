@@ -444,8 +444,6 @@ public class Enemy_Ex : Enemy_Base {
             Instantiate(_dieExplosion, transform.position, Quaternion.identity);
             cinemachineManager.ShakeCamera(duration: 0.5f);
             _sprite.enabled = false;
-
-            flash?.FadeIn(5.0f);
         }
 
         yield return new WaitForSeconds(1.0f);
