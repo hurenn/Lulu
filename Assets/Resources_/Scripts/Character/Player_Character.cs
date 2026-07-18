@@ -356,6 +356,11 @@ public class Player_Character : Character_Base {
                 _SetSliding(false);
                 _currentSlideTime = 0;
             }
+            // 横移動速度が歩行速度以下になった場合はスライディング終了
+            if (Mathf.Abs(velocity.x) <= _param.moveSpeed) {
+                _SetSliding(false);
+                _currentSlideTime = 0;
+            }
         }
         if (_isSlidingCanceling) {
             _SetSliding(false);
