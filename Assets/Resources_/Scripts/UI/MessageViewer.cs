@@ -261,7 +261,9 @@ public class MessageViewer : MonoBehaviour {
     }
 
     private void UpdateWindowAlpha() {
-        if (_IsIconOverlapping()) {
+        // プレイヤーが操作不能な間は半透明効果を無効化
+        bool is_overlapping = _IsIconOverlapping() && (_playerController == null || _playerController.isEnabledCharacterInput);
+        if (is_overlapping) {
             // プレイヤーがメッセージウィンドウと重なっている場合、透明度を下げる
             foreach (var window in _messageWindows) {
                 if (window == null) continue;
