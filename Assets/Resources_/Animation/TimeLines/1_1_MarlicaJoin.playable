@@ -374,6 +374,9 @@ MonoBehaviour:
     addShowTime: -1
     isAutoForce: 1
     isUnScaledTime: 0
+  shakeWindow: 0
+  shakeIntensity: 20
+  shakeDuration: 0.4
 --- !u!114 &-298345029865518490
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -393,6 +396,9 @@ MonoBehaviour:
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
+  shakeWindow: 0
+  shakeIntensity: 20
+  shakeDuration: 0.4
 --- !u!114 &-255701615112671436
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -412,6 +418,9 @@ MonoBehaviour:
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
+  shakeWindow: 0
+  shakeIntensity: 20
+  shakeDuration: 0.4
 --- !u!114 &-216022709467994574
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -483,6 +492,9 @@ MonoBehaviour:
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
+  shakeWindow: 0
+  shakeIntensity: 20
+  shakeDuration: 0.4
 --- !u!114 &1903994753303499940
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -741,13 +753,15 @@ MonoBehaviour:
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
-  - text: "\u826F\u304B\u3063\u305F\u3001\u5408\u6D41\u3067\u304D\u3066\uFF01\n\u5F37\u3044\u6575\u304C\u73FE\u308C\u305F\u3063\u3066\u805E\u3044\u305F\u3088\u306D\u3002\u4E00\u7DD2\u306B\u884C\u3053\u3046\uFF01"
-    englishText: "I'm glad we could meet up!\nI heard a strong enemy showed up\u2014let\u2019s
-      go together!"
+  - text: "\u5F37\u3044\u6575\u304C\u73FE\u308C\u305F\u3063\u3066\u805E\u3044\u305F\u3088\u306D\u3002\u4E00\u7DD2\u306B\u884C\u3053\u3046\uFF01"
+    englishText: "I heard a strong enemy showed up\u2014let\u2019s go together!"
     characterIcon: {fileID: 21300000, guid: 6a8e9ac36434ff24d935c3aab7895299, type: 3}
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
+  shakeWindow: 0
+  shakeIntensity: 20
+  shakeDuration: 0.4
 --- !u!114 &2660688468680048544
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -873,6 +887,9 @@ MonoBehaviour:
     addShowTime: 0
     isAutoForce: 0
     isUnScaledTime: 0
+  shakeWindow: 0
+  shakeIntensity: 20
+  shakeDuration: 0.4
 --- !u!114 &5213631926527016224
 MonoBehaviour:
   m_ObjectHideFlags: 1
