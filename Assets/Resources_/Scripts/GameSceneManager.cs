@@ -59,6 +59,20 @@ public class GameSceneManager : MonoBehaviour
     }
 
     private void Update() {
+        var buildConfig = BuildConfig.Instance;
+
+        // ExhibitionまたはTestビルドの場合のみデバッグ用のキー入力を有効化
+        var enableDebugInput = buildConfig != null &&
+            (buildConfig.BuildType == BuildConfig.eBuildType.Exhibition || buildConfig.BuildType == BuildConfig.eBuildType.Test);
+        if (enableDebugInput) {
+            _DebugKeyInput();
+        }
+    }
+
+    /// <summary>
+    /// デバッグ用のキー入力処理
+    /// </summary>
+    private void _DebugKeyInput() {
         var keyboard = Keyboard.current;
         if (keyboard == null) {
             return;
