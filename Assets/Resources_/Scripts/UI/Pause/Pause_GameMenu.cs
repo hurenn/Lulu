@@ -4,10 +4,12 @@ using UnityEngine;
 public class Pause_GameMenu : Pause_MenuBase {
     [SerializeField] private RectTransform _MenuReturnGame;     // ゲームに戻るメニュー
     [SerializeField] private RectTransform _MenuStageRetry;     // リトライメニュー
+    [SerializeField] private RectTransform _MenuTitle;          // タイトルに戻るメニュー
 
     private enum eMenuIndex {
         ReturnGame = 0,
         Retry = 1,
+        Title = 2
     }
     private eMenuIndex _currentMenu = eMenuIndex.ReturnGame;
 
@@ -20,23 +22,30 @@ public class Pause_GameMenu : Pause_MenuBase {
     }
 
     public override void OnInputVertical(int dir) {
-        MoveMenu(dir);
+        // メニューのインデックスを上下に移動
+        int nextIndex = (int)_currentMenu + (dir > 0 ? -1 : 1);
+        nextIndex = Mathf.Clamp(nextIndex, 0, (int)eMenuIndex.Title);
+        OnSwitchGameMenu(nextIndex);
     }
 
     public override void OnInputHorizontal(int dir) {
         OnSwitchMenu(dir);
     }
 
-    // PlayerControllerから呼ばれる上下入力処理
-    public void MoveMenu(int dir) {
-        if (dir > 0) {
-            // 上入力
-            MoveFrameToSelected(_MenuReturnGame);
-            _currentMenu = eMenuIndex.ReturnGame;
-        } else if (dir < 0) {
-            // 下入力
-            MoveFrameToSelected(_MenuStageRetry);
-            _currentMenu = eMenuIndex.Retry;
+    private void OnSwitchGameMenu(int index) {
+        switch (index) {
+            case 0: // ゲームに戻る
+                MoveFrameToSelected(_MenuReturnGame);
+                _currentMenu = eMenuIndex.ReturnGame;
+                break;
+            case 1: // やりなおす
+                MoveFrameToSelected(_MenuStageRetry);
+                _currentMenu = eMenuIndex.Retry;
+                break;
+            case 2: // タイトルに戻る
+                MoveFrameToSelected(_MenuTitle);
+                _currentMenu = eMenuIndex.Title;
+                break;
         }
     }
 
@@ -52,6 +61,10 @@ public class Pause_GameMenu : Pause_MenuBase {
                 break;
             case eMenuIndex.Retry: // やり直し（ポーズからのリトライなので必殺チャージなし）
                 GameSceneManager.Instance.StageRestart(false, false);
+                OnCloseMenu();
+                break;
+            case eMenuIndex.Title: // タイトルに戻る
+                GameSceneManager.Instance.GameRestart();
                 OnCloseMenu();
                 break;
         }
