@@ -178,7 +178,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                         _currentButton = eButtonIndex.B;
                         break;
                     case eButtonIndex.Reset:
-                        _currentButton = eButtonIndex.System;
+                        //_currentButton = eButtonIndex.System;
                         break;
                 }
                 break;
@@ -190,7 +190,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                         _currentButton = eButtonIndex.B;
                         break;
                     case eButtonIndex.B:
-                        _currentButton = eButtonIndex.System;
+                        //_currentButton = eButtonIndex.System;
                         break;
                     case eButtonIndex.ZL:
                         _currentButton = eButtonIndex.SL;
@@ -207,7 +207,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                         _currentButton = eButtonIndex.X;
                         break;
                     case eButtonIndex.System:
-                        _currentButton = eButtonIndex.Reset;
+                        //_currentButton = eButtonIndex.Reset;
                         break;
                 }
                 break;
@@ -227,8 +227,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                         break;
                     case eButtonIndex.Y:
                     case eButtonIndex.ZL:
-                    case eButtonIndex.System:
-                    case eButtonIndex.Reset:
+                    //case eButtonIndex.System:
+                    //case eButtonIndex.Reset:
                         OnSwitchMenu(-1);
                         break;
                 }
@@ -249,8 +249,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                         break;
                     case eButtonIndex.A:
                     case eButtonIndex.ZR:
-                    case eButtonIndex.System:
-                    case eButtonIndex.Reset:
+                    //case eButtonIndex.System:
+                    //case eButtonIndex.Reset:
                         OnSwitchMenu(1);
                         break;
                 }
@@ -449,8 +449,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             eButtonIndex.ZL => _MenuButtonZL,
             eButtonIndex.SR => _MenuButtonSR,
             eButtonIndex.ZR => _MenuButtonZR,
-            eButtonIndex.System => _MenuButtonSystem,
-            eButtonIndex.Reset => _MenuButtonReset,
+            //eButtonIndex.System => _MenuButtonSystem,
+            //eButtonIndex.Reset => _MenuButtonReset,
             _ => null
         };
     }
@@ -486,8 +486,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                 eButtonIndex.ZL => _MenuButtonZL,
                 eButtonIndex.SR => _MenuButtonSR,
                 eButtonIndex.ZR => _MenuButtonZR,
-                eButtonIndex.System => _MenuButtonSystem,
-                eButtonIndex.Reset => _MenuButtonReset,
+                //eButtonIndex.System => _MenuButtonSystem,
+                //eButtonIndex.Reset => _MenuButtonReset,
                 _ => _MenuButtonB
             });
     }
