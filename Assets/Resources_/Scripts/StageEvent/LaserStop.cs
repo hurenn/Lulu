@@ -21,6 +21,7 @@ public class LaserStop : StageObject_Base {
     private IEnumerator _StopperWait() {
         yield return new WaitForSeconds(_stopTime);
         foreach (var animator in _laserAnimators) {
+            if(animator == null) continue;
             animator.SetBool("isStopped", true);
         }
 
