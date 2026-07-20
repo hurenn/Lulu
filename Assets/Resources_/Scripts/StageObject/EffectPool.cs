@@ -49,6 +49,11 @@ public class EffectPool : MonoBehaviour {
 
     public void Release(PooledEffect effect) {
         effect.gameObject.SetActive(false);
+        if (effect.PrefabKey == null) {
+            Debug.LogWarning($"[EffectPool] {effect.name} の PrefabKey が設定されていません");
+            Destroy(effect.gameObject);
+            return;
+        }
         if (!_pools.TryGetValue(effect.PrefabKey, out var pool)) {
             pool = new Queue<PooledEffect>();
             _pools[effect.PrefabKey] = pool;
