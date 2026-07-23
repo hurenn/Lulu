@@ -82,6 +82,12 @@ public class Player_Character : Character_Base {
         
         // Bスロットに常にAbility_Warpを設定
         SetAbilitySlot(eAbilityType.Warp, eAbilitySlot.B, false);
+
+        // シーン再読み込み時など、現在の能力割り当てにAbilityUIの表示を合わせる
+        var abilityUIManager = FindAnyObjectByType<AbilityUIManager>();
+        if (abilityUIManager != null) {
+            abilityUIManager.SyncAbilityUIToCurrentSlots(_playerParam.Abilities);
+        }
     }
 
     /// <summary>
