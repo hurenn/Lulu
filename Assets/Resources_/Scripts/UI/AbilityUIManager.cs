@@ -15,6 +15,12 @@ public class AbilityUIManager : MonoBehaviour {
     [SerializeField] private AbilityUI_Base _abilityUI_A;
     [SerializeField] private AbilityUI_Base _abilityUI_B;
 
+    // 各スロットの固定位置（能力UIをここへ再配置する）
+    [SerializeField] private Transform _slotTransY;
+    [SerializeField] private Transform _slotTransX;
+    [SerializeField] private Transform _slotTransA;
+    [SerializeField] private Transform _slotTransB;
+
     // フラッシュ用の画像（各スロット専用）
     [SerializeField] private Image _flashY;
     [SerializeField] private Image _flashX;
@@ -103,6 +109,49 @@ public class AbilityUIManager : MonoBehaviour {
     }
 
     /// <summary>
+    /// 能力タイプに対応する固定のAbilityUI_Baseを取得
+    /// （各能力専用のUIオブジェクトは常に同じ参照。表示位置はスロットへの再配置で変える）
+    /// </summary>
+    private AbilityUI_Base _GetAbilityUIForType(eAbilityType type) {
+        return type switch {
+            eAbilityType.Ice => _abilityUI_Y,
+            eAbilityType.Light => _abilityUI_X,
+            eAbilityType.Fire => _abilityUI_A,
+            eAbilityType.Warp => _abilityUI_B,
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// スロットに対応する固定位置（Ability_Trans）を取得
+    /// </summary>
+    private Transform _GetSlotTransform(eAbilitySlot slot) {
+        return slot switch {
+            eAbilitySlot.Y => _slotTransY,
+            eAbilitySlot.X => _slotTransX,
+            eAbilitySlot.A => _slotTransA,
+            eAbilitySlot.B => _slotTransB,
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// 現在の能力割り当て（能力タイプ→スロット）を見て、各能力UIを対応する位置へ再配置する
+    /// </summary>
+    public void SyncAbilityUIToCurrentSlots(System.Collections.Generic.Dictionary<eAbilityType, eAbilitySlot> abilities) {
+        if (abilities == null) return;
+
+        foreach (var pair in abilities) {
+            var abilityUI = _GetAbilityUIForType(pair.Key);
+            var slotTrans = _GetSlotTransform(pair.Value);
+            if (abilityUI == null || slotTrans == null) continue;
+
+            abilityUI.transform.SetParent(slotTrans, false);
+            abilityUI.transform.localPosition = Vector3.zero;
+        }
+    }
+
+    /// <summary>
     /// ボタン押下時の光る演出を再生（AbilityUIManager内で完結）
     /// </summary>
     /// <param name="slot">スロット指定</param>
@@ -164,34 +213,5 @@ public class AbilityUIManager : MonoBehaviour {
 
         // フラッシュ画像を非表示
         flashImage.gameObject.SetActive(false);
-    }
-
-    /// <summary>
-    /// 二つのスロットのUIを入れ替える
-    /// </summary>
-    public void SwapAbilityUI(eAbilitySlot slotA, eAbilitySlot slotB) {
-        var uiA = GetAbilityUI(slotA);
-        var uiB = GetAbilityUI(slotB);
-
-        if (uiA == null || uiB == null) {
-            Debug.LogWarning($"UIが見つかりません: {slotA}, {slotB}");
-            return;
-        }
-
-        // 親とローカル位置を保存
-        var parentA = uiA.transform.parent;
-        var parentB = uiB.transform.parent;
-        var localPosA = uiA.transform.localPosition;
-        var localPosB = uiB.transform.localPosition;
-
-        // 親を入れ替え
-        uiA.transform.SetParent(parentB, false);
-        uiB.transform.SetParent(parentA, false);
-
-        // ローカル位置をゼロに戻す
-        uiA.transform.localPosition = Vector3.zero;
-        uiB.transform.localPosition = Vector3.zero;
-
-        Debug.Log($"UI入れ替え完了: {slotA} ⇔ {slotB}");
     }
 }

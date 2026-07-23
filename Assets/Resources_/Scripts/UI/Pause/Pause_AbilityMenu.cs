@@ -389,12 +389,16 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         // スロットの能力を入れ替え
         player.SwapAbilitySlot(fromSlot, toSlot);
 
+        // 能力側の割り当て（PlayerParameter.Instance.Abilities）を即座に更新
+        player.SaveAbilitySlot();
+
         // UIも入れ替え
         _SwapAbilityUI(fromSlot, toSlot);
     }
 
     /// <summary>
-    /// AbilityUIを入れ替える
+    /// AbilityUIを現在の能力割り当てに合わせて再配置する
+    /// （2スロット間の相対的な入れ替えではなく、現在の実データから毎回組み直す）
     /// </summary>
     private void _SwapAbilityUI(eAbilitySlot slotA, eAbilitySlot slotB) {
         var abilityUIManager = FindAnyObjectByType<AbilityUIManager>();
@@ -403,7 +407,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             return;
         }
 
-        abilityUIManager.SwapAbilityUI(slotA, slotB);
+        abilityUIManager.SyncAbilityUIToCurrentSlots(PlayerParameter.Instance.Abilities);
     }
 
     /// <summary>
