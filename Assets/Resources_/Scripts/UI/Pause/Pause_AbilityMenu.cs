@@ -108,7 +108,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _iconToAbilityType[_LightTriggerIcon] = eAbilityType.Light;
         _iconToAbilityType[_FireTriggerIcon] = eAbilityType.Fire;
 
-        // 初期割り当て
+        // 初期割り当て（デフォルト）
         _buttonToIcon[eButtonIndex.B] = _WarpIcon;
         _buttonToIcon[eButtonIndex.Y] = _IceIcon;
         _buttonToIcon[eButtonIndex.X] = _LightIcon;
@@ -118,15 +118,13 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _buttonToIcon[eButtonIndex.ZR] = _LightTriggerIcon;
         _buttonToIcon[eButtonIndex.SL] = _FireTriggerIcon;
 
+        // 現在の能力割り当てにメインボタン(B,Y,X,A)のアイコン配置を同期
+        _SyncButtonIconsWithCurrentAbilities();
+
         // アイコンを各ボタンに配置
-        _PlaceIconOnButton(_WarpIcon, _MenuButtonB);
-        _PlaceIconOnButton(_IceIcon, _MenuButtonY);
-        _PlaceIconOnButton(_LightIcon, _MenuButtonX);
-        _PlaceIconOnButton(_FireIcon, _MenuButtonA);
-        _PlaceIconOnButton(_WarpTriggerIcon, _MenuButtonSR);
-        _PlaceIconOnButton(_IceTriggerIcon, _MenuButtonZL);
-        _PlaceIconOnButton(_LightTriggerIcon, _MenuButtonZR);
-        _PlaceIconOnButton(_FireTriggerIcon, _MenuButtonSL);
+        foreach (var pair in _buttonToIcon) {
+            _PlaceIconOnButton(pair.Value, _GetButtonRect(pair.Key));
+        }
 
         // 最初の選択肢に枠を移動
         MoveFrameToSelected(_MenuButtonB, true);
@@ -449,6 +447,47 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             eButtonIndex.A => eAbilitySlot.A,
             _ => eAbilitySlot.B // デフォルト
         };
+    }
+
+    /// <summary>
+    /// eAbilitySlotをボタンIndexに変換
+    /// </summary>
+    private eButtonIndex _AbilitySlotToButtonIndex(eAbilitySlot slot) {
+        return slot switch {
+            eAbilitySlot.B => eButtonIndex.B,
+            eAbilitySlot.Y => eButtonIndex.Y,
+            eAbilitySlot.X => eButtonIndex.X,
+            eAbilitySlot.A => eButtonIndex.A,
+            _ => eButtonIndex.B // デフォルト
+        };
+    }
+
+    /// <summary>
+    /// 能力タイプに対応するアイコンを取得
+    /// </summary>
+    private RectTransform _GetIconForAbilityType(eAbilityType type) {
+        return type switch {
+            eAbilityType.Warp => _WarpIcon,
+            eAbilityType.Ice => _IceIcon,
+            eAbilityType.Light => _LightIcon,
+            eAbilityType.Fire => _FireIcon,
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// 現在のプレイヤーの能力割り当てにメインボタン(B,Y,X,A)のアイコン配置を同期する
+    /// （SL,SR,ZL,ZRのトリガーボタンにはゲームプレイ上の対応スロットが無いため対象外）
+    /// </summary>
+    private void _SyncButtonIconsWithCurrentAbilities() {
+        var abilities = PlayerParameter.Instance?.Abilities;
+        if (abilities == null) return;
+
+        foreach (var pair in abilities) {
+            var icon = _GetIconForAbilityType(pair.Key);
+            if (icon == null) continue;
+            _buttonToIcon[_AbilitySlotToButtonIndex(pair.Value)] = icon;
+        }
     }
 
     /// <summary>
