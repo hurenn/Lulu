@@ -115,8 +115,11 @@ public class TitleManager : MonoBehaviour {
         }
         _isSelected = true;
 
+        // QuitButtonが割り当てられていない場合はGameStartまでの2択で完結させる
+        eTitleMenu maxMenu = _quitUiRect != null ? eTitleMenu.Quit : eTitleMenu.EnglishStart;
+
         // はじめから(0)～ゲーム終了(2)の範囲でカーソルを移動
-        int nextIndex = Mathf.Clamp((int)_currentMenu + dir, (int)eTitleMenu.JapaneseStart, (int)eTitleMenu.Quit);
+        int nextIndex = Mathf.Clamp((int)_currentMenu + dir, (int)eTitleMenu.JapaneseStart, (int)maxMenu);
         if (nextIndex == (int)_currentMenu) {
             // 端に到達している場合は何もしない
             return;
