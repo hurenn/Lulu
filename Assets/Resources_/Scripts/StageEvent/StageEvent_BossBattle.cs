@@ -39,6 +39,12 @@ public class StageEvent_BossBattle : MonoBehaviour {
     private void Update() {
         _currentMessageTriggerDelay += Time.deltaTime;
         foreach (var activator in _messageTriggerActivators) {
+            // 死亡済みの場合はスキップ
+            if (_bossEnemy != null) {
+                if (_bossEnemy.isDead) {
+                    continue;
+                }
+            }
             // HP条件が合わない場合はスキップ
             if (activator.isHalfHPTrigger != _isHalfHp) {
                 continue;
