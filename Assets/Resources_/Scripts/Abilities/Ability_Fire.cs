@@ -346,7 +346,7 @@ public class FireAutoAttackTrigger : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
             var enemy = other.GetComponent<Enemy_Base>();
-            if (enemy != null) {
+            if (enemy != null && enemy.isAutoLockOn) {
                 _parentAbility?.OnEnemyEnter(enemy);
             }
         }
@@ -355,7 +355,7 @@ public class FireAutoAttackTrigger : MonoBehaviour {
     private void OnTriggerExit2D(Collider2D other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
             var enemy = other.GetComponent<Enemy_Base>();
-            if (enemy != null) {
+            if (enemy != null && enemy.isAutoLockOn) {
                 _parentAbility?.OnEnemyExit(enemy);
             }
         }
