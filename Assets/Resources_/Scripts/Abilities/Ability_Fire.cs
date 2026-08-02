@@ -14,6 +14,8 @@ public class Ability_Fire : Ability_Base
 
     // 弾オブジェクト
     [SerializeField] private FireBullet _bulletObj;
+    // 発射地点
+    [SerializeField] private Transform _shotPoint;
 
     // 必殺オブジェクト
     [SerializeField] private GameObject _specialBulletObj;
@@ -181,7 +183,14 @@ public class Ability_Fire : Ability_Base
         // アニメーション再生
         _anim?.Play(_SHOT_ANIM, 0, 0.0f);
 
-        var bullet = Instantiate(_bulletObj, transform.position, Quaternion.identity);
+        var shot_pos = transform.position;
+        if(_shotPoint != null) {
+            var shot_offset = _shotPoint.localPosition;
+            shot_offset.x = Mathf.Abs(shot_offset.x) * (_isRight ? 1 : -1);
+            shot_pos += shot_offset;
+        }
+
+        var bullet = Instantiate(_bulletObj, shot_pos, Quaternion.identity);
         bullet.SetCallback(() => _currentShot--);
         bullet.IsRight = _isRight;
 
