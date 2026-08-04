@@ -13,6 +13,8 @@ public class Enemy_Base : Character_Base
 
     // ロックオンマーカー
     [SerializeField] private Animator _lockonMarkerAnim;
+    public bool isAutoLockOn = true;
+
     [SerializeField] private DamageZone _damageZone;
 
     [SerializeField] protected GameObject _dieExplosion = null;

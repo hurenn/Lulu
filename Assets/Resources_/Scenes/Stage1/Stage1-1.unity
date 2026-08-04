@@ -7147,7 +7147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].text
-      value: "\u3084\u3063\u305F\uFF01\n\u4E0A\u624B\u3044\u4E0A\u624B\u3044\uFF01"
+      value: "\u3084\u3063\u305F\u306D\uFF01\n\u4E0A\u624B\u3044\u4E0A\u624B\u3044\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].text
@@ -412105,15 +412105,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].text
-      value: "\u2026\u2026\u3053\u3001\u3053\u306E\u5148\u306E\u3001\u8DB3\u5834\u3092\u4E57\u308A\u7D99\u3044\u3067\u3044\u3053\u3046\u306D\uFF01"
+      value: "\u2026\u2026\u3053\u306E\u5148\u306E\u8DB3\u5834\u3001\u3061\u3087\u3063\u3068\u9AD8\u3055\u304C\u3042\u3063\u3066\u4E0A\u308A\u306B\u304F\u3044\u306D\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].text
-      value: "<color=yellow>\u53F3\u4E0A\u5165\u529B\u3057\u305F\u307E\u307EB\u30DC\u30BF\u30F3</color>\u3092\u62BC\u3059\u3068\u3001\n\u659C\u3081\u65B9\u5411\u306B\u3082\u30EF\u30FC\u30D7\u3067\u304D\u308B\u3088\uFF01"
+      value: "\u30EF\u30FC\u30D7\u306F\u659C\u3081\u65B9\u5411\u306B\u3082\u51FA\u305B\u308B\u3088\u3002\n<color=yellow>\u53F3\u4E0A\u5165\u529B\u3057\u305F\u307E\u307E\u30EF\u30FC\u30D7</color>\u3082\u8A66\u3057\u3066\u307F\u3066\u306D\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].addShowTime
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].englishText
@@ -412129,7 +412129,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].englishText
-      value: "\u2026L-let\u2019s make our way across these platforms ahead!"
+      value: ...That ledge is a bit too high to reach.
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].isAutoForce
@@ -412141,8 +412141,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].englishText
-      value: <color=yellow>Hold up-right and hit B</color>, and I can warp diagonally
-        too!
+      value: 'You can warp diagonally, too.
+
+        Try <color=yellow>holding Up-Right
+        and pressing B</color>!'
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].characterIcon
@@ -413140,15 +413142,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].text
-      value: "\u2026\u2026\u8DB3\u8E0F\u307F\u5916\u3057\u3061\u3083\u3063\u305F\u3002"
+      value: "\u2026\u2026\u8DB3\u3092\u8E0F\u307F\u5916\u3057\u3061\u3083\u3063\u305F\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].text
-      value: "<color=yellow>\u539A\u3044\u58C1\u306B\u5411\u304B\u3063\u3066\u30EF\u30FC\u30D7</color>\u3057\u305F\u3089\u3001\u9811\u5F35\u3063\u3066\u99C6\u3051\u4E0A\u304C\u308B\u3088\uFF01"
+      value: "<color=yellow>\u58C1\u306B\u52E2\u3044\u3088\u304F\u3076\u3064\u304B\u3063\u305F\u3089</color>\u3001\u3042\u305F\u3057\u9811\u5F35\u3063\u3066\u99C6\u3051\u4E0A\u304C\u308B\u3088\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].addShowTime
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[0].englishText
@@ -413160,7 +413162,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].addShowTime
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[1].englishText
@@ -413190,7 +413192,7 @@ PrefabInstance:
     - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: _messageDatas.messageDatas.Array.data[2].characterIcon
       value: 
-      objectReference: {fileID: 21300000, guid: fca1f8d1651fb6e4a9554c78063a242c, type: 3}
+      objectReference: {fileID: 21300000, guid: 32bafaaf813207c4aabc302fdca056f4, type: 3}
     - target: {fileID: 784869042385548296, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: m_Name
       value: MessageTrigger_Fall
