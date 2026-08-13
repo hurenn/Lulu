@@ -21,7 +21,7 @@ public class WarpChecker : MonoBehaviour
 
     // 個別のワープチェック用のオフセット
     [SerializeField]
-    private bool _isEnableUpperCheck = true;
+    private float _upperCheckRate = 0.0f;
 
     private bool _isValidWarpPoint = false;
     private bool _isUpperWarp = false;
@@ -41,7 +41,24 @@ public class WarpChecker : MonoBehaviour
         RaycastHit2D obstacleCheck = Physics2D.BoxCast(target, _characterSize, 0, Vector2.zero, 0f, _obstacleLayer);
         RaycastHit2D enemyCheck = Physics2D.BoxCast(target, _characterSize, 0, Vector2.zero, 0f, _enemyLayer);
         if (obstacleCheck.collider == null && enemyCheck.collider == null) {
+            _isUpperWarp = false;
             return target; // 直接ワープ可能
+        }
+
+        // 上方向・斜め上方向のワープで最大距離地点が地形に埋まっている場合、少し上を追加でチェック
+        // プレイヤー側になるべく近い地点（オフセットが小さい方）から順にチェックする
+        if (_upperCheckRate > 0f && direction.y > 0f) {
+            float max_upper_offset = _characterSize.y * _upperCheckRate;
+            int upper_step_count = Mathf.Max(1, Mathf.CeilToInt(max_upper_offset / step_interval));
+            for (int i = 1; i <= upper_step_count; i++) {
+                float upper_offset = Mathf.Min(step_interval * i, max_upper_offset);
+                Vector2 upper_check_pos = target + Vector2.up * upper_offset;
+                var upper_warp_point = GetWarpPoint(upper_check_pos);
+                if (upper_warp_point.HasValue) {
+                    _isUpperWarp = true;
+                    return upper_warp_point.Value; // プレイヤーに最も近い上方向の位置をワープ先に設定
+                }
+            }
         }
 
         // ワープ先との間で安全な場所を確認する回数
@@ -59,16 +76,6 @@ public class WarpChecker : MonoBehaviour
                 _isUpperWarp = false;
                 return is_warp_point.Value; // ワープ可能な位置を返す
             }
-
-            /*// 少し上にずらしてチェック
-            if (_isEnableUpperCheck) {
-                check_pos.y += _upperOffset;
-                is_warp_point = IsValidWarpPoint(check_pos);
-                if (is_warp_point.HasValue) {
-                    _isUpperWarp = true;
-                    return is_warp_point.Value; // ワープ可能な位置を返す
-                }
-            }*/
         }
 
         return origin; // どの方向にもワープできない場合は元の位置を返す
