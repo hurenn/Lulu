@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 public class WarpControl : MonoBehaviour {
-    private const float JUST_AVOID_ZONE_DURATION = 0.1f; // ƒWƒƒƒXƒg‰ñ”ğƒ][ƒ“‚Ì‘±ŠÔ
+    private const float JUST_AVOID_ZONE_DURATION = 0.1f; // ã‚¸ãƒ£ã‚¹ãƒˆå›é¿ã‚¾ãƒ¼ãƒ³ã®æŒç¶šæ™‚é–“
     
     public enum eWarpDirection
     {
@@ -17,34 +17,34 @@ public class WarpControl : MonoBehaviour {
         UpLeft
     }
 
-    // ƒ[ƒvƒ`ƒFƒbƒN—p‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg
+    // ãƒ¯ãƒ¼ãƒ—ãƒã‚§ãƒƒã‚¯ç”¨ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
     [SerializeField] private WarpChecker[] warpCheckers;
 
-    [SerializeField] private Vector2 _coinCheckSize = new Vector2(5,3);   // ƒRƒCƒ“ƒ`ƒFƒbƒN‚Ì”¼Œa
-    [SerializeField] private LayerMask _coinLayer;          // ƒRƒCƒ“‚ÌƒŒƒCƒ„[
+    [SerializeField] private Vector2 _coinCheckSize = new Vector2(5,3);   // ã‚³ã‚¤ãƒ³ãƒã‚§ãƒƒã‚¯ã®åŠå¾„
+    [SerializeField] private LayerMask _coinLayer;          // ã‚³ã‚¤ãƒ³ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼
     [SerializeField] private float _coinWarpInterval = 0.1f;
     [SerializeField] private float _avoidWarpInterval = 0.5f;
-    private bool _isRight = true;   // ‰EŒü‚«‚©Šm”F
+    private bool _isRight = true;   // å³å‘ãã‹ç¢ºèª
     public bool isRight { get { return _isRight; } set { _isRight = value; } }
     private Vector3 _forward => _isRight ? Vector3.right : Vector3.left;
-    // ƒRƒCƒ“ƒ[ƒv—p‚Ì‘O•ûˆÈŠO‚Ìƒ`ƒFƒbƒN—¦
+    // ã‚³ã‚¤ãƒ³ãƒ¯ãƒ¼ãƒ—ç”¨ã®å‰æ–¹ä»¥å¤–ã®ãƒã‚§ãƒƒã‚¯ç‡
     private float _otherCheckRate = 0.7f;
 
-    // ‰ñ”ğƒ[ƒv—p‚ÌƒGƒtƒFƒNƒgŠÔŠuƒ^ƒCƒ}[
+    // å›é¿ãƒ¯ãƒ¼ãƒ—ç”¨ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆé–“éš”ã‚¿ã‚¤ãƒãƒ¼
     private float _avoidEffectInterval = 0.5f;
     private float _currentAvoidEffectInterval = 0.1f;
 
-    // ƒ[ƒv‹¤’Êˆ—
+    // ãƒ¯ãƒ¼ãƒ—å…±é€šå‡¦ç†
     System.Action _onPreWarpCommon = null;
     System.Action _onWarpEndCommon = null;
 
-    // ÅŒã‚Éƒ[ƒv‚µ‚½•ûŒü
+    // æœ€å¾Œã«ãƒ¯ãƒ¼ãƒ—ã—ãŸæ–¹å‘
     public eWarpDirection lastWarpDir { get; private set; } = eWarpDirection.Right;
 
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _seWarp;
 
-    // W’†üƒGƒtƒFƒNƒg
+    // é›†ä¸­ç·šã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField] protected ParticleSystem _warpFocusEffect;
     public void PlayWarpFocusEffect() {
         if (_warpFocusEffect != null) {
@@ -55,8 +55,16 @@ public class WarpControl : MonoBehaviour {
         }
     }
 
+    // ãƒ¯ãƒ¼ãƒ—å…ˆèª¿æ•´å‰ã®æœ€å¤§è·é›¢åœ°ç‚¹ã‚¨ãƒ•ã‚§ã‚¯ãƒˆï¼ˆæˆåŠŸãƒ»å¤±æ•—ã«é–¢ã‚ã‚‰ãšè¡¨ç¤ºï¼‰
+    [SerializeField] protected GameObject _warpMaxDistanceEffectPrefab;
+    public void PlayWarpMaxDistanceEffect(Vector3 pos) {
+        if (_warpMaxDistanceEffectPrefab != null) {
+            Instantiate(_warpMaxDistanceEffectPrefab, pos, Quaternion.identity);
+        }
+    }
+
     /// <summary>
-    /// ƒZƒbƒgƒAƒbƒv
+    /// ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—
     /// </summary>
     public void Setup(System.Action on_pre_warp, System.Action on_warp_end) {
         _onPreWarpCommon = on_pre_warp;
@@ -69,15 +77,15 @@ public class WarpControl : MonoBehaviour {
         }
     }
 
-    // --- ƒfƒoƒbƒO—p: ƒWƒƒƒXƒg‰ñ”ğ”»’è‚Ì‰Â‹‰» ---
+    // --- ãƒ‡ãƒãƒƒã‚°ç”¨: ã‚¸ãƒ£ã‚¹ãƒˆå›é¿åˆ¤å®šã®å¯è¦–åŒ– ---
     private Vector2? _debugJustAvoidCenter = null;
     private float _debugJustAvoidRadius = 1.0f;
     private float _debugJustAvoidTimer = 0f;
 
-    // --- ƒWƒƒƒXƒg‰ñ”ğƒN[ƒ‹ƒ^ƒCƒ€ŠÇ— ---
+    // --- ã‚¸ãƒ£ã‚¹ãƒˆå›é¿ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ç®¡ç† ---
     private float _justAvoidCooldownTimer = 0f;
 
-    // --- ƒWƒƒƒXƒg‰ñ”ğ”»’èŠÇ— ---
+    // --- ã‚¸ãƒ£ã‚¹ãƒˆå›é¿åˆ¤å®šç®¡ç† ---
     private bool _isJustAvoidActive = false;
     private Vector2 _justAvoidCenter;
     private float _justAvoidRadius = 0.5f;
@@ -93,7 +101,7 @@ public class WarpControl : MonoBehaviour {
         if (_currentAvoidEffectInterval > 0) {
             _currentAvoidEffectInterval -= Time.deltaTime;
         }
-        // ƒWƒƒƒXƒg‰ñ”ğ”»’èi–ˆƒtƒŒ[ƒ€j
+        // ã‚¸ãƒ£ã‚¹ãƒˆå›é¿åˆ¤å®šï¼ˆæ¯ãƒ•ãƒ¬ãƒ¼ãƒ ï¼‰
         if (_isJustAvoidActive) {
             if (!_justAvoided) {
                 int damageZoneLayer = LayerMask.NameToLayer("DamageZone");
@@ -115,52 +123,52 @@ public class WarpControl : MonoBehaviour {
                 _justAvoidCooldownTimer = 0.5f;
             }
         }
-        // ƒfƒoƒbƒO—p: ƒWƒƒƒXƒg‰ñ”ğ”»’è‚Ì‰Â‹‰»ƒ^ƒCƒ}[
+        // ãƒ‡ãƒãƒƒã‚°ç”¨: ã‚¸ãƒ£ã‚¹ãƒˆå›é¿åˆ¤å®šã®å¯è¦–åŒ–ã‚¿ã‚¤ãƒãƒ¼
         if (_debugJustAvoidTimer > 0f) {
             _debugJustAvoidTimer -= Time.deltaTime;
             if (_debugJustAvoidTimer <= 0f) {
                 _debugJustAvoidCenter = null;
             }
         }
-        // ƒWƒƒƒXƒg‰ñ”ğƒN[ƒ‹ƒ^ƒCƒ€
+        // ã‚¸ãƒ£ã‚¹ãƒˆå›é¿ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
         if (_justAvoidCooldownTimer > 0f) {
             _justAvoidCooldownTimer -= Time.deltaTime;
         }
     }
 
     /// <summary>
-    /// ‹¤’Êƒ[ƒvˆ—
+    /// å…±é€šãƒ¯ãƒ¼ãƒ—å‡¦ç†
     /// </summary>
-    /// <param name="safe_point">ƒ[ƒvæ</param>
+    /// <param name="safe_point">ãƒ¯ãƒ¼ãƒ—å…ˆ</param>
     private IEnumerator _ExecuteWarpCommon(
         Vector2 safe_point, 
         bool is_warp_camera = true,
         float end_delay = 0.0f
         ) {
 
-        // safe_point‚Æ‚ÌŠÔ‚É"WarpProhibitedArea"‚ª‚ ‚éê‡‚Íè‘O‚Å~‚ß‚é
+        // safe_pointã¨ã®é–“ã«"WarpProhibitedArea"ãŒã‚ã‚‹å ´åˆã¯æ‰‹å‰ã§æ­¢ã‚ã‚‹
         RaycastHit2D hit = Physics2D.Linecast(transform.position, safe_point, LayerMask.GetMask("WarpProhibitedArea"));
         if (hit.collider != null) {
-            // ­‚µè‘O‚Å~‚ß‚é
+            // å°‘ã—æ‰‹å‰ã§æ­¢ã‚ã‚‹
             safe_point = hit.point - (safe_point - (Vector2)transform.position).normalized * 0.1f;
         }
 
-        // ƒ[ƒv‘O‚Ì‹¤’Êˆ—
+        // ãƒ¯ãƒ¼ãƒ—å‰ã®å…±é€šå‡¦ç†
         if (_onPreWarpCommon != null) {
             _onPreWarpCommon();
-            yield return 0.1f; // ˆêu‘Ò‹@
+            yield return 0.1f; // ä¸€ç¬å¾…æ©Ÿ
         }
 
-        // ƒ[ƒvSEÄ¶
+        // ãƒ¯ãƒ¼ãƒ—SEå†ç”Ÿ
         if (_audioSource != null && _seWarp != null) {
             _audioSource.PlayOneShot(_seWarp);
         }
         transform.position = safe_point;
 
-        // ƒ[ƒvW’†üƒGƒtƒFƒNƒgÄ¶
+        // ãƒ¯ãƒ¼ãƒ—é›†ä¸­ç·šã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿ
         PlayWarpFocusEffect();
 
-        // ÅŒã‚Éƒ[ƒv‚µ‚½•ûŒü‚ğ•Û‘¶
+        // æœ€å¾Œã«ãƒ¯ãƒ¼ãƒ—ã—ãŸæ–¹å‘ã‚’ä¿å­˜
         WarpChecker nearest_checker = null;
         float nearest_dist = Mathf.Infinity;
         foreach (var checker in warpCheckers) {
@@ -182,38 +190,42 @@ public class WarpControl : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒ[ƒvˆ—‚ğÀs
+    /// ãƒ¯ãƒ¼ãƒ—å‡¦ç†ã‚’å®Ÿè¡Œ
     /// </summary>
-    /// <param name="direction">•ûŒü</param>
+    /// <param name="direction">æ–¹å‘</param>
     public IEnumerator DirectionWarp(eWarpDirection direction, 
         System.Action<Enemy_Base> warp_attack_callback)
     {
-        // ƒ[ƒv‘O‚ÌˆÊ’u•Û‘¶
+        // ãƒ¯ãƒ¼ãƒ—å‰ã®ä½ç½®ä¿å­˜
         Vector2 origin = transform.position;
 
-        // ƒ[ƒvæ‚ÌŒˆ’è
+        // ãƒ¯ãƒ¼ãƒ—å…ˆã®æ±ºå®š
         Vector2 safe_point = origin;
         if (0 <= direction && (int)direction < warpCheckers.Length) {
             WarpChecker warp_checker = warpCheckers[(int)direction];
+
+            // èª¿æ•´å‰ã®æœ€å¤§è·é›¢åœ°ç‚¹ã«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’è¡¨ç¤ºï¼ˆãƒ¯ãƒ¼ãƒ—ã®æˆåŠŸãƒ»å¤±æ•—ã«é–¢ã‚ã‚‰ãšè¡¨ç¤ºï¼‰
+            PlayWarpMaxDistanceEffect(warp_checker.transform.position);
+
             safe_point = warp_checker.GetWarpDestination(origin, warp_checker.transform.position);
         }
 
-        // Œ»İ’n‚©‚çƒ[ƒvæ‚Ü‚Å‚ÌŠÔ‚É“G‚ª‚¢‚é‚©Šm”F
+        // ç¾åœ¨åœ°ã‹ã‚‰ãƒ¯ãƒ¼ãƒ—å…ˆã¾ã§ã®é–“ã«æ•µãŒã„ã‚‹ã‹ç¢ºèª
         RaycastHit2D[] hits = Physics2D.LinecastAll(origin, safe_point, LayerMask.GetMask("Enemy"));
         foreach (var hit in hits) {
             Enemy_Base enemy = hit.collider.GetComponent<Enemy_Base>();
             if (enemy != null) {
-                // “G‚ÉUŒ‚ƒR[ƒ‹ƒoƒbƒN
+                // æ•µã«æ”»æ’ƒã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
                 if (warp_attack_callback != null) {
                     warp_attack_callback(enemy);
                 }
             }
         }
 
-        // ƒWƒƒƒXƒg‰ñ”ğ‚ÌŠm”F
+        // ã‚¸ãƒ£ã‚¹ãƒˆå›é¿ã®ç¢ºèª
         SpawnJustAvoidZone();
 
-        // ƒRƒCƒ“ƒ[ƒvƒ`ƒFƒbƒNiw’è•ûŒüj
+        // ã‚³ã‚¤ãƒ³ãƒ¯ãƒ¼ãƒ—ãƒã‚§ãƒƒã‚¯ï¼ˆæŒ‡å®šæ–¹å‘ï¼‰
         var coin_in_dir = GetCoinInWarpDirection(direction);
         if (coin_in_dir.HasValue) {
             yield return _ExecuteWarpCommon(coin_in_dir.Value, is_warp_camera: false, end_delay: _coinWarpInterval);
@@ -221,17 +233,17 @@ public class WarpControl : MonoBehaviour {
             yield break;
         }
 
-        // ƒ[ƒvæ‚ÉˆÚ“®
+        // ãƒ¯ãƒ¼ãƒ—å…ˆã«ç§»å‹•
         yield return _ExecuteWarpCommon(safe_point);
 
         yield return CoinWarp();
     }
 
     /// <summary>
-    /// ƒWƒƒƒXƒg‰ñ”ğ”»’èi–ˆƒtƒŒ[ƒ€ŒŸõj
+    /// ã‚¸ãƒ£ã‚¹ãƒˆå›é¿åˆ¤å®šï¼ˆæ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ¤œç´¢ï¼‰
     /// </summary>
     public void SpawnJustAvoidZone() {
-        // ƒN[ƒ‹ƒ^ƒCƒ€’†‚Í”»’è‚µ‚È‚¢
+        // ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ä¸­ã¯åˆ¤å®šã—ãªã„
         if (_justAvoidCooldownTimer > 0f || _isJustAvoidActive) return;
 
         _isJustAvoidActive = true;
@@ -239,41 +251,41 @@ public class WarpControl : MonoBehaviour {
         _justAvoidTimer = JUST_AVOID_ZONE_DURATION;
         _justAvoided = false;
 
-        // ƒfƒoƒbƒO—p: ”»’è”ÍˆÍ‚ğ‹L˜^
+        // ãƒ‡ãƒãƒƒã‚°ç”¨: åˆ¤å®šç¯„å›²ã‚’è¨˜éŒ²
         _debugJustAvoidCenter = _justAvoidCenter;
         _debugJustAvoidRadius = _justAvoidRadius;
         _debugJustAvoidTimer = JUST_AVOID_ZONE_DURATION;
     }
 
     /// <summary>
-    /// ƒ[ƒvƒ`ƒFƒbƒJ[‚ğw’è‚µ‚Äƒ[ƒv
+    /// ãƒ¯ãƒ¼ãƒ—ãƒã‚§ãƒƒã‚«ãƒ¼ã‚’æŒ‡å®šã—ã¦ãƒ¯ãƒ¼ãƒ—
     /// </summary>
     public IEnumerator TargetWarp(WarpChecker warp_checker, float end_delay = 0.0f) {
         if(warp_checker == null) {
             yield break;
         }
 
-        // ƒ[ƒv‘O‚ÌˆÊ’u•Û‘¶
+        // ãƒ¯ãƒ¼ãƒ—å‰ã®ä½ç½®ä¿å­˜
         Vector2 origin = transform.position;
         var safe_point = warp_checker.GetWarpDestination(origin, warp_checker.transform.position);
 
-        // ƒ[ƒvæ‚ÉˆÚ“®
+        // ãƒ¯ãƒ¼ãƒ—å…ˆã«ç§»å‹•
         yield return _ExecuteWarpCommon(safe_point, end_delay: end_delay);
     }
 
     /// <summary>
-    /// ƒRƒCƒ“ƒ[ƒv
+    /// ã‚³ã‚¤ãƒ³ãƒ¯ãƒ¼ãƒ—
     /// </summary>
     public IEnumerator CoinWarp() {
         int count = 0;
         int max_count = 100;
 
         while (count < max_count) {
-            // ƒ[ƒvææ“¾
+            // ãƒ¯ãƒ¼ãƒ—å…ˆå–å¾—
             var coin_pos = GetCoinWarpCheck();
             if (!coin_pos.HasValue) break;
 
-            // ƒ[ƒvæ‚ÉˆÚ“®
+            // ãƒ¯ãƒ¼ãƒ—å…ˆã«ç§»å‹•
             yield return _ExecuteWarpCommon(
                 coin_pos.Value, 
                 is_warp_camera:false, 
@@ -283,25 +295,25 @@ public class WarpControl : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒRƒCƒ“ƒ[ƒv‚ªo—ˆ‚é‚©Šm”F
+    /// ã‚³ã‚¤ãƒ³ãƒ¯ãƒ¼ãƒ—ãŒå‡ºæ¥ã‚‹ã‹ç¢ºèª
     /// </summary>
     public Vector3? GetCoinWarpCheck() {
-        // ‘O•ûƒ`ƒFƒbƒN
+        // å‰æ–¹ãƒã‚§ãƒƒã‚¯
         Vector3? coin_pos = _GetNearestCoin(_coinCheckSize, _forward, _coinCheckSize.x * 0.5f);
-        // Œã•ûƒ`ƒFƒbƒN
+        // å¾Œæ–¹ãƒã‚§ãƒƒã‚¯
         if (!coin_pos.HasValue)
             coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, -_forward, _coinCheckSize.x * _otherCheckRate * 0.5f);
-        // ã•ûƒ`ƒFƒbƒN
+        // ä¸Šæ–¹ãƒã‚§ãƒƒã‚¯
         if (!coin_pos.HasValue)
             coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.up, _coinCheckSize.y * _otherCheckRate * 0.5f);
-        // ‰º•ûƒ`ƒFƒbƒN
+        // ä¸‹æ–¹ãƒã‚§ãƒƒã‚¯
         if (!coin_pos.HasValue)
             coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.down, _coinCheckSize.y * _otherCheckRate * 0.5f);
         return coin_pos;
     }
 
     /// <summary>
-    ///@ƒRƒCƒ“ƒ[ƒv‚ªo—ˆ‚é‚©Šm”Fiw’è•ûŒüj
+    ///ã€€ã‚³ã‚¤ãƒ³ãƒ¯ãƒ¼ãƒ—ãŒå‡ºæ¥ã‚‹ã‹ç¢ºèªï¼ˆæŒ‡å®šæ–¹å‘ï¼‰
     /// </summary>
     public Vector3? GetCoinInWarpDirection(eWarpDirection direction) {
         Vector2 dir = direction switch {
@@ -320,19 +332,19 @@ public class WarpControl : MonoBehaviour {
     }
 
     /// <summary>
-    /// ˆê”Ô‹ß‚­‚ÌƒRƒCƒ“‚ğæ“¾
+    /// ä¸€ç•ªè¿‘ãã®ã‚³ã‚¤ãƒ³ã‚’å–å¾—
     /// </summary>
     private Vector3? _GetNearestCoin(Vector2 check_size, Vector2 direction, float distance) {
         Vector3 origin = transform.position;
         
-        // ƒRƒCƒ“ŒŸ’m
+        // ã‚³ã‚¤ãƒ³æ¤œçŸ¥
         RaycastHit2D[] hits = Physics2D.BoxCastAll(origin, check_size, 0, direction, distance, _coinLayer);
 
         if (hits.Length > 0) {
             float min_dist = Mathf.Infinity;
             Vector3 best_pos = origin;
 
-            // ŒŸ’m‚µ‚½ƒRƒCƒ“‚Ì’†‚Åˆê”Ô‹ß‚¢ˆÊ’u‚ğæ“¾
+            // æ¤œçŸ¥ã—ãŸã‚³ã‚¤ãƒ³ã®ä¸­ã§ä¸€ç•ªè¿‘ã„ä½ç½®ã‚’å–å¾—
             foreach (var hit in hits) {
                 float dist = Vector3.Distance(origin, hit.point);
                 if (dist < min_dist) {
@@ -346,10 +358,10 @@ public class WarpControl : MonoBehaviour {
     }
 
     /// <summary>
-    /// ‰ñ”ğƒ[ƒv
+    /// å›é¿ãƒ¯ãƒ¼ãƒ—
     /// </summary>
     public IEnumerator AvoidWarp(System.Action avoid_effect, Vector2 input_dir) {
-        // ‘S‚Ä‚Ìƒ`ƒFƒbƒJ[‚Åƒ[ƒv‰Â”\‚È•ûŒü‚ğ’²‚×‚é
+        // å…¨ã¦ã®ãƒã‚§ãƒƒã‚«ãƒ¼ã§ãƒ¯ãƒ¼ãƒ—å¯èƒ½ãªæ–¹å‘ã‚’èª¿ã¹ã‚‹
         WarpChecker[] valid_checkers =
         System.Array.FindAll(warpCheckers, (checker) => {
             var safe_point = checker.GetWarpPoint(true);
@@ -365,7 +377,7 @@ public class WarpControl : MonoBehaviour {
             }
         }
 
-        // ƒ[ƒv‰Â”\‚Èƒ`ƒFƒbƒJ[‚ª–³‚¯‚ê‚ÎƒLƒƒƒ“ƒZƒ‹
+        // ãƒ¯ãƒ¼ãƒ—å¯èƒ½ãªãƒã‚§ãƒƒã‚«ãƒ¼ãŒç„¡ã‘ã‚Œã°ã‚­ãƒ£ãƒ³ã‚»ãƒ«
         if (valid_checkers.Length == 0) {
             if (_currentAvoidEffectInterval <= 0) {
                 _currentAvoidEffectInterval = _avoidEffectInterval;
@@ -375,23 +387,23 @@ public class WarpControl : MonoBehaviour {
 
         WarpChecker selected_checker = null;
 
-        // input_dir‚Ì•ûŒü‚É‘Î‰‚·‚éƒ`ƒFƒbƒJ[‚ğ—Dæ“I‚É‘I‘ğ
+        // input_dirã®æ–¹å‘ã«å¯¾å¿œã™ã‚‹ãƒã‚§ãƒƒã‚«ãƒ¼ã‚’å„ªå…ˆçš„ã«é¸æŠ
         if (input_dir.magnitude > 0.1f) {
             eWarpDirection preferred_direction = _GetDirectionFromInput(input_dir);
             
-            // —Dæ•ûŒü‚Ìƒ`ƒFƒbƒJ[‚ª—LŒø‚©ƒ`ƒFƒbƒN
+            // å„ªå…ˆæ–¹å‘ã®ãƒã‚§ãƒƒã‚«ãƒ¼ãŒæœ‰åŠ¹ã‹ãƒã‚§ãƒƒã‚¯
             if (preferred_direction != eWarpDirection.Neutral && 
                 (int)preferred_direction < warpCheckers.Length) {
                 WarpChecker preferred_checker = warpCheckers[(int)preferred_direction];
                 
-                // —Dæƒ`ƒFƒbƒJ[‚ª—LŒø‚Èƒ`ƒFƒbƒJ[‚ÌƒŠƒXƒg‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚é‚©Šm”F
+                // å„ªå…ˆãƒã‚§ãƒƒã‚«ãƒ¼ãŒæœ‰åŠ¹ãªãƒã‚§ãƒƒã‚«ãƒ¼ã®ãƒªã‚¹ãƒˆã«å«ã¾ã‚Œã¦ã„ã‚‹ã‹ç¢ºèª
                 if (System.Array.Exists(valid_checkers, (checker) => checker == preferred_checker)) {
                     selected_checker = preferred_checker;
                 }
             }
         }
 
-        // —Dæ•ûŒü‚ª‘I‘ğ‚Å‚«‚È‚¯‚ê‚Îƒ‰ƒ“ƒ_ƒ€‚É‘I‘ğ
+        // å„ªå…ˆæ–¹å‘ãŒé¸æŠã§ããªã‘ã‚Œã°ãƒ©ãƒ³ãƒ€ãƒ ã«é¸æŠ
         if (selected_checker == null) {
             selected_checker = valid_checkers[Random.Range(0, valid_checkers.Length)];
         }
@@ -400,19 +412,19 @@ public class WarpControl : MonoBehaviour {
     }
 
     /// <summary>
-    /// “ü—Í•ûŒü‚©‚çƒ[ƒv•ûŒü‚ğæ“¾
+    /// å…¥åŠ›æ–¹å‘ã‹ã‚‰ãƒ¯ãƒ¼ãƒ—æ–¹å‘ã‚’å–å¾—
     /// </summary>
     private eWarpDirection _GetDirectionFromInput(Vector2 input_dir) {
-        // “ü—Í‚ğ³‹K‰»
+        // å…¥åŠ›ã‚’æ­£è¦åŒ–
         input_dir.Normalize();
 
-        // 8•ûŒü‚ÌŠp“xi0“x = ‰EA”½Œv‰ñ‚èj
+        // 8æ–¹å‘ã®è§’åº¦ï¼ˆ0åº¦ = å³ã€åæ™‚è¨ˆå›ã‚Šï¼‰
         float angle = Mathf.Atan2(input_dir.y, input_dir.x) * Mathf.Rad2Deg;
         
-        // Šp“x‚ğ0`360“x‚É³‹K‰»
+        // è§’åº¦ã‚’0ã€œ360åº¦ã«æ­£è¦åŒ–
         if (angle < 0) angle += 360f;
 
-        // 8•ûŒü‚É•ª—ŞiŠe•ûŒü45“x‚Ì”ÍˆÍj
+        // 8æ–¹å‘ã«åˆ†é¡ï¼ˆå„æ–¹å‘45åº¦ã®ç¯„å›²ï¼‰
         // Right: 337.5 ~ 22.5, UpRight: 22.5 ~ 67.5, Up: 67.5 ~ 112.5, ...
         if (angle >= 337.5f || angle < 22.5f) {
             return eWarpDirection.Right;
@@ -448,7 +460,7 @@ public class WarpControl : MonoBehaviour {
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(transform.position + Vector3.down * _coinCheckSize.y * _otherCheckRate * 0.5f, _coinCheckSize * _otherCheckRate);
 
-        // ƒWƒƒƒXƒg‰ñ”ğ”»’è‚ÌƒfƒoƒbƒO•\¦
+        // ã‚¸ãƒ£ã‚¹ãƒˆå›é¿åˆ¤å®šã®ãƒ‡ãƒãƒƒã‚°è¡¨ç¤º
         if (_debugJustAvoidCenter.HasValue && _debugJustAvoidTimer > 0f) {
             Gizmos.color = Color.magenta;
             Gizmos.DrawWireSphere(_debugJustAvoidCenter.Value, _debugJustAvoidRadius);

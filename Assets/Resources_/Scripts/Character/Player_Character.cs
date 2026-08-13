@@ -811,7 +811,7 @@ public class Player_Character : Character_Base {
         if ((!_isGrounded && _inputData.isJumpPressed) ||
             (_isGrounded && _inputData.move.y < -0.5f && _inputData.move.x == 0 && _inputData.isJumpPressed)) {
             // エフェクト生成
-            Instantiate(_warpEffectPrefab, transform.position + transform.up, Quaternion.identity);
+            Instantiate(_warpEffectPrefab, transform.position, Quaternion.identity);
 
             if (_inputData.move.magnitude == 0 && !_warpControl.GetCoinWarpCheck().HasValue) {
                 // 入力が無く、コインワープもできない場合はワープしない
