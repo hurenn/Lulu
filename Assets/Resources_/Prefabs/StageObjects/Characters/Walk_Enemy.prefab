@@ -93,6 +93,17 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 4517672394917336638, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
   m_PrefabInstance: {fileID: 4417942681262722161}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &308440919387544838 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4109642514405364087, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
+  m_PrefabInstance: {fileID: 4417942681262722161}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &327615283581623156 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4162525808674248453, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
@@ -170,13 +181,19 @@ MonoBehaviour:
   _damageFriction: 0.9
   _isRight: 0
   enableGravity: 1
+  _jumpEffect: {fileID: 0}
+  _landEffect: {fileID: 0}
+  _dashEffect: {fileID: 0}
+  _wallDashEffect: {fileID: 0}
   _exp: 5
   _coinSpawner: {fileID: 5595030639930435267}
   _leftWarpChecker: {fileID: 327615283581623156}
   _rightWarpChecker: {fileID: 7222648001186840077}
   _lockonMarkerAnim: {fileID: 287755857898330703}
+  isAutoLockOn: 1
   _damageZone: {fileID: 1923659627119773074}
   _dieExplosion: {fileID: 0}
+  _hpGauge: {fileID: 308440919387544838}
   _walkSpeed: 2.5
   _patrolDistance: 10
   _enablePatrol: 1
