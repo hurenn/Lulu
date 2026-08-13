@@ -205,7 +205,13 @@ public class WarpControl : MonoBehaviour {
             WarpChecker warp_checker = warpCheckers[(int)direction];
 
             // 調整前の最大距離地点にエフェクトを表示（ワープの成功・失敗に関わらず表示）
-            PlayWarpMaxDistanceEffect(warp_checker.transform.position);
+            // 横・斜め方向の場合はキャラクターの横幅分だけx軸方向を内側にずらす
+            Vector3 effect_pos = warp_checker.transform.position;
+            int horizontal_sign = _GetHorizontalSign(direction);
+            if (horizontal_sign != 0) {
+                effect_pos.x -= horizontal_sign * warp_checker.characterWidth;
+            }
+            PlayWarpMaxDistanceEffect(effect_pos);
 
             safe_point = warp_checker.GetWarpDestination(origin, warp_checker.transform.position);
         }
@@ -445,6 +451,17 @@ public class WarpControl : MonoBehaviour {
         }
 
         return eWarpDirection.Neutral;
+    }
+
+    /// <summary>
+    /// ワープ方向の水平成分の符号を取得（右方向系: 1, 左方向系: -1, 上下のみ: 0）
+    /// </summary>
+    private int _GetHorizontalSign(eWarpDirection direction) {
+        return direction switch {
+            eWarpDirection.Right or eWarpDirection.UpRight or eWarpDirection.DownRight => 1,
+            eWarpDirection.Left or eWarpDirection.UpLeft or eWarpDirection.DownLeft => -1,
+            _ => 0
+        };
     }
 
     private void OnDrawGizmosSelected() {

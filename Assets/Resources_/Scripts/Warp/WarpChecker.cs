@@ -10,6 +10,7 @@ public class WarpChecker : MonoBehaviour
     [SerializeField]
     private BoxCollider2D _col;
     private Vector2 _characterSize => _col.bounds.size;
+    public float characterWidth => _characterSize.x;
 
     [SerializeField]
     private LayerMask _obstacleLayer = default;
@@ -18,7 +19,7 @@ public class WarpChecker : MonoBehaviour
     [SerializeField]
     private LayerMask _damageZoneLayer = default;
 
-    // ŒÂ•Ê‚Ìƒ[ƒvƒ`ƒFƒbƒN—p‚ÌƒIƒtƒZƒbƒg
+    // å€‹åˆ¥ã®ãƒ¯ãƒ¼ãƒ—ãƒã‚§ãƒƒã‚¯ç”¨ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ
     [SerializeField]
     private bool _isEnableUpperCheck = true;
 
@@ -26,24 +27,24 @@ public class WarpChecker : MonoBehaviour
     private bool _isUpperWarp = false;
 
     /// <summary>
-    /// ƒ[ƒv‰Â”\‚ÈêŠ‚ğæ“¾
+    /// ãƒ¯ãƒ¼ãƒ—å¯èƒ½ãªå ´æ‰€ã‚’å–å¾—
     /// </summary>
-    /// <param name="origin">ŠJn’n“_</param>
-    /// <param name="target">ƒ[ƒvæ</param>
+    /// <param name="origin">é–‹å§‹åœ°ç‚¹</param>
+    /// <param name="target">ãƒ¯ãƒ¼ãƒ—å…ˆ</param>
     public Vector2 GetWarpDestination(Vector2 origin, Vector2 target)
     {
-        // ƒLƒƒƒ‰ƒNƒ^[ˆÊ’u‚©‚çƒ[ƒvæ‚Ü‚Å‚Ì•ûŒü‚Æ‹——£‚ğŒvZ
+        // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ä½ç½®ã‹ã‚‰ãƒ¯ãƒ¼ãƒ—å…ˆã¾ã§ã®æ–¹å‘ã¨è·é›¢ã‚’è¨ˆç®—
         Vector2 direction = (target - origin).normalized;
         float totalDistance = Vector2.Distance(origin, target);
 
-        // –Ú“I’n‚ªƒ[ƒv‰Â”\‚©ƒ`ƒFƒbƒN
+        // ç›®çš„åœ°ãŒãƒ¯ãƒ¼ãƒ—å¯èƒ½ã‹ãƒã‚§ãƒƒã‚¯
         RaycastHit2D obstacleCheck = Physics2D.BoxCast(target, _characterSize, 0, Vector2.zero, 0f, _obstacleLayer);
         RaycastHit2D enemyCheck = Physics2D.BoxCast(target, _characterSize, 0, Vector2.zero, 0f, _enemyLayer);
         if (obstacleCheck.collider == null && enemyCheck.collider == null) {
-            return target; // ’¼Úƒ[ƒv‰Â”\
+            return target; // ç›´æ¥ãƒ¯ãƒ¼ãƒ—å¯èƒ½
         }
 
-        // ƒ[ƒvæ‚Æ‚ÌŠÔ‚ÅˆÀ‘S‚ÈêŠ‚ğŠm”F‚·‚é‰ñ”
+        // ãƒ¯ãƒ¼ãƒ—å…ˆã¨ã®é–“ã§å®‰å…¨ãªå ´æ‰€ã‚’ç¢ºèªã™ã‚‹å›æ•°
         int step_count = Mathf.CeilToInt(totalDistance / step_interval);
         step_count = Mathf.Min(step_count, max_steps);
 
@@ -51,59 +52,59 @@ public class WarpChecker : MonoBehaviour
         {
             Vector3 check_pos = Vector3.Lerp(target, origin, (float)i / step_count);
 
-            // áŠQ•¨‚Æ‚ÌÕ“Ë‚ğƒ`ƒFƒbƒN
+            // éšœå®³ç‰©ã¨ã®è¡çªã‚’ãƒã‚§ãƒƒã‚¯
             var is_warp_point = GetWarpPoint(check_pos);
             if(is_warp_point.HasValue)
             {
                 _isUpperWarp = false;
-                return is_warp_point.Value; // ƒ[ƒv‰Â”\‚ÈˆÊ’u‚ğ•Ô‚·
+                return is_warp_point.Value; // ãƒ¯ãƒ¼ãƒ—å¯èƒ½ãªä½ç½®ã‚’è¿”ã™
             }
 
-            /*// ­‚µã‚É‚¸‚ç‚µ‚Äƒ`ƒFƒbƒN
+            /*// å°‘ã—ä¸Šã«ãšã‚‰ã—ã¦ãƒã‚§ãƒƒã‚¯
             if (_isEnableUpperCheck) {
                 check_pos.y += _upperOffset;
                 is_warp_point = IsValidWarpPoint(check_pos);
                 if (is_warp_point.HasValue) {
                     _isUpperWarp = true;
-                    return is_warp_point.Value; // ƒ[ƒv‰Â”\‚ÈˆÊ’u‚ğ•Ô‚·
+                    return is_warp_point.Value; // ãƒ¯ãƒ¼ãƒ—å¯èƒ½ãªä½ç½®ã‚’è¿”ã™
                 }
             }*/
         }
 
-        return origin; // ‚Ç‚Ì•ûŒü‚É‚àƒ[ƒv‚Å‚«‚È‚¢ê‡‚ÍŒ³‚ÌˆÊ’u‚ğ•Ô‚·
+        return origin; // ã©ã®æ–¹å‘ã«ã‚‚ãƒ¯ãƒ¼ãƒ—ã§ããªã„å ´åˆã¯å…ƒã®ä½ç½®ã‚’è¿”ã™
     }
 
     /// <summary>
-    /// ˆÊ’uw’è‚µ‚Äƒ[ƒv’n“_ƒ`ƒFƒbƒN
+    /// ä½ç½®æŒ‡å®šã—ã¦ãƒ¯ãƒ¼ãƒ—åœ°ç‚¹ãƒã‚§ãƒƒã‚¯
     /// </summary>
-    /// <param name="point">ƒ`ƒFƒbƒN’n“_</param>
+    /// <param name="point">ãƒã‚§ãƒƒã‚¯åœ°ç‚¹</param>
     /// <returns></returns>
     public Vector2? GetWarpPoint(Vector2 point, LayerMask add_layer_mask = default)
     {
         RaycastHit2D warpCheck = Physics2D.BoxCast(point, _characterSize, 0, Vector2.zero, 0f, _obstacleLayer | add_layer_mask);
 
-        // Õ“Ë‚µ‚Ä‚¢‚È‚¯‚ê‚Îƒ[ƒv‰Â”\
+        // è¡çªã—ã¦ã„ãªã‘ã‚Œã°ãƒ¯ãƒ¼ãƒ—å¯èƒ½
         _isValidWarpPoint = warpCheck.collider == null;
         return _isValidWarpPoint ? point : null;
     }
 
     private void _WarpFailed(Vector2 target_pos)
     {
-        // ƒ[ƒv¸”s‚ÌƒGƒtƒFƒNƒg‚È‚Ç‚ğ‚±‚±‚ÅÀ‘•
-        Debug.Log($"{target_pos} ‚Ö‚Ìƒ[ƒv‚ª¸”s‚µ‚Ü‚µ‚½");
+        // ãƒ¯ãƒ¼ãƒ—å¤±æ•—æ™‚ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãªã©ã‚’ã“ã“ã§å®Ÿè£…
+        Debug.Log($"{target_pos} ã¸ã®ãƒ¯ãƒ¼ãƒ—ãŒå¤±æ•—ã—ã¾ã—ãŸ");
     }
 
     /// <summary>
-    /// ƒ[ƒv’n“_ƒ`ƒFƒbƒN
+    /// ãƒ¯ãƒ¼ãƒ—åœ°ç‚¹ãƒã‚§ãƒƒã‚¯
     /// </summary>
-    /// <param name="is_damage_avoid">ƒ_ƒ[ƒW‚ğó‚¯‚éêŠ‚ğŠÜ‚ß‚é‚©</param>
+    /// <param name="is_damage_avoid">ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹å ´æ‰€ã‚’å«ã‚ã‚‹ã‹</param>
     /// <returns></returns>
     public Vector2? GetWarpPoint(bool is_damage_avoid = false)
     {
         return GetWarpPoint(transform.position, is_damage_avoid ? _damageZoneLayer : default);
     }
 
-    #region ƒfƒoƒbƒO—p
+    #region ãƒ‡ãƒãƒƒã‚°ç”¨
     //private void OnDrawGizmos()
     //{
     //    Gizmos.color = _isValidWarpPoint && !_isUpperWarp
