@@ -2,20 +2,20 @@ using System.Collections;
 using UnityEngine;
 
 public class Character_Base : MonoBehaviour {
-    // ‹¤’Êƒpƒ‰ƒ[ƒ^
+    // å…±é€šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
     [SerializeField] protected CommonParameter _param;
-    // ƒLƒƒƒ‰ƒNƒ^[ƒpƒ‰ƒ[ƒ^
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
     [SerializeField] protected CharacterParameter _charaParam;
     public bool isInvincible => (_charaParam != null && _charaParam.isInvincible) || _isEventInvincible;
 
-    // “ü—Íƒf[ƒ^
+    // å…¥åŠ›ãƒ‡ãƒ¼ã‚¿
     protected CharacterInputData _inputData = new CharacterInputData();
 
-    // ’n–Êƒ`ƒFƒbƒJ[
+    // åœ°é¢ãƒã‚§ãƒƒã‚«ãƒ¼
     [SerializeField] protected LayerMask _groundLayer;
-    // •Çƒ`ƒFƒbƒJ[
+    // å£ãƒã‚§ãƒƒã‚«ãƒ¼
     [SerializeField] protected LayerMask _wallLayer;
-    // áŠQ•¨ƒ`ƒFƒbƒJ[
+    // éšœå®³ç‰©ãƒã‚§ãƒƒã‚«ãƒ¼
     [SerializeField] protected LayerMask _obstacleLayer;
 
     [SerializeField] protected Collider2D _col;
@@ -29,24 +29,24 @@ public class Character_Base : MonoBehaviour {
     [SerializeField] protected AudioClip _seDead;
     [SerializeField] protected AudioClip _seRecover;
 
-    // ƒ_ƒ[ƒW‚Á”ò‚Ñ‚Ì–€C—Íi’n–Ê‚Å‚Ì‘¬“xŒ¸Š—¦j
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸å¹ã£é£›ã³æ™‚ã®æ‘©æ“¦åŠ›ï¼ˆåœ°é¢ã§ã®é€Ÿåº¦æ¸›è¡°ç‡ï¼‰
     [SerializeField] protected float _damageFriction = 0.9f;
 
-    // ƒ`ƒFƒbƒJ[ƒpƒ‰ƒ[ƒ^
+    // ãƒã‚§ãƒƒã‚«ãƒ¼ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
     protected Vector3 _groundCheckLocalPos = default;
     protected Vector3 _groundCheckScale = default;
     protected Vector3 _wallCheckLeftLocalPos = default;
     protected Vector3 _wallCheckRightLocalPos = default;
     protected Vector3 _wallCheckScale = default;
 
-    // ƒLƒƒƒ‰ƒNƒ^[ó‘Ôƒtƒ‰ƒO
-    [SerializeField] protected bool _isRight = true; // ‰EŒü‚«‚©‚Ç‚¤‚©
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼çŠ¶æ…‹ãƒ•ãƒ©ã‚°
+    [SerializeField] protected bool _isRight = true; // å³å‘ãã‹ã©ã†ã‹
     protected bool _isWalking;
     protected bool _isDashing;
     protected bool _isWarpDelay;
     protected bool _isWarpDashing;
     protected bool _isWarpChecking;
-    protected bool _isSliding;      // ƒXƒ‰ƒCƒfƒBƒ“ƒO’†‚©‚Ç‚¤‚©
+    protected bool _isSliding;      // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ä¸­ã‹ã©ã†ã‹
 
     public MotorStates _motorStates = new MotorStates();
 
@@ -57,14 +57,14 @@ public class Character_Base : MonoBehaviour {
         _isSliding = is_sliding;
         _anim?.SetBool("Sliding", _isSliding);
     }
-    protected bool _isSlidingCanceling; // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒLƒƒƒ“ƒZƒ‹’†‚©‚Ç‚¤‚©
-    protected bool _isSlidingJump;  // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒWƒƒƒ“ƒv’†‚©‚Ç‚¤‚©
+    protected bool _isSlidingCanceling; // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚­ãƒ£ãƒ³ã‚»ãƒ«ä¸­ã‹ã©ã†ã‹
+    protected bool _isSlidingJump;  // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã‹ã©ã†ã‹
     protected void _SetSlidingJump(bool is_sliding_jump, bool is_play_anim = true) {
         _isSlidingJump = is_sliding_jump;
         _anim?.SetBool("SlidingJump", _isSlidingJump);
     }
-    protected bool _isGroundSticking; // ’n–Ê‚É’£‚è•t‚¢‚Ä‚¢‚éó‘Ô
-    protected bool _isWallDash;  // •Ç‚É‰ˆ‚Á‚ÄŠŠ‚Á‚Ä‚¢‚éó‘Ô
+    protected bool _isGroundSticking; // åœ°é¢ã«å¼µã‚Šä»˜ã„ã¦ã„ã‚‹çŠ¶æ…‹
+    protected bool _isWallDash;  // å£ã«æ²¿ã£ã¦æ»‘ã£ã¦ã„ã‚‹çŠ¶æ…‹
     private float _wallDashEffectTimer = 0f;
     private const float WALL_DASH_EFFECT_INTERVAL = 0.2f;
     protected void _SetWallDash(bool is_wall_sliding, bool is_play_anim = true) {
@@ -73,7 +73,7 @@ public class Character_Base : MonoBehaviour {
 
         if (_isWallDash && _wallDashEffect != null) {
             if (_wallDashEffectTimer > WALL_DASH_EFFECT_INTERVAL) {
-                // •Çƒ_ƒbƒVƒ…ŠJn‚É‘¦¶¬•ƒ^ƒCƒ}[ƒŠƒZƒbƒg
+                // å£ãƒ€ãƒƒã‚·ãƒ¥é–‹å§‹æ™‚ã«å³æ™‚ç”Ÿæˆï¼†ã‚¿ã‚¤ãƒãƒ¼ãƒªã‚»ãƒƒãƒˆ
                 var footPos = transform.position + Vector3.right * (GetCharacterSize().x / 2f) * (_isRight ? 1 : -1);
                 EffectPool.Instance.Spawn(_wallDashEffect, footPos, !_isRight);
                 _wallDashEffectTimer = 0;
@@ -87,28 +87,28 @@ public class Character_Base : MonoBehaviour {
     protected bool _isTouchingLeft;
     protected bool _isTouchingRight;
 
-    // •KE‹Zg—p’†ƒtƒ‰ƒO
+    // å¿…æ®ºæŠ€ä½¿ç”¨ä¸­ãƒ•ãƒ©ã‚°
     protected bool _specialUsing = false;
 
-    // ’ÊíˆÚ“®‰Â”\‚©‚Ç‚¤‚©
+    // é€šå¸¸ç§»å‹•å¯èƒ½ã‹ã©ã†ã‹
     protected virtual bool _CanMove => !_isWarpDashing && !_isSlidingCanceling && !_isWarpChecking;
-    // d—Í‚ğ“K—p‚·‚é‚©‚Ç‚¤‚©
+    // é‡åŠ›ã‚’é©ç”¨ã™ã‚‹ã‹ã©ã†ã‹
     protected bool _EnableGravity => !_isWarpDashing && !_isWallDash && !_isWarpDelay && enableGravity && !_specialUsing;
     public bool enableGravity = true;
-    // ƒWƒƒƒ“ƒv—Í‚ğæ“¾
+    // ã‚¸ãƒ£ãƒ³ãƒ—åŠ›ã‚’å–å¾—
     protected float _jumpForce => _isDashing ? _param.dashJumpForce :
             _isSliding ? _param.slideJumpForce : _param.jumpForce;
 
-    // Œ»İ‚ÌƒWƒƒƒ“ƒvŠÔŒv‘ª
+    // ç¾åœ¨ã®ã‚¸ãƒ£ãƒ³ãƒ—æ™‚é–“è¨ˆæ¸¬
     protected float _currentJumpTime = 0;
-    // ˆÚ“®“ü—Í‚ğ~‚ß‚Ä‚©‚çŒo‰ß‚µ‚½ŠÔŒv‘ª
+    // ç§»å‹•å…¥åŠ›ã‚’æ­¢ã‚ã¦ã‹ã‚‰çµŒéã—ãŸæ™‚é–“è¨ˆæ¸¬
     protected float _currentStopMoveInputTime = 0;
-    // ’¼‘O‚Ü‚Åi‚ñ‚Å‚¢‚½•ûŒü
+    // ç›´å‰ã¾ã§é€²ã‚“ã§ã„ãŸæ–¹å‘
     protected Vector2 _lastWalkDirection = Vector2.zero;
 
-    // s“®•s”\ŠÔŒv‘ª
+    // è¡Œå‹•ä¸èƒ½æ™‚é–“è¨ˆæ¸¬
     protected float _intervalTimer = 0;
-    // ƒ_ƒ[ƒWƒŠƒAƒNƒVƒ‡ƒ“ŠÔŒv‘ª
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒªã‚¢ã‚¯ã‚·ãƒ§ãƒ³æ™‚é–“è¨ˆæ¸¬
     protected float _damageReactionTimer = 0;
 
     protected bool _isEventInvincible = false;
@@ -117,20 +117,20 @@ public class Character_Base : MonoBehaviour {
         set { _isEventInvincible = value; }
     }
 
-    // €–Sƒtƒ‰ƒO
+    // æ­»äº¡ãƒ•ãƒ©ã‚°
     protected bool _isDead = false;
     public bool isDead => _isDead;
 
-    // ƒWƒƒƒ“ƒvƒGƒtƒFƒNƒg
+    // ã‚¸ãƒ£ãƒ³ãƒ—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField]
     protected GameObject _jumpEffect = null;
-    // ’…’nƒGƒtƒFƒNƒg
+    // ç€åœ°ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField]
     protected GameObject _landEffect = null;
-    // ƒ_ƒbƒVƒ…ƒGƒtƒFƒNƒg
+    // ãƒ€ãƒƒã‚·ãƒ¥ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField]
     protected GameObject _dashEffect = null;
-    // •Çƒ_ƒbƒVƒ…ƒGƒtƒFƒNƒg
+    // å£ãƒ€ãƒƒã‚·ãƒ¥ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField]
     protected GameObject _wallDashEffect = null;
 
@@ -139,17 +139,17 @@ public class Character_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// Start‚ÅÀs‚³‚ê‚éƒZƒbƒgƒAƒbƒv
+    /// Startã§å®Ÿè¡Œã•ã‚Œã‚‹ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—
     /// </summary>
     protected virtual void _Setup() {
         _rb.gravityScale = 0;
         _rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
-        // ’n–Êƒ`ƒFƒbƒN‚Ì‰Šú‰»
+        // åœ°é¢ãƒã‚§ãƒƒã‚¯ã®åˆæœŸåŒ–
         _groundCheckLocalPos = Vector3.up * (-GetCharacterSize().y / 2 - _param.groundCheckHeight);
         _groundCheckScale = new Vector3(GetCharacterSize().x - _param.checkerBuffer, _param.groundCheckHeight, 1);
 
-        // •Çƒ`ƒFƒbƒN‚Ì‰Šú‰»
+        // å£ãƒã‚§ãƒƒã‚¯ã®åˆæœŸåŒ–
         var chara_size = GetCharacterSize();
         _wallCheckLeftLocalPos = Vector3.right * (-chara_size.x / 2 - _param.wallCheckWidth);
         _wallCheckRightLocalPos = Vector3.right * (chara_size.x / 2 + _param.wallCheckWidth);
@@ -170,10 +170,10 @@ public class Character_Base : MonoBehaviour {
             _damageReactionTimer -= Time.deltaTime;
         }
 
-        // ƒ_ƒ[ƒWƒŠƒAƒNƒVƒ‡ƒ“’†‚Ì‘¬“xŒ¸Š
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒªã‚¢ã‚¯ã‚·ãƒ§ãƒ³ä¸­ã®é€Ÿåº¦æ¸›è¡°
         _ApplyDamageFriction();
 
-        // Œü‚«‚ÌXV
+        // å‘ãã®æ›´æ–°
         if (_sprite != null) {
             _sprite.flipX = _isRight;
         }
@@ -189,16 +189,16 @@ public class Character_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒ_ƒ[ƒWƒŠƒAƒNƒVƒ‡ƒ“’†‚Ì‘¬“xŒ¸Šˆ—
+    /// ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒªã‚¢ã‚¯ã‚·ãƒ§ãƒ³ä¸­ã®é€Ÿåº¦æ¸›è¡°å‡¦ç†
     /// </summary>
     private void _ApplyDamageFriction() {
-        // ƒ_ƒ[ƒWƒŠƒAƒNƒVƒ‡ƒ“’†‚©‚Â’n–Ê‚ÉÚ’n‚µ‚Ä‚¢‚éê‡
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒªã‚¢ã‚¯ã‚·ãƒ§ãƒ³ä¸­ã‹ã¤åœ°é¢ã«æ¥åœ°ã—ã¦ã„ã‚‹å ´åˆ
         if (_damageReactionTimer > 0 && _isGrounded) {
             Vector2 velocity = _rb.linearVelocity;
-            // ‰¡•ûŒü‚Ì‘¬“x‚ğŒ¸Š
+            // æ¨ªæ–¹å‘ã®é€Ÿåº¦ã‚’æ¸›è¡°
             velocity.x *= _damageFriction;
             
-            // ‘¬“x‚ª”ñí‚É¬‚³‚­‚È‚Á‚½‚çŠ®‘S‚É’â~
+            // é€Ÿåº¦ãŒéå¸¸ã«å°ã•ããªã£ãŸã‚‰å®Œå…¨ã«åœæ­¢
             if (Mathf.Abs(velocity.x) < 0.1f) {
                 velocity.x = 0f;
             }
@@ -208,7 +208,7 @@ public class Character_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒRƒ“ƒgƒ[ƒ‰“ü—Í
+    /// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©å…¥åŠ›
     /// </summary>
     public virtual void UpdateControl(CharacterInputData input) {
         if (_isDead) {
@@ -216,14 +216,14 @@ public class Character_Base : MonoBehaviour {
             input.abilityBHeld = false;
             input.abilityBPressed = false;
         }
-        // “ü—Íƒf[ƒ^•Û‘¶
+        // å…¥åŠ›ãƒ‡ãƒ¼ã‚¿ä¿å­˜
         _inputData = input;
 
         _UpdateMotor();
     }
 
     /// <summary>
-    /// ƒLƒƒƒ‰ƒNƒ^[‚²‚Æ‚ÉˆÚ“®ˆ—‚ğÀ‘•
+    /// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã”ã¨ã«ç§»å‹•å‡¦ç†ã‚’å®Ÿè£…
     /// </summary>
     protected virtual void _UpdateMotor() {
         /*
@@ -233,7 +233,7 @@ public class Character_Base : MonoBehaviour {
             return;
         }
 
-        // ƒWƒƒƒ“ƒv
+        // ã‚¸ãƒ£ãƒ³ãƒ—
         if (input.abilityBPressed && _isGrounded) {
             velocity.y = _jumpForce;
             _currentJumpTime = _param.maxJumpHoldTime;
@@ -241,25 +241,25 @@ public class Character_Base : MonoBehaviour {
             _anim?.SetBool("Jump", true);
             _anim?.Play("Jump");
         }
-        // ƒWƒƒƒ“ƒvƒŠƒŠ[ƒX
+        // ã‚¸ãƒ£ãƒ³ãƒ—ãƒªãƒªãƒ¼ã‚¹
         if ((!input.abilityBHeld && _isJumping) || _currentJumpTime <= 0) {
             _isJumping = false;
         }
-        // ’·‰Ÿ‚µƒWƒƒƒ“ƒv
+        // é•·æŠ¼ã—ã‚¸ãƒ£ãƒ³ãƒ—
         if (input.abilityBHeld && _isJumping) {
             velocity.y = _jumpForce;
             _currentJumpTime -= Time.deltaTime;
         }
 
-        //ó‘Ô‚É‰‚¶‚½ƒtƒ‰ƒOŠÇ—
+        //çŠ¶æ…‹ã«å¿œã˜ãŸãƒ•ãƒ©ã‚°ç®¡ç†
         _anim?.SetBool("Jump", _isJumping);
         _anim?.SetBool("Fall", !_isGrounded);
 
-        // ˆÚ“®“ü—Í
+        // ç§»å‹•å…¥åŠ›
         if (input.move.x != 0) {
-            // ’¼‘O‚Ü‚Å“ü—Í‚È‚µ
+            // ç›´å‰ã¾ã§å…¥åŠ›ãªã—
             if (!_isWalking) {
-                // “¯‚¶•ûŒü‚É‚·‚®Ä“ü—Í‚Åƒ_ƒbƒVƒ…
+                // åŒã˜æ–¹å‘ã«ã™ãå†å…¥åŠ›ã§ãƒ€ãƒƒã‚·ãƒ¥
                 if (_currentStopMoveInputTime < _param.dashInputThreshold && (
                     (Mathf.Sign(input.move.x) == Mathf.Sign(_lastWalkDirection.x) && !_isDashing) ||
                     (Mathf.Sign(input.move.x) != Mathf.Sign(_lastWalkDirection.x) && _isDashing))) {
@@ -270,7 +270,7 @@ public class Character_Base : MonoBehaviour {
                 _anim?.SetBool("Walk", true);
             }
 
-            // ˆÚ“®’†‚Íí‚Éƒtƒ‰ƒOƒŠƒZƒbƒg
+            // ç§»å‹•ä¸­ã¯å¸¸ã«ãƒ•ãƒ©ã‚°ãƒªã‚»ãƒƒãƒˆ
             _lastWalkDirection = input.move;
             _currentStopMoveInputTime = 0;
 
@@ -279,18 +279,18 @@ public class Character_Base : MonoBehaviour {
             } else if( input.move.x < 0 ) {
                 _isRight = false;
             }
-        } else // “ü—Í’â~
+        } else // å…¥åŠ›åœæ­¢
           {
             if (_isWalking) {
-                // •às‚©‚ç’â~
+                // æ­©è¡Œã‹ã‚‰åœæ­¢
                 _isWalking = false;
                 _currentStopMoveInputTime = 0;
 
-                //ˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“’â~
+                //ç§»å‹•ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åœæ­¢
                 _anim?.SetBool("Walk", false);
                 _anim?.SetBool("Dash", false);
             } else {
-                // ’â~’†‚Íƒ^ƒCƒ}[XV
+                // åœæ­¢ä¸­ã¯ã‚¿ã‚¤ãƒãƒ¼æ›´æ–°
                 _currentStopMoveInputTime += Time.deltaTime;
                 if (_currentStopMoveInputTime > _param.dashInputThreshold) {
                     _isDashing = false;
@@ -301,7 +301,7 @@ public class Character_Base : MonoBehaviour {
         velocity.x = input.move.x * (_isDashing ? _param.dashSpeed :
             _isSliding ? _param.slideSpeed : _param.moveSpeed);
 
-        // •Ç‚ÉÚG‚µ‚Ä‚¢‚éê‡‚Í‰¡ˆÚ“®‚ğ0‚É‚·‚é
+        // å£ã«æ¥è§¦ã—ã¦ã„ã‚‹å ´åˆã¯æ¨ªç§»å‹•ã‚’0ã«ã™ã‚‹
         if ((_isTouchingLeft && input.move.x < 0) || (_isTouchingRight && input.move.x > 0)) {
             velocity.x = 0;
         }
@@ -311,12 +311,12 @@ public class Character_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// Update‚É’Ç‰Á‚·‚éˆ—
+    /// Updateã«è¿½åŠ ã™ã‚‹å‡¦ç†
     /// </summary>
     protected virtual void _UpdateSpecials() { }
 
     /// <summary>
-    /// ’nŒ`ƒ`ƒFƒbƒN
+    /// åœ°å½¢ãƒã‚§ãƒƒã‚¯
     /// </summary>
     private void _CheckTerrain() {
         _isTouchingLeft = Physics2D.OverlapBox(transform.position + _wallCheckLeftLocalPos, _wallCheckScale, 0, _wallLayer);
@@ -324,17 +324,17 @@ public class Character_Base : MonoBehaviour {
 
         var last_grounded = _isGrounded;
         _isGrounded = Physics2D.OverlapBox(transform.position + _groundCheckLocalPos, _groundCheckScale, 0, _groundLayer);
-        // AnimatorController‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚éê‡‚Ì‚İÀs
+        // AnimatorControllerãŒã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã‚‹å ´åˆã®ã¿å®Ÿè¡Œ
         if (_anim != null && _anim.isActiveAndEnabled && _anim.runtimeAnimatorController != null) {
-            _anim.SetBool("IsGround", _isGrounded); //Ú’nƒtƒ‰ƒO
+            _anim.SetBool("IsGround", _isGrounded); //æ¥åœ°ãƒ•ãƒ©ã‚°
         }
         if (_isGrounded && !last_grounded) {
-            // ’…’nƒGƒtƒFƒNƒg¶¬
+            // ç€åœ°ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
             if (_landEffect != null) {
                 var footPos = transform.position + Vector3.down * (GetCharacterSize().y / 2f);
                 var effect = EffectPool.Instance.Spawn(_landEffect, footPos, !_isRight);
 
-                // ƒGƒtƒFƒNƒg‚ÌŒü‚«‚ğƒLƒƒƒ‰ƒNƒ^[‚ÌŒü‚«‚É‡‚í‚¹‚é
+                // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å‘ãã‚’ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å‘ãã«åˆã‚ã›ã‚‹
                 Vector3 effectScale = effect.transform.localScale;
                 effectScale.x = _isRight ? Mathf.Abs(effectScale.x) : -Mathf.Abs(effectScale.x);
                 effect.transform.localScale = effectScale;
@@ -343,11 +343,11 @@ public class Character_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// d—Í“K—p
+    /// é‡åŠ›é©ç”¨
     /// </summary>
     private void _ApplyGravity() {
         if (!_EnableGravity || _intervalTimer > 0) {
-            // d—Í“K—p‚ğƒXƒLƒbƒv
+            // é‡åŠ›é©ç”¨ã‚’ã‚¹ã‚­ãƒƒãƒ—
             return;
         }
 
@@ -373,7 +373,7 @@ public class Character_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// ‰ñ•œˆ—
+    /// å›å¾©å‡¦ç†
     /// </summary>
     public virtual void RecoverHP(int recover_amount) {
         if (_charaParam == null || _isDead) {
@@ -381,20 +381,21 @@ public class Character_Base : MonoBehaviour {
         }
         _charaParam.RecoverHP(recover_amount);
 
-        // Œø‰Ê‰¹
+        // åŠ¹æœéŸ³
         if (_seRecover != null) {
             _audioSource?.PlayOneShot(_seRecover);
         }
     }
 
     /// <summary>
-    /// ƒ_ƒ[ƒWˆ—
+    /// ãƒ€ãƒ¡ãƒ¼ã‚¸å‡¦ç†
     /// </summary>
-    /// <param name="damage">ƒ_ƒ[ƒW”</param>
-    /// <param name="blow_power_right">‰EŒü‚«‚Å‚Á”ò‚Ô—Í</param>
-    /// <param name="invincible_time">–³“GŠÔ</param>
-    /// <param name="damage_reaction_time">“®‚¯‚È‚¢ŠÔ</param>
-    public virtual bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
+    /// <param name="damage">ãƒ€ãƒ¡ãƒ¼ã‚¸æ•°</param>
+    /// <param name="blow_power_right">å³å‘ãã§å¹ã£é£›ã¶åŠ›</param>
+    /// <param name="invincible_time">ç„¡æ•µæ™‚é–“</param>
+    /// <param name="damage_reaction_time">å‹•ã‘ãªã„æ™‚é–“</param>
+    /// <param name="is_trap_damage">ãƒˆãƒ©ãƒƒãƒ—ãªã©ã€æ°·ã®ç„¡æ•µã‚’è²«é€šã•ã›ã‚‹ãƒ€ãƒ¡ãƒ¼ã‚¸ã‹ã©ã†ã‹</param>
+    public virtual bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false) {
         if (isInvincible || _isDead) {
             return false;
         }
@@ -403,7 +404,7 @@ public class Character_Base : MonoBehaviour {
             if (_seDamage != null) {
                 _audioSource?.PlayOneShot(_seDamage);
             }
-            // ƒ_ƒ[ƒWÀs
+            // ãƒ€ãƒ¡ãƒ¼ã‚¸å®Ÿè¡Œ
             _charaParam.ExecuteDamage(damage, invincible_time, ref _isDead);
 
             if (_isDead) {
@@ -412,20 +413,20 @@ public class Character_Base : MonoBehaviour {
                 }
                 StartCoroutine(Die());
 
-                // ‚Á”ò‚Ñ
+                // å¹ã£é£›ã³
                 _rb.linearVelocity = blow_power_right;
                 return true;
             }
 
-            // ƒAƒjƒ[ƒVƒ‡ƒ“
+            // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
             if (_anim.HasState(0, Animator.StringToHash("Damage"))) {
                 _anim.Play("Damage");
             }
 
-            // ƒ_ƒ[ƒWƒŠƒAƒNƒVƒ‡ƒ“
+            // ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒªã‚¢ã‚¯ã‚·ãƒ§ãƒ³
             _damageReactionTimer = damage_reaction_time;
 
-            // ‚Á”ò‚Ñ
+            // å¹ã£é£›ã³
             _rb.linearVelocity = blow_power_right;
             return true;
         }
@@ -433,18 +434,18 @@ public class Character_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// €–Sˆ—
+    /// æ­»äº¡å‡¦ç†
     /// </summary>
     /// <param name="blow_power_right"></param>
     protected virtual IEnumerator Die() {
-        // €–Sˆ—
+        // æ­»äº¡å‡¦ç†
         _anim.Play("Die");
 
         yield return null;
     }
 
     /// <summary>
-    /// ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+    /// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
     /// </summary>
     public void PlayAnim(string anim_name) {
         if (string.IsNullOrEmpty(anim_name)) {
@@ -454,32 +455,32 @@ public class Character_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// •KE“®ìI—¹ƒgƒŠƒK[ƒZƒbƒg
+    /// å¿…æ®ºå‹•ä½œçµ‚äº†ãƒˆãƒªã‚¬ãƒ¼ã‚»ãƒƒãƒˆ
     /// </summary>
     protected void _SetEndSpecialTrigger() {
         _anim?.SetTrigger("SpecialEnd");
     }
 
     /// <summary>
-    /// ƒLƒƒƒ‰ƒNƒ^[ƒTƒCƒY‚ğæ“¾
+    /// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚µã‚¤ã‚ºã‚’å–å¾—
     /// </summary>
     public Vector2 GetCharacterSize()
     {
         if (_col != null)
         {
-            return _col.bounds.size; // ƒLƒƒƒ‰ƒNƒ^[‚ÌƒRƒ‰ƒCƒ_[ƒTƒCƒY‚ğ•Ô‚·
+            return _col.bounds.size; // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚µã‚¤ã‚ºã‚’è¿”ã™
         }
-        return new Vector2(0.5f, 1f); // ƒfƒtƒHƒ‹ƒg‚ÌƒLƒƒƒ‰ƒNƒ^[ƒTƒCƒY
+        return new Vector2(0.5f, 1f); // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚µã‚¤ã‚º
     }
 
-    #region ƒfƒoƒbƒO—p
+    #region ãƒ‡ãƒãƒƒã‚°ç”¨
     private void OnDrawGizmos()
     {
-        // ’n–Êƒ`ƒFƒbƒNˆÊ’u
+        // åœ°é¢ãƒã‚§ãƒƒã‚¯ä½ç½®
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(transform.position + _groundCheckLocalPos, _groundCheckScale);
 
-        // •Çƒ`ƒFƒbƒNˆÊ’uEƒTƒCƒY
+        // å£ãƒã‚§ãƒƒã‚¯ä½ç½®ãƒ»ã‚µã‚¤ã‚º
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(transform.position + _wallCheckLeftLocalPos, _wallCheckScale);
         Gizmos.DrawWireCube(transform.position + _wallCheckRightLocalPos, _wallCheckScale);
@@ -487,7 +488,7 @@ public class Character_Base : MonoBehaviour {
     #endregion
 }
 
-// ƒLƒƒƒ‰ƒNƒ^[‚Ìó‘Ôó‚¯“n‚µ—pƒNƒ‰ƒX
+// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®çŠ¶æ…‹å—ã‘æ¸¡ã—ç”¨ã‚¯ãƒ©ã‚¹
 public class MotorStates {
     public bool isWalking;
     public bool isDashing;

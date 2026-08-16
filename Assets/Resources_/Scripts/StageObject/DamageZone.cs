@@ -3,49 +3,52 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DamageZone : MonoBehaviour {
-    // ƒvƒŒƒCƒ„[‚É—^‚¦‚éƒ_ƒ[ƒW
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ä¸ãˆã‚‹ãƒ€ãƒ¡ãƒ¼ã‚¸
     [SerializeField] private int _damageToPlayer = 1;
-    // “G‚É—^‚¦‚éƒ_ƒ[ƒW
+    // æ•µã«ä¸ãˆã‚‹ãƒ€ãƒ¡ãƒ¼ã‚¸
     [SerializeField] private int _damageToEnemy = 100;
 
-    // –³“GŠÔ
+    // ç„¡æ•µæ™‚é–“
     [SerializeField] private float _invincibleTime = 5;
 
-    // ‚Á”ò‚Î‚·—Íi‰EŒü‚«j
+    // å¹ã£é£›ã°ã™åŠ›ï¼ˆå³å‘ãï¼‰
     [SerializeField] private Vector2 _blowPowerRight = new Vector2(10.0f, 5.0f);
 
-    // s“®•s”\ŠÔ
+    // è¡Œå‹•ä¸èƒ½æ™‚é–“
     [SerializeField] private float _damageReactionTime = 0.2f;
 
-    // ƒqƒbƒg‚µ‚½‚çÁ‚¦‚é‚©‚Ç‚¤‚©
+    // ãƒ’ãƒƒãƒˆã—ãŸã‚‰æ¶ˆãˆã‚‹ã‹ã©ã†ã‹
     [SerializeField] private bool _isHitDestroy = false;
     [SerializeField] private GameObject _destroyObject = null;
 
-    // ˆê“x‚¾‚¯ƒ_ƒ[ƒW‚ğ—^‚¦‚é‚©‚Ç‚¤‚©
+    // ä¸€åº¦ã ã‘ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹ã‹ã©ã†ã‹
     [SerializeField] private bool _isOnceHit = true;
 
+    // ãƒˆãƒ©ãƒƒãƒ—ãªã©ã®ç’°å¢ƒãƒ€ãƒ¡ãƒ¼ã‚¸æ‰±ã„ã«ã™ã‚‹ã‹ï¼ˆæ°·ã®èƒ½åŠ›ã«ã‚ˆã‚‹ãƒ¯ãƒ¼ãƒ—ç„¡æ•µã‚’è²«é€šã—ã¦ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹ï¼‰
+    [SerializeField] private bool _isTrapDamage = false;
+
     [Header("Self Damage Settings")]
-    // ‚±‚ÌDamageZone‚ÌŠ—LÒiİ’è‚µ‚½ê‡Aƒ_ƒ[ƒW‚ğ—^‚¦‚½‚É©•ª‚É‚àƒ_ƒ[ƒW‚ğ—^‚¦‚éj
+    // ã“ã®DamageZoneã®æ‰€æœ‰è€…ï¼ˆè¨­å®šã—ãŸå ´åˆã€ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆãŸæ™‚ã«è‡ªåˆ†ã«ã‚‚ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹ï¼‰
     [SerializeField] private Character_Base _selfCharacter = null;
-    // ©•ª©g‚É—^‚¦‚éƒ_ƒ[ƒW—Ê
+    // è‡ªåˆ†è‡ªèº«ã«ä¸ãˆã‚‹ãƒ€ãƒ¡ãƒ¼ã‚¸é‡
     [SerializeField] private int _damageToSelf = 0;
-    // ©ƒ_ƒ[ƒW‚Ì–³“GŠÔ
+    // è‡ªå‚·ãƒ€ãƒ¡ãƒ¼ã‚¸ã®ç„¡æ•µæ™‚é–“
     [SerializeField] private float _invincibleTimeToSelf = 0.5f;
-    // ©•ª©g‚Ö‚Ì‚Á”ò‚Î‚µ—Í
+    // è‡ªåˆ†è‡ªèº«ã¸ã®å¹ã£é£›ã°ã—åŠ›
     [SerializeField] private Vector2 _blowPowerToSelf = new Vector2(3.0f, 5.0f);
-    // ©•ª©g‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é‚©‚Ç‚¤‚©
+    // è‡ªåˆ†è‡ªèº«ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹ã‹ã©ã†ã‹
     [SerializeField] private bool _enableSelfDamage = false;
 
-    // ƒqƒbƒgÏ‚İƒLƒƒƒ‰‚ÌŠÇ—
+    // ãƒ’ãƒƒãƒˆæ¸ˆã¿ã‚­ãƒ£ãƒ©ã®ç®¡ç†
     Dictionary<Character_Base, float> _hitCharacters = new Dictionary<Character_Base, float>();
-    private const float _hitInterval = 0.5f; // “¯‚¶ƒLƒƒƒ‰‚É˜A‘±ƒqƒbƒg‚³‚¹‚È‚¢ŠÔ
+    private const float _hitInterval = 0.5f; // åŒã˜ã‚­ãƒ£ãƒ©ã«é€£ç¶šãƒ’ãƒƒãƒˆã•ã›ãªã„æ™‚é–“
 
-    // ƒqƒbƒgƒGƒtƒFƒNƒg¶¬—p
+    // ãƒ’ãƒƒãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆç”¨
     [SerializeField] private HitEffect _hitEffectPrefab = null;
     [SerializeField] private HitEffect.eType _hitEffectType = HitEffect.eType.Normal;
     [SerializeField] private float _hitEffectSize = 1.0f;
 
-    // ƒqƒbƒgƒXƒgƒbƒvİ’è
+    // ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—è¨­å®š
     [SerializeField] private List<LocalTimePause> _localTimePauses = new List<LocalTimePause>();
     [SerializeField] private float _hitStopTime = 0.1f;
 
@@ -54,13 +57,13 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private float _manualShakeDuration = 0.5f;
     [SerializeField] private float _hitCameraShakeIntensity = 0f;
 
-    [SerializeField] private GameObject[] _hitPlayerEvent;    // ƒqƒbƒg‚É”­¶‚³‚¹‚éƒCƒxƒ“ƒgƒIƒuƒWƒFƒNƒg
-    [SerializeField] private GameObject[] _avoidPlayerEvent;  // ‰ñ”ğ‚É”­¶‚³‚¹‚éƒCƒxƒ“ƒgƒIƒuƒWƒFƒNƒg
+    [SerializeField] private GameObject[] _hitPlayerEvent;    // ãƒ’ãƒƒãƒˆæ™‚ã«ç™ºç”Ÿã•ã›ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    [SerializeField] private GameObject[] _avoidPlayerEvent;  // å›é¿æ™‚ã«ç™ºç”Ÿã•ã›ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
-    // ƒ_ƒ[ƒW”»’è‚Ì—LŒø–³Œø
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸åˆ¤å®šã®æœ‰åŠ¹ç„¡åŠ¹
     private bool _isEnable = true;
 
-    // ƒqƒbƒg‚ÌƒR[ƒ‹ƒoƒbƒN
+    // ãƒ’ãƒƒãƒˆæ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
     private System.Action<Character_Base> _hitCallback = default;
 
     private void Reset() {
@@ -68,24 +71,24 @@ public class DamageZone : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒZƒbƒgƒAƒbƒv
+    /// ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—
     /// </summary>
-    /// <param name="callback">ƒqƒbƒg‚ÌƒR[ƒ‹ƒoƒbƒNİ’è</param>
+    /// <param name="callback">ãƒ’ãƒƒãƒˆæ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯è¨­å®š</param>
     public void Setup(System.Action<Character_Base> callback) {
         _hitCallback = callback;
     }
 
     /// <summary>
-    /// ©•ª©g‚ÌƒLƒƒƒ‰ƒNƒ^[‚ğİ’è
+    /// è‡ªåˆ†è‡ªèº«ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’è¨­å®š
     /// </summary>
-    /// <param name="character">‚±‚ÌDamageZone‚ÌŠ—LÒ</param>
+    /// <param name="character">ã“ã®DamageZoneã®æ‰€æœ‰è€…</param>
     public void SetSelfCharacter(Character_Base character) {
         _selfCharacter = character;
     }
 
     // Update is called once per frame
     void Update() {
-        // è“®ƒJƒƒ‰ƒVƒFƒCƒN
+        // æ‰‹å‹•ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯
         if (_manualCameraShake && _manualShakeIntensity > 0f) {
             _manualCameraShake = false;
             var cinemachineManager = CinemachineManager.Instance;
@@ -101,7 +104,7 @@ public class DamageZone : MonoBehaviour {
                         _hitCharacters.Remove(key);
                     }
                 } else if (_hitCharacters[key] < 0) {
-                    // ˆê“x‚¾‚¯ƒqƒbƒg‚Ìê‡‚Íƒ^ƒCƒ}[‚ğXV‚µ‚È‚¢
+                    // ä¸€åº¦ã ã‘ãƒ’ãƒƒãƒˆã®å ´åˆã¯ã‚¿ã‚¤ãƒãƒ¼ã‚’æ›´æ–°ã—ãªã„
                 }
             }
         }
@@ -125,7 +128,7 @@ public class DamageZone : MonoBehaviour {
     private void _OnDamage(Collider2D other) {
         int damage = 0;
 
-        // ƒ_ƒ[ƒW—Êæ“¾
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸é‡å–å¾—
         if (_damageToPlayer > 0 && other.gameObject.layer == LayerMask.NameToLayer("Player")) {
             damage = _damageToPlayer;
         }
@@ -143,7 +146,7 @@ public class DamageZone : MonoBehaviour {
         if (character.isInvincible || _hitCharacters.ContainsKey(character)) {
             return;
         }
-        // ƒqƒbƒgÏ‚İƒLƒƒƒ‰‚Ìƒ^ƒCƒ}[XV
+        // ãƒ’ãƒƒãƒˆæ¸ˆã¿ã‚­ãƒ£ãƒ©ã®ã‚¿ã‚¤ãƒãƒ¼æ›´æ–°
         _hitCharacters.Add(character, _isOnceHit ? -1 : _hitInterval);
 
         var blow_power = _blowPowerRight;
@@ -151,28 +154,28 @@ public class DamageZone : MonoBehaviour {
             blow_power.x = -blow_power.x;
         }
 
-        // ƒqƒbƒg‚ÌƒR[ƒ‹ƒoƒbƒNÀs
+        // ãƒ’ãƒƒãƒˆæ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯å®Ÿè¡Œ
         _hitCallback?.Invoke(character);
 
-        var damage_result = character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime);
+        var damage_result = character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime, _isTrapDamage);
 
-        // ƒ_ƒ[ƒW‰‰o
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸æ¼”å‡º
         if (damage_result) {
-            // ƒqƒbƒgƒGƒtƒFƒNƒg¶¬
+            // ãƒ’ãƒƒãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
             var hit_effect = _SpawnHitEffect(other.transform.position, _hitEffectType);
             var target_effect = hit_effect?.GetComponent<LocalTimePause>();
 
-            // ƒqƒbƒgƒXƒgƒbƒv
+            // ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—
             LocalTimePause hit_target = other.GetComponent<LocalTimePause>();
             _HitStop(hit_target, target_effect);
 
-            // ©•ª©g‚É‚àƒ_ƒ[ƒW‚ğ—^‚¦‚é
+            // è‡ªåˆ†è‡ªèº«ã«ã‚‚ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
             if (_enableSelfDamage && _selfCharacter != null && _damageToSelf > 0) {
                 _ApplySelfDamage(other.transform.position);
             }
         }
                 
-        // ƒvƒŒƒCƒ„[ƒqƒbƒgó‘Ô‚É‰‚¶‚½ƒCƒxƒ“ƒg”­¶
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ’ãƒƒãƒˆçŠ¶æ…‹ã«å¿œã˜ãŸã‚¤ãƒ™ãƒ³ãƒˆç™ºç”Ÿ
         bool isAvoid = false;
         Player_Character player = other.GetComponent<Player_Character>();
         if (player != null) {
@@ -191,25 +194,25 @@ public class DamageZone : MonoBehaviour {
     }
 
     /// <summary>
-    /// ©•ª©g‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
+    /// è‡ªåˆ†è‡ªèº«ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
     /// </summary>
-    /// <param name="hitPosition">ƒqƒbƒg‚µ‚½‘Šè‚ÌˆÊ’u</param>
+    /// <param name="hitPosition">ãƒ’ãƒƒãƒˆã—ãŸç›¸æ‰‹ã®ä½ç½®</param>
     private void _ApplySelfDamage(Vector3 hitPosition) {
         if (_selfCharacter == null || _selfCharacter.isInvincible) {
             return;
         }
 
-        // ‘Šè‚ÌˆÊ’u‚É‰‚¶‚Ä‚Á”ò‚Î‚µ•ûŒü‚ğŒˆ’è
+        // ç›¸æ‰‹ã®ä½ç½®ã«å¿œã˜ã¦å¹ã£é£›ã°ã—æ–¹å‘ã‚’æ±ºå®š
         var blowPower = _blowPowerToSelf;
         if (hitPosition.x < _selfCharacter.transform.position.x) {
-            // ‘Šè‚ª¶‘¤‚É‚¢‚éê‡A©•ª‚Í‰E‚É‚Á”ò‚Ô
+            // ç›¸æ‰‹ãŒå·¦å´ã«ã„ã‚‹å ´åˆã€è‡ªåˆ†ã¯å³ã«å¹ã£é£›ã¶
             blowPower.x = Mathf.Abs(blowPower.x);
         } else {
-            // ‘Šè‚ª‰E‘¤‚É‚¢‚éê‡A©•ª‚Í¶‚É‚Á”ò‚Ô
+            // ç›¸æ‰‹ãŒå³å´ã«ã„ã‚‹å ´åˆã€è‡ªåˆ†ã¯å·¦ã«å¹ã£é£›ã¶
             blowPower.x = -Mathf.Abs(blowPower.x);
         }
 
-        // ©•ª©g‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
+        // è‡ªåˆ†è‡ªèº«ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
         _selfCharacter.Damage(_damageToSelf, blowPower, _invincibleTimeToSelf, _damageReactionTime);
     }
 
@@ -229,11 +232,11 @@ public class DamageZone : MonoBehaviour {
     private void _HitStop(LocalTimePause hit_target, LocalTimePause hit_effect) {
         if (hit_effect) _localTimePauses.Add(hit_effect);
         if (hit_target) _localTimePauses.Add(hit_target);
-        // ƒqƒbƒgƒXƒgƒbƒvÀs
+        // ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—å®Ÿè¡Œ
         foreach (var pause in _localTimePauses) {
             pause?.StartPause(_hitStopTime);
         }
-        // ƒJƒƒ‰ƒVƒFƒCƒN
+        // ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯
         if (_hitCameraShakeIntensity > 0) {
             var cinemachineManager = CinemachineManager.Instance;
             cinemachineManager.ShakeCamera(_hitCameraShakeIntensity, 0.05f);

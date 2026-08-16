@@ -553,13 +553,13 @@ public class Player_Character : Character_Base {
         }
     }
 
-    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time) {
+    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false) {
         if (isInvincible || _isDead || _specialUsing) {
             return false;
         }
 
-        // 氷の能力で無敵（仮対応）
-        if ( _isIceInvincible) {
+        // 氷の能力で無敵（仮対応）。トラップなどのダメージは貫通させる
+        if (_isIceInvincible && !is_trap_damage) {
             return false;
         }
 
@@ -605,7 +605,7 @@ public class Player_Character : Character_Base {
             _abilityY?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
         }
 
-        bool isDamaged = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time);
+        bool isDamaged = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time, is_trap_damage);
         if (isDamaged) {
             ScreenFlash.Instance?.Flash(0.4f, new Color(1f, 0f, 0f, 0.2f));
         }
