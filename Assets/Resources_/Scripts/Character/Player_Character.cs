@@ -106,8 +106,11 @@ public class Player_Character : Character_Base {
 
         // 氷無敵時間計測
         if (_isIceInvincible) {
-            // 無敵保障時間計測
-            _currentIceInvincibleTime -= Time.fixedDeltaTime;
+            // コインワープ連鎖などのワープ判定中は消費せず、ダッシュ開始時まで温存する
+            if (!_isWarpChecking) {
+                // 無敵保障時間計測
+                _currentIceInvincibleTime -= Time.fixedDeltaTime;
+            }
             if (_currentIceInvincibleTime <= 0) {
                 if (!_isWarpDashing) {
                     // 無敵終了
