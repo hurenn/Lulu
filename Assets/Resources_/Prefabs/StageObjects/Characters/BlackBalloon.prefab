@@ -17,6 +17,10 @@ PrefabInstance:
       value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 1953610159386184731, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
+      propertyPath: _hpGauge
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1953610159386184731, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
       propertyPath: isAutoLockOn
       value: 0
       objectReference: {fileID: 0}
@@ -121,7 +125,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4559774123690546810, guid: fededc12841811145a93c66ebaddf8e0, type: 3}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1062305633958051496, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d4d0c4c829169f341aa7ad4f625f2659, type: 3}

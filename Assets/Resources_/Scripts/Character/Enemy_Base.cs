@@ -1,17 +1,18 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy_Base : Character_Base
 {
-    // ŒoŒ±’l
+    // çµŒé¨“å€¤
     [SerializeField] protected int _exp = 1;
     [SerializeField] protected CoinSpawner _coinSpawner;
 
-    // ƒ[ƒvƒ`ƒFƒbƒN—p‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg
+    // ãƒ¯ãƒ¼ãƒ—ãƒã‚§ãƒƒã‚¯ç”¨ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
     [SerializeField] private WarpChecker _leftWarpChecker;
     [SerializeField] private WarpChecker _rightWarpChecker;
 
-    // ƒƒbƒNƒIƒ“ƒ}[ƒJ[
+    // ãƒ­ãƒƒã‚¯ã‚ªãƒ³ãƒãƒ¼ã‚«ãƒ¼
     [SerializeField] private Animator _lockonMarkerAnim;
     public bool isAutoLockOn = true;
 
@@ -23,31 +24,69 @@ public class Enemy_Base : Character_Base
     public System.Action OnDied = null;
     public System.Action OnDieEnded = null;
 
-    // Ÿ‚Ìs“®‚Ü‚Å‚ÌŠÔ
+    // æ¬¡ã®è¡Œå‹•ã¾ã§ã®æ™‚é–“
     protected float _nextActionTime = 0f;
     protected float _currentActionTime = 0f;
+
+    // HPã‚²ãƒ¼ã‚¸ï¼ˆInspectorã§ã‚¢ã‚µã‚¤ãƒ³ã—ãªã‘ã‚Œã°éè¡¨ç¤ºã®ã¾ã¾ï¼‰
+    [SerializeField] private Slider _hpGauge;
+    private Coroutine _hideGaugeCoroutine;
 
     protected override void _Setup() {
         base._Setup();
         if (_lockonMarkerAnim != null) {
             _lockonMarkerAnim.gameObject.SetActive(false);
         }
+        if (_hpGauge != null && _charaParam != null) {
+            _charaParam.OnHPChanged += _UpdateHPGauge;
+            _UpdateHPGauge(_charaParam.CurrentHP);
+        }
+    }
+
+    /// <summary>
+    /// HPã‚²ãƒ¼ã‚¸ã®è¡¨ç¤ºæ›´æ–°
+    /// </summary>
+    private void _UpdateHPGauge(int current_hp) {
+        if (_hpGauge == null || _charaParam == null) {
+            return;
+        }
+        _hpGauge.value = (float)current_hp / _charaParam.MaxHP;
+
+        if (_hideGaugeCoroutine != null) {
+            StopCoroutine(_hideGaugeCoroutine);
+            _hideGaugeCoroutine = null;
+        }
+
+        if (current_hp <= 0) {
+            // HPãŒ0ã«ãªã£ãŸã‚‰1ç§’å¾Œã«éè¡¨ç¤ºã«ã™ã‚‹
+            _hpGauge.gameObject.SetActive(true);
+            _hideGaugeCoroutine = StartCoroutine(_HideGaugeDelayed());
+        } else {
+            // HPãŒå…¨å¿«ã®æ™‚ã¯éè¡¨ç¤ºã€ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã‚‰è¡¨ç¤º
+            _hpGauge.gameObject.SetActive(current_hp < _charaParam.MaxHP);
+        }
+    }
+
+    private IEnumerator _HideGaugeDelayed() {
+        yield return new WaitForSeconds(1.0f);
+        _hpGauge.gameObject.SetActive(false);
+        _hideGaugeCoroutine = null;
     }
 
     protected override IEnumerator Die() {
         yield return base.Die();
-        // ƒ_ƒ[ƒWƒ][ƒ“–³Œø‰»
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¾ãƒ¼ãƒ³ç„¡åŠ¹åŒ–
         if (_damageZone != null) {
             _damageZone.gameObject.SetActive(false);
         }
         _col.enabled = false;
 
-        // ƒRƒCƒ“¶¬
+        // ã‚³ã‚¤ãƒ³ç”Ÿæˆ
         if (_coinSpawner != null) {
             _coinSpawner.SpawnCoin(_exp);
         }
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì’·‚³‚ğæ“¾‚µ‚Ä‚©‚çíœ
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®é•·ã•ã‚’å–å¾—ã—ã¦ã‹ã‚‰å‰Šé™¤
         float destroy_time = 0;
         var clip_info = _anim.GetCurrentAnimatorClipInfo(0);
         if (clip_info.Length > 0) {
@@ -61,21 +100,21 @@ public class Enemy_Base : Character_Base
             yield return null;
         }
         if (_dieExplosion != null) {
-            // ”š”­ƒGƒtƒFƒNƒg¶¬
+            // çˆ†ç™ºã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
             Instantiate(_dieExplosion, transform.position, Quaternion.identity);
         }
         Destroy(gameObject);
     }
 
     /// <summary>
-    /// ƒ[ƒv’n“_æ“¾
+    /// ãƒ¯ãƒ¼ãƒ—åœ°ç‚¹å–å¾—
     /// </summary>
-    /// <param name="warp_direction">ƒ[ƒv‚ÌŒü‚«</param>
-    /// <param name="is_other_check">”½‘Î‘¤‚àƒ`ƒFƒbƒN‚·‚é‚©</param>
+    /// <param name="warp_direction">ãƒ¯ãƒ¼ãƒ—ã®å‘ã</param>
+    /// <param name="is_other_check">åå¯¾å´ã‚‚ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã‹</param>
     public WarpChecker? GetWarpChecker(WarpControl.eWarpDirection warp_direction, bool is_other_check = false) {
         if (warp_direction == WarpControl.eWarpDirection.Left) {
             if(is_other_check) {
-                // ”½‘Î‘¤‚àƒ`ƒFƒbƒN
+                // åå¯¾å´ã‚‚ãƒã‚§ãƒƒã‚¯
                 var left_checker = _leftWarpChecker.GetWarpPoint();
                 if (left_checker.HasValue) {
                     return _leftWarpChecker;
@@ -92,7 +131,7 @@ public class Enemy_Base : Character_Base
             }
         } else if (warp_direction == WarpControl.eWarpDirection.Right) {
             if (is_other_check) {
-                // ”½‘Î‘¤‚àƒ`ƒFƒbƒN
+                // åå¯¾å´ã‚‚ãƒã‚§ãƒƒã‚¯
                 var right_checker = _rightWarpChecker.GetWarpPoint();
                 if (right_checker.HasValue) {
                     return _rightWarpChecker;
@@ -112,7 +151,7 @@ public class Enemy_Base : Character_Base
     }
 
     /// <summary>
-    /// ƒƒbƒNƒIƒ“•\¦Ø‘Ö
+    /// ãƒ­ãƒƒã‚¯ã‚ªãƒ³è¡¨ç¤ºåˆ‡æ›¿
     /// </summary>
     public void EnableLockOnMarker(bool enable) {
         if(_lockonMarkerAnim == null) {

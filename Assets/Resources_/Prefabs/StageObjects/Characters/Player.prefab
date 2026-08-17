@@ -375,6 +375,8 @@ MonoBehaviour:
   _avoidWarpInterval: 0.5
   _audioSource: {fileID: 3123718113213705543}
   _seWarp: {fileID: 8300000, guid: 649de4670f4e4214f83fe3e2d29d7f43, type: 3}
+  _warpFocusEffect: {fileID: 0}
+  _warpMaxDistanceEffectPrefab: {fileID: 6601440612607403682, guid: c73ca670b65cd8b43ab9d997ca18e7f4, type: 3}
 --- !u!114 &2689069601214134212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2134,6 +2136,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UpLeftChecker
       objectReference: {fileID: 0}
+    - target: {fileID: 8882788843763819845, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
+      propertyPath: _upperCheckRate
+      value: 0.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2352,6 +2358,10 @@ PrefabInstance:
     - target: {fileID: 7438328420936680346, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
       propertyPath: m_Name
       value: UpChecker
+      objectReference: {fileID: 0}
+    - target: {fileID: 8882788843763819845, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
+      propertyPath: _upperCheckRate
+      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2644,6 +2654,10 @@ PrefabInstance:
     - target: {fileID: 7438328420936680346, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
       propertyPath: m_Name
       value: UpRightChecker
+      objectReference: {fileID: 0}
+    - target: {fileID: 8882788843763819845, guid: 4effbec69cc1633409e4f3e6347c4cde, type: 3}
+      propertyPath: _upperCheckRate
+      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

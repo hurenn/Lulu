@@ -462,8 +462,10 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _isTrapDamage: 1
   _selfCharacter: {fileID: 0}
   _damageToSelf: 0
+  _invincibleTimeToSelf: 0.5
   _blowPowerToSelf: {x: 3, y: 5}
   _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
@@ -476,6 +478,8 @@ MonoBehaviour:
   _manualShakeIntensity: 0.5
   _manualShakeDuration: 0.5
   _hitCameraShakeIntensity: 0.1
+  _hitPlayerEvent: []
+  _avoidPlayerEvent: []
 --- !u!61 &2560585190245754646
 BoxCollider2D:
   m_ObjectHideFlags: 0

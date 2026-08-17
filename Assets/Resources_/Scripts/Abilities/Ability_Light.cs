@@ -14,7 +14,7 @@ public class Ability_Light : Ability_Base
     private bool _isNotHide => _rend.color.a > 0.9f;
     private GoalMarker _goalMarker;
 
-    // ©“®”­Œõƒ^ƒCƒ}[
+    // è‡ªå‹•ç™ºå…‰ã‚¿ã‚¤ãƒãƒ¼
     private bool _isAutoLight = false;
     private bool _isManualLight = false;
 
@@ -43,14 +43,14 @@ public class Ability_Light : Ability_Base
 
     protected override void _Update() {
         if (_isNotHide && _IsOutOfScreen()) {
-            // ‰æ–ÊŠO‚Éo‚½‚ç”ñ•\¦‚É‚·‚é
+            // ç”»é¢å¤–ã«å‡ºãŸã‚‰éè¡¨ç¤ºã«ã™ã‚‹
             _anim?.Play("Pepe_ToHide");
         }
 
         _UpdateLightDomeActive();
     }
 
-    // ©“®”­Œõİ’è
+    // è‡ªå‹•ç™ºå…‰è¨­å®š
     public void SetAutoLight(bool is_active) {
         if(_charaParam == null) {
             return;
@@ -60,53 +60,52 @@ public class Ability_Light : Ability_Base
     }
 
     public override eAbilityResult ExecuteSimple() {
-        // ƒI[ƒo[ƒq[ƒg’†‚Íg—p•s‰Â
+        // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆä¸­ã¯ä½¿ç”¨ä¸å¯
         if ((_charaParam.isOverheat && !_isAppearing) || _lightDomePrefab == null) {
-            UpdatePartnerTransform(); // ˆÊ’uXV
-            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // ¢Š«ƒGƒtƒFƒNƒgÄ¶
+            UpdatePartnerTransform(); // ä½ç½®æ›´æ–°
+            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // å¬å–šã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿ
             return eAbilityResult.None;
         }
 
-        // MPÁ”ï
+        // MPæ¶ˆè²»
         if (!_isAppearing) {
             _charaParam.ConsumeMP(eAbilityType.Light);
             _charaParam.SetUnRecoverTime_MP(1.0f);
         }
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         _anim?.Play("Pepe_Appear", 0, 0.0f);
-        UpdatePartnerTransform(); // ˆÊ’uXV
+        UpdatePartnerTransform(); // ä½ç½®æ›´æ–°
         _ResetReturnTimer();
 
-        // ƒ‰ƒCƒgƒh[ƒ€•\¦
+        // ãƒ©ã‚¤ãƒˆãƒ‰ãƒ¼ãƒ è¡¨ç¤º
         _isManualLight = true;
 
         if (_goalMarker != null) {
-            // ƒS[ƒ‹ƒ}[ƒJ[•\¦
+            // ã‚´ãƒ¼ãƒ«ãƒãƒ¼ã‚«ãƒ¼è¡¨ç¤º
             _goalMarker.SetMarkerActive(true);
         }
 
-        // ƒWƒƒƒXƒg‰ñ”ğ”»’è
+        // ã‚¸ãƒ£ã‚¹ãƒˆå›é¿åˆ¤å®š
         _warpControl.SpawnJustAvoidZone();
 
         return eAbilityResult.LightParry;
     }
 
     public override eAbilityResult ExecuteLong() {
-        // ƒI[ƒo[ƒq[ƒg’†‚Íg—p•s‰Â
+        // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆä¸­ã¯ä½¿ç”¨ä¸å¯
         if (_charaParam.isOverheat || _lightDomePrefab == null) {
             ExecuteRelease();
             return eAbilityResult.None;
         }
 
-        // •KEƒ`ƒƒ[ƒW’â~
+        // å¿…æ®ºãƒãƒ£ãƒ¼ã‚¸åœæ­¢
         if (_isManualLight) {
             _StopSpecialCharge();
         }
 
-        // –³“G‰»
+        // ç„¡æ•µåŒ–ï¼ˆè¢«ãƒ€ãƒ¡ãƒ¼ã‚¸å´ã®ç„¡æ•µã‚¿ã‚¤ãƒãƒ¼ã¨ã¯åˆ¥ã§åˆ¤å®šã™ã‚‹ãŸã‚ä¸Šæ›¸ãã—ãªã„ï¼‰
         _charaParam.isLightInvincible = true;
-        _charaParam.currentInvincibilityTimer = 0f;
 
         return eAbilityResult.LightDome;
     }
@@ -116,39 +115,39 @@ public class Ability_Light : Ability_Base
             return eAbilityResult.None;
         }
 
-        // è“®”­Œõ‰ğœ
+        // æ‰‹å‹•ç™ºå…‰è§£é™¤
         _isManualLight = false;
 
-        // ‹AŠÒ
+        // å¸°é‚„
         if (_isNotHide) {
             _anim?.Play("Pepe_ToHide");
         }
 
-        // –³“G‰ğœ
+        // ç„¡æ•µè§£é™¤
         _charaParam.isLightInvincible = false;
 
         if(_goalMarker != null) {
-            // ƒS[ƒ‹ƒ}[ƒJ[”ñ•\¦
+            // ã‚´ãƒ¼ãƒ«ãƒãƒ¼ã‚«ãƒ¼éè¡¨ç¤º
             _goalMarker.SetMarkerActive(false);
         }
         return eAbilityResult.None;
     }
 
-    // ©“®”­Œõ‰ñ”ğ
+    // è‡ªå‹•ç™ºå…‰å›é¿
     public void AutoAvoid() {
         if (_isManualLight || _isNotHide) {
             return;
         }
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         _anim?.Play("Pepe_Appear", 0, 0.0f);
-        UpdatePartnerTransform(); // ˆÊ’uXV
+        UpdatePartnerTransform(); // ä½ç½®æ›´æ–°
 
         _ResetReturnTimer();
     }
 
     /// <summary>
-    /// ƒWƒƒƒXƒg‰ñ”ğ‰‰o
+    /// ã‚¸ãƒ£ã‚¹ãƒˆå›é¿æ¼”å‡º
     /// </summary>
     public void StartJustAvoid() {
         if (_charaParam == null) {
@@ -158,19 +157,19 @@ public class Ability_Light : Ability_Base
         _OnJustAvoidSuccess();
     }
 
-    // ƒWƒƒƒXƒg‰ñ”ğ‰‰oiƒXƒ[ƒ‚[ƒVƒ‡ƒ“j
+    // ã‚¸ãƒ£ã‚¹ãƒˆå›é¿æ¼”å‡ºï¼ˆã‚¹ãƒ­ãƒ¼ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼‰
     private Coroutine _justAvoidEffectCoroutine;
     private void _OnJustAvoidSuccess() {
         if (_charaParam != null) {
-            // MP‰ñ•œ
+            // MPå›å¾©
             if (_charaParam is CharacterParameter_Player playerParam) {
-                // ‰ñ•œ•s‰ÂŠÔ‚ğƒŠƒZƒbƒg
+                // å›å¾©ä¸å¯æ™‚é–“ã‚’ãƒªã‚»ãƒƒãƒˆ
                 _charaParam.SetUnRecoverTime_MP(0);
                 playerParam.RecoverMP();
             }
         }
 
-        //// ƒXƒ[ƒ‚[ƒVƒ‡ƒ“‰‰o ¦‚ ‚Ü‚è‹C‚¿‚æ‚­‚È‚¢‚Ì‚ÅƒJƒbƒg
+        //// ã‚¹ãƒ­ãƒ¼ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³æ¼”å‡º â€»ã‚ã¾ã‚Šæ°—æŒã¡ã‚ˆããªã„ã®ã§ã‚«ãƒƒãƒˆ
         //if (_justAvoidEffectCoroutine != null) {
         //    StopCoroutine(_justAvoidEffectCoroutine);
         //}
@@ -178,10 +177,10 @@ public class Ability_Light : Ability_Base
     }
 
     private IEnumerator _JustAvoidEffectCoroutine() {
-        // 0.5•bŠÔ0.1”{‘¬
+        // 0.5ç§’é–“0.1å€é€Ÿ
         Time.timeScale = 0.1f;
         yield return new WaitForSecondsRealtime(0.5f);
-        // 0.5 „ƒ„u„{„…„~„t‚©‚¯‚Ä™X‚É1.0”{‘¬‚Ö
+        // 0.5 ÑĞµĞºÑƒĞ½Ğ´ã‹ã‘ã¦å¾ã€…ã«1.0å€é€Ÿã¸
         float t = 0f;
         float duration = 0.5f;
         float startScale = 0.1f;
@@ -201,13 +200,13 @@ public class Ability_Light : Ability_Base
         }
         var light_color = _lightDomeRenderer.color;
         if (_isManualLight || _isAutoLight) {
-            // ”­Œõ’†‚Í™X‚É–¾‚é‚­‚·‚é
+            // ç™ºå…‰ä¸­ã¯å¾ã€…ã«æ˜ã‚‹ãã™ã‚‹
             light_color.a = Mathf.Min(light_color.a + Time.deltaTime * 30.0f, _lightDomeDefaultAlpha);
             if (_light != null) {
                 _light.intensity = Mathf.Min(_light.intensity + Time.deltaTime * 2.0f, _lightDefaultIntensity);
             }
         } else {
-            // ‚·‚®‚ÉˆÃ‚­‚·‚é
+            // ã™ãã«æš—ãã™ã‚‹
             if (light_color.a < _lightDomeDefaultAlpha / 2) {
                 light_color.a = 0;
                 if (_light != null) {
@@ -224,7 +223,7 @@ public class Ability_Light : Ability_Base
     }
 
     /// <summary>
-    /// ‰æ–ÊŠO”»’è
+    /// ç”»é¢å¤–åˆ¤å®š
     /// </summary>
     private bool _IsOutOfScreen() {
         Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
