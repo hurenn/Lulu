@@ -18,6 +18,15 @@ public enum eAbilityType {
 }
 
 public static class AbilityFactory {
+    // 能力タイプごとのプレハブパス（新しい能力はここに1行追加するだけでよい）
+    private static readonly System.Collections.Generic.Dictionary<eAbilityType, string> _abilityPrefabPaths =
+        new System.Collections.Generic.Dictionary<eAbilityType, string> {
+            { eAbilityType.Ice, "Prefabs/Abilities/Ability_Ice" },
+            { eAbilityType.Fire, "Prefabs/Abilities/Ability_Fire" },
+            { eAbilityType.Light, "Prefabs/Abilities/Ability_Light" },
+            { eAbilityType.Warp, "Prefabs/Abilities/Ability_Warp" },
+        };
+
     // 能力UI全体管理
     private static AbilityUIManager _AUMInstance = null;
     private static AbilityUIManager _AbilityUIManager {
@@ -45,22 +54,10 @@ public static class AbilityFactory {
 
         // 能力生成
         Ability_Base ability = null;
-        switch (type) {
-            case eAbilityType.Ice:
-                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Ice>("Prefabs/Abilities/Ability_Ice"));
-                break;
-            case eAbilityType.Fire:
-                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Fire>("Prefabs/Abilities/Ability_Fire"));
-                break;
-            case eAbilityType.Light:
-                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Light>("Prefabs/Abilities/Ability_Light"));
-                break;
-            case eAbilityType.Warp:
-                ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Warp>("Prefabs/Abilities/Ability_Warp"));
-                break;
-            default:
-                Debug.LogError("能力タイプが見つかりませんでした");
-                break;
+        if (_abilityPrefabPaths.TryGetValue(type, out string prefab_path)) {
+            ability = UnityEngine.Object.Instantiate(Resources.Load<Ability_Base>(prefab_path));
+        } else {
+            Debug.LogError("能力タイプが見つかりませんでした");
         }
         if(ability == null) {
             Debug.LogError("能力生成失敗：" + type);

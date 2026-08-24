@@ -40,11 +40,8 @@ public class Player_Character : Character_Base {
     private float _isAvoidTimer = 0.01f;
     private float _currentAvoidTime = 0f;
 
-    // 能力スロット
-    [SerializeField] protected Ability_Base _abilityY;
-    [SerializeField] protected Ability_Base _abilityX;
-    [SerializeField] protected Ability_Base _abilityA;
-    [SerializeField] protected Ability_Base _abilityB;
+    // 能力スロット（要素の並びはeAbilitySlot(Y,X,A,B)の順に対応）
+    [SerializeField] protected Ability_Base[] _abilities = new Ability_Base[4];
     // 能力スロット一時保存
     private Dictionary<eAbilityType, eAbilitySlot> _tmpAbilitySlot = new Dictionary<eAbilityType, eAbilitySlot>();
 
@@ -71,6 +68,10 @@ public class Player_Character : Character_Base {
     // プレイヤー用パラメーター
     private PlayerParameter _playerParam;
 
+    // 起動時に固定で設定する能力（デフォルトはBスロットのワープ）
+    [SerializeField] private eAbilityType _lockedSlotAbility = eAbilityType.Warp;
+    [SerializeField] private eAbilitySlot _lockedSlot = eAbilitySlot.B;
+
     protected override void _Setup() {
         base._Setup();
         if (_warpControl != null) {
@@ -79,9 +80,9 @@ public class Player_Character : Character_Base {
         _playerParam = PlayerParameter.Instance;
         ApplyPlayerParameter();
         _SetupHadAbility();
-        
-        // Bスロットに常にAbility_Warpを設定
-        SetAbilitySlot(eAbilityType.Warp, eAbilitySlot.B, false);
+
+        // 固定スロットに常に指定の能力を設定
+        SetAbilitySlot(_lockedSlotAbility, _lockedSlot, false);
     }
 
     /// <summary>
@@ -119,10 +120,9 @@ public class Player_Character : Character_Base {
             }
         }
 
-        _abilityX?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
-        _abilityY?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
-        _abilityA?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
-        _abilityB?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
+        foreach (var ability in _abilities) {
+            ability?.UpdateParameter(_isRight, transform, _param, _player_charaParam, _warpControl, _motorStates);
+        }
 
         if (_currentWarpCoolTime > 0) {
             _currentWarpCoolTime -= Time.fixedDeltaTime;
@@ -412,10 +412,11 @@ public class Player_Character : Character_Base {
             input.abilityB.pressed = false;
         }
         _inputData = input;
-        _UpdateAbility(_abilityY, input.move, input.abilityY.pressed, input.abilityY.held, input.abilityY.released, input);
-        _UpdateAbility(_abilityX, input.move, input.abilityX.pressed, input.abilityX.held, input.abilityX.released, input);
-        _UpdateAbility(_abilityA, input.move, input.abilityA.pressed, input.abilityA.held, input.abilityA.released, input);
-        _UpdateAbility(_abilityB, input.move, input.abilityB.pressed, input.abilityB.held, input.abilityB.released, input);
+        for (int i = 0; i < _abilities.Length; i++) {
+            eAbilitySlot slot = (eAbilitySlot)i;
+            var button = input.GetAbilityButton(slot);
+            _UpdateAbility(_abilities[i], input.move, button.pressed, button.held, button.released, input);
+        }
         input = _inputData;
 
         base.UpdateControl(input);
@@ -432,22 +433,7 @@ public class Player_Character : Character_Base {
             () => _AbilityResult(eAbilityResult.SpecialEnd, _inputData.move), is_effect);
 
         // スロットにセット
-        switch (ability_slot) {
-            case eAbilitySlot.Y:
-                _abilityY = ability;
-                break;
-            case eAbilitySlot.X:
-                _abilityX = ability;
-                break;
-            case eAbilitySlot.A:
-                _abilityA = ability;
-                break;
-            case eAbilitySlot.B:
-                _abilityB = ability;
-                break;
-            default:
-                break;
-        }
+        _abilities[(int)ability_slot] = ability;
 
         if (!_tmpAbilitySlot.ContainsKey(ability_type)) {
             _tmpAbilitySlot.Add(ability_type, ability_slot);
@@ -602,10 +588,9 @@ public class Player_Character : Character_Base {
 
         if (damage > 0) {
             // 必殺技チャージ
-            _abilityA?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
-            _abilityB?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
-            _abilityX?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
-            _abilityY?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
+            foreach (var ability in _abilities) {
+                ability?.AddSpecialCharge(damage * _SPECIAL_GAGE_DAMAGE_RATE);
+            }
         }
 
         bool isDamaged = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time, is_trap_damage);
@@ -1026,10 +1011,9 @@ public class Player_Character : Character_Base {
     /// <typeparam name="T">取得したい能力の型</typeparam>
     /// <returns>見つかった能力、なければnull</returns>
     private T _GetAbility<T>() where T : Ability_Base {
-        if (_abilityY is T abilityY) return abilityY;
-        if (_abilityX is T abilityX) return abilityX;
-        if (_abilityA is T abilityA) return abilityA;
-        if (_abilityB is T abilityB) return abilityB;
+        foreach (var ability in _abilities) {
+            if (ability is T typed) return typed;
+        }
         return null;
     }
 
@@ -1048,20 +1032,7 @@ public class Player_Character : Character_Base {
     /// <param name="slot">クリアするスロット</param>
     public void ClearAbilitySlotReference(eAbilitySlot slot) {
         // スロットの参照をnullに設定
-        switch (slot) {
-            case eAbilitySlot.Y:
-                _abilityY = null;
-                break;
-            case eAbilitySlot.X:
-                _abilityX = null;
-                break;
-            case eAbilitySlot.A:
-                _abilityA = null;
-                break;
-            case eAbilitySlot.B:
-                _abilityB = null;
-                break;
-        }
+        _abilities[(int)slot] = null;
 
         // 一時保存用Dictionaryからも削除
         if (_tmpAbilitySlot != null) {
@@ -1091,21 +1062,8 @@ public class Player_Character : Character_Base {
         }
 
         // スロットAとスロットBの能力を取得
-        Ability_Base abilityA = slotA switch {
-            eAbilitySlot.Y => _abilityY,
-            eAbilitySlot.X => _abilityX,
-            eAbilitySlot.A => _abilityA,
-            eAbilitySlot.B => _abilityB,
-            _ => null
-        };
-
-        Ability_Base abilityB = slotB switch {
-            eAbilitySlot.Y => _abilityY,
-            eAbilitySlot.X => _abilityX,
-            eAbilitySlot.A => _abilityA,
-            eAbilitySlot.B => _abilityB,
-            _ => null
-        };
+        Ability_Base abilityA = _abilities[(int)slotA];
+        Ability_Base abilityB = _abilities[(int)slotB];
 
         // スロットAとスロットBの能力タイプを取得
         eAbilityType abilityTypeA = eAbilityType.None;
@@ -1129,35 +1087,8 @@ public class Player_Character : Character_Base {
         }
 
         // スロットの参照を入れ替え
-        switch (slotA) {
-            case eAbilitySlot.Y:
-                _abilityY = abilityB;
-                break;
-            case eAbilitySlot.X:
-                _abilityX = abilityB;
-                break;
-            case eAbilitySlot.A:
-                _abilityA = abilityB;
-                break;
-            case eAbilitySlot.B:
-                _abilityB = abilityB;
-                break;
-        }
-
-        switch (slotB) {
-            case eAbilitySlot.Y:
-                _abilityY = abilityA;
-                break;
-            case eAbilitySlot.X:
-                _abilityX = abilityA;
-                break;
-            case eAbilitySlot.A:
-                _abilityA = abilityA;
-                break;
-            case eAbilitySlot.B:
-                _abilityB = abilityA;
-                break;
-        }
+        _abilities[(int)slotA] = abilityB;
+        _abilities[(int)slotB] = abilityA;
 
         Debug.Log($"スロット{slotA}({abilityTypeA})とスロット{slotB}({abilityTypeB})を入れ替えました");
     }
@@ -1167,13 +1098,7 @@ public class Player_Character : Character_Base {
     /// </summary>
     /// <param name="slot">外すスロット</param>
     public void RemoveAbility(eAbilitySlot slot) {
-        var ability = slot switch {
-            eAbilitySlot.Y => _abilityY,
-            eAbilitySlot.X => _abilityX,
-            eAbilitySlot.A => _abilityA,
-            eAbilitySlot.B => _abilityB,
-            _ => null
-        };
+        var ability = _abilities[(int)slot];
 
         AbilityFactory.DestroyAbility(ability, slot);
 
