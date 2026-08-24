@@ -81,6 +81,17 @@ public class PlayerController : MonoBehaviour {
 
         // 保存済みのボタン割り当てを適用
         _LoadBindingOverrides();
+
+        // 操作中のキャラクターとして登録
+        PlayerCharacterManager.SetCurrent(character);
+    }
+
+    /// <summary>
+    /// 操作対象キャラクターを切り替える
+    /// </summary>
+    public void Possess(Character_Base new_character) {
+        character = new_character;
+        PlayerCharacterManager.SetCurrent(new_character);
     }
 
     private void Start() {
