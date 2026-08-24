@@ -34,7 +34,7 @@ public class Signal_LightTutorial : MonoBehaviour {
         _isTutorialActive = true;
 
         CharacterInputData specific_input = new CharacterInputData();
-        specific_input.abilityXPressed = true; // Xボタン入力を要求
+        specific_input.abilityX.pressed = true; // Xボタン入力を要求
         playerController.SetSpecificInput(specific_input, () => {
             // 入力完了後の処理
             _isTutorialActive = false;
@@ -44,7 +44,7 @@ public class Signal_LightTutorial : MonoBehaviour {
             playerController.isEnabledCharacterInput = true;
 
             // Xボタン入力を実行
-            playerController.OnAbilityX();
+            playerController.TriggerAbilityInput(eAbilitySlot.X);
         });
     }
 }

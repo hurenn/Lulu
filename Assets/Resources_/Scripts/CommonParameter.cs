@@ -86,23 +86,32 @@ public class CommonParameter : ScriptableObject
     public int attackUpPerLevel = 5; // レベルアップ毎の攻撃力増加量
 }
 
+/// <summary>
+/// 能力ボタン1つ分の押下状態
+/// </summary>
+public struct AbilityButtonState
+{
+    public bool pressed;  // 押した瞬間
+    public bool held;     // 押し続けている
+    public bool released; // 離した瞬間
+
+    public void Clear()
+    {
+        pressed = false;
+        held = false;
+        released = false;
+    }
+}
+
 public struct CharacterInputData
 {
     public void Clear()
     {
         move = Vector2.zero;
-        abilityBPressed = false;
-        abilityBHeld = false;
-        abilityBReleased = false;
-        abilityYPressed = false;
-        abilityYHeld = false;
-        abilityYReleased = false;
-        abilityXPressed = false;
-        abilityXHeld = false;
-        abilityXReleased = false;
-        abilityAPressed = false;
-        abilityAHeld = false;
-        abilityAReleased = false;
+        abilityY.Clear();
+        abilityX.Clear();
+        abilityA.Clear();
+        abilityB.Clear();
         messageNextPressed = false;
     }
 
@@ -111,19 +120,36 @@ public struct CharacterInputData
     public bool isJumpHeld;     // ジャンプボタンを押し続ける
     public bool isJumpReleased; // ジャンプボタンを離した瞬間
 
-    public bool abilityBPressed; // Bボタンを押した瞬間
-    public bool abilityBHeld;    // Bボタンを押し続ける
-    public bool abilityBReleased; // Bボタンを離した瞬間
-
-    public bool abilityYPressed; // Yボタンを押した瞬間
-    public bool abilityYHeld;    // Yボタンを押し続ける
-    public bool abilityYReleased; // Yボタンを離した瞬間
-    public bool abilityXPressed; // Xボタンを押した瞬間
-    public bool abilityXHeld;    // Xボタンを押し続ける
-    public bool abilityXReleased; // Xボタンを離した瞬間
-    public bool abilityAPressed; // Aボタンを押した瞬間
-    public bool abilityAHeld;    // Aボタンを押し続ける
-    public bool abilityAReleased; // Aボタンを離した瞬間
+    // 能力スロットごとのボタン状態（スロットとボタンの対応はPlayerControllerが管理する）
+    public AbilityButtonState abilityY;
+    public AbilityButtonState abilityX;
+    public AbilityButtonState abilityA;
+    public AbilityButtonState abilityB;
 
     public bool messageNextPressed; // メッセージ送りボタンを押した瞬間
+
+    /// <summary>
+    /// スロット指定で能力ボタンの状態を取得
+    /// </summary>
+    public AbilityButtonState GetAbilityButton(eAbilitySlot slot) {
+        return slot switch {
+            eAbilitySlot.Y => abilityY,
+            eAbilitySlot.X => abilityX,
+            eAbilitySlot.A => abilityA,
+            eAbilitySlot.B => abilityB,
+            _ => default
+        };
+    }
+
+    /// <summary>
+    /// スロット指定で能力ボタンの状態を設定
+    /// </summary>
+    public void SetAbilityButton(eAbilitySlot slot, AbilityButtonState state) {
+        switch (slot) {
+            case eAbilitySlot.Y: abilityY = state; break;
+            case eAbilitySlot.X: abilityX = state; break;
+            case eAbilitySlot.A: abilityA = state; break;
+            case eAbilitySlot.B: abilityB = state; break;
+        }
+    }
 }

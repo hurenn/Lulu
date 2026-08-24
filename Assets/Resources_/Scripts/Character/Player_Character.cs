@@ -402,20 +402,20 @@ public class Player_Character : Character_Base {
 
     public override void UpdateControl(CharacterInputData input) {
         if (_isDead || _specialUsing) {
-            input.abilityXHeld = false;
-            input.abilityXPressed = false;
-            input.abilityYHeld = false;
-            input.abilityYPressed = false;
-            input.abilityAHeld = false;
-            input.abilityAPressed = false;
-            input.abilityBHeld = false;
-            input.abilityBPressed = false;
+            input.abilityX.held = false;
+            input.abilityX.pressed = false;
+            input.abilityY.held = false;
+            input.abilityY.pressed = false;
+            input.abilityA.held = false;
+            input.abilityA.pressed = false;
+            input.abilityB.held = false;
+            input.abilityB.pressed = false;
         }
         _inputData = input;
-        _UpdateAbility(_abilityY, input.move, input.abilityYPressed, input.abilityYHeld, input.abilityYReleased, input);
-        _UpdateAbility(_abilityX, input.move, input.abilityXPressed, input.abilityXHeld, input.abilityXReleased, input);
-        _UpdateAbility(_abilityA, input.move, input.abilityAPressed, input.abilityAHeld, input.abilityAReleased, input);
-        _UpdateAbility(_abilityB, input.move, input.abilityBPressed, input.abilityBHeld, input.abilityBReleased, input);
+        _UpdateAbility(_abilityY, input.move, input.abilityY.pressed, input.abilityY.held, input.abilityY.released, input);
+        _UpdateAbility(_abilityX, input.move, input.abilityX.pressed, input.abilityX.held, input.abilityX.released, input);
+        _UpdateAbility(_abilityA, input.move, input.abilityA.pressed, input.abilityA.held, input.abilityA.released, input);
+        _UpdateAbility(_abilityB, input.move, input.abilityB.pressed, input.abilityB.held, input.abilityB.released, input);
         input = _inputData;
 
         base.UpdateControl(input);

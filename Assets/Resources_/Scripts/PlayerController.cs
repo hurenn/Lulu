@@ -11,19 +11,10 @@ public class PlayerController : MonoBehaviour {
     // 方向入力
     private Vector2 _moveInputValue;
 
-    // Abilityボタンの状態
-    private bool _isAbilityYPressed = false;
-    private bool _isAbilityYHeld = false;
-    private bool _isAbilityYReleased = false;
-    private bool _isAbilityXPressed = false;
-    private bool _isAbilityXHeld = false;
-    private bool _isAbilityXReleased = false;
-    private bool _isAbilityAPressed = false;
-    private bool _isAbilityAHeld = false;
-    private bool _isAbilityAReleased = false;
-    private bool _isAbilityBPressed = false;
-    private bool _isAbilityBHeld = false;
-    private bool _isAbilityBReleased = false;
+    // Abilityボタンの状態（スロットごと）
+    private AbilityButtonState[] _abilityButtons = new AbilityButtonState[4];
+    // スロットと物理ボタン(InputAction)の対応表（ボタンコンフィグの差し替え対象）
+    private InputAction[] _abilitySlotActions = new InputAction[4];
 
     // メッセージ送り入力
     private bool _isMessageNextPressed = false;
@@ -66,6 +57,9 @@ public class PlayerController : MonoBehaviour {
     private const float PAUSE_MENU_INPUT_COOLDOWN = 0.5f;
     private const float PAUSE_DECIDE_INPUT_COOLDOWN = 0.3f; // 決定入力のクールタイム
 
+    // ボタン割り当ての保存キー
+    private const string BINDING_OVERRIDES_PREF_KEY = "InputBindingOverrides";
+
     // Pause_UIインスタンスをキャッシュして取得
     private Pause_UI GetPauseUI()
     {
@@ -78,6 +72,15 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         _inputActions = new InputActions();
+
+        // スロットと物理ボタンの対応表を構築
+        _abilitySlotActions[(int)eAbilitySlot.Y] = _inputActions.Player.AbilityY;
+        _abilitySlotActions[(int)eAbilitySlot.X] = _inputActions.Player.AbilityX;
+        _abilitySlotActions[(int)eAbilitySlot.A] = _inputActions.Player.AbilityA;
+        _abilitySlotActions[(int)eAbilitySlot.B] = _inputActions.Player.AbilityB;
+
+        // 保存済みのボタン割り当てを適用
+        _LoadBindingOverrides();
     }
 
     private void Start() {
@@ -93,14 +96,11 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Move.performed += _OnMove;
         _inputActions.Player.Move.canceled += _OnMove;
 
-        _inputActions.Player.AbilityY.performed += OnAbilityY;
-        _inputActions.Player.AbilityY.canceled += OnAbilityYRelease;
-        _inputActions.Player.AbilityX.performed += OnAbilityX;
-        _inputActions.Player.AbilityX.canceled += OnAbilityXRelease;
-        _inputActions.Player.AbilityA.performed += OnAbilityA;
-        _inputActions.Player.AbilityA.canceled += OnAbilityARelease;
-        _inputActions.Player.AbilityB.performed += OnAbilityB;
-        _inputActions.Player.AbilityB.canceled += OnAbilityBRelease;
+        foreach (var action in _abilitySlotActions) {
+            action.performed += _OnAbilityPerformed;
+            action.canceled += _OnAbilityCanceled;
+        }
+
         // Pauseアクション購読
         _inputActions.Player.Pause.performed += OnPause;
     }
@@ -108,14 +108,12 @@ public class PlayerController : MonoBehaviour {
     private void OnDisable() {
         _inputActions.Player.Move.performed -= _OnMove;
         _inputActions.Player.Move.canceled -= _OnMove;
-        _inputActions.Player.AbilityY.performed -= OnAbilityY;
-        _inputActions.Player.AbilityY.canceled -= OnAbilityYRelease;
-        _inputActions.Player.AbilityX.performed -= OnAbilityX;
-        _inputActions.Player.AbilityX.canceled -= OnAbilityXRelease;
-        _inputActions.Player.AbilityA.performed -= OnAbilityA;
-        _inputActions.Player.AbilityA.canceled -= OnAbilityARelease;
-        _inputActions.Player.AbilityB.performed -= OnAbilityB;
-        _inputActions.Player.AbilityB.canceled -= OnAbilityBRelease;
+
+        foreach (var action in _abilitySlotActions) {
+            action.performed -= _OnAbilityPerformed;
+            action.canceled -= _OnAbilityCanceled;
+        }
+
         // Pauseアクション解除
         _inputActions.Player.Pause.performed -= OnPause;
         _inputActions.Player.Disable();
@@ -142,7 +140,7 @@ public class PlayerController : MonoBehaviour {
             {
                 if (_pauseMenuInputCooldown > 0f) _pauseMenuInputCooldown -= Time.unscaledDeltaTime;
                 if (_pauseDecideInputCooldown > 0f) _pauseDecideInputCooldown -= Time.unscaledDeltaTime;
-                
+
                 float y = _moveInputValue.y;
                 float x = _moveInputValue.x;
                 // 入力無しの場合はクールタイムリセット
@@ -194,18 +192,9 @@ public class PlayerController : MonoBehaviour {
         if (_moveInputValue.y < -0.5f) move_input.y = -1f;
         input.move = move_input;
 
-        input.abilityBPressed = _isAbilityBPressed;
-        input.abilityBHeld = _isAbilityBHeld;
-        input.abilityBReleased = _isAbilityBReleased;
-        input.abilityYPressed = _isAbilityYPressed;
-        input.abilityYHeld = _isAbilityYHeld;
-        input.abilityYReleased = _isAbilityYReleased;
-        input.abilityXPressed = _isAbilityXPressed;
-        input.abilityXHeld = _isAbilityXHeld;
-        input.abilityXReleased = _isAbilityXReleased;
-        input.abilityAPressed = _isAbilityAPressed;
-        input.abilityAHeld = _isAbilityAHeld;
-        input.abilityAReleased = _isAbilityAReleased;
+        for (int i = 0; i < _abilityButtons.Length; i++) {
+            input.SetAbilityButton((eAbilitySlot)i, _abilityButtons[i]);
+        }
         input.isJumpPressed = false;
         input.isJumpReleased = false;
         virtualInput = input;
@@ -213,7 +202,7 @@ public class PlayerController : MonoBehaviour {
         if (_wasPauseOpen) {
             // ポーズ画面を閉じた直後は入力をリセット
             _wasPauseOpen = false;
-            input.abilityBPressed = false;
+            input.abilityB.pressed = false;
         }
 
         // 特定入力のチェック
@@ -234,101 +223,60 @@ public class PlayerController : MonoBehaviour {
         character.IsEventInvincible = !isEnabledCharacterInput;
         character.UpdateControl(input);
 
-        _isAbilityBPressed = false;
-        _isAbilityBReleased = false;
-        _isAbilityYPressed = false;
-        _isAbilityYReleased = false;
-        _isAbilityXPressed = false;
-        _isAbilityXReleased = false;
-        _isAbilityAPressed = false;
-        _isAbilityAReleased = false;
+        for (int i = 0; i < _abilityButtons.Length; i++) {
+            _abilityButtons[i].pressed = false;
+            _abilityButtons[i].released = false;
+        }
     }
 
     private void _OnMove(InputAction.CallbackContext context) {
         _moveInputValue = context.ReadValue<Vector2>();
     }
 
-    private void OnAbilityB(InputAction.CallbackContext context) {
+    private void _OnAbilityPerformed(InputAction.CallbackContext context) {
+        TriggerAbilityInput(_GetSlotForAction(context.action));
+    }
+
+    private void _OnAbilityCanceled(InputAction.CallbackContext context) {
+        ReleaseAbilityInput(_GetSlotForAction(context.action));
+    }
+
+    /// <summary>
+    /// 物理ボタン(InputAction)からスロットを逆引き
+    /// </summary>
+    private eAbilitySlot _GetSlotForAction(InputAction action) {
+        for (int i = 0; i < _abilitySlotActions.Length; i++) {
+            if (_abilitySlotActions[i] == action) {
+                return (eAbilitySlot)i;
+            }
+        }
+        return default;
+    }
+
+    /// <summary>
+    /// 指定スロットの能力ボタンが押された扱いにする（チュートリアル等からの疑似入力にも使用）
+    /// </summary>
+    public void TriggerAbilityInput(eAbilitySlot slot) {
         if (!_wasMessageNextPressed) {
             _isMessageNextPressed = true;
             _wasMessageNextPressed = true; // ここでtrueに設定
         }
-        _isAbilityBPressed = true;
-        _isAbilityBHeld = true;
-        
+        _abilityButtons[(int)slot].pressed = true;
+        _abilityButtons[(int)slot].held = true;
+
         // UIフラッシュ演出
-        _FlashAbilityUI(eAbilitySlot.B);
+        _FlashAbilityUI(slot);
     }
 
-    private void OnAbilityBRelease(InputAction.CallbackContext context) {
+    /// <summary>
+    /// 指定スロットの能力ボタンが離された扱いにする
+    /// </summary>
+    public void ReleaseAbilityInput(eAbilitySlot slot) {
         _isMessageNextPressed = false;
-        _isAbilityBPressed = false;
-        _isAbilityBHeld = false;
-        _isAbilityBReleased = true;
+        _abilityButtons[(int)slot].pressed = false;
+        _abilityButtons[(int)slot].held = false;
+        _abilityButtons[(int)slot].released = true;
         _wasMessageNextPressed = false; // Release時にfalseに戻す
-    }
-
-    private void OnAbilityY(InputAction.CallbackContext context) {
-        if (!_wasMessageNextPressed) {
-            _isMessageNextPressed = true;
-            _wasMessageNextPressed = true;
-        }
-        _isAbilityYPressed = true;
-        _isAbilityYHeld = true;
-        
-        // UIフラッシュ演出
-        _FlashAbilityUI(eAbilitySlot.Y);
-    }
-
-    private void OnAbilityYRelease(InputAction.CallbackContext context) {
-        _isMessageNextPressed = false;
-        _isAbilityYPressed = false;
-        _isAbilityYHeld = false;
-        _isAbilityYReleased = true;
-        _wasMessageNextPressed = false;
-    }
-
-    private void OnAbilityX(InputAction.CallbackContext context) {
-        OnAbilityX();
-    }
-    public void OnAbilityX() {
-        if (!_wasMessageNextPressed) {
-            _isMessageNextPressed = true;
-            _wasMessageNextPressed = true;
-        }
-        _isAbilityXPressed = true;
-        _isAbilityXHeld = true;
-        
-        // UIフラッシュ演出
-        _FlashAbilityUI(eAbilitySlot.X);
-    }
-    
-    private void OnAbilityXRelease(InputAction.CallbackContext context) {
-        _isMessageNextPressed = false;
-        _isAbilityXPressed = false;
-        _isAbilityXHeld = false;
-        _isAbilityXReleased = true;
-        _wasMessageNextPressed = false;
-    }
-
-    private void OnAbilityA(InputAction.CallbackContext context) {
-        if (!_wasMessageNextPressed) {
-            _isMessageNextPressed = true;
-            _wasMessageNextPressed = true;
-        }
-        _isAbilityAPressed = true;
-        _isAbilityAHeld = true;
-        
-        // UIフラッシュ演出
-        _FlashAbilityUI(eAbilitySlot.A);
-    }
-    
-    private void OnAbilityARelease(InputAction.CallbackContext context) {
-        _isMessageNextPressed = false;
-        _isAbilityAPressed = false;
-        _isAbilityAHeld = false;
-        _isAbilityAReleased = true;
-        _wasMessageNextPressed = false;
     }
 
     /// <summary>
@@ -364,18 +312,18 @@ public class PlayerController : MonoBehaviour {
         }
         _insertMoveMode = insertMove.magnitude > 0.5f;
 
-        // ジャンプ入力
-        if (insertJumpHeld && !_isAbilityBHeld) {
-            _isAbilityBPressed = true;
-            _isAbilityBHeld = true;
-            input.abilityBPressed = _isAbilityBPressed;
-            input.abilityBHeld = _isAbilityBHeld;
+        // ジャンプ入力（Bスロット扱い）
+        if (insertJumpHeld && !_abilityButtons[(int)eAbilitySlot.B].held) {
+            _abilityButtons[(int)eAbilitySlot.B].pressed = true;
+            _abilityButtons[(int)eAbilitySlot.B].held = true;
+            input.abilityB.pressed = true;
+            input.abilityB.held = true;
         }
-        if (!insertJumpHeld && _isAbilityBHeld) {
-            _isAbilityBPressed = false;
-            _isAbilityBHeld = false;
-            input.abilityBPressed = _isAbilityBPressed;
-            input.abilityBHeld = _isAbilityBHeld;
+        if (!insertJumpHeld && _abilityButtons[(int)eAbilitySlot.B].held) {
+            _abilityButtons[(int)eAbilitySlot.B].pressed = false;
+            _abilityButtons[(int)eAbilitySlot.B].held = false;
+            input.abilityB.pressed = false;
+            input.abilityB.held = false;
         }
 
         // メッセージ送り入力
@@ -402,16 +350,16 @@ public class PlayerController : MonoBehaviour {
             isInputReceived = true; // 方向入力が無い場合は常にtrue
         }
         // ジャンプ入力のチェック
-        if (specific_input.abilityBPressed && isInputReceived == true) {
-            if (input.abilityBPressed) {
+        if (specific_input.abilityB.pressed && isInputReceived == true) {
+            if (input.abilityB.pressed) {
                 isInputReceived = true;
             } else {
                 isInputReceived = false;
             }
         }
         // Xボタン入力のチェック
-        if (specific_input.abilityXPressed && isInputReceived == true) {
-            if (input.abilityXPressed) {
+        if (specific_input.abilityX.pressed && isInputReceived == true) {
+            if (input.abilityX.pressed) {
                 isInputReceived = true;
             } else {
                 isInputReceived = false;
@@ -429,6 +377,59 @@ public class PlayerController : MonoBehaviour {
     public void SetInput(CharacterInputData input) {
         this.input = input;
     }
+
+    #region ボタンコンフィグ（リバインド）
+    /// <summary>
+    /// 保存済みのボタン割り当てを読み込んで適用
+    /// </summary>
+    private void _LoadBindingOverrides() {
+        if (PlayerPrefs.HasKey(BINDING_OVERRIDES_PREF_KEY)) {
+            string json = PlayerPrefs.GetString(BINDING_OVERRIDES_PREF_KEY);
+            _inputActions.LoadBindingOverridesFromJson(json);
+        }
+    }
+
+    /// <summary>
+    /// 現在のボタン割り当てを保存
+    /// </summary>
+    public void SaveBindingOverrides() {
+        string json = _inputActions.SaveBindingOverridesAsJson();
+        PlayerPrefs.SetString(BINDING_OVERRIDES_PREF_KEY, json);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// 指定スロットのボタンを対話式に再割り当てする
+    /// </summary>
+    /// <param name="slot">再割り当て対象のスロット</param>
+    /// <param name="onComplete">完了時のコールバック</param>
+    public void RebindAbilitySlot(eAbilitySlot slot, System.Action onComplete = null) {
+        var action = _abilitySlotActions[(int)slot];
+        action.Disable();
+        action.PerformInteractiveRebinding()
+            .WithControlsExcluding("Mouse")
+            .OnMatchWaitForAnother(0.1f)
+            .OnComplete(operation => {
+                operation.Dispose();
+                action.Enable();
+                SaveBindingOverrides();
+                onComplete?.Invoke();
+            })
+            .OnCancel(operation => {
+                operation.Dispose();
+                action.Enable();
+            })
+            .Start();
+    }
+
+    /// <summary>
+    /// 指定スロットのボタン割り当てをデフォルトに戻す
+    /// </summary>
+    public void ResetAbilitySlotBinding(eAbilitySlot slot) {
+        _abilitySlotActions[(int)slot].RemoveAllBindingOverrides();
+        SaveBindingOverrides();
+    }
+    #endregion
 
     #region Inspector Control Methods
     /// <summary>
@@ -450,18 +451,9 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     private void _ResetInput() {
         _moveInputValue = Vector2.zero;
-        _isAbilityBPressed = false;
-        _isAbilityBHeld = false;
-        _isAbilityBReleased = false;
-        _isAbilityYPressed = false;
-        _isAbilityYHeld = false;
-        _isAbilityYReleased = false;
-        _isAbilityXPressed = false;
-        _isAbilityXHeld = false;
-        _isAbilityXReleased = false;
-        _isAbilityAPressed = false;
-        _isAbilityAHeld = false;
-        _isAbilityAReleased = false;
+        for (int i = 0; i < _abilityButtons.Length; i++) {
+            _abilityButtons[i].Clear();
+        }
         _isMessageNextPressed = false;
         virtualInput.Clear();
     }
