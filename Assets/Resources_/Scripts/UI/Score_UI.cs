@@ -1,11 +1,11 @@
 using UnityEngine;
 
 /// <summary>
-/// ƒXƒRƒA•\¦—pUIƒRƒ“ƒ|[ƒlƒ“ƒg
+/// ã‚¹ã‚³ã‚¢è¡¨ç¤ºç”¨UIã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 /// </summary>
 public class Score_UI : MonoBehaviour
 {
-    [SerializeField] private TMPro.TextMeshProUGUI _scoreText; // ƒXƒRƒA•\¦—pƒeƒLƒXƒg
+    [SerializeField] private TMPro.TextMeshProUGUI _scoreText; // ã‚¹ã‚³ã‚¢è¡¨ç¤ºç”¨ãƒ†ã‚­ã‚¹ãƒˆ
 
     private void Start()
     {
@@ -16,14 +16,14 @@ public class Score_UI : MonoBehaviour
                 return;
             }
         }
-        // ‰ŠúƒXƒRƒA•\¦
+        // åˆæœŸã‚¹ã‚³ã‚¢è¡¨ç¤º
         //_UpdateScoreDisplay(PlayerParameter.Instance.GetScore());
-        // ƒXƒRƒA‚ª•Ï‰»‚µ‚½‚Æ‚«‚ÉUI‚ğXV‚·‚éƒCƒxƒ“ƒg‚ğ“o˜^
+        // ã‚¹ã‚³ã‚¢ãŒå¤‰åŒ–ã—ãŸã¨ãã«UIã‚’æ›´æ–°ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™»éŒ²
         //PlayerParameter.Instance.OnScoreChanged += _UpdateScoreDisplay;
     }
 
     private void OnDestroy() {
-        // ƒCƒxƒ“ƒg“o˜^‰ğœ
+        // ã‚¤ãƒ™ãƒ³ãƒˆç™»éŒ²è§£é™¤
         if (PlayerParameter.Instance != null) {
            //PlayerParameter.Instance.OnScoreChanged -= _UpdateScoreDisplay;
         }

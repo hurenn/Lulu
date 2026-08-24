@@ -15,7 +15,7 @@ public class HitStopManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒg“o˜^
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç™»éŒ²
     /// </summary>
     public void RegisterTarget(LocalTimeController target) {
         if (!_targets.Contains(target)) {
@@ -24,7 +24,7 @@ public class HitStopManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒg“o˜^‰ğœ
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç™»éŒ²è§£é™¤
     /// </summary>
     public void Unregister(LocalTimeController target) {
         if (_targets.Contains(target)) {

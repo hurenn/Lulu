@@ -2,20 +2,20 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[‚Ìƒpƒ‰ƒ[ƒ^[ŠÇ—
+/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ç®¡ç†
 /// </summary>
 public class CharacterParameter_Player : CharacterParameter {
-    private const float _warpCost = 30.0f; // ƒ[ƒv‚É•K—v‚ÈMP
-    private const float _iceCost = 10.0f; // •X‚Ì”\—Í‚É•K—v‚ÈMP
-    private const float _lockonSlashCost = 10.0f; // ƒƒbƒNƒIƒ“UŒ‚‚É•K—v‚ÈMP
-    private const float _autoSlash = 5.0f; // •X©“®UŒ‚‚É•K—v‚ÈMP
-    private const float _fireCost = 5.0f; // ‰Š‚Ì”\—Í‚É•K—v‚ÈMP
-    private const float _lightCost = 15.0f; // Œõ‚Ì”\—Í‚É•K—v‚ÈMP
-    private const float _lightAvoidCost = 5.0f; // ‰ñ”ğ‚É•K—v‚ÈMP
-    private const float _lightAutoAvoidCost = 5.0f; // ©“®‰ñ”ğ‚É•K—v‚ÈMP
-    private const float _overheatRecoveryTime = 3.0f; // ƒI[ƒo[ƒq[ƒg‰ñ•œŠÔ
+    private const float _warpCost = 30.0f; // ãƒ¯ãƒ¼ãƒ—ã«å¿…è¦ãªMP
+    private const float _iceCost = 10.0f; // æ°·ã®èƒ½åŠ›ã«å¿…è¦ãªMP
+    private const float _lockonSlashCost = 10.0f; // ãƒ­ãƒƒã‚¯ã‚ªãƒ³æ”»æ’ƒã«å¿…è¦ãªMP
+    private const float _autoSlash = 5.0f; // æ°·è‡ªå‹•æ”»æ’ƒã«å¿…è¦ãªMP
+    private const float _fireCost = 5.0f; // ç‚ã®èƒ½åŠ›ã«å¿…è¦ãªMP
+    private const float _lightCost = 15.0f; // å…‰ã®èƒ½åŠ›ã«å¿…è¦ãªMP
+    private const float _lightAvoidCost = 5.0f; // å›é¿æ™‚ã«å¿…è¦ãªMP
+    private const float _lightAutoAvoidCost = 5.0f; // è‡ªå‹•å›é¿æ™‚ã«å¿…è¦ãªMP
+    private const float _overheatRecoveryTime = 3.0f; // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆå›å¾©æ™‚é–“
 
-    // Œõ”\—Í‚É‚æ‚é–³“Gƒtƒ‰ƒO
+    // å…‰èƒ½åŠ›ã«ã‚ˆã‚‹ç„¡æ•µãƒ•ãƒ©ã‚°
     public bool isLightInvincible = false;
     public bool isAutoLightInvincible = false;
 
@@ -24,7 +24,7 @@ public class CharacterParameter_Player : CharacterParameter {
     private float _maxMP = 100.0f;
     private float _viewMP = 0.0f;
 
-    // MP‘S‰õƒAƒjƒÄ¶§Œä
+    // MPå…¨å¿«ã‚¢ãƒ‹ãƒ¡å†ç”Ÿåˆ¶å¾¡
     private float _waitViewMpGauge = 0.05f;
     private float _currentWaitViewMpGauge = 0.0f;
 
@@ -38,29 +38,29 @@ public class CharacterParameter_Player : CharacterParameter {
     }
 
     private bool _isViewMpFilled = false;
-    // MPƒQ[ƒW‚ª”ñ•\¦‚É‚È‚é‚Ü‚Å‚ÌŠÔ
+    // MPã‚²ãƒ¼ã‚¸ãŒéè¡¨ç¤ºã«ãªã‚‹ã¾ã§ã®æ™‚é–“
     private float _mpHideTime = 1.0f;
     private float _currentMpHideTime = 0f;
 
     private float _currentMP { get; set; }
-    // MP‚ªÅ‘å‚©‚Ç‚¤‚©
+    // MPãŒæœ€å¤§ã‹ã©ã†ã‹
     public bool isMaxMP => _currentMP >= _maxMP;
-    // ƒI[ƒo[ƒq[ƒg‚©‚ç‚Ì‰ñ•œŠÔ
+    // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆã‹ã‚‰ã®å›å¾©æ™‚é–“
     private float _overheatRecoverRate => (_defaultMaxMP / _overheatRecoveryTime) * Time.deltaTime;
 
-    // ƒI[ƒo[ƒq[ƒg’†‚©‚Ç‚¤‚©
+    // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆä¸­ã‹ã©ã†ã‹
     public bool isOverheat { get; set; }
-    // MP‰ñ•œ•s‰Âƒ^ƒCƒ}[
+    // MPå›å¾©ä¸å¯ã‚¿ã‚¤ãƒãƒ¼
     private float _currentUnRecoverableTime_MP = 0.0f;
     public void SetUnRecoverTime_MP(float time) {
         _currentUnRecoverableTime_MP = time;
     }
 
-    // MP”wŒi
+    // MPèƒŒæ™¯
     [SerializeField] private GameObject _mpBackground;
-    // MP•\¦UIi”z—ñ‚É“ˆêj
+    // MPè¡¨ç¤ºUIï¼ˆé…åˆ—ã«çµ±ä¸€ï¼‰
     [SerializeField] private Image[] _mpImages;
-    // MPƒQ[ƒWƒAƒjƒ[ƒVƒ‡ƒ“
+    // MPã‚²ãƒ¼ã‚¸ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
     [SerializeField] private Animator _mpFilled;
 
     [SerializeField] private AudioSource _audioSource;
@@ -69,62 +69,62 @@ public class CharacterParameter_Player : CharacterParameter {
     protected override void _Update() {
         base._Update();
 
-        // ƒI[ƒo[ƒq[ƒgƒ^ƒCƒ}[‚ÌXV
+        // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°
         _UpdateOverheatTimer();
-        // MP‰ñ•œ•s‰Âƒ^ƒCƒ}[‚ÌXV
+        // MPå›å¾©ä¸å¯ã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°
         if (_currentUnRecoverableTime_MP > 0) {
             _currentUnRecoverableTime_MP -= Time.deltaTime;
         }
 
-        // MPƒQ[ƒW•\¦‘Ò‚¿ŠÔ‚ÌXV
+        // MPã‚²ãƒ¼ã‚¸è¡¨ç¤ºå¾…ã¡æ™‚é–“ã®æ›´æ–°
         if (_currentWaitViewMpGauge > 0) {
             _currentWaitViewMpGauge -= Time.deltaTime;
         }
 
-        // ƒŒƒxƒ‹ƒAƒbƒv‚ÌÅ‘åMPã¸ˆ—
+        // ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã®æœ€å¤§MPä¸Šæ˜‡å‡¦ç†
         if (_addMaxMP > 0) {
             _maxMP += 1.0f;
             _currentMP = Mathf.Min(_currentMP + 1.0f, _maxMP);
             _addMaxMP = Mathf.Max(0, _addMaxMP - 1.0f);
 
-            // MPƒQ[ƒW•\¦
+            // MPã‚²ãƒ¼ã‚¸è¡¨ç¤º
             _mpBackground.SetActive(true);
 
-            // ”ñ•\¦ƒ^ƒCƒ}[ƒŠƒZƒbƒg
+            // éè¡¨ç¤ºã‚¿ã‚¤ãƒãƒ¼ãƒªã‚»ãƒƒãƒˆ
             _currentMpHideTime = 0;
-            // MPƒQ[ƒW‚ÌXV
+            // MPã‚²ãƒ¼ã‚¸ã®æ›´æ–°
             _UpdateMPUI();
         }
 
-        // MPƒQ[ƒW”ñ•\¦ƒ^ƒCƒ}[‚ÌXV
+        // MPã‚²ãƒ¼ã‚¸éè¡¨ç¤ºã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°
         if (_mpBackground != null && _mpBackground.activeSelf) {
             if (_isViewMpFilled) {
                 if (_currentMpHideTime < _mpHideTime) {
                     _currentMpHideTime += Time.deltaTime;
                 } else {
-                    // MPƒQ[ƒW”ñ•\¦
+                    // MPã‚²ãƒ¼ã‚¸éè¡¨ç¤º
                     _mpBackground.SetActive(false);
                 }
             } else {
-                // ”ñ•\¦ƒ^ƒCƒ}[ƒŠƒZƒbƒg
+                // éè¡¨ç¤ºã‚¿ã‚¤ãƒãƒ¼ãƒªã‚»ãƒƒãƒˆ
                 _currentMpHideTime = 0;
             }
         }
 
-        // •\¦MP‚ÌXV
+        // è¡¨ç¤ºMPã®æ›´æ–°
         if (_viewMP != _currentMP || _currentMP < _maxMP) {
             _UpdateMPUI();
         }
     }
 
     /// <summary>
-    /// ƒI[ƒo[ƒq[ƒgƒ^ƒCƒ}[‚ÌXV
+    /// ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°
     /// </summary>
     private void _UpdateOverheatTimer() {
         if (isOverheat) {
             _currentMP = Mathf.Clamp(_currentMP + _overheatRecoverRate, 0, _maxMP);
             if (_currentMP >= _defaultMaxMP) {
-                // ƒI[ƒo[ƒq[ƒg‰ğœ
+                // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆè§£é™¤
                 isOverheat = false;
                 _currentMP = _maxMP;
             }
@@ -133,12 +133,12 @@ public class CharacterParameter_Player : CharacterParameter {
     }
 
     /// <summary>
-    /// MPÁ”ï
+    /// MPæ¶ˆè²»
     /// </summary>
     /// <param name="ability_type"></param>
     public bool ConsumeMP(eAbilityType ability_type) {
         if (isOverheat) {
-            // ƒI[ƒo[ƒq[ƒg’†‚Íg—p•s‰Â
+            // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆä¸­ã¯ä½¿ç”¨ä¸å¯
             return false;
         }
 
@@ -178,23 +178,23 @@ public class CharacterParameter_Player : CharacterParameter {
 
         _currentMP -= amount;
         if (_currentMP < 0) {
-            // ƒI[ƒo[ƒq[ƒgˆ—
+            // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆå‡¦ç†
             _currentMP = 0;
             isOverheat = true;
         }
 
-        // MPƒQ[ƒW‚ÌXV
+        // MPã‚²ãƒ¼ã‚¸ã®æ›´æ–°
         _UpdateMPUI();
     }
 
     /// <summary>
-    /// MP‰ñ•œ
+    /// MPå›å¾©
     /// </summary>
-    /// <param name="amount">‰ñ•œ’l</param>
-    /// <param name="force">‹­§‰ñ•œƒtƒ‰ƒO</param>
+    /// <param name="amount">å›å¾©å€¤</param>
+    /// <param name="force">å¼·åˆ¶å›å¾©ãƒ•ãƒ©ã‚°</param>
     public bool RecoverMP(float amount, bool force = false) {
         if (!force && (isOverheat || _currentUnRecoverableTime_MP > 0)) {
-            // ‰ñ•œ•s‰Â”»’è
+            // å›å¾©ä¸å¯åˆ¤å®š
             return false;
         }
         _currentMP += amount;
@@ -202,7 +202,7 @@ public class CharacterParameter_Player : CharacterParameter {
             _currentMP = _maxMP;
         }
 
-        // MPƒQ[ƒW‚ÌXV
+        // MPã‚²ãƒ¼ã‚¸ã®æ›´æ–°
         _UpdateMPUI();
         return true;
     }
@@ -219,15 +219,15 @@ public class CharacterParameter_Player : CharacterParameter {
     }
 
     /// <summary>
-    /// MP UI‚ÌXV
+    /// MP UIã®æ›´æ–°
     /// </summary>
     private void _UpdateMPUI() {
         if (_currentWaitViewMpGauge > 0) {
-            // MP‘S‰õƒAƒjƒ‘Ò‚¿’†‚ÍXV‚µ‚È‚¢
+            // MPå…¨å¿«ã‚¢ãƒ‹ãƒ¡å¾…ã¡ä¸­ã¯æ›´æ–°ã—ãªã„
             return;
         }
 
-        // •\¦—pMP‚ÌXV
+        // è¡¨ç¤ºç”¨MPã®æ›´æ–°
         if (_viewMP != _currentMP) {
             _viewMP = Mathf.MoveTowards(_viewMP, _currentMP, 600.0f * Time.unscaledDeltaTime);
             if (_viewMP < _maxMP) {
@@ -235,22 +235,22 @@ public class CharacterParameter_Player : CharacterParameter {
             }
         }
 
-        // MP‚ªÅ‘å‚Å‚È‚¢ê‡‚ÍƒQ[ƒW‚ğ•\¦
+        // MPãŒæœ€å¤§ã§ãªã„å ´åˆã¯ã‚²ãƒ¼ã‚¸ã‚’è¡¨ç¤º
         if (_mpBackground != null && _viewMP < _maxMP) {
             _mpBackground.SetActive(true);
         }
 
-        // MPƒQ[ƒW‚ÌXVi”z—ñ‘Î‰j
+        // MPã‚²ãƒ¼ã‚¸ã®æ›´æ–°ï¼ˆé…åˆ—å¯¾å¿œï¼‰
         float mp = _viewMP;
         Color targetColor = isOverheat ? Color.red : Color.white;
         for (int i = 0; i < _mpImages.Length; i++) {
             if (_mpImages[i] == null) continue;
             float gaugeMax = _defaultMaxMP;
             if (i == 0) {
-                // 1‚Â–Ú‚Í‰ŠúMP•ª‚Ì‚İ
+                // 1ã¤ç›®ã¯åˆæœŸMPåˆ†ã®ã¿
                 _mpImages[i].fillAmount = Mathf.Clamp01(mp / gaugeMax);
             } else {
-                // 2‚Â–ÚˆÈ~‚ÍŠg’£•ª‚Ì‚İ
+                // 2ã¤ç›®ä»¥é™ã¯æ‹¡å¼µåˆ†ã®ã¿
                 float expandedMp = _maxMP - _defaultMaxMP * i;
                 if (expandedMp > 0) {
                     float gaugeMp = Mathf.Clamp(mp - _defaultMaxMP * i, 0, gaugeMax);
@@ -262,13 +262,13 @@ public class CharacterParameter_Player : CharacterParameter {
             _mpImages[i].color = targetColor;
         }
 
-        // MP‘S‰õƒAƒjƒ[ƒVƒ‡ƒ“”»’è
+        // MPå…¨å¿«ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åˆ¤å®š
         if (_viewMP >= _maxMP && !_isViewMpFilled && _addMaxMP <= 0) {
             _isViewMpFilled = true;
             if (_currentWaitViewMpGauge <= 0) {
-                // MP‘S‰õƒAƒjƒ
+                // MPå…¨å¿«ã‚¢ãƒ‹ãƒ¡
                 _mpFilled.Play("MP_Filled", 0, 0f);
-                // ‰ñ•œSEÄ¶
+                // å›å¾©SEå†ç”Ÿ
                 if (_audioSource != null && _seMpRecover != null) {
                     _audioSource.PlayOneShot(_seMpRecover);
                 }

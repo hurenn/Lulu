@@ -20,13 +20,13 @@ public class PlayerControlPlayableBehaviour : PlayableBehaviour {
 
     public override void OnBehaviourPlay(Playable playable, FrameData info) {
 
-        // ƒvƒŒƒCƒ„[‚ª’…’n‚·‚é‚Ü‚Å‘Ò‚Â
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç€åœ°ã™ã‚‹ã¾ã§å¾…ã¤
         var character = GameObject.FindAnyObjectByType<Player_Character>();
         if (character != null) {
             character.StartCoroutine(_WaitPlayerStop(playable, character));
         }
 
-        // ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[‚Ì—LŒø/–³Œø‚ğØ‚è‘Ö‚¦
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®æœ‰åŠ¹/ç„¡åŠ¹ã‚’åˆ‡ã‚Šæ›¿ãˆ
         if (controller == null) {
             controller = GameObject.FindAnyObjectByType<PlayerController>();
         }
@@ -35,7 +35,7 @@ public class PlayerControlPlayableBehaviour : PlayableBehaviour {
         }
     }
 
-    // ƒvƒŒƒCƒ„[‚ª’…’n‚·‚é‚Ü‚Å‘Ò‚ÂƒRƒ‹[ƒ`ƒ“
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç€åœ°ã™ã‚‹ã¾ã§å¾…ã¤ã‚³ãƒ«ãƒ¼ãƒãƒ³
     private IEnumerator _WaitPlayerStop(Playable playable, Player_Character character) {
         if (playable.GetGraph().GetResolver() is PlayableDirector director) {
             director.Pause();

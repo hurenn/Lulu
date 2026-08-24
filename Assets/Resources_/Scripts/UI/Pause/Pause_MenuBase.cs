@@ -3,31 +3,31 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Pause_MenuBase : MonoBehaviour {
-    protected const float FRAME_MOVE_TIME = 0.03f; // ˜gˆÚ“®ƒAƒjƒŠÔ
-    protected const float BUTTON_SCALE_TIME = 0.15f; // ƒ{ƒ^ƒ“ŠgkƒAƒjƒŠÔ
-    protected const float BUTTON_SCALE_MAX = 1.15f; // ƒ{ƒ^ƒ“‚ÌÅ‘åŠg‘å—¦
-    protected const float FRAME_SCALE_MAX = 1.15f; // ‘I‘ğ˜g‚ÌÅ‘åŠg‘å—¦
-    protected System.Action<int> OnSwitchMenu;  // ƒƒjƒ…[Ø‚è‘Ö‚¦ƒCƒxƒ“ƒgiˆø”:Ø‚è‘Ö‚¦•ûŒüj
-    protected System.Action OnCloseMenu;        // ƒƒjƒ…[‚ğ•Â‚¶‚é
-    protected Coroutine _frameMoveCoroutine;    // ˜gˆÚ“®ƒRƒ‹[ƒ`ƒ“
-    protected Coroutine _buttonScaleCoroutine;  // ƒ{ƒ^ƒ“ŠgkƒRƒ‹[ƒ`ƒ“
-    protected Coroutine _frameScaleCoroutine;   // ‘I‘ğ˜gŠgkƒRƒ‹[ƒ`ƒ“
+    protected const float FRAME_MOVE_TIME = 0.03f; // æ ç§»å‹•ã‚¢ãƒ‹ãƒ¡æ™‚é–“
+    protected const float BUTTON_SCALE_TIME = 0.15f; // ãƒœã‚¿ãƒ³æ‹¡ç¸®ã‚¢ãƒ‹ãƒ¡æ™‚é–“
+    protected const float BUTTON_SCALE_MAX = 1.15f; // ãƒœã‚¿ãƒ³ã®æœ€å¤§æ‹¡å¤§ç‡
+    protected const float FRAME_SCALE_MAX = 1.15f; // é¸æŠæ ã®æœ€å¤§æ‹¡å¤§ç‡
+    protected System.Action<int> OnSwitchMenu;  // ãƒ¡ãƒ‹ãƒ¥ãƒ¼åˆ‡ã‚Šæ›¿ãˆã‚¤ãƒ™ãƒ³ãƒˆï¼ˆå¼•æ•°:åˆ‡ã‚Šæ›¿ãˆæ–¹å‘ï¼‰
+    protected System.Action OnCloseMenu;        // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‰ã˜ã‚‹
+    protected Coroutine _frameMoveCoroutine;    // æ ç§»å‹•ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    protected Coroutine _buttonScaleCoroutine;  // ãƒœã‚¿ãƒ³æ‹¡ç¸®ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    protected Coroutine _frameScaleCoroutine;   // é¸æŠæ æ‹¡ç¸®ã‚³ãƒ«ãƒ¼ãƒãƒ³
     private bool _isInitialized = false;
 
-    [SerializeField] protected Image _selectFrame; // ‘I‘ğ˜g‰æ‘œi1‚Â‚¾‚¯j
-    public CanvasGroup canvasGroup; // ƒƒjƒ…[‘S‘Ì‚ÌCanvasGroupiƒtƒF[ƒh—pj
+    [SerializeField] protected Image _selectFrame; // é¸æŠæ ç”»åƒï¼ˆ1ã¤ã ã‘ï¼‰
+    public CanvasGroup canvasGroup; // ãƒ¡ãƒ‹ãƒ¥ãƒ¼å…¨ä½“ã®CanvasGroupï¼ˆãƒ•ã‚§ãƒ¼ãƒ‰ç”¨ï¼‰
 
-    protected AudioSource _audioSource; // Œø‰Ê‰¹Ä¶—pAudioSource
-    protected AudioClip _seSelect; // ƒƒjƒ…[‘I‘ğ‰¹
-    protected AudioClip _seDecide; // ƒƒjƒ…[Œˆ’è‰¹
+    protected AudioSource _audioSource; // åŠ¹æœéŸ³å†ç”Ÿç”¨AudioSource
+    protected AudioClip _seSelect; // ãƒ¡ãƒ‹ãƒ¥ãƒ¼é¸æŠéŸ³
+    protected AudioClip _seDecide; // ãƒ¡ãƒ‹ãƒ¥ãƒ¼æ±ºå®šéŸ³
 
-    // Œ»İƒAƒjƒ[ƒVƒ‡ƒ“’†‚Ìƒ{ƒ^ƒ“
+    // ç¾åœ¨ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ä¸­ã®ãƒœã‚¿ãƒ³
     private RectTransform _currentAnimatingButton;
 
     /// <summary>
-    /// ‰Šú‰» 
+    /// åˆæœŸåŒ– 
     /// </summary>
-    /// <param name="onSwitchMenu">ƒƒjƒ…[Ø‚è‘Ö‚¦ƒR[ƒ‹ƒoƒbƒN</param>
+    /// <param name="onSwitchMenu">ãƒ¡ãƒ‹ãƒ¥ãƒ¼åˆ‡ã‚Šæ›¿ãˆã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯</param>
     protected virtual void Initialize(System.Action<int> onSwitchMenu, System.Action onCloseMenu,
         AudioSource audio_source, AudioClip se_select, AudioClip se_decide) {
         OnSwitchMenu = onSwitchMenu;
@@ -51,23 +51,23 @@ public class Pause_MenuBase : MonoBehaviour {
     }
 
     /// <summary>
-    /// ã‰º•ûŒü‚Ì“ü—Í
+    /// ä¸Šä¸‹æ–¹å‘ã®å…¥åŠ›
     /// </summary>
-    /// <param name="dir">-1:‰º +1:ã</param>
+    /// <param name="dir">-1:ä¸‹ +1:ä¸Š</param>
     public virtual void OnInputVertical(int dir) {
     }
 
     /// <summary>
-    /// ¶‰E•ûŒü‚Ì“ü—Í
+    /// å·¦å³æ–¹å‘ã®å…¥åŠ›
     /// </summary>
-    /// <param name="dir">-1:¶ +1:‰E</param>
+    /// <param name="dir">-1:å·¦ +1:å³</param>
     public virtual void OnInputHorizontal(int dir) {
     }
 
     /// <summary>
-    /// ‘I‘ğ˜g‚ğ‘I‘ğ’†ƒƒjƒ…[‚ÉˆÚ“®
+    /// é¸æŠæ ã‚’é¸æŠä¸­ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«ç§»å‹•
     /// </summary>
-    /// <param name="instant">‘¦À‚ÉˆÚ“®‚·‚é</param>
+    /// <param name="instant">å³åº§ã«ç§»å‹•ã™ã‚‹</param>
     protected void MoveFrameToSelected(RectTransform target, bool instant = false) {
         if (_selectFrame == null) return;
 
@@ -76,12 +76,12 @@ public class Pause_MenuBase : MonoBehaviour {
             _frameMoveCoroutine = null;
         }
         
-        // GameObject‚ª”ñƒAƒNƒeƒBƒuA‚Ü‚½‚Íinstant=true‚Ìê‡‚Í‘¦À‚ÉˆÚ“®
+        // GameObjectãŒéã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã€ã¾ãŸã¯instant=trueã®å ´åˆã¯å³åº§ã«ç§»å‹•
         if (instant || !gameObject.activeInHierarchy) {
             _selectFrame.rectTransform.anchoredPosition = target.anchoredPosition;
             _selectFrame.rectTransform.sizeDelta = target.sizeDelta;
             _selectFrame.rectTransform.localScale = Vector3.one;
-            // ‘¦À‚ÉˆÚ“®‚·‚éê‡‚Íƒ{ƒ^ƒ“ƒAƒjƒ[ƒVƒ‡ƒ“‚àƒXƒLƒbƒv
+            // å³åº§ã«ç§»å‹•ã™ã‚‹å ´åˆã¯ãƒœã‚¿ãƒ³ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚‚ã‚¹ã‚­ãƒƒãƒ—
             if (_currentAnimatingButton != null) {
                 _currentAnimatingButton.localScale = Vector3.one;
             }
@@ -92,13 +92,13 @@ public class Pause_MenuBase : MonoBehaviour {
     }
 
     /// <summary>
-    /// ‘I‘ğ˜gˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“
+    /// é¸æŠæ ç§»å‹•ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
     /// </summary>
     protected IEnumerator FrameMoveAnim(RectTransform target) {
         Vector2 startPos = _selectFrame.rectTransform.anchoredPosition;
         Vector2 startSize = _selectFrame.rectTransform.sizeDelta;
         
-        // ‘O‰ñ‚Ìƒ{ƒ^ƒ“E‘I‘ğ˜gƒAƒjƒ[ƒVƒ‡ƒ“‚ğ’â~‚µ‚ÄŒ³‚ÌƒTƒCƒY‚É–ß‚·
+        // å‰å›ã®ãƒœã‚¿ãƒ³ãƒ»é¸æŠæ ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’åœæ­¢ã—ã¦å…ƒã®ã‚µã‚¤ã‚ºã«æˆ»ã™
         if (_buttonScaleCoroutine != null) {
             StopCoroutine(_buttonScaleCoroutine);
             _buttonScaleCoroutine = null;
@@ -112,19 +112,19 @@ public class Pause_MenuBase : MonoBehaviour {
         }
         _selectFrame.rectTransform.localScale = Vector3.one;
         
-        // ˆÚ“®‹——£‚ª‚ ‚éê‡‚Ì‚İ‘I‘ğ‰¹‚ğÄ¶‚ÆƒAƒjƒ[ƒVƒ‡ƒ“Às
+        // ç§»å‹•è·é›¢ãŒã‚ã‚‹å ´åˆã®ã¿é¸æŠéŸ³ã‚’å†ç”Ÿã¨ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å®Ÿè¡Œ
         if (Vector2.Distance(startPos, target.anchoredPosition) > 0.01f) {
             if (_audioSource != null && _seSelect != null) {
                 _audioSource.PlayOneShot(_seSelect);
             }
             
-            // V‚µ‚¢ƒ{ƒ^ƒ“‚Æ‘I‘ğ˜g‚ÌŠgkƒAƒjƒ[ƒVƒ‡ƒ“‚ğŠJn
+            // æ–°ã—ã„ãƒœã‚¿ãƒ³ã¨é¸æŠæ ã®æ‹¡ç¸®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’é–‹å§‹
             _currentAnimatingButton = target;
             _buttonScaleCoroutine = StartCoroutine(ButtonScaleAnim(target));
             _frameScaleCoroutine = StartCoroutine(FrameScaleAnim());
         }
 
-        // ‘I‘ğ˜g‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“
+        // é¸æŠæ ã®ç§»å‹•ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
         float t = 0f;
         while (t < FRAME_MOVE_TIME) {
             t += Time.unscaledDeltaTime;
@@ -138,45 +138,45 @@ public class Pause_MenuBase : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒ{ƒ^ƒ“‚ÌŠgkƒAƒjƒ[ƒVƒ‡ƒ“iƒoƒEƒ“ƒXŒø‰Êj
+    /// ãƒœã‚¿ãƒ³ã®æ‹¡ç¸®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ï¼ˆãƒã‚¦ãƒ³ã‚¹åŠ¹æœï¼‰
     /// </summary>
-    /// <param name="button">ƒAƒjƒ[ƒVƒ‡ƒ“‘ÎÛ‚Ìƒ{ƒ^ƒ“</param>
+    /// <param name="button">ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¯¾è±¡ã®ãƒœã‚¿ãƒ³</param>
     protected IEnumerator ButtonScaleAnim(RectTransform button) {
         if (button == null) yield break;
 
         Vector3 originalScale = Vector3.one;
         float t = 0f;
 
-        // Šg‘åƒtƒF[ƒYi0 ¨ MAXj
+        // æ‹¡å¤§ãƒ•ã‚§ãƒ¼ã‚ºï¼ˆ0 â†’ MAXï¼‰
         while (t < BUTTON_SCALE_TIME * 0.4f) {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / (BUTTON_SCALE_TIME * 0.4f));
-            // ƒC[ƒWƒ“ƒOƒAƒEƒg‚ÅŠŠ‚ç‚©‚ÉŠg‘å
+            // ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ã‚¢ã‚¦ãƒˆã§æ»‘ã‚‰ã‹ã«æ‹¡å¤§
             float easedRate = 1f - Mathf.Pow(1f - rate, 3f);
             float scale = Mathf.Lerp(1f, BUTTON_SCALE_MAX, easedRate);
             button.localScale = originalScale * scale;
             yield return null;
         }
 
-        // k¬ƒtƒF[ƒYiMAX ¨ 1.0j
+        // ç¸®å°ãƒ•ã‚§ãƒ¼ã‚ºï¼ˆMAX â†’ 1.0ï¼‰
         t = 0f;
         while (t < BUTTON_SCALE_TIME * 0.6f) {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / (BUTTON_SCALE_TIME * 0.6f));
-            // ƒC[ƒWƒ“ƒO‚ÅŠŠ‚ç‚©‚Ék¬i­‚µƒoƒEƒ“ƒXj
+            // ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ã§æ»‘ã‚‰ã‹ã«ç¸®å°ï¼ˆå°‘ã—ãƒã‚¦ãƒ³ã‚¹ï¼‰
             float easedRate = Mathf.Sin(rate * Mathf.PI * 0.5f);
             float scale = Mathf.Lerp(BUTTON_SCALE_MAX, 1f, easedRate);
             button.localScale = originalScale * scale;
             yield return null;
         }
 
-        // ÅI“I‚ÉŒ³‚ÌƒTƒCƒY‚ÉŠmÀ‚É–ß‚·
+        // æœ€çµ‚çš„ã«å…ƒã®ã‚µã‚¤ã‚ºã«ç¢ºå®Ÿã«æˆ»ã™
         button.localScale = originalScale;
         _buttonScaleCoroutine = null;
     }
 
     /// <summary>
-    /// ‘I‘ğ˜g‚ÌŠgkƒAƒjƒ[ƒVƒ‡ƒ“iƒ{ƒ^ƒ“‚Æ“¯Šúj
+    /// é¸æŠæ ã®æ‹¡ç¸®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ï¼ˆãƒœã‚¿ãƒ³ã¨åŒæœŸï¼‰
     /// </summary>
     protected IEnumerator FrameScaleAnim() {
         if (_selectFrame == null) yield break;
@@ -184,36 +184,36 @@ public class Pause_MenuBase : MonoBehaviour {
         Vector3 originalScale = Vector3.one;
         float t = 0f;
 
-        // Šg‘åƒtƒF[ƒYi0 ¨ MAXj
+        // æ‹¡å¤§ãƒ•ã‚§ãƒ¼ã‚ºï¼ˆ0 â†’ MAXï¼‰
         while (t < BUTTON_SCALE_TIME * 0.4f) {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / (BUTTON_SCALE_TIME * 0.4f));
-            // ƒC[ƒWƒ“ƒOƒAƒEƒg‚ÅŠŠ‚ç‚©‚ÉŠg‘åiƒ{ƒ^ƒ“‚æ‚è­‚µT‚¦‚ßj
+            // ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ã‚¢ã‚¦ãƒˆã§æ»‘ã‚‰ã‹ã«æ‹¡å¤§ï¼ˆãƒœã‚¿ãƒ³ã‚ˆã‚Šå°‘ã—æ§ãˆã‚ï¼‰
             float easedRate = 1f - Mathf.Pow(1f - rate, 3f);
             float scale = Mathf.Lerp(1f, FRAME_SCALE_MAX, easedRate);
             _selectFrame.rectTransform.localScale = originalScale * scale;
             yield return null;
         }
 
-        // k¬ƒtƒF[ƒYiMAX ¨ 1.0j
+        // ç¸®å°ãƒ•ã‚§ãƒ¼ã‚ºï¼ˆMAX â†’ 1.0ï¼‰
         t = 0f;
         while (t < BUTTON_SCALE_TIME * 0.6f) {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / (BUTTON_SCALE_TIME * 0.6f));
-            // ƒC[ƒWƒ“ƒO‚ÅŠŠ‚ç‚©‚Ék¬
+            // ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ã§æ»‘ã‚‰ã‹ã«ç¸®å°
             float easedRate = Mathf.Sin(rate * Mathf.PI * 0.5f);
             float scale = Mathf.Lerp(FRAME_SCALE_MAX, 1f, easedRate);
             _selectFrame.rectTransform.localScale = originalScale * scale;
             yield return null;
         }
 
-        // ÅI“I‚ÉŒ³‚ÌƒTƒCƒY‚ÉŠmÀ‚É–ß‚·
+        // æœ€çµ‚çš„ã«å…ƒã®ã‚µã‚¤ã‚ºã«ç¢ºå®Ÿã«æˆ»ã™
         _selectFrame.rectTransform.localScale = originalScale;
         _frameScaleCoroutine = null;
     }
 
     /// <summary>
-    /// ‘I‘ğ’†‚Ìƒƒjƒ…[‚ğÀs
+    /// é¸æŠä¸­ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’å®Ÿè¡Œ
     /// </summary>
     public virtual void ExecuteSelectedMenu() {
     }

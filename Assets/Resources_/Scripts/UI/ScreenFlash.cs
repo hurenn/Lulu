@@ -21,10 +21,10 @@ public class ScreenFlash : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒtƒ‰ƒbƒVƒ…Às
+    /// ãƒ•ãƒ©ãƒƒã‚·ãƒ¥å®Ÿè¡Œ
     /// </summary>
-    /// <param name="duration">ƒtƒ‰ƒbƒVƒ…Š®—¹‚Ü‚Å‚ÌŠÔ</param>
-    /// <param name="color">ƒtƒ‰ƒbƒVƒ…‚ÌF</param>
+    /// <param name="duration">ãƒ•ãƒ©ãƒƒã‚·ãƒ¥å®Œäº†ã¾ã§ã®æ™‚é–“</param>
+    /// <param name="color">ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ã®è‰²</param>
     public void Flash(float duration = 0.1f, Color color = default) {
         if (color == default) color = Color.white;
         if(_instance == null) {
@@ -45,20 +45,20 @@ public class ScreenFlash : MonoBehaviour {
     }
 
     private IEnumerator _FlashCoroutine(float duration, Color color) {
-        var no_alpha_color = color;         // ƒAƒ‹ƒtƒ@’l0‚ÌF
+        var no_alpha_color = color;         // ã‚¢ãƒ«ãƒ•ã‚¡å€¤0ã®è‰²
         no_alpha_color.a = 0f;
 
-        _flashImage.color = no_alpha_color; // ‰Šúó‘Ô‚Í“§–¾
+        _flashImage.color = no_alpha_color; // åˆæœŸçŠ¶æ…‹ã¯é€æ˜
 
-        yield return Fade(0.05f, color); // ƒtƒF[ƒhƒCƒ“
-        yield return Fade(duration - 0.05f, no_alpha_color); // ƒtƒF[ƒhƒAƒEƒg
+        yield return Fade(0.05f, color); // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
+        yield return Fade(duration - 0.05f, no_alpha_color); // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ
     }
 
     /// <summary>
-    /// ƒtƒF[ƒhˆ—
+    /// ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†
     /// </summary>
-    /// <param name="duration">ˆ—ŠÔ</param>
-    /// <param name="next_color">•Ï‰»æƒJƒ‰[</param>
+    /// <param name="duration">å‡¦ç†æ™‚é–“</param>
+    /// <param name="next_color">å¤‰åŒ–å…ˆã‚«ãƒ©ãƒ¼</param>
     private IEnumerator Fade(float duration, Color next_color) {
         float timer = 0f;
         Color last_color = _flashImage.color;

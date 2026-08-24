@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// ƒ[ƒJƒ‹ŠÔ§ŒäƒNƒ‰ƒX
+/// ãƒ­ãƒ¼ã‚«ãƒ«æ™‚é–“åˆ¶å¾¡ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class LocalTimeController : MonoBehaviour
 {
@@ -12,10 +12,10 @@ public class LocalTimeController : MonoBehaviour
     private Coroutine _timeStopRoutine;
 
     /// <summary>
-    /// ƒqƒbƒgƒXƒgƒbƒvŠJn
+    /// ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—é–‹å§‹
     /// </summary>
-    /// <param name="duration">ƒqƒbƒgƒXƒgƒbƒvŠÔ</param>
-    /// <param name="resumeSpeed">‰ñ•œ‘¬“x</param>
+    /// <param name="duration">ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—æ™‚é–“</param>
+    /// <param name="resumeSpeed">å›å¾©é€Ÿåº¦</param>
     public void HitStop(float duration, float resumeSpeed = 1.0f)
     {
         if (_timeStopRoutine != null)
@@ -30,14 +30,14 @@ public class LocalTimeController : MonoBehaviour
         float elapsed = 0.0f;
         while (elapsed < duration)
         {
-            // ƒqƒbƒgƒXƒgƒbƒvŠÔ‚ğŒv‘ªiƒŠƒAƒ‹ƒ^ƒCƒ€‚Åj
+            // ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—æ™‚é–“ã‚’è¨ˆæ¸¬ï¼ˆãƒªã‚¢ãƒ«ã‚¿ã‚¤ãƒ ã§ï¼‰
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
 
         while (_localTimeScale < 1.0f)
         {
-            // ŠÔ‚ğŒ³‚É–ß‚·
+            // æ™‚é–“ã‚’å…ƒã«æˆ»ã™
             _localTimeScale += resumeSpeed * Time.unscaledDeltaTime;
             _localTimeScale = Mathf.Min(_localTimeScale, 1.0f);
             yield return null;

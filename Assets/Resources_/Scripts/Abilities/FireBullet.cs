@@ -2,28 +2,28 @@ using UnityEngine;
 
 public class FireBullet : AutoDestroy
 {
-    // ’¼i‘¬“x
+    // ç›´é€²é€Ÿåº¦
     [SerializeField]
     private float _speed = 10.0f;
 
-    // “–‚½‚è”»’è
+    // å½“ãŸã‚Šåˆ¤å®š
     [SerializeField]
     private DamageZone _damageZone;
 
-    // is•ûŒü
+    // é€²è¡Œæ–¹å‘
     private bool _isRight = true;
     public bool IsRight { set { _isRight = value; } }
 
     private void Awake() {
         _damageZone.Setup((character) => {
-            // “–‚½‚Á‚½“G‚ğƒƒbƒNƒIƒ“
+            // å½“ãŸã£ãŸæ•µã‚’ãƒ­ãƒƒã‚¯ã‚ªãƒ³
             Enemy_Base enemy = character as Enemy_Base;
             LockonManager.SetTargetStatic(enemy);
         });
     }
 
     private void FixedUpdate() {
-        // ‰E‚É’¼i
+        // å³ã«ç›´é€²
         transform.position += transform.right * _speed * (_isRight ? 1 : -1);
     }
 }

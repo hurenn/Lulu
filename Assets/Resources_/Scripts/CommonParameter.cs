@@ -3,33 +3,33 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CommonParameter", menuName = "Lulu/CommonStatus", order = 1)]
 public class CommonParameter : ScriptableObject
 {
-    [Header("ˆÚ“®—Í")]
+    [Header("ç§»å‹•åŠ›")]
     public float moveSpeed = 5.0f;
     public float dashSpeed = 10.0f;
     public float slideJumpSpeed = 14.0f;
-    public float slideSpeed = 15.0f; // ƒXƒ‰ƒCƒfƒBƒ“ƒO‘¬“x
+    public float slideSpeed = 15.0f; // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°é€Ÿåº¦
 
-    [Header("ƒWƒƒƒ“ƒv—Í")]
+    [Header("ã‚¸ãƒ£ãƒ³ãƒ—åŠ›")]
     public float jumpForce = 5.0f;
-    public float dashJumpForce = 6.0f; // ƒ_ƒbƒVƒ…ƒWƒƒƒ“ƒv‚Ì—Í
-    public float slideJumpForce = 8.0f; // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒWƒƒƒ“ƒv‚Ì—Í
+    public float dashJumpForce = 6.0f; // ãƒ€ãƒƒã‚·ãƒ¥ã‚¸ãƒ£ãƒ³ãƒ—ã®åŠ›
+    public float slideJumpForce = 8.0f; // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚¸ãƒ£ãƒ³ãƒ—ã®åŠ›
     public float maxJumpSpeed = 20.0f;
 
-    [Header("d—Í")]
+    [Header("é‡åŠ›")]
     public float gravity = -30.0f;
     public float fallMultiplier = 2.0f;
     public float maxFallSpeed = -20.0f;
 
-    [Header("Å‘åƒWƒƒƒ“ƒvŠÔ")]
+    [Header("æœ€å¤§ã‚¸ãƒ£ãƒ³ãƒ—æ™‚é–“")]
     public float maxJumpHoldTime = 0.2f;
 
-    [Header("ƒ_ƒbƒVƒ…“ü—Í—P—\")]
+    [Header("ãƒ€ãƒƒã‚·ãƒ¥å…¥åŠ›çŒ¶äºˆ")]
     public float dashInputThreshold = 0.2f;
 
-    [Header("ƒWƒƒƒ“ƒv“ü—Í—P—\")]
+    [Header("ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›çŒ¶äºˆ")]
     public float jumpBufferTime = 0.1f;
 
-    [Header("ƒ[ƒvƒ_ƒbƒVƒ…‘¬“x")]
+    [Header("ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥é€Ÿåº¦")]
     public Vector2 warpDashUpRight = new Vector2(5.0f, 15.0f);
     public Vector2 warpDashRight = new Vector2(15.0f, 1.0f);
     public Vector2 warpDashDownRight = new Vector2(20.0f, -10.0f);
@@ -38,52 +38,52 @@ public class CommonParameter : ScriptableObject
     public Vector2 warpDashLeft => new Vector2(-warpDashRight.x, warpDashRight.y);
     public Vector2 warpDashUpLeft => new Vector2(-warpDashUpRight.x, warpDashUpRight.y);
     public Vector2 warpDashUp = new Vector2(0.0f, 10.0f);
-    public float warpDashDamping = 0.3f; // ƒ[ƒvƒ_ƒbƒVƒ…‚ÌŒ¸Š—¦
+    public float warpDashDamping = 0.3f; // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®æ¸›è¡°ç‡
 
-    [Header("ƒ[ƒvÀs‚Ü‚Å‚Ì‘Ò‹@ŠÔ")]
+    [Header("ãƒ¯ãƒ¼ãƒ—å®Ÿè¡Œã¾ã§ã®å¾…æ©Ÿæ™‚é–“")]
     public float warpWaitTime = 0.1f;
 
-    [Header("ƒ[ƒvƒN[ƒ‹ƒ^ƒCƒ€")]
+    [Header("ãƒ¯ãƒ¼ãƒ—ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ")]
     public float warpCoolTime = 0.1f;
 
-    [Header("ƒ[ƒvƒ_ƒbƒVƒ…ŠÔ")]
-    public float maxWarpDashTime = 0.5f; // ƒ[ƒvƒ_ƒbƒVƒ…‚ÌÅ‘åŠÔ
+    [Header("ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥æ™‚é–“")]
+    public float maxWarpDashTime = 0.5f; // ãƒ¯ãƒ¼ãƒ—ãƒ€ãƒƒã‚·ãƒ¥ã®æœ€å¤§æ™‚é–“
     
-    [Header("ƒ[ƒvŠµ«§Œä")]
-    public float warpDashControlAccel = 10.0f;  // ‰Á‘¬—Í
-    public float warpDashControlDecel = 20.0f;  // Œ¸‘¬—Í
-    public float warpDashControlSteer = 2.0f;   // ƒJ[ƒu—Í
+    [Header("ãƒ¯ãƒ¼ãƒ—æ…£æ€§åˆ¶å¾¡")]
+    public float warpDashControlAccel = 10.0f;  // åŠ é€ŸåŠ›
+    public float warpDashControlDecel = 20.0f;  // æ¸›é€ŸåŠ›
+    public float warpDashControlSteer = 2.0f;   // ã‚«ãƒ¼ãƒ–åŠ›
 
-    [Header("ƒXƒ‰ƒCƒfƒBƒ“ƒOŠÔ")]
+    [Header("ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°æ™‚é–“")]
     public float maxSlideTime = 1f;
-    [Header("ƒXƒ‰ƒCƒfƒBƒ“ƒOƒLƒƒƒ“ƒZƒ‹Œ¸Š—Í")]
-    public float slideCancelDamping = 0.5f; // ƒXƒ‰ƒCƒfƒBƒ“ƒOƒLƒƒƒ“ƒZƒ‹Œ¸Š—Í
+    [Header("ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ¸›è¡°åŠ›")]
+    public float slideCancelDamping = 0.5f; // ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ¸›è¡°åŠ›
 
-    [Header("•ÇƒXƒ‰ƒCƒfƒBƒ“ƒOŠÔ")]
-    public float maxWallSlideTime = 0.3f; // •ÇƒXƒ‰ƒCƒfƒBƒ“ƒO‚ÌÅ‘åŠÔ
-    [Header("•ÇƒXƒ‰ƒCƒh‘¬“x")]
+    [Header("å£ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°æ™‚é–“")]
+    public float maxWallSlideTime = 0.3f; // å£ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ã®æœ€å¤§æ™‚é–“
+    [Header("å£ã‚¹ãƒ©ã‚¤ãƒ‰é€Ÿåº¦")]
     public float wallSlideSpeed = 2.0f;
 
-    [Header("’…’nƒ_ƒbƒVƒ…—LŒøŠÔ")]
-    public float maxLandingDashTime = 0.5f; // ’…’nƒ_ƒbƒVƒ…‚Ì—LŒøŠÔ
+    [Header("ç€åœ°ãƒ€ãƒƒã‚·ãƒ¥æœ‰åŠ¹æ™‚é–“")]
+    public float maxLandingDashTime = 0.5f; // ç€åœ°ãƒ€ãƒƒã‚·ãƒ¥ã®æœ‰åŠ¹æ™‚é–“
 
-    [Header("’nŒ`ƒ`ƒFƒbƒN•")]
+    [Header("åœ°å½¢ãƒã‚§ãƒƒã‚¯å¹…")]
     public float groundCheckHeight = 0.05f;
     public float wallCheckWidth = 0.1f;
     public float checkerBuffer = 0.05f;
 
-    [Header("•X”\—Í")]
-    public float iceSlashInterval = 0.1f;   // UŒ‚‚ÌŒ„
-    public float slashRebound = 2.0f;       // ‹ó’†UŒ‚‚Ì”½“®ƒWƒƒƒ“ƒv—Í
-    public float slashMoveForce = 2.0f;     // ‹ó’†UŒ‚‚ÌˆÚ“®—Í
-    public float comboReceptionTime = 0.7f; // ƒRƒ“ƒ{“ü—Íó•tŠÔ
-    public float comboIntervalTime = 0.2f;  // 1ƒRƒ“ƒ{ƒCƒ“ƒ^[ƒoƒ‹ŠÔ
-    public float comboCoolTime = 0.5f;     // ƒRƒ“ƒ{I—¹Œã‚ÌƒN[ƒ‹ƒ^ƒCƒ€
-    public float moveDuration = 0.05f;     // ˆÚ“®‚É‚©‚¯‚éŠÔ
+    [Header("æ°·èƒ½åŠ›")]
+    public float iceSlashInterval = 0.1f;   // æ”»æ’ƒã®éš™
+    public float slashRebound = 2.0f;       // ç©ºä¸­æ”»æ’ƒã®åå‹•ã‚¸ãƒ£ãƒ³ãƒ—åŠ›
+    public float slashMoveForce = 2.0f;     // ç©ºä¸­æ”»æ’ƒã®ç§»å‹•åŠ›
+    public float comboReceptionTime = 0.7f; // ã‚³ãƒ³ãƒœå…¥åŠ›å—ä»˜æ™‚é–“
+    public float comboIntervalTime = 0.2f;  // 1ã‚³ãƒ³ãƒœã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«æ™‚é–“
+    public float comboCoolTime = 0.5f;     // ã‚³ãƒ³ãƒœçµ‚äº†å¾Œã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+    public float moveDuration = 0.05f;     // ç§»å‹•ã«ã‹ã‘ã‚‹æ™‚é–“
 
-    [Header("ƒŒƒxƒ‹ŠÖ˜A")]
-    public float mpUpPerLevel = 30.0f;    // ƒŒƒxƒ‹ƒAƒbƒv–ˆ‚ÌÅ‘åMP‘‰Á—Ê
-    public int attackUpPerLevel = 5; // ƒŒƒxƒ‹ƒAƒbƒv–ˆ‚ÌUŒ‚—Í‘‰Á—Ê
+    [Header("ãƒ¬ãƒ™ãƒ«é–¢é€£")]
+    public float mpUpPerLevel = 30.0f;    // ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ¯ã®æœ€å¤§MPå¢—åŠ é‡
+    public int attackUpPerLevel = 5; // ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ¯ã®æ”»æ’ƒåŠ›å¢—åŠ é‡
 }
 
 public struct CharacterInputData
@@ -106,24 +106,24 @@ public struct CharacterInputData
         messageNextPressed = false;
     }
 
-    public Vector2 move;     // •ûŒü“ü—Í
-    public bool isJumpPressed;  // ƒWƒƒƒ“ƒvƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½uŠÔ
-    public bool isJumpHeld;     // ƒWƒƒƒ“ƒvƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‘±‚¯‚é
-    public bool isJumpReleased; // ƒWƒƒƒ“ƒvƒ{ƒ^ƒ“‚ğ—£‚µ‚½uŠÔ
+    public Vector2 move;     // æ–¹å‘å…¥åŠ›
+    public bool isJumpPressed;  // ã‚¸ãƒ£ãƒ³ãƒ—ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸç¬é–“
+    public bool isJumpHeld;     // ã‚¸ãƒ£ãƒ³ãƒ—ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ç¶šã‘ã‚‹
+    public bool isJumpReleased; // ã‚¸ãƒ£ãƒ³ãƒ—ãƒœã‚¿ãƒ³ã‚’é›¢ã—ãŸç¬é–“
 
-    public bool abilityBPressed; // Bƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½uŠÔ
-    public bool abilityBHeld;    // Bƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‘±‚¯‚é
-    public bool abilityBReleased; // Bƒ{ƒ^ƒ“‚ğ—£‚µ‚½uŠÔ
+    public bool abilityBPressed; // Bãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸç¬é–“
+    public bool abilityBHeld;    // Bãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ç¶šã‘ã‚‹
+    public bool abilityBReleased; // Bãƒœã‚¿ãƒ³ã‚’é›¢ã—ãŸç¬é–“
 
-    public bool abilityYPressed; // Yƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½uŠÔ
-    public bool abilityYHeld;    // Yƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‘±‚¯‚é
-    public bool abilityYReleased; // Yƒ{ƒ^ƒ“‚ğ—£‚µ‚½uŠÔ
-    public bool abilityXPressed; // Xƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½uŠÔ
-    public bool abilityXHeld;    // Xƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‘±‚¯‚é
-    public bool abilityXReleased; // Xƒ{ƒ^ƒ“‚ğ—£‚µ‚½uŠÔ
-    public bool abilityAPressed; // Aƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½uŠÔ
-    public bool abilityAHeld;    // Aƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‘±‚¯‚é
-    public bool abilityAReleased; // Aƒ{ƒ^ƒ“‚ğ—£‚µ‚½uŠÔ
+    public bool abilityYPressed; // Yãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸç¬é–“
+    public bool abilityYHeld;    // Yãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ç¶šã‘ã‚‹
+    public bool abilityYReleased; // Yãƒœã‚¿ãƒ³ã‚’é›¢ã—ãŸç¬é–“
+    public bool abilityXPressed; // Xãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸç¬é–“
+    public bool abilityXHeld;    // Xãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ç¶šã‘ã‚‹
+    public bool abilityXReleased; // Xãƒœã‚¿ãƒ³ã‚’é›¢ã—ãŸç¬é–“
+    public bool abilityAPressed; // Aãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸç¬é–“
+    public bool abilityAHeld;    // Aãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ç¶šã‘ã‚‹
+    public bool abilityAReleased; // Aãƒœã‚¿ãƒ³ã‚’é›¢ã—ãŸç¬é–“
 
-    public bool messageNextPressed; // ƒƒbƒZ[ƒW‘—‚èƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½uŠÔ
+    public bool messageNextPressed; // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ã‚Šãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸç¬é–“
 }

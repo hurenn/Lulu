@@ -6,7 +6,7 @@ public class AutoDestroy : MonoBehaviour {
     [SerializeField] protected float _lifetime = 0f;
     [SerializeField] private Animator _animator;
 
-    // 消滅時のコールバック
+    // 豸域ｻ�譎ゅ�ｮ繧ｳ繝ｼ繝ｫ繝舌ャ繧ｯ
     private System.Action _destroyedCallback = null;
     public void SetCallback(System.Action callback) {
         _destroyedCallback = callback;
@@ -17,7 +17,7 @@ public class AutoDestroy : MonoBehaviour {
     }
 
     /// <summary>
-    /// 自動削除までのコルーチン
+    /// 閾ｪ蜍募炎髯､縺ｾ縺ｧ縺ｮ繧ｳ繝ｫ繝ｼ繝√Φ
     /// </summary>
     private IEnumerator _DestroyCoroutine() {
         float current_time = 0;

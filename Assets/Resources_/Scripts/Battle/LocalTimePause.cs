@@ -26,22 +26,22 @@ public class LocalTimePause : MonoBehaviour
         }
     }
 
-    // Ž©g‚ÌƒRƒ‹[ƒ`ƒ“‚Æ‚µ‚Ä‹N“®‚·‚é‚±‚Æ‚ÅADamageZone ‚ª–³Œø‰»‚³‚ê‚Ä‚àŒp‘±‚Å‚«‚é
+    // è‡ªèº«ã®ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¨ã—ã¦èµ·å‹•ã™ã‚‹ã“ã¨ã§ã€DamageZone ãŒç„¡åŠ¹åŒ–ã•ã‚Œã¦ã‚‚ç¶™ç¶šã§ãã‚‹
     public void StartPause(float duration) {
         StartCoroutine(Pause(duration));
     }
 
     public IEnumerator Pause(float duration) {
         if (IsPaused) yield break;
-        yield return new WaitForSeconds(_hitStopWait); // ˆêu‘Ò‚Á‚Ä‚©‚ç’âŽ~
+        yield return new WaitForSeconds(_hitStopWait); // ä¸€çž¬å¾…ã£ã¦ã‹ã‚‰åœæ­¢
 
         IsPaused = true;
         _pauseTimer = duration;
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“‚Æ•¨—‹““®‚ð’âŽ~
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã¨ç‰©ç†æŒ™å‹•ã‚’åœæ­¢
         if (_animator != null) _animator.speed = 0f;
         if (_rigidbody2D != null) _rigidbody2D.simulated = false;
-        // ƒp[ƒeƒBƒNƒ‹ƒVƒXƒeƒ€‚ÌˆêŽž’âŽ~
+        // ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚·ã‚¹ãƒ†ãƒ ã®ä¸€æ™‚åœæ­¢
         if (_particleSystems != null) {
             foreach (var ps in _particleSystems) {
                 ps.Pause();
@@ -53,10 +53,10 @@ public class LocalTimePause : MonoBehaviour
         if (!IsPaused) return;
         IsPaused = false;
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“‚Æ•¨—‹““®‚ðÄŠJ
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã¨ç‰©ç†æŒ™å‹•ã‚’å†é–‹
         if (_animator != null) _animator.speed = 1f;
         if (_rigidbody2D != null) _rigidbody2D.simulated = true;
-        // ƒp[ƒeƒBƒNƒ‹ƒVƒXƒeƒ€‚ÌÄŠJ
+        // ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚·ã‚¹ãƒ†ãƒ ã®å†é–‹
         if (_particleSystems != null) {
             foreach (var ps in _particleSystems) {
                 ps.Play();

@@ -5,14 +5,14 @@ using UnityEngine.UI;
 public class AbilityUI_Base : MonoBehaviour
 {
     /// <summary>
-    /// ƒAƒCƒRƒ“‰æ‘œ
+    /// ã‚¢ã‚¤ã‚³ãƒ³ç”»åƒ
     /// </summary>
     [SerializeField]
     protected Image _iconImage;
-    // •KEƒ`ƒƒ[ƒWUI
+    // å¿…æ®ºãƒãƒ£ãƒ¼ã‚¸UI
     [SerializeField]
     protected Image _chargeImage;
-    // ƒ`ƒƒ[ƒWŠ®—¹ƒGƒtƒFƒNƒg
+    // ãƒãƒ£ãƒ¼ã‚¸å®Œäº†ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField]
     protected GameObject _chargedEffect;
 
@@ -21,19 +21,19 @@ public class AbilityUI_Base : MonoBehaviour
     //[SerializeField] protected Sprite _fireIconSprite;
     //[SerializeField] protected Sprite _warpIconSprite;
 
-    // UIƒLƒƒƒ“ƒoƒX
+    // UIã‚­ãƒ£ãƒ³ãƒã‚¹
     [SerializeField] private GameObject _effectPrefab;
 
     /// <summary>
-    /// ”\—ÍUI‚Ìİ’è
+    /// èƒ½åŠ›UIã®è¨­å®š
     /// </summary>
-    /// <param name="ability_type">”\—Íƒ^ƒCƒv</param>
+    /// <param name="ability_type">èƒ½åŠ›ã‚¿ã‚¤ãƒ—</param>
     public void SetAbilityUI(eAbilityType ability_type, bool is_effect = true) {
         StartCoroutine(_JoinEffect(ability_type, is_effect));
     }
 
     /// <summary>
-    /// ’‡ŠÔ‚Ì”\—Íæ“¾ƒGƒtƒFƒNƒg
+    /// ä»²é–“ã®èƒ½åŠ›å–å¾—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     /// </summary>
     /// <param name="ability_type"></param>
     /// <returns></returns>
@@ -46,7 +46,7 @@ public class AbilityUI_Base : MonoBehaviour
     }
 
     private void _UpdateUI(eAbilityType ability_type) {
-        //// UI•\¦XV
+        //// UIè¡¨ç¤ºæ›´æ–°
         //switch (ability_type) {
         //    case eAbilityType.Ice:
         //        _iconImage.sprite = _iceIconSprite;
@@ -61,15 +61,15 @@ public class AbilityUI_Base : MonoBehaviour
         //        _iconImage.sprite = _warpIconSprite;
         //        break;
         //    default:
-        //        Debug.LogError("•s–¾‚È”\—Íƒ^ƒCƒvF" + ability_type);
+        //        Debug.LogError("ä¸æ˜ãªèƒ½åŠ›ã‚¿ã‚¤ãƒ—ï¼š" + ability_type);
         //        break;
         //}
     }
 
     /// <summary>
-    /// •KE‹Zƒ`ƒƒ[ƒWXV
+    /// å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸æ›´æ–°
     /// </summary>
-    /// <param name="charge_rate">ƒ`ƒƒ[ƒW—¦</param>
+    /// <param name="charge_rate">ãƒãƒ£ãƒ¼ã‚¸ç‡</param>
     public void OnChargeSpecial(float charge_rate) {
         _chargeImage.fillAmount = charge_rate;
         if (_chargedEffect != null) {
@@ -79,9 +79,9 @@ public class AbilityUI_Base : MonoBehaviour
 
     /*
     private IEnumerator _JoinAnimation(eAbilityType ability_type, Vector3 world_position) {
-        // ƒ[ƒ‹ƒhÀ•W‚ğƒXƒNƒŠ[ƒ“À•W‚É•ÏŠ·
+        // ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã«å¤‰æ›
         Vector3 screen_position = Camera.main.WorldToScreenPoint(world_position);
-        // ƒXƒNƒŠ[ƒ“À•W‚ğUI_CanvasÀ•W‚É•ÏŠ·
+        // ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‚’UI_Canvasåº§æ¨™ã«å¤‰æ›
         Vector2 start_ui_position;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _uiCanvas.transform as RectTransform,
@@ -89,16 +89,16 @@ public class AbilityUI_Base : MonoBehaviour
             Camera.main,
             out start_ui_position);
 
-        // –Ú•WˆÊ’u
+        // ç›®æ¨™ä½ç½®
         Vector2 target_ui_position = _rect.anchoredPosition;
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“Às
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å®Ÿè¡Œ
         float elapsed_time = 0f;
         while(elapsed_time < _animationDuration) {
             elapsed_time += Time.deltaTime;
             float t = elapsed_time / _animationDuration;
 
-            // ƒC[ƒWƒ“ƒO
+            // ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°
             t = Mathf.SmoothStep(0f, 1f, t);
             _rect.anchoredPosition = Vector2.Lerp(start_ui_position, target_ui_position, t);
 

@@ -2,5 +2,5 @@
 public class PlayerParameterSnapshot
 {
     public int Lv;
-    // 必要に応じて他のプロパティも追加可能
+    // 蠢�隕√↓蠢懊§縺ｦ莉悶�ｮ繝励Ο繝代ユ繧｣繧りｿｽ蜉蜿ｯ閭ｽ
 }

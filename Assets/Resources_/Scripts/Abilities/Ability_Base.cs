@@ -23,35 +23,35 @@ public enum eAbilityResult {
 public class Ability_Base : MonoBehaviour {
 
     /// <summary>
-    /// ’nã‚É‚¢‚é‚©Šm”F
+    /// åœ°ä¸Šã«ã„ã‚‹ã‹ç¢ºèª
     /// </summary>
     public bool _isGround = true;
 
     /// <summary>
-    /// •KE‹Zƒ`ƒƒ[ƒWƒ^ƒCƒ€
+    /// å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ 
     /// </summary>
     [SerializeField]
     private float _specialChargeTime = 60.0f;
     private float _currentSpecialChargeTime = 0.0f;
     /// <summary>
-    /// •KE‹Zƒ`ƒƒ[ƒWŠ®—¹Šm”F
+    /// å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸å®Œäº†ç¢ºèª
     /// </summary>
     protected bool _isSpecialCharged => _currentSpecialChargeTime >= _specialChargeTime;
 
     /// <summary>
-    /// •KE‹Z‰‰oƒ^ƒCƒ€ƒ‰ƒCƒ“
+    /// å¿…æ®ºæŠ€æ¼”å‡ºã‚¿ã‚¤ãƒ ãƒ©ã‚¤ãƒ³
     /// </summary>
     protected PlayableDirector _specialTimelineDirector = null;
     [SerializeField] private PlayableDirector _specialTimelinePrefab = null;
     protected bool _isSpecialUsing = false;
 
     /// <summary>
-    /// •KE‹Zƒ`ƒƒ[ƒW’â~ŠÔ
+    /// å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸åœæ­¢æ™‚é–“
     /// </summary>
     private float _specialChargeStopTime = 1.0f;
     private float _currentSpecialChargeStopTime = 0f;
 
-    // •KE‹ZI—¹ƒR[ƒ‹ƒoƒbƒN
+    // å¿…æ®ºæŠ€çµ‚äº†ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
     protected System.Action _onEndSpecialAttack = null;
     public void SetOnEndSpecialAttack(System.Action callback) {
         _onEndSpecialAttack = callback;
@@ -60,13 +60,13 @@ public class Ability_Base : MonoBehaviour {
         };
     }
 
-    // •KE‹ZƒAƒjƒ[ƒVƒ‡ƒ“ƒR[ƒ‹ƒoƒbƒN
+    // å¿…æ®ºæŠ€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
     protected System.Action<string> _onStartSpecialAnim = null;
     public void SetOnStartSpecialAnim(System.Action<string> onAnim) {
         _onStartSpecialAnim = onAnim;
     }
 
-    // •KE‹Zƒ`ƒƒ[ƒWƒR[ƒ‹ƒoƒbƒN
+    // å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
     protected System.Action<float> _onChargeSpecial = null;
     public void SetOnChargeSpecialCallback(System.Action<float> callback) {
         _onChargeSpecial = callback;
@@ -75,15 +75,15 @@ public class Ability_Base : MonoBehaviour {
     [SerializeField]
     private float _returnTime = 1.0f;
     /// <summary>
-    /// ‹AŠÒ‚Ü‚Å‚ÌŠÔŒv‘ª
+    /// å¸°é‚„ã¾ã§ã®æ™‚é–“è¨ˆæ¸¬
     /// </summary>
     private float _currentReturnTime = 0f;
     /// <summary>
-    /// ‚Ü‚¾oŒ»’†
+    /// ã¾ã å‡ºç¾ä¸­
     /// </summary>
     protected bool _isAppearing { get { return _currentReturnTime > 0f; } }
     /// <summary>
-    /// ‹AŠÒƒ^ƒCƒ}[ƒZƒbƒg
+    /// å¸°é‚„ã‚¿ã‚¤ãƒãƒ¼ã‚»ãƒƒãƒˆ
     /// </summary>
     protected void _ResetReturnTimer() {
         _currentReturnTime = _returnTime;
@@ -91,14 +91,14 @@ public class Ability_Base : MonoBehaviour {
     protected void _ResetReturnTimer(float time) {
         _currentReturnTime = time;
     }
-    // ‹­§‹AŠÒ‹——£
+    // å¼·åˆ¶å¸°é‚„è·é›¢
     private float _forceReturnDistance = 5.0f;
     protected bool _canForceReturn = true;
 
-    // ƒI[ƒo[ƒq[ƒg‚É‚æ‚éƒLƒƒƒ“ƒZƒ‹
+    // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆã«ã‚ˆã‚‹ã‚­ãƒ£ãƒ³ã‚»ãƒ«
     protected bool _cancelByOverheat => _charaParam == null || (_charaParam.isOverheat && !_isAppearing);
 
-    // ƒLƒƒƒ‰ƒNƒ^[î•ñ
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æƒ…å ±
     protected Transform _playerTransform = default;
     protected CharacterParameter_Player _charaParam = null;
     protected CommonParameter _param = null;
@@ -106,19 +106,19 @@ public class Ability_Base : MonoBehaviour {
     protected MotorStates _motorStates = null;
 
     /// <summary>
-    /// ‘•”õ‚Ìƒ[ƒJƒ‹ƒ|ƒWƒVƒ‡ƒ“
+    /// è£…å‚™æ™‚ã®ãƒ­ãƒ¼ã‚«ãƒ«ãƒã‚¸ã‚·ãƒ§ãƒ³
     /// </summary>
     [SerializeField] protected Vector3 _localPosition = Vector3.zero;
     /// <summary>
-    /// ƒLƒƒƒ‰ƒNƒ^[•\¦
+    /// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼è¡¨ç¤º
     /// </summary>
     [SerializeField] protected SpriteRenderer _rend = null;
     [SerializeField] protected Animator _anim = null;
 
-    // ƒ[ƒvƒGƒtƒFƒNƒg
+    // ãƒ¯ãƒ¼ãƒ—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField] protected GameObject _warpAnimationPrefab = null;
 
-    // ƒ|[ƒYUIQÆƒLƒƒƒbƒVƒ…
+    // ãƒãƒ¼ã‚ºUIå‚ç…§ã‚­ãƒ£ãƒƒã‚·ãƒ¥
     private Pause_UI _pauseUIInstance;
 
     protected void Awake() {
@@ -127,13 +127,13 @@ public class Ability_Base : MonoBehaviour {
             _specialTimelineDirector = obj.GetComponent<PlayableDirector>();
             _specialTimelineDirector.stopped += _OnSpecialCutInFinished;
             
-            // Timeline‚ªTime.timeScale‚Ì‰e‹¿‚ğó‚¯‚È‚¢‚æ‚¤‚Éİ’è
+            // TimelineãŒTime.timeScaleã®å½±éŸ¿ã‚’å—ã‘ãªã„ã‚ˆã†ã«è¨­å®š
             _specialTimelineDirector.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
         }
     }
 
     /// <summary>
-    /// ‰EŒü‚«‚©Šm”F
+    /// å³å‘ãã‹ç¢ºèª
     /// </summary>
     protected bool _isRight = true;
     public virtual void UpdateParameter(
@@ -155,11 +155,11 @@ public class Ability_Base : MonoBehaviour {
     private bool _isSpecialCutInViewing = false;
 
     private void Update() {
-        // ƒ|[ƒY‰æ–Ê‚ÌŠJ•Âó‘Ô‚ğŠÄ‹‚µATimeline‚ğ§Œä
+        // ãƒãƒ¼ã‚ºç”»é¢ã®é–‹é–‰çŠ¶æ…‹ã‚’ç›£è¦–ã—ã€Timelineã‚’åˆ¶å¾¡
         bool isPauseOpen = Pause_UI.IsOpen;
         if (_specialTimelineDirector != null)
         {
-            // ƒJƒbƒgƒCƒ“‰‰o’†‚Ì‚İÄŠJˆ—‚ğ‹–‰Â
+            // ã‚«ãƒƒãƒˆã‚¤ãƒ³æ¼”å‡ºä¸­ã®ã¿å†é–‹å‡¦ç†ã‚’è¨±å¯
             if (isPauseOpen && !_wasPauseOpen)
             {
                 _specialTimelineDirector.Pause();
@@ -171,25 +171,25 @@ public class Ability_Base : MonoBehaviour {
         }
         _wasPauseOpen = isPauseOpen;
 
-        // ‹AŠÒƒ^ƒCƒ}[
+        // å¸°é‚„ã‚¿ã‚¤ãƒãƒ¼
         if (_isAppearing) {
             _currentReturnTime -= Time.deltaTime;
-            // ‹­§‹AŠÒ‹——£ƒ`ƒFƒbƒN
+            // å¼·åˆ¶å¸°é‚„è·é›¢ãƒã‚§ãƒƒã‚¯
             if (_canForceReturn &&
                 Vector3.Distance(transform.position, _playerTransform.position) > _forceReturnDistance) {
                 _ForceReturn();
             }
             if (_currentReturnTime <= 0f) {
-                // ‹AŠÒ
+                // å¸°é‚„
                 _anim.Play("ToHide");
             }
         }
 
         if (_currentSpecialChargeStopTime > 0f) {
-            // ƒ`ƒƒ[ƒW’â~’†
+            // ãƒãƒ£ãƒ¼ã‚¸åœæ­¢ä¸­
             _currentSpecialChargeStopTime -= Time.deltaTime;
         } else {
-            // •KE‹Zƒ`ƒƒ[ƒW
+            // å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸
             if (_currentSpecialChargeTime < _specialChargeTime) {
                 _currentSpecialChargeTime += Time.deltaTime;
                 if (_currentSpecialChargeTime > _specialChargeTime) {
@@ -197,7 +197,7 @@ public class Ability_Base : MonoBehaviour {
                 }
             }
         }
-        // Œ»İ‚Ìƒ`ƒƒ[ƒW—Ê‚ğ’Ê’m
+        // ç¾åœ¨ã®ãƒãƒ£ãƒ¼ã‚¸é‡ã‚’é€šçŸ¥
         if (_onChargeSpecial != null) {
             _onChargeSpecial(_currentSpecialChargeTime / _specialChargeTime);
         }
@@ -206,7 +206,7 @@ public class Ability_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// ‹­§‹AŠÒ
+    /// å¼·åˆ¶å¸°é‚„
     /// </summary>
     protected virtual void _ForceReturn() {
         _currentReturnTime = 0f;
@@ -215,7 +215,7 @@ public class Ability_Base : MonoBehaviour {
     protected virtual void _Update() { }
 
     /// <summary>
-    /// ’‡ŠÔƒLƒƒƒ‰ƒNƒ^[‚ÌˆÊ’u‚ğXV
+    /// ä»²é–“ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ä½ç½®ã‚’æ›´æ–°
     /// </summary>
     public virtual void UpdatePartnerTransform(Vector3? target_pos = null) {
         if(_playerTransform == null) {
@@ -234,37 +234,37 @@ public class Ability_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// ’P‰Ÿ‚µg—p
+    /// å˜æŠ¼ã—ä½¿ç”¨
     /// </summary>
     public virtual eAbilityResult ExecuteSimple() { return eAbilityResult.None; }
 
     /// <summary>
-    /// ’·‰Ÿ‚µg—p
+    /// é•·æŠ¼ã—ä½¿ç”¨
     /// </summary>
     public virtual eAbilityResult ExecuteLong() { return eAbilityResult.None; }
 
     /// <summary>
-    /// ƒ{ƒ^ƒ“‚ğ—£‚µ‚½‚Æ‚«‚Ìˆ—
+    /// ãƒœã‚¿ãƒ³ã‚’é›¢ã—ãŸã¨ãã®å‡¦ç†
     /// </summary>
     public virtual eAbilityResult ExecuteRelease() { return eAbilityResult.None; }
 
     /// <summary>
-    /// ƒ[ƒvÀs‚Ìˆ—
+    /// ãƒ¯ãƒ¼ãƒ—å®Ÿè¡Œæ™‚ã®å‡¦ç†
     /// </summary>
     public virtual void OnWarp() { }
 
     /// <summary>
-    /// •KE‹Zƒ`ƒƒ[ƒW’â~
+    /// å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸åœæ­¢
     /// </summary>
     protected void _StopSpecialCharge() {
         _currentSpecialChargeStopTime = _specialChargeStopTime;
     }
 
     /// <summary>
-    /// •KE‹Z‰‰oI—¹
+    /// å¿…æ®ºæŠ€æ¼”å‡ºçµ‚äº†
     /// </summary>
     protected virtual void _OnSpecialCutInFinished(PlayableDirector obj) {
-        // ƒJƒbƒgƒCƒ“I—¹‚É‘¬“x‚ğŒ³‚É–ß‚·
+        // ã‚«ãƒƒãƒˆã‚¤ãƒ³çµ‚äº†æ™‚ã«é€Ÿåº¦ã‚’å…ƒã«æˆ»ã™
         var pauseUI = GetPauseUI();
         if (pauseUI != null) pauseUI.canOpen = true;
         Time.timeScale = 1.0f;
@@ -274,13 +274,13 @@ public class Ability_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// •KE‹Zg—p
+    /// å¿…æ®ºæŠ€ä½¿ç”¨
     /// </summary>
     protected virtual void _UseSpecial() {
         if(!_specialTimelineDirector) {
             return;
         }
-        // ƒJƒbƒgƒCƒ“‰‰oŠJn‚ÉƒQ[ƒ€ŠÔ‚ğƒXƒ[‚É‚·‚é
+        // ã‚«ãƒƒãƒˆã‚¤ãƒ³æ¼”å‡ºé–‹å§‹æ™‚ã«ã‚²ãƒ¼ãƒ æ™‚é–“ã‚’ã‚¹ãƒ­ãƒ¼ã«ã™ã‚‹
         var pauseUI = GetPauseUI();
         if (pauseUI != null) pauseUI.canOpen = false;
         Time.timeScale = 0.1f;
@@ -291,44 +291,44 @@ public class Ability_Base : MonoBehaviour {
         _specialTimelineDirector.Play();
         _currentSpecialChargeTime = 0;
 
-        // ‘¦À‚É‹AŠÒ
+        // å³åº§ã«å¸°é‚„
         if (_isAppearing) {
             _ResetReturnTimer(0.01f);
         }
     }
 
     /// <summary>
-    /// ¢Š«ƒGƒtƒFƒNƒg‚ÆMPÁ”ïƒ`ƒFƒbƒN
+    /// å¬å–šã‚¨ãƒ•ã‚§ã‚¯ãƒˆã¨MPæ¶ˆè²»ãƒã‚§ãƒƒã‚¯
     /// </summary>
-    /// <param name="ability_type">”\—Íƒ^ƒCƒv</param>
-    /// <param name="un_recover_time">MP‰ñ•œŠJn‚Ü‚Å‚ÌƒN[ƒ‹ƒ^ƒCƒ€</param>
+    /// <param name="ability_type">èƒ½åŠ›ã‚¿ã‚¤ãƒ—</param>
+    /// <param name="un_recover_time">MPå›å¾©é–‹å§‹ã¾ã§ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ </param>
     protected void _AppearCheck(eAbilityType ability_type, float un_recover_time = 0.5f, bool force_appear = false) {
-        // ¢Š«ƒGƒtƒFƒNƒg”»’è
+        // å¬å–šã‚¨ãƒ•ã‚§ã‚¯ãƒˆåˆ¤å®š
         if (!_isAppearing || force_appear) {
-            // MPÁ”ï
+            // MPæ¶ˆè²»
             _charaParam.SetUnRecoverTime_MP(un_recover_time);
             _charaParam.ConsumeMP(ability_type);
-            // ¢Š«ƒGƒtƒFƒNƒgÄ¶
+            // å¬å–šã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿ
             Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity);
         }
-        // ‹AŠÒƒ^ƒCƒ}[ƒŠƒZƒbƒg
+        // å¸°é‚„ã‚¿ã‚¤ãƒãƒ¼ãƒªã‚»ãƒƒãƒˆ
         _ResetReturnTimer();
     }
 
     /// <summary>
-    /// •KE‹Z‹­§ƒ`ƒƒ[ƒW
+    /// å¿…æ®ºæŠ€å¼·åˆ¶ãƒãƒ£ãƒ¼ã‚¸
     /// </summary>
     public void ForceCharge(float rate = 1.0f) {
         _currentSpecialChargeTime = _specialChargeTime * rate;
     }
 
     /// <summary>
-    /// •KEƒ`ƒƒ[ƒW‚ğ’Ç‰ÁiŒ»İ‚Ìƒ`ƒƒ[ƒW‚É‰ÁZj
+    /// å¿…æ®ºãƒãƒ£ãƒ¼ã‚¸ã‚’è¿½åŠ ï¼ˆç¾åœ¨ã®ãƒãƒ£ãƒ¼ã‚¸ã«åŠ ç®—ï¼‰
     /// </summary>
-    /// <param name="rate">’Ç‰Á‚·‚éƒ`ƒƒ[ƒW—¦i0.0`1.0j</param>
+    /// <param name="rate">è¿½åŠ ã™ã‚‹ãƒãƒ£ãƒ¼ã‚¸ç‡ï¼ˆ0.0ã€œ1.0ï¼‰</param>
     public void AddSpecialCharge(float rate) {
         _currentSpecialChargeTime += _specialChargeTime * rate;
-        // Å‘å’l‚ğ’´‚¦‚È‚¢‚æ‚¤‚É§ŒÀ
+        // æœ€å¤§å€¤ã‚’è¶…ãˆãªã„ã‚ˆã†ã«åˆ¶é™
         if (_currentSpecialChargeTime > _specialChargeTime) {
             _currentSpecialChargeTime = _specialChargeTime;
         }
@@ -344,7 +344,7 @@ public class Ability_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// ”\—Í”jŠü
+    /// èƒ½åŠ›ç ´æ£„
     /// </summary>
     public virtual void DestroyAbility() {
         if (_specialTimelineDirector != null) {

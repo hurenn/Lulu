@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class ChangeScene : StageObject_Base
 {
 #if UNITY_EDITOR
-    [SerializeField] private SceneAsset _sceneAsset; // ƒV[ƒ“ƒAƒZƒbƒg
+    [SerializeField] private SceneAsset _sceneAsset; // ã‚·ãƒ¼ãƒ³ã‚¢ã‚»ãƒƒãƒˆ
 #endif
     [SerializeField] private string _sceneName;
 
@@ -37,11 +37,11 @@ public class ChangeScene : StageObject_Base
     }
 
     public static void LoadScene(bool is_save_ability, string sceneName = null, PlayerController characterController = null) {
-        // “ü—Í‚ğ–³Œø‰»
+        // å…¥åŠ›ã‚’ç„¡åŠ¹åŒ–
         if (characterController != null) {
             characterController.isEnabledCharacterInput = false;
         }
-        // ƒvƒŒƒCƒ„[‚Ìó‘Ô‚ğ•Û‘¶
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çŠ¶æ…‹ã‚’ä¿å­˜
         if (is_save_ability) {
             var player = FindAnyObjectByType<Player_Character>();
             if (player != null) {
@@ -51,7 +51,7 @@ public class ChangeScene : StageObject_Base
             }
         }
 
-        // ƒV[ƒ“‚ÌØ‚è‘Ö‚¦
+        // ã‚·ãƒ¼ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆ
         if (sceneName == null) {
             sceneName = SceneManager.GetActiveScene().name;
         }

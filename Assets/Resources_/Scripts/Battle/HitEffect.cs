@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// ƒqƒbƒgƒGƒtƒFƒNƒg
+/// ãƒ’ãƒƒãƒˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 /// </summary>
 public class HitEffect : MonoBehaviour {
     public enum eType {
@@ -12,7 +12,7 @@ public class HitEffect : MonoBehaviour {
         Fire,
         Ice
     }
-    // ƒGƒtƒFƒNƒg‚ÌF’è‹`
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®è‰²å®šç¾©
     [SerializeField]
     private Dictionary<eType, Color> _typeColor =
         new Dictionary<eType, Color>() {
@@ -22,7 +22,7 @@ public class HitEffect : MonoBehaviour {
         { eType.Ice, Color.cyan }
     };
 
-    // ƒp[ƒeƒBƒNƒ‹
+    // ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
     [SerializeField] private ParticleSystem _particle = null;
     private float _defaultSize = 0f;
 

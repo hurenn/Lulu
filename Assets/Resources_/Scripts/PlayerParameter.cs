@@ -14,7 +14,7 @@ public class PlayerParameter : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‹­§“I‚É¶¬/‰Šú‰»
+    /// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å¼·åˆ¶çš„ã«ç”Ÿæˆ/åˆæœŸåŒ–
     /// </summary>
     public static void CreateNewInstance() {
         if (_instance != null) {
@@ -30,13 +30,13 @@ public class PlayerParameter : MonoBehaviour {
     }
 
     [SerializeField]
-    private int _level = 1; // ƒŒƒxƒ‹
+    private int _level = 1; // ãƒ¬ãƒ™ãƒ«
     [SerializeField]
-    private int _exp = 0; // ŒoŒ±’l
-    public int currentExp => _exp; // Œ»İ‚ÌŒoŒ±’l
-    private int _expToNextLevel = 200; // Ÿ‚ÌƒŒƒxƒ‹‚Ü‚Å‚ÌŒoŒ±’l
+    private int _exp = 0; // çµŒé¨“å€¤
+    public int currentExp => _exp; // ç¾åœ¨ã®çµŒé¨“å€¤
+    private int _expToNextLevel = 200; // æ¬¡ã®ãƒ¬ãƒ™ãƒ«ã¾ã§ã®çµŒé¨“å€¤
     public int nextExp { get => _expToNextLevel; set => _expToNextLevel = value; }
-    public System.Action<int> OnExpChanged; // ŒoŒ±’l•ÏX‚ÌƒR[ƒ‹ƒoƒbƒN
+    public System.Action<int> OnExpChanged; // çµŒé¨“å€¤å¤‰æ›´æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
     public enum eLevelType
     {
         HP,
@@ -53,7 +53,7 @@ public class PlayerParameter : MonoBehaviour {
     }
     public LevelParameter levelParameter = new LevelParameter();
 
-    private Dictionary<eAbilityType, eAbilitySlot> _abilities = new Dictionary<eAbilityType, eAbilitySlot>(); // æ“¾Ï‚İ‚Ì”\—Í
+    private Dictionary<eAbilityType, eAbilitySlot> _abilities = new Dictionary<eAbilityType, eAbilitySlot>(); // å–å¾—æ¸ˆã¿ã®èƒ½åŠ›
     public Dictionary<eAbilityType, eAbilitySlot> Abilities => _abilities;
     public void AddAbility(eAbilityType ability_type, eAbilitySlot ability_slot) {
         if (!_abilities.ContainsKey(ability_type)) {
@@ -61,7 +61,7 @@ public class PlayerParameter : MonoBehaviour {
         }
     }
     public void RemoveAbility(eAbilitySlot ability_slot) {
-        // w’è‚³‚ê‚½ƒXƒƒbƒg‚Ì”\—Í‚ğíœ
+        // æŒ‡å®šã•ã‚ŒãŸã‚¹ãƒ­ãƒƒãƒˆã®èƒ½åŠ›ã‚’å‰Šé™¤
         foreach (var kvp in _abilities) {
             if (kvp.Value == ability_slot) {
                 _abilities.Remove(kvp.Key);
@@ -74,7 +74,7 @@ public class PlayerParameter : MonoBehaviour {
         Japanese,
         English,
     }
-    public eLanguage language = eLanguage.Japanese; // Œ¾Œêİ’è
+    public eLanguage language = eLanguage.Japanese; // è¨€èªè¨­å®š
 
     private void Awake() {
         if (_instance != null && _instance != this) {

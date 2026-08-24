@@ -3,16 +3,16 @@ using UnityEngine.UI;
 
 public class ExpGauge : MonoBehaviour {
     /// <summary>
-    /// 対象キャラクターのパラメーター
+    /// 蟇ｾ雎｡繧ｭ繝｣繝ｩ繧ｯ繧ｿ繝ｼ縺ｮ繝代Λ繝｡繝ｼ繧ｿ繝ｼ
     /// </summary>
     private PlayerParameter _playerParameter;
     /// <summary>
-    /// 経験値ゲージ表示
+    /// 邨碁ｨ灘､繧ｲ繝ｼ繧ｸ陦ｨ遉ｺ
     /// </summary>
     [SerializeField] private Image _expFillImage;
     [SerializeField] private Image _expWhiteImage;
     /// <summary>
-    /// 経験値追加アニメーション
+    /// 邨碁ｨ灘､霑ｽ蜉繧｢繝九Γ繝ｼ繧ｷ繝ｧ繝ｳ
     /// </summary>
     [SerializeField] private Animator _expAddAnim;
 
@@ -20,15 +20,15 @@ public class ExpGauge : MonoBehaviour {
         _playerParameter = PlayerParameter.Instance;
 
         if (_playerParameter != null) {
-            // 経験値更新イベントに登録
+            // 邨碁ｨ灘､譖ｴ譁ｰ繧､繝吶Φ繝医↓逋ｻ骭ｲ
             _playerParameter.OnExpChanged += (exp) => UpdateExpGauge(exp);
-            // 初期表示
+            // 蛻晄悄陦ｨ遉ｺ
             UpdateExpGauge();
         }
     }
 
     /// <summary>
-    /// 経験値ゲージの更新
+    /// 邨碁ｨ灘､繧ｲ繝ｼ繧ｸ縺ｮ譖ｴ譁ｰ
     /// </summary>
     public void UpdateExpGauge(int exp = 0) {
         if(_expFillImage == null || _playerParameter == null) {
@@ -40,7 +40,7 @@ public class ExpGauge : MonoBehaviour {
         _expFillImage.fillAmount = fillAmount;
         //_expWhiteImage.fillAmount = fillAmount;
 
-        // 経験値追加アニメーション再生
+        // 邨碁ｨ灘､霑ｽ蜉繧｢繝九Γ繝ｼ繧ｷ繝ｧ繝ｳ蜀咲函
         if (exp > 0 && _expAddAnim != null) {
             _expAddAnim.Play("AddExp", 0, 0f);
         }

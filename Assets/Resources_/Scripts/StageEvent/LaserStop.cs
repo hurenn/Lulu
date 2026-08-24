@@ -2,10 +2,10 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// G‚ê‚Ä‚µ‚Î‚ç‚­‚·‚é‚ÆƒŒ[ƒU[‚ğ~‚ß‚éƒCƒxƒ“ƒg—pƒIƒuƒWƒFƒNƒg
+/// è§¦ã‚Œã¦ã—ã°ã‚‰ãã™ã‚‹ã¨ãƒ¬ãƒ¼ã‚¶ãƒ¼ã‚’æ­¢ã‚ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆç”¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 public class LaserStop : StageObject_Base {
-    [Header("ƒŒ[ƒU[‚ğ~‚ß‚é‚Ü‚Å‚ÌŠÔ")] [SerializeField] 
+    [Header("ãƒ¬ãƒ¼ã‚¶ãƒ¼ã‚’æ­¢ã‚ã‚‹ã¾ã§ã®æ™‚é–“")] [SerializeField] 
     private float _stopTime = 3.0f;
     [SerializeField]
     private Animator[] _laserAnimators;

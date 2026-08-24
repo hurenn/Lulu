@@ -1,12 +1,12 @@
 using UnityEngine;
 
 /// <summary>
-/// —‰º•œ‹A’n“_‚ğİ’è‚·‚éƒgƒŠƒK[
-/// ƒvƒŒƒCƒ„[‚ª’Ê‰ß‚·‚é‚ÆA‚±‚ÌˆÊ’u‚ğ•œ‹A’n“_‚Æ‚µ‚Ä‹L˜^‚·‚é
+/// è½ä¸‹å¾©å¸°åœ°ç‚¹ã‚’è¨­å®šã™ã‚‹ãƒˆãƒªã‚¬ãƒ¼
+/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒé€šéã™ã‚‹ã¨ã€ã“ã®ä½ç½®ã‚’å¾©å¸°åœ°ç‚¹ã¨ã—ã¦è¨˜éŒ²ã™ã‚‹
 /// </summary>
 public class FallReturnPoint : MonoBehaviour {
-    [SerializeField] private Transform _returnPoint; // •œ‹A’n“_i–¢İ’è‚Ìê‡‚Í©g‚ÌˆÊ’uj
-    [SerializeField] private bool _setOnAwake = false; // Awake‚É©“®İ’è‚·‚é‚©
+    [SerializeField] private Transform _returnPoint; // å¾©å¸°åœ°ç‚¹ï¼ˆæœªè¨­å®šã®å ´åˆã¯è‡ªèº«ã®ä½ç½®ï¼‰
+    [SerializeField] private bool _setOnAwake = false; // Awakeæ™‚ã«è‡ªå‹•è¨­å®šã™ã‚‹ã‹
 
     private void Awake() {
         if (_setOnAwake) {

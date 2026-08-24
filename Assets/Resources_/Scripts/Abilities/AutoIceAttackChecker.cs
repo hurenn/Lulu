@@ -4,7 +4,7 @@ public class AutoIceAttackChecker : MonoBehaviour {
     private Enemy_Base _targetEnemy;
 
     /// <summary>
-    /// UŒ‚‘ÎÛ‚Ì“G‚ğæ“¾‚µ‚ÄƒNƒŠƒA
+    /// æ”»æ’ƒå¯¾è±¡ã®æ•µã‚’å–å¾—ã—ã¦ã‚¯ãƒªã‚¢
     /// </summary>
     public Enemy_Base PopTargetEnemy() {
         if (_targetEnemy != null && _targetEnemy.isDead) {

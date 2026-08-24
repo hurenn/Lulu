@@ -5,20 +5,20 @@ public class CoinSpawner : MonoBehaviour {
     [SerializeField] private float _spawnInterval = 0.01f;
 
     /// <summary>
-    /// ƒRƒCƒ“¶¬
+    /// ã‚³ã‚¤ãƒ³ç”Ÿæˆ
     /// </summary>
     public void SpawnCoin(int value) {
         StartCoroutine(SpawnCoinCoroutine(value, _spawnInterval));
     }
 
     /// <summary>
-    /// ƒRƒCƒ“¶¬ƒRƒ‹[ƒ`ƒ“
+    /// ã‚³ã‚¤ãƒ³ç”Ÿæˆã‚³ãƒ«ãƒ¼ãƒãƒ³
     /// </summary>
     private IEnumerator SpawnCoinCoroutine(int value, float interval) {
         int coin_value = 1;
         int coin_count = value;
 
-        // ‘å—Ê‚ÌƒRƒCƒ“‚ğˆê“x‚É¶¬‚·‚éê‡A‰¿’l‚Ì‚‚¢ƒRƒCƒ“‚É•ÏŠ·‚µ‚Ä¶¬”‚ğŒ¸‚ç‚·
+        // å¤§é‡ã®ã‚³ã‚¤ãƒ³ã‚’ä¸€åº¦ã«ç”Ÿæˆã™ã‚‹å ´åˆã€ä¾¡å€¤ã®é«˜ã„ã‚³ã‚¤ãƒ³ã«å¤‰æ›ã—ã¦ç”Ÿæˆæ•°ã‚’æ¸›ã‚‰ã™
         if (value > 50) {
             coin_value = 5;
             coin_count = value / coin_value;

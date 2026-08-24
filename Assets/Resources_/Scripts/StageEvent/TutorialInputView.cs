@@ -1,12 +1,12 @@
 using UnityEngine;
 
 public class TutorialInputView : MonoBehaviour {
-    // \šƒL[“ü—Í•\¦
+    // åå­—ã‚­ãƒ¼å…¥åŠ›è¡¨ç¤º
     [SerializeField] private SpriteRenderer _rightInputView;
     [SerializeField] private SpriteRenderer _downInputView;
-    // ƒ{ƒ^ƒ““ü—Í•\¦
+    // ãƒœã‚¿ãƒ³å…¥åŠ›è¡¨ç¤º
     [SerializeField] private SpriteRenderer _ButtonInputRend;
-    // ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
     [SerializeField] private PlayerController _PlayerController;
 
     [SerializeField] private AudioSource _audioSource;
@@ -26,11 +26,11 @@ public class TutorialInputView : MonoBehaviour {
 
         bool is_button = input.isJumpPressed;
 
-        // \šƒL[“ü—Í•\¦
+        // åå­—ã‚­ãƒ¼å…¥åŠ›è¡¨ç¤º
         if (_rightInputView != null) {
             if (is_right || _isAllComplete) {
                 if(is_right && !_rightInputView.color.Equals(Color.green)) {
-                    // “ü—Í‰¹Ä¶
+                    // å…¥åŠ›éŸ³å†ç”Ÿ
                     if(_audioSource != null && _seInput != null) {
                         _audioSource.PlayOneShot(_seInput);
                     }
@@ -43,7 +43,7 @@ public class TutorialInputView : MonoBehaviour {
         if (_downInputView != null) {
             if (is_down || _isAllComplete) {
                 if(is_down && !_downInputView.color.Equals(Color.green)) {
-                    // “ü—Í‰¹Ä¶
+                    // å…¥åŠ›éŸ³å†ç”Ÿ
                     if(_audioSource != null && _seInput != null) {
                         _audioSource.PlayOneShot(_seInput);
                     }
@@ -54,10 +54,10 @@ public class TutorialInputView : MonoBehaviour {
             }
         }
 
-        // \šƒL[Š®—¹”»’è
+        // åå­—ã‚­ãƒ¼å®Œäº†åˆ¤å®š
         var isDpadComplete = is_right && is_down;
 
-        // ƒ{ƒ^ƒ““ü—Í•\¦
+        // ãƒœã‚¿ãƒ³å…¥åŠ›è¡¨ç¤º
         if (_ButtonInputRend != null) {
             if (_isAllComplete) {
                 _ButtonInputRend.color = Color.green;
@@ -73,7 +73,7 @@ public class TutorialInputView : MonoBehaviour {
         }
     }
 
-    // “ü—Í‘Ò‚¿‚Ì“_–ÅFæ“¾
+    // å…¥åŠ›å¾…ã¡ã®ç‚¹æ»…è‰²å–å¾—
     private Color _GetWaitInputColor() {
         float t = Mathf.PingPong(Time.unscaledTime * _blinkSpeed, 1.0f);
         return Color.Lerp(Color.white, Color.yellow, t);

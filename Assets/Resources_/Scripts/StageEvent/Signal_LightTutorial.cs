@@ -16,13 +16,13 @@ public class Signal_LightTutorial : MonoBehaviour {
 
     private void Update() {
         if (_isTutorialActive) {
-            // ‰æ–ÊƒXƒ[
+            // ç”»é¢ã‚¹ãƒ­ãƒ¼
             Time.timeScale = 0f;
         }
     }
 
     public void Tutorial_First() {
-        // Xƒ{ƒ^ƒ““ü—Í‘Ò‹@
+        // Xãƒœã‚¿ãƒ³å…¥åŠ›å¾…æ©Ÿ
         _LightTutorial_Common();
     }
 
@@ -30,20 +30,20 @@ public class Signal_LightTutorial : MonoBehaviour {
         if (playerController == null) {
             return;
         }
-        // ‰æ–ÊƒXƒ[
+        // ç”»é¢ã‚¹ãƒ­ãƒ¼
         _isTutorialActive = true;
 
         CharacterInputData specific_input = new CharacterInputData();
-        specific_input.abilityXPressed = true; // Xƒ{ƒ^ƒ““ü—Í‚ğ—v‹
+        specific_input.abilityXPressed = true; // Xãƒœã‚¿ãƒ³å…¥åŠ›ã‚’è¦æ±‚
         playerController.SetSpecificInput(specific_input, () => {
-            // “ü—ÍŠ®—¹Œã‚Ìˆ—
+            // å…¥åŠ›å®Œäº†å¾Œã®å‡¦ç†
             _isTutorialActive = false;
-            Time.timeScale = 1f; // ŠÔ‚ğŒ³‚É–ß‚·
+            Time.timeScale = 1f; // æ™‚é–“ã‚’å…ƒã«æˆ»ã™
 
-            // ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[‚ğ—LŒø‰»
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’æœ‰åŠ¹åŒ–
             playerController.isEnabledCharacterInput = true;
 
-            // Xƒ{ƒ^ƒ““ü—Í‚ğÀs
+            // Xãƒœã‚¿ãƒ³å…¥åŠ›ã‚’å®Ÿè¡Œ
             playerController.OnAbilityX();
         });
     }

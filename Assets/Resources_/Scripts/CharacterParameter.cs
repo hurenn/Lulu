@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// ƒLƒƒƒ‰ƒNƒ^[‚Ìƒpƒ‰ƒ[ƒ^[ŠÇ—
+/// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ç®¡ç†
 /// </summary>
 public class CharacterParameter : MonoBehaviour {
     // HP
@@ -19,7 +19,7 @@ public class CharacterParameter : MonoBehaviour {
             CurrentHP = _maxHP;
         }
     }
-    // HPƒQ[ƒWƒZƒbƒgƒAƒbƒv‚ª‚Å‚«‚é‚Ü‚Å‘Ò‚Â
+    // HPã‚²ãƒ¼ã‚¸ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—ãŒã§ãã‚‹ã¾ã§å¾…ã¤
     private IEnumerator _waitMaxHPChange() {
         while (OnMaxHPChanged == null) {
             yield return null;
@@ -38,16 +38,16 @@ public class CharacterParameter : MonoBehaviour {
     public System.Action<int> OnHPChanged;
     public System.Action<int> OnMaxHPChanged;
 
-    // –³“GŠÔ
+    // ç„¡æ•µæ™‚é–“
     protected float _currentInvincibilityTimer = 0;
     public float currentInvincibilityTimer { set => _currentInvincibilityTimer = value; }
     public bool isInvincible => _currentInvincibilityTimer > 0;
 
-    // UŒ‚—Í
+    // æ”»æ’ƒåŠ›
     public int attackPower = 1;
     public int defaultAttackPower { get; private set; } = 1;
 
-    // ƒLƒƒƒ‰ƒNƒ^[•\¦
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼è¡¨ç¤º
     [SerializeField] private SpriteRenderer _rend;
     private Color _originalColor;
 
@@ -58,10 +58,10 @@ public class CharacterParameter : MonoBehaviour {
     }
 
     private void Update() {
-        // ƒ_ƒ[ƒW–³“GŠÔ‚ÌXV
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸ç„¡æ•µæ™‚é–“ã®æ›´æ–°
         if (_currentInvincibilityTimer > 0) {
             _currentInvincibilityTimer -= Time.deltaTime;
-            // –³“GŠÔ’†‚ÍƒLƒƒƒ‰ƒNƒ^[‚ğ“_–Å‚³‚¹‚é
+            // ç„¡æ•µæ™‚é–“ä¸­ã¯ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’ç‚¹æ»…ã•ã›ã‚‹
             float alpha = Mathf.PingPong(Time.time * 5, 1);
             var set_color = _rend.color;
             set_color.a = alpha;
@@ -76,7 +76,7 @@ public class CharacterParameter : MonoBehaviour {
     protected virtual void _Update() { }
 
     /// <summary>
-    /// ƒ_ƒ[ƒW”­¶
+    /// ãƒ€ãƒ¡ãƒ¼ã‚¸ç™ºç”Ÿ
     /// </summary>
     public void ExecuteDamage(int damage, float invincibility_time, ref bool is_die) {
         CurrentHP -= damage;
@@ -86,7 +86,7 @@ public class CharacterParameter : MonoBehaviour {
     }
 
     /// <summary>
-    /// ‰ñ•œ”­¶
+    /// å›å¾©ç™ºç”Ÿ
     /// </summary>
     public void RecoverHP(int recover_amount) {
         CurrentHP += recover_amount;

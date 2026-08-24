@@ -20,7 +20,7 @@ public class Signal_WarpTutorial : MonoBehaviour
 
     private void Update() {
         if (_isTutorialActive) {
-            // ‰æ–ÊƒXƒ[
+            // ç”»é¢ã‚¹ãƒ­ãƒ¼
             Time.timeScale = 0f;
         }
     }
@@ -54,40 +54,40 @@ public class Signal_WarpTutorial : MonoBehaviour
             return;
         }
 
-        // “ü—ÍƒŠƒZƒbƒg
+        // å…¥åŠ›ãƒªã‚»ãƒƒãƒˆ
         playerController.insertMoveRight = false;
         playerController.insertMoveDown = false;
-        // ‰æ–ÊƒXƒ[
+        // ç”»é¢ã‚¹ãƒ­ãƒ¼
         _isTutorialActive = true;
 
         CharacterInputData specific_input = new CharacterInputData();
         specific_input.move = any_dir ? Vector2.zero : dir_input;
         specific_input.isJumpPressed = jump_input;
         playerController.SetSpecificInput(specific_input, () => {
-            // “ü—ÍŠ®—¹Œã‚Ìˆ—
+            // å…¥åŠ›å®Œäº†å¾Œã®å‡¦ç†
             _isTutorialActive = false;
-            Time.timeScale = 1f; // ŠÔ‚ğŒ³‚É–ß‚·
+            Time.timeScale = 1f; // æ™‚é–“ã‚’å…ƒã«æˆ»ã™
 
-            // ƒRƒ“ƒgƒ[ƒ‰[©“®“ü—Í
+            // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼è‡ªå‹•å…¥åŠ›
             StartCoroutine(_InsertController_Common(dir_input, jump_input));
         });
     }
 
     /// <summary>
-    /// ƒRƒ“ƒgƒ[ƒ‰[©“®“ü—Í
+    /// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼è‡ªå‹•å…¥åŠ›
     /// </summary>
     private IEnumerator _InsertController_Common(Vector2 dir_input, bool jump_input) {
         if (playerController == null) {
             yield break;
         }
 
-        // •ûŒü“ü—Í
+        // æ–¹å‘å…¥åŠ›
         playerController.insertMoveRight = dir_input.x > 0.5f;
         playerController.insertMoveDown = dir_input.y < -0.5f;
 
         yield return null;
 
-        // ƒWƒƒƒ“ƒv“ü—Í
+        // ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›
         if (jump_input) {
             playerController.insertJumpHeld = true;
             yield return null;

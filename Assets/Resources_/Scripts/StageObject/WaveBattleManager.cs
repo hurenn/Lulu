@@ -6,30 +6,30 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class WaveBattleManager : MonoBehaviour
 {
-    [Header("Waveİ’è")]
-    public WaveData[] waveData; // Wave‚Ìƒf[ƒ^‚ğScriptableObject‚Æ‚µ‚ÄQÆ
-    public Transform[] spawnPoints; // “G‚ÌoŒ»ƒ|ƒCƒ“ƒg
+    [Header("Waveè¨­å®š")]
+    public WaveData[] waveData; // Waveã®ãƒ‡ãƒ¼ã‚¿ã‚’ScriptableObjectã¨ã—ã¦å‚ç…§
+    public Transform[] spawnPoints; // æ•µã®å‡ºç¾ãƒã‚¤ãƒ³ãƒˆ
 
-    [Header("ƒJƒƒ‰İ’è")]
+    [Header("ã‚«ãƒ¡ãƒ©è¨­å®š")]
     [SerializeField] private Transform cameraLockPos;
     [SerializeField] private CinemachineCamera _currentCam;
     private Transform _originalFollow;
 
-    [Header("“¹••½İ’è")]
-    [SerializeField] private GameObject[] walls; // “¹‚ğ••½‚·‚éƒIƒuƒWƒFƒNƒg
+    [Header("é“å°é–è¨­å®š")]
+    [SerializeField] private GameObject[] walls; // é“ã‚’å°é–ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
     private GameObject _appearEffect;
     private bool hasTriggered = false;
     private float _spawnInterval = 0.3f;
     private void Start() {
-        // “¹‚ğ••½‚·‚éƒIƒuƒWƒFƒNƒg‚ğ”ñ•\¦‚É‚·‚é
+        // é“ã‚’å°é–ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’éè¡¨ç¤ºã«ã™ã‚‹
         foreach (var wall in walls) {
             if (wall.activeSelf) wall.SetActive(false);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (hasTriggered) return; // Šù‚ÉƒgƒŠƒK[‚ª”­“®‚µ‚Ä‚¢‚éê‡‚Í–³‹
+        if (hasTriggered) return; // æ—¢ã«ãƒˆãƒªã‚¬ãƒ¼ãŒç™ºå‹•ã—ã¦ã„ã‚‹å ´åˆã¯ç„¡è¦–
         
         if (collision.CompareTag("Player")) {
             hasTriggered = true;
@@ -44,59 +44,59 @@ public class WaveBattleManager : MonoBehaviour
         StartCoroutine(_RunWaves());
     }
 
-    // Wave‚ÌÀs‚ğŠÇ—‚·‚éƒRƒ‹[ƒ`ƒ“
+    // Waveã®å®Ÿè¡Œã‚’ç®¡ç†ã™ã‚‹ã‚³ãƒ«ãƒ¼ãƒãƒ³
     private IEnumerator _RunWaves() {
-        // “¹‚ğ••½
+        // é“ã‚’å°é–
         foreach (var wall in walls) {
             if (!wall.activeSelf) wall.SetActive(true);
         }
-        // ƒEƒF[ƒuí“¬—pƒJƒƒ‰‚ğ—LŒø‰»
+        // ã‚¦ã‚§ãƒ¼ãƒ–æˆ¦é—˜ç”¨ã‚«ãƒ¡ãƒ©ã‚’æœ‰åŠ¹åŒ–
         _originalFollow = _currentCam.Follow;
         _currentCam.Follow = cameraLockPos;
 
-        // oŒ»‚³‚¹‚½“G‚ğŠÇ—‚·‚éƒŠƒXƒg
+        // å‡ºç¾ã•ã›ãŸæ•µã‚’ç®¡ç†ã™ã‚‹ãƒªã‚¹ãƒˆ
         List<Enemy_Base> spawnedEnemies = new List<Enemy_Base>();
         int nextSpawnIndex = 0;
-        // ŠeWave‚ğ‡”Ô‚ÉÀs
+        // å„Waveã‚’é †ç•ªã«å®Ÿè¡Œ
         foreach (var wave in waveData) {
 
             foreach (var enemyInfo in wave.enemies) {
                 for (int i = 0; i < enemyInfo.count; i++) {
-                    // oŒ»ƒGƒtƒFƒNƒg‚ğ•\¦
+                    // å‡ºç¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’è¡¨ç¤º
                     if (_appearEffect != null) {
                         var effect = Instantiate(_appearEffect, spawnPoints[nextSpawnIndex].position, Quaternion.identity);
-                        Destroy(effect, 1.0f); // ƒGƒtƒFƒNƒg‚ğ1•bŒã‚Éíœ
+                        Destroy(effect, 1.0f); // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’1ç§’å¾Œã«å‰Šé™¤
                     }
                     yield return new WaitForSeconds(_spawnInterval + wave.spawnInterval);
-                    // oŒ»ƒ|ƒCƒ“ƒg‚ğ‡”Ô‚É‘I‘ğ
+                    // å‡ºç¾ãƒã‚¤ãƒ³ãƒˆã‚’é †ç•ªã«é¸æŠ
                     var spawnPoint = spawnPoints[nextSpawnIndex];
                     nextSpawnIndex = (nextSpawnIndex + 1) % spawnPoints.Length;
-                    // “G‚ğoŒ»‚³‚¹‚é
+                    // æ•µã‚’å‡ºç¾ã•ã›ã‚‹
                     var enemy_obj = Instantiate(enemyInfo.enemyPrefab, spawnPoint.position, Quaternion.identity);
                     var enemy_base = enemy_obj.GetComponent<Enemy_Base>();
                     spawnedEnemies.Add(enemy_base);
-                    // “G‚ª“|‚³‚ê‚½‚Æ‚«‚Ìˆ—
+                    // æ•µãŒå€’ã•ã‚ŒãŸã¨ãã®å‡¦ç†
                     enemy_base.OnDied += () => {
                         spawnedEnemies.Remove(enemy_base);
                     };
-                    // ƒXƒ|[ƒ“’n“_‚ª‹ó‚­‚Ü‚Å‘Ò‹@
+                    // ã‚¹ãƒãƒ¼ãƒ³åœ°ç‚¹ãŒç©ºãã¾ã§å¾…æ©Ÿ
                     while (spawnedEnemies.Count >= spawnPoints.Length) {
                         yield return null;
                     }
                 }
             }
-            // ‘S‚Ä‚Ì“G‚ª“|‚³‚ê‚é‚Ü‚Å‘Ò‹@
+            // å…¨ã¦ã®æ•µãŒå€’ã•ã‚Œã‚‹ã¾ã§å¾…æ©Ÿ
             while (spawnedEnemies.Count > 0) {
                 yield return null;
             }
         }
 
-        // “¹‚ğ‰ğ•ú
+        // é“ã‚’è§£æ”¾
         foreach (var wall in walls) {
             if (wall.activeSelf) wall.SetActive(false);
         }
         gameObject.SetActive(false);
-        // ƒEƒF[ƒuí“¬—pƒJƒƒ‰‚ğ–³Œø‰»
+        // ã‚¦ã‚§ãƒ¼ãƒ–æˆ¦é—˜ç”¨ã‚«ãƒ¡ãƒ©ã‚’ç„¡åŠ¹åŒ–
         _currentCam.Follow = _originalFollow;
     }
 }

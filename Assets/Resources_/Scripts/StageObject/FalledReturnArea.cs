@@ -1,22 +1,22 @@
 using UnityEngine;
 
 /// <summary>
-/// ƒvƒŒƒCƒ„[‚ª—‰º‚µ‚½‚Æ‚«‚ÉAw’è‚³‚ê‚½ˆÊ’u‚É–ß‚·ƒGƒŠƒAB
+/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè½ä¸‹ã—ãŸã¨ãã«ã€æŒ‡å®šã•ã‚ŒãŸä½ç½®ã«æˆ»ã™ã‚¨ãƒªã‚¢ã€‚
 /// </summary>
 public class FalledReturnArea : StageObject_Base {
-    [SerializeField] private Transform _returnPoint; // ƒfƒtƒHƒ‹ƒg‚Ì•œ‹A’n“_iFallReturnPoint‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Ég—pj
+    [SerializeField] private Transform _returnPoint; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®å¾©å¸°åœ°ç‚¹ï¼ˆFallReturnPointãŒè¨­å®šã•ã‚Œã¦ã„ãªã„å ´åˆã«ä½¿ç”¨ï¼‰
 
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);
         
-        // FallReturnPointManager‚©‚çÅŒã‚Ì•œ‹A’n“_‚ğæ“¾
+        // FallReturnPointManagerã‹ã‚‰æœ€å¾Œã®å¾©å¸°åœ°ç‚¹ã‚’å–å¾—
         Vector3? lastReturnPoint = FallReturnPointManager.Instance.GetLastReturnPoint();
         
         if (lastReturnPoint.HasValue) {
-            // ÅŒã‚É’Ê‰ß‚µ‚½FallReturnPoint‚ª‚ ‚éê‡A‚»‚±‚É–ß‚·
+            // æœ€å¾Œã«é€šéã—ãŸFallReturnPointãŒã‚ã‚‹å ´åˆã€ãã“ã«æˆ»ã™
             player.transform.position = lastReturnPoint.Value;
         } else if (_returnPoint != null) {
-            // FallReturnPoint‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡AƒfƒtƒHƒ‹ƒg‚Ì•œ‹A’n“_‚É–ß‚·
+            // FallReturnPointãŒè¨­å®šã•ã‚Œã¦ã„ãªã„å ´åˆã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®å¾©å¸°åœ°ç‚¹ã«æˆ»ã™
             player.transform.position = _returnPoint.position;
         } else {
             Debug.LogWarning("FalledReturnArea: No return point is set.");

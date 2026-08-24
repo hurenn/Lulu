@@ -4,48 +4,48 @@ using System.Collections;
 using System;
 
 public class Pause_UI : MonoBehaviour {
-    private const float BGM_VOLUME_SCALE_WHILE_PAUSED = 0.5f; // ƒ|[ƒY’†‚ÌBGM‰¹—ÊƒXƒP[ƒ‹
-    private const float ARROW_SCALE_TIME = 0.2f; // –îˆóŠgkƒAƒjƒŠÔ
-    private const float ARROW_SCALE_MAX = 1.3f; // –îˆó‚ÌÅ‘åŠg‘å—¦
-    private const float PANEL_FADE_TIME = 0.1f; // ƒpƒlƒ‹ƒtƒF[ƒhŠÔ
-    private const float SUBPANEL_MOVE_TIME = 0.05f; // ƒTƒuƒpƒlƒ‹ˆÚ“®ƒAƒjƒŠÔ
+    private const float BGM_VOLUME_SCALE_WHILE_PAUSED = 0.5f; // ãƒãƒ¼ã‚ºä¸­ã®BGMéŸ³é‡ã‚¹ã‚±ãƒ¼ãƒ«
+    private const float ARROW_SCALE_TIME = 0.2f; // çŸ¢å°æ‹¡ç¸®ã‚¢ãƒ‹ãƒ¡æ™‚é–“
+    private const float ARROW_SCALE_MAX = 1.3f; // çŸ¢å°ã®æœ€å¤§æ‹¡å¤§ç‡
+    private const float PANEL_FADE_TIME = 0.1f; // ãƒ‘ãƒãƒ«ãƒ•ã‚§ãƒ¼ãƒ‰æ™‚é–“
+    private const float SUBPANEL_MOVE_TIME = 0.05f; // ã‚µãƒ–ãƒ‘ãƒãƒ«ç§»å‹•ã‚¢ãƒ‹ãƒ¡æ™‚é–“
 
-    private int _currentPanelIndex = 0;       // Œ»İ‘I‘ğ’†‚Ìƒƒjƒ…[
+    private int _currentPanelIndex = 0;       // ç¾åœ¨é¸æŠä¸­ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼
 
-    [SerializeField] private GameObject pausePanel; // ƒ|[ƒYUI‚Ìƒpƒlƒ‹
-    [SerializeField] private Pause_MenuBase[] menuPanels; // 0:ƒQ[ƒ€ƒƒjƒ…[, 1:ƒ{ƒ^ƒ“ƒRƒ“ƒtƒBƒO, 2:‚»‚Ì‘¼İ’è
-    [SerializeField] private RectTransform[] subPanels; // ƒTƒuƒpƒlƒ‹ˆÊ’uî•ñiƒAƒNƒeƒBƒu§Œä‚È‚µj
-    [SerializeField] private RectTransform activeSubPanel; // ÀÛ‚É•\¦‚³‚ê‚éƒTƒuƒpƒlƒ‹
-    [SerializeField] protected Image _rightArrow;  // ‰E–îˆó‰æ‘œ
-    [SerializeField] protected Image _leftArrow;   // ¶–îˆó‰æ‘œ
+    [SerializeField] private GameObject pausePanel; // ãƒãƒ¼ã‚ºUIã®ãƒ‘ãƒãƒ«
+    [SerializeField] private Pause_MenuBase[] menuPanels; // 0:ã‚²ãƒ¼ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼, 1:ãƒœã‚¿ãƒ³ã‚³ãƒ³ãƒ•ã‚£ã‚°, 2:ãã®ä»–è¨­å®š
+    [SerializeField] private RectTransform[] subPanels; // ã‚µãƒ–ãƒ‘ãƒãƒ«ä½ç½®æƒ…å ±ï¼ˆã‚¢ã‚¯ãƒ†ã‚£ãƒ–åˆ¶å¾¡ãªã—ï¼‰
+    [SerializeField] private RectTransform activeSubPanel; // å®Ÿéš›ã«è¡¨ç¤ºã•ã‚Œã‚‹ã‚µãƒ–ãƒ‘ãƒãƒ«
+    [SerializeField] protected Image _rightArrow;  // å³çŸ¢å°ç”»åƒ
+    [SerializeField] protected Image _leftArrow;   // å·¦çŸ¢å°ç”»åƒ
 
-    [SerializeField] protected AudioSource _audioSource; // Œø‰Ê‰¹Ä¶—pAudioSource
-    [SerializeField] protected AudioClip _seSelect; // ƒƒjƒ…[‘I‘ğ‰¹
-    [SerializeField] protected AudioClip _seDecide; // ƒƒjƒ…[Œˆ’è‰¹
+    [SerializeField] protected AudioSource _audioSource; // åŠ¹æœéŸ³å†ç”Ÿç”¨AudioSource
+    [SerializeField] protected AudioClip _seSelect; // ãƒ¡ãƒ‹ãƒ¥ãƒ¼é¸æŠéŸ³
+    [SerializeField] protected AudioClip _seDecide; // ãƒ¡ãƒ‹ãƒ¥ãƒ¼æ±ºå®šéŸ³
 
-    // Œ»İŠJ‚¢‚Ä‚¢‚é‚©‚Ç‚¤‚©istatic‚Å‚Ç‚±‚©‚ç‚Å‚àQÆ‰Â”\j
+    // ç¾åœ¨é–‹ã„ã¦ã„ã‚‹ã‹ã©ã†ã‹ï¼ˆstaticã§ã©ã“ã‹ã‚‰ã§ã‚‚å‚ç…§å¯èƒ½ï¼‰
     public static bool IsOpen => isOpen;
     private static bool isOpen = false;
-    public bool canOpen = true; // ƒ|[ƒYUI‚ğŠJ‚¯‚é‚©‚Ç‚¤‚©
+    public bool canOpen = true; // ãƒãƒ¼ã‚ºUIã‚’é–‹ã‘ã‚‹ã‹ã©ã†ã‹
     private bool _isInitialized = false;
 
     private float _originalTimeScale = 1f;
     private float _originalBgmVolume = 1f;
-    private static AudioSource s_bgmSource = null; // ƒLƒƒƒbƒVƒ…—p
+    private static AudioSource s_bgmSource = null; // ã‚­ãƒ£ãƒƒã‚·ãƒ¥ç”¨
 
-    private Coroutine _arrowScaleCoroutine; // –îˆóŠgkƒRƒ‹[ƒ`ƒ“
-    private Coroutine _panelFadeCoroutine; // ƒpƒlƒ‹ƒtƒF[ƒhƒRƒ‹[ƒ`ƒ“
-    private Coroutine _subPanelMoveCoroutine; // ƒTƒuƒpƒlƒ‹ˆÚ“®ƒRƒ‹[ƒ`ƒ“
-    private bool _isSwitching = false; // ƒpƒlƒ‹Ø‚è‘Ö‚¦’†ƒtƒ‰ƒO
+    private Coroutine _arrowScaleCoroutine; // çŸ¢å°æ‹¡ç¸®ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    private Coroutine _panelFadeCoroutine; // ãƒ‘ãƒãƒ«ãƒ•ã‚§ãƒ¼ãƒ‰ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    private Coroutine _subPanelMoveCoroutine; // ã‚µãƒ–ãƒ‘ãƒãƒ«ç§»å‹•ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    private bool _isSwitching = false; // ãƒ‘ãƒãƒ«åˆ‡ã‚Šæ›¿ãˆä¸­ãƒ•ãƒ©ã‚°
 
-    public event Action<int> OnMoveMenu; // ã‰º“ü—ÍƒCƒxƒ“ƒgi+1:‰º, -1:ãj
+    public event Action<int> OnMoveMenu; // ä¸Šä¸‹å…¥åŠ›ã‚¤ãƒ™ãƒ³ãƒˆï¼ˆ+1:ä¸‹, -1:ä¸Šï¼‰
 
     private void Awake() {
-        // –îˆó‚Ì‰ŠúƒXƒP[ƒ‹‚ğİ’è
+        // çŸ¢å°ã®åˆæœŸã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨­å®š
         if (_rightArrow != null) _rightArrow.rectTransform.localScale = Vector3.one;
         if (_leftArrow != null) _leftArrow.rectTransform.localScale = Vector3.one;
 
-        // Šeƒƒjƒ…[ƒpƒlƒ‹‚ÉCanvasGroup‚ğ’Ç‰Ái‚È‚¯‚ê‚Îj
+        // å„ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒ‘ãƒãƒ«ã«CanvasGroupã‚’è¿½åŠ ï¼ˆãªã‘ã‚Œã°ï¼‰
         if (menuPanels != null) {
             foreach (var panel in menuPanels) {
                 if (panel != null && panel.canvasGroup == null) {
@@ -54,13 +54,13 @@ public class Pause_UI : MonoBehaviour {
             }
         }
 
-        // activeSubPanel‚Ì‰ŠúˆÊ’u‚ğİ’è
+        // activeSubPanelã®åˆæœŸä½ç½®ã‚’è¨­å®š
         if (activeSubPanel != null && subPanels != null && subPanels.Length > 0 && subPanels[0] != null) {
             activeSubPanel.anchoredPosition = subPanels[0].anchoredPosition;
         }
     }
 
-    // BGM AudioSourceæ“¾iƒLƒƒƒbƒVƒ…—˜—pj
+    // BGM AudioSourceå–å¾—ï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥åˆ©ç”¨ï¼‰
     private AudioSource GetBgmSource() {
         if (s_bgmSource != null) return s_bgmSource;
         var bgmObj = GameObject.Find("BGM");
@@ -71,9 +71,9 @@ public class Pause_UI : MonoBehaviour {
         return null;
     }
 
-    // ƒ|[ƒYUI‚ÌŠJ•ÂƒgƒOƒ‹
+    // ãƒãƒ¼ã‚ºUIã®é–‹é–‰ãƒˆã‚°ãƒ«
     public void UIViewSwitch() {
-        // ƒJƒbƒgƒCƒ“‰‰o’†‚È‚Ç‚ÅŠJ•Â‹Ö~
+        // ã‚«ãƒƒãƒˆã‚¤ãƒ³æ¼”å‡ºä¸­ãªã©ã§é–‹é–‰ç¦æ­¢
         if (!canOpen) {
             return;
         }
@@ -91,7 +91,7 @@ public class Pause_UI : MonoBehaviour {
                 _originalBgmVolume = source.volume;
                 source.volume = _originalBgmVolume * BGM_VOLUME_SCALE_WHILE_PAUSED;
             }
-            // ‚·‚×‚Ä‚Ìƒpƒlƒ‹‚ğƒAƒNƒeƒBƒu‚É‚µAÅ‰‚Ìƒpƒlƒ‹ˆÈŠO‚Í“§–¾‚É
+            // ã™ã¹ã¦ã®ãƒ‘ãƒãƒ«ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã—ã€æœ€åˆã®ãƒ‘ãƒãƒ«ä»¥å¤–ã¯é€æ˜ã«
             if (menuPanels != null && menuPanels.Length > 0) {
                 for (int i = 0; i < menuPanels.Length; i++) {
                     if (i == 0) {
@@ -113,7 +113,7 @@ public class Pause_UI : MonoBehaviour {
                 }
                 _currentPanelIndex = 0;
 
-                // activeSubPanel‚ğÅ‰‚ÌˆÊ’u‚É‘¦À‚ÉˆÚ“®
+                // activeSubPanelã‚’æœ€åˆã®ä½ç½®ã«å³åº§ã«ç§»å‹•
                 if (activeSubPanel != null && subPanels != null && subPanels.Length > 0 && subPanels[0] != null) {
                     activeSubPanel.anchoredPosition = subPanels[0].anchoredPosition;
                 }
@@ -127,12 +127,12 @@ public class Pause_UI : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒƒjƒ…[ƒpƒlƒ‹Ø‚è‘Ö‚¦
+    /// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒ‘ãƒãƒ«åˆ‡ã‚Šæ›¿ãˆ
     /// </summary>
     public void SwitchPanel(int dir) {
         if (menuPanels == null || menuPanels.Length == 0 || _isSwitching) return;
         
-        // •ûŒü‚É‰‚¶‚Ä–îˆó‚ğƒAƒjƒ[ƒVƒ‡ƒ“
+        // æ–¹å‘ã«å¿œã˜ã¦çŸ¢å°ã‚’ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
         if (dir > 0 && _rightArrow != null) {
             StartArrowScaleAnim(_rightArrow);
         } else if (dir < 0 && _leftArrow != null) {
@@ -141,12 +141,12 @@ public class Pause_UI : MonoBehaviour {
 
         int nextPanelIndex = (_currentPanelIndex + dir + menuPanels.Length) % menuPanels.Length;
         
-        // ‘I‘ğ‰¹‚ğÄ¶
+        // é¸æŠéŸ³ã‚’å†ç”Ÿ
         if (_audioSource != null && _seSelect != null) {
             _audioSource.PlayOneShot(_seSelect);
         }
 
-        // ƒNƒƒXƒtƒF[ƒh‚ğŠJn
+        // ã‚¯ãƒ­ã‚¹ãƒ•ã‚§ãƒ¼ãƒ‰ã‚’é–‹å§‹
         if (_panelFadeCoroutine != null) {
             StopCoroutine(_panelFadeCoroutine);
         }
@@ -154,7 +154,7 @@ public class Pause_UI : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒpƒlƒ‹‚ÌƒNƒƒXƒtƒF[ƒh
+    /// ãƒ‘ãƒãƒ«ã®ã‚¯ãƒ­ã‚¹ãƒ•ã‚§ãƒ¼ãƒ‰
     /// </summary>
     private IEnumerator CrossFadePanels(int fromIndex, int toIndex) {
         _isSwitching = true;
@@ -162,10 +162,10 @@ public class Pause_UI : MonoBehaviour {
         var fromPanel = menuPanels[fromIndex];
         var toPanel = menuPanels[toIndex];
 
-        // Ÿ‚Ìƒpƒlƒ‹‚ğ€”õ
+        // æ¬¡ã®ãƒ‘ãƒãƒ«ã‚’æº–å‚™
         toPanel.Open(SwitchPanel, UIViewSwitch, _audioSource, _seSelect, _seDecide);
         
-        // ƒTƒuƒpƒlƒ‹‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“‚ğŠJn
+        // ã‚µãƒ–ãƒ‘ãƒãƒ«ã®ç§»å‹•ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’é–‹å§‹
         if (activeSubPanel != null && subPanels != null && toIndex < subPanels.Length && subPanels[toIndex] != null) {
             if (_subPanelMoveCoroutine != null) {
                 StopCoroutine(_subPanelMoveCoroutine);
@@ -178,17 +178,17 @@ public class Pause_UI : MonoBehaviour {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / PANEL_FADE_TIME);
             
-            // ƒC[ƒWƒ“ƒOiƒXƒ€[ƒY‚È‰Á‘¬EŒ¸‘¬j
+            // ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ï¼ˆã‚¹ãƒ ãƒ¼ã‚ºãªåŠ é€Ÿãƒ»æ¸›é€Ÿï¼‰
             float easedRate = rate < 0.5f 
                 ? 2f * rate * rate 
                 : 1f - Mathf.Pow(-2f * rate + 2f, 2f) / 2f;
 
-            // ƒtƒF[ƒhƒAƒEƒg
+            // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ
             if (fromPanel.canvasGroup != null) {
                 fromPanel.canvasGroup.alpha = 1f - easedRate;
             }
 
-            // ƒtƒF[ƒhƒCƒ“
+            // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
             if (toPanel.canvasGroup != null) {
                 toPanel.canvasGroup.alpha = easedRate;
             }
@@ -196,7 +196,7 @@ public class Pause_UI : MonoBehaviour {
             yield return null;
         }
 
-        // ÅIó‘Ô‚ğŠm’è
+        // æœ€çµ‚çŠ¶æ…‹ã‚’ç¢ºå®š
         if (fromPanel.canvasGroup != null) {
             fromPanel.canvasGroup.alpha = 0f;
             fromPanel.canvasGroup.interactable = false;
@@ -215,9 +215,9 @@ public class Pause_UI : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒTƒuƒpƒlƒ‹‚ÌˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“
+    /// ã‚µãƒ–ãƒ‘ãƒãƒ«ã®ç§»å‹•ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
     /// </summary>
-    /// <param name="targetPosition">ˆÚ“®æ‚ÌˆÊ’u</param>
+    /// <param name="targetPosition">ç§»å‹•å…ˆã®ä½ç½®</param>
     private IEnumerator MoveSubPanel(Vector2 targetPosition) {
         if (activeSubPanel == null) yield break;
 
@@ -228,26 +228,26 @@ public class Pause_UI : MonoBehaviour {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / SUBPANEL_MOVE_TIME);
             
-            // ƒC[ƒWƒ“ƒOiEaseOutCubicFŒ¸‘¬‚µ‚È‚ª‚ç“’Bj
+            // ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ï¼ˆEaseOutCubicï¼šæ¸›é€Ÿã—ãªãŒã‚‰åˆ°é”ï¼‰
             float easedRate = 1f - Mathf.Pow(1f - rate, 3f);
             
             activeSubPanel.anchoredPosition = Vector2.Lerp(startPos, targetPosition, easedRate);
             yield return null;
         }
 
-        // ÅIˆÊ’u‚ğŠm’è
+        // æœ€çµ‚ä½ç½®ã‚’ç¢ºå®š
         activeSubPanel.anchoredPosition = targetPosition;
         _subPanelMoveCoroutine = null;
     }
 
     /// <summary>
-    /// –îˆó‚ÌŠgkƒAƒjƒ[ƒVƒ‡ƒ“‚ğŠJn
+    /// çŸ¢å°ã®æ‹¡ç¸®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’é–‹å§‹
     /// </summary>
-    /// <param name="arrow">ƒAƒjƒ[ƒVƒ‡ƒ“‘ÎÛ‚Ì–îˆó</param>
+    /// <param name="arrow">ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¯¾è±¡ã®çŸ¢å°</param>
     private void StartArrowScaleAnim(Image arrow) {
         if (arrow == null) return;
 
-        // ‘O‰ñ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ğ’â~
+        // å‰å›ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’åœæ­¢
         if (_arrowScaleCoroutine != null) {
             StopCoroutine(_arrowScaleCoroutine);
             _arrowScaleCoroutine = null;
@@ -257,55 +257,55 @@ public class Pause_UI : MonoBehaviour {
     }
 
     /// <summary>
-    /// –îˆó‚ÌŠgkƒAƒjƒ[ƒVƒ‡ƒ“
+    /// çŸ¢å°ã®æ‹¡ç¸®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
     /// </summary>
-    /// <param name="arrow">ƒAƒjƒ[ƒVƒ‡ƒ“‘ÎÛ‚Ì–îˆó</param>
+    /// <param name="arrow">ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¯¾è±¡ã®çŸ¢å°</param>
     private IEnumerator ArrowScaleAnim(Image arrow) {
         if (arrow == null) yield break;
 
         Vector3 originalScale = Vector3.one;
         float t = 0f;
 
-        // Šg‘åƒtƒF[ƒYi0 ¨ MAXj‚æ‚è‘¬‚­
+        // æ‹¡å¤§ãƒ•ã‚§ãƒ¼ã‚ºï¼ˆ0 â†’ MAXï¼‰ã‚ˆã‚Šé€Ÿã
         while (t < ARROW_SCALE_TIME * 0.3f) {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / (ARROW_SCALE_TIME * 0.3f));
-            // ‹}Œƒ‚ÉŠg‘å
+            // æ€¥æ¿€ã«æ‹¡å¤§
             float easedRate = 1f - Mathf.Pow(1f - rate, 4f);
             float scale = Mathf.Lerp(1f, ARROW_SCALE_MAX, easedRate);
             arrow.rectTransform.localScale = originalScale * scale;
             yield return null;
         }
 
-        // k¬ƒtƒF[ƒYiMAX ¨ 1.0j
+        // ç¸®å°ãƒ•ã‚§ãƒ¼ã‚ºï¼ˆMAX â†’ 1.0ï¼‰
         t = 0f;
         while (t < ARROW_SCALE_TIME * 0.7f) {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Clamp01(t / (ARROW_SCALE_TIME * 0.7f));
-            // ’e‚Ş‚æ‚¤‚Èk¬
+            // å¼¾ã‚€ã‚ˆã†ãªç¸®å°
             float easedRate = Mathf.Sin(rate * Mathf.PI * 0.5f);
             float scale = Mathf.Lerp(ARROW_SCALE_MAX, 1f, easedRate);
             arrow.rectTransform.localScale = originalScale * scale;
             yield return null;
         }
 
-        // ÅI“I‚ÉŒ³‚ÌƒTƒCƒY‚ÉŠmÀ‚É–ß‚·
+        // æœ€çµ‚çš„ã«å…ƒã®ã‚µã‚¤ã‚ºã«ç¢ºå®Ÿã«æˆ»ã™
         arrow.rectTransform.localScale = originalScale;
         _arrowScaleCoroutine = null;
     }
 
     public void InputVerticalDir(int dir) {
-        // Œ»İƒAƒNƒeƒBƒuó‘Ô‚Ìƒƒjƒ…[‚É‘Î‚µ‚Äã‰º“ü—Í‚ğ—^‚¦‚é
+        // ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«å¯¾ã—ã¦ä¸Šä¸‹å…¥åŠ›ã‚’ä¸ãˆã‚‹
         _GetActiveMenu()?.OnInputVertical(dir);
     }
 
     public void InputHorizonDir(int dir) {
-        // Œ»İƒAƒNƒeƒBƒuó‘Ô‚Ìƒƒjƒ…[‚É‘Î‚µ‚Ä¶‰E“ü—Í‚ğ—^‚¦‚é
+        // ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«å¯¾ã—ã¦å·¦å³å…¥åŠ›ã‚’ä¸ãˆã‚‹
         _GetActiveMenu()?.OnInputHorizontal(dir);
     }
 
     public void InputDecide() {
-        // Œ»İƒAƒNƒeƒBƒuó‘Ô‚Ìƒƒjƒ…[‚É‘Î‚µ‚ÄŒˆ’è“ü—Í‚ğ—^‚¦‚é
+        // ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«å¯¾ã—ã¦æ±ºå®šå…¥åŠ›ã‚’ä¸ãˆã‚‹
         _GetActiveMenu()?.ExecuteSelectedMenu();
     }
 

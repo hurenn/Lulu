@@ -8,7 +8,7 @@ public class GoalMarker : MonoBehaviour
     [SerializeField] private RectTransform markerUI;
     [SerializeField] private Image markerImage;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private float edgeOffset = 50f; // ‰æ–Ê’[‚©‚ç­‚µ“à‘¤‚É
+    [SerializeField] private float edgeOffset = 50f; // ç”»é¢ç«¯ã‹ã‚‰å°‘ã—å†…å´ã«
     private bool _isActive = false;
 
     private void Reset() {
@@ -24,7 +24,7 @@ public class GoalMarker : MonoBehaviour
             return;
         }
 
-        // ƒtƒF[ƒhƒCƒ“EƒAƒEƒgˆ—
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ãƒ»ã‚¢ã‚¦ãƒˆå‡¦ç†
         var color = markerImage.color;
         if (_isActive && color.a < 1f) {
             color.a += Time.deltaTime * 3;
@@ -39,32 +39,32 @@ public class GoalMarker : MonoBehaviour
 
         Vector3 screenPos = mainCamera.WorldToScreenPoint(goal.position);
 
-        // ƒS[ƒ‹‚ªƒJƒƒ‰‚Ì‘O•û‚É‚ ‚é‚©H
+        // ã‚´ãƒ¼ãƒ«ãŒã‚«ãƒ¡ãƒ©ã®å‰æ–¹ã«ã‚ã‚‹ã‹ï¼Ÿ
         bool isBehind = screenPos.z < 0;
 
-        // ‚à‚µƒJƒƒ‰‚ÌŒã‚ë‚È‚çA•ûŒü‚ğ”½“]iŒã•û‚Å‚àƒ}[ƒJ[o‚·ê‡j
+        // ã‚‚ã—ã‚«ãƒ¡ãƒ©ã®å¾Œã‚ãªã‚‰ã€æ–¹å‘ã‚’åè»¢ï¼ˆå¾Œæ–¹ã§ã‚‚ãƒãƒ¼ã‚«ãƒ¼å‡ºã™å ´åˆï¼‰
         if (isBehind) {
             screenPos *= -1;
         }
 
-        // ‰æ–Ê’†S‚©‚ç‚Ì•ûŒüƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+        // ç”»é¢ä¸­å¿ƒã‹ã‚‰ã®æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
         Vector3 dir = (screenPos - new Vector3(Screen.width / 2, Screen.height / 2, 0)).normalized;
 
-        // ‰æ–Ê’[‚ÌˆÊ’u‚ğŒvZ
+        // ç”»é¢ç«¯ã®ä½ç½®ã‚’è¨ˆç®—
         Vector3 edgePos = new Vector3(
             Mathf.Clamp(Screen.width / 2 + dir.x * (Screen.width / 2 - edgeOffset), edgeOffset, Screen.width - edgeOffset),
             Mathf.Clamp(Screen.height / 2 + dir.y * (Screen.height / 2 - edgeOffset), edgeOffset, Screen.height - edgeOffset),
             0
         );
 
-        // ƒ}[ƒJ[‚ÌˆÊ’u‚ğXV
+        // ãƒãƒ¼ã‚«ãƒ¼ã®ä½ç½®ã‚’æ›´æ–°
         markerUI.position = edgePos;
 
-        // Œü‚«‚ğ’²®i–îˆó‚Ìæ‚ğƒS[ƒ‹•ûŒü‚Éj
+        // å‘ãã‚’èª¿æ•´ï¼ˆçŸ¢å°ã®å…ˆã‚’ã‚´ãƒ¼ãƒ«æ–¹å‘ã«ï¼‰
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         markerUI.rotation = Quaternion.Euler(0, 0, angle - 90f);
 
-        // ‰æ–Ê“à‚ÉƒS[ƒ‹‚ª‚ ‚é‚È‚ç”ñ•\¦
+        // ç”»é¢å†…ã«ã‚´ãƒ¼ãƒ«ãŒã‚ã‚‹ãªã‚‰éè¡¨ç¤º
         bool isOnScreen =
             screenPos.x > 0 && screenPos.x < Screen.width &&
             screenPos.y > 0 && screenPos.y < Screen.height &&

@@ -2,16 +2,16 @@ using UnityEngine;
 using UnityEngine.Playables;
 
 /// <summary>
-/// Timelineã‚ÅŠÔ‚Ì—¬‚ê‚ğ§Œä‚·‚é‚½‚ß‚ÌPlayableAssetƒNƒ‰ƒXB
+/// Timelineä¸Šã§æ™‚é–“ã®æµã‚Œã‚’åˆ¶å¾¡ã™ã‚‹ãŸã‚ã®PlayableAssetã‚¯ãƒ©ã‚¹ã€‚
 /// </summary>
 [System.Serializable]
 public class TimeScaleControlPlayableAsset : PlayableAsset
 {
-    [Tooltip("İ’è‚·‚éTimeScale’li0.0`1.0„§j")]
+    [Tooltip("è¨­å®šã™ã‚‹TimeScaleå€¤ï¼ˆ0.0ã€œ1.0æ¨å¥¨ï¼‰")]
     [Range(0f, 2f)]
     public float timeScale = 1f;
 
-    [Tooltip("TimeScale‚ğŒ³‚É–ß‚·‚©‚Ç‚¤‚©")]
+    [Tooltip("TimeScaleã‚’å…ƒã«æˆ»ã™ã‹ã©ã†ã‹")]
     public bool restoreOnEnd = true;
 
     public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
@@ -25,7 +25,7 @@ public class TimeScaleControlPlayableAsset : PlayableAsset
 }
 
 /// <summary>
-/// TimeScale‚ğ§Œä‚·‚éPlayableBehaviourƒNƒ‰ƒX
+/// TimeScaleã‚’åˆ¶å¾¡ã™ã‚‹PlayableBehaviourã‚¯ãƒ©ã‚¹
 /// </summary>
 public class TimeScaleControlBehaviour : PlayableBehaviour
 {
@@ -38,12 +38,12 @@ public class TimeScaleControlBehaviour : PlayableBehaviour
     {
         if (!_hasStarted)
         {
-            // Œ³‚ÌTimeScale‚ğ•Û‘¶
+            // å…ƒã®TimeScaleã‚’ä¿å­˜
             _originalTimeScale = Time.timeScale;
             _hasStarted = true;
         }
 
-        // TimeScale‚ğİ’è
+        // TimeScaleã‚’è¨­å®š
         Time.timeScale = timeScale;
     }
 
@@ -51,7 +51,7 @@ public class TimeScaleControlBehaviour : PlayableBehaviour
     {
         if (restoreOnEnd && _hasStarted)
         {
-            // TimeScale‚ğŒ³‚É–ß‚·
+            // TimeScaleã‚’å…ƒã«æˆ»ã™
             Time.timeScale = _originalTimeScale;
         }
     }
@@ -60,7 +60,7 @@ public class TimeScaleControlBehaviour : PlayableBehaviour
     {
         if (restoreOnEnd && _hasStarted)
         {
-            // TimeScale‚ğŒ³‚É–ß‚·i”O‚Ì‚½‚ßj
+            // TimeScaleã‚’å…ƒã«æˆ»ã™ï¼ˆå¿µã®ãŸã‚ï¼‰
             Time.timeScale = _originalTimeScale;
         }
     }

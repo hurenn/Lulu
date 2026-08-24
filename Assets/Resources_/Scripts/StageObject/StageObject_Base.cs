@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class StageObject_Base : MonoBehaviour
 {
-    [SerializeField] protected bool _isAlwaysAnimated = false; // í‚ÉƒAƒjƒ[ƒVƒ‡ƒ“‚·‚é‚©‚Ç‚¤‚©
+    [SerializeField] protected bool _isAlwaysAnimated = false; // å¸¸ã«ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã™ã‚‹ã‹ã©ã†ã‹
     [SerializeField] protected Animator _animator;
 
     private void Reset() {

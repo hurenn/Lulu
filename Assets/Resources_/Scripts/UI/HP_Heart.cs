@@ -2,22 +2,22 @@ using UnityEngine;
 
 public class HP_Heart : MonoBehaviour {
     /// <summary>
-    /// HP•\¦
+    /// HPè¡¨ç¤º
     /// </summary>
     [SerializeField] private GameObject _hpFill;
     [SerializeField] private GameObject _hpBreakHeart;
     [SerializeField] private Animator _hpAnim;
 
-    // oŒ»ƒGƒtƒFƒNƒg
+    // å‡ºç¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     [SerializeField] private GameObject _effectPrefab;
 
     /// <summary>
-    /// ƒn[ƒg‚ğ–ƒ^ƒ“‚É‚·‚é
+    /// ãƒãƒ¼ãƒˆã‚’æº€ã‚¿ãƒ³ã«ã™ã‚‹
     /// </summary>
     public void SetFill(bool is_fill) {
         if (_hpFill != null) {
             _hpFill.SetActive(is_fill);
-            // HP‰ñ•œƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+            // HPå›å¾©ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
             if (_hpBreakHeart != null && is_fill && _hpBreakHeart.activeSelf) {
                 _PlayHealHeart();
             }
@@ -26,7 +26,7 @@ public class HP_Heart : MonoBehaviour {
     }
 
     /// <summary>
-    /// HP‰ñ•œƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+    /// HPå›å¾©ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
     /// </summary>
     private void _PlayHealHeart() {
         Instantiate(_effectPrefab, transform);
@@ -34,7 +34,7 @@ public class HP_Heart : MonoBehaviour {
     }
 
     /// <summary>
-    /// HPŠl“¾ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+    /// HPç²å¾—ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
     /// </summary>
     public void OnPlaySpawnAnim() {
         if(_effectPrefab != null) {
