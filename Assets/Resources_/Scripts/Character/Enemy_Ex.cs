@@ -70,7 +70,7 @@ public class Enemy_Ex : Enemy_Base {
         }
         _nextActionTime = _exParameter.ActionInterval;
         _currentActionTime = _nextActionTime - 4.5f; // 最初の行動を少し遅らせる
-        _playerTransform = GameObject.FindAnyObjectByType<Player_Character>()?.transform;
+        _playerTransform = (PlayerCharacterManager.Current as Player_Character)?.transform;
         _laserParent = new GameObject("LaserBeams").transform;
     }
 

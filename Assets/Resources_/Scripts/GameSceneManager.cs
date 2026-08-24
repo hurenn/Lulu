@@ -29,7 +29,7 @@ public class GameSceneManager : MonoBehaviour
 
     private void Start() {
         // シーン再読み込み時のみリスポーン地点に移動
-        var player = FindAnyObjectByType<Player_Character>();
+        var player = PlayerCharacterManager.Current as Player_Character;
         var checkpointManager = CheckpointManager.Instance;
         if (player != null && checkpointManager != null && checkpointManager.ShouldRespawnInCurrentScene()) {
             checkpointManager.RespawnPlayer(player);
@@ -90,7 +90,7 @@ public class GameSceneManager : MonoBehaviour
 
         // デバッグ用：Eキーで経験値200獲得
         if (keyboard.eKey.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 player.AddExp(200);
             }
@@ -108,7 +108,7 @@ public class GameSceneManager : MonoBehaviour
 
         // デバッグ用：数字キーで能力の付与/解除
         if (keyboard.numpad4Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Ice);
                 if (had_ability) {
@@ -119,7 +119,7 @@ public class GameSceneManager : MonoBehaviour
             }
         }
         if (keyboard.numpad8Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Light);
                 if (had_ability) {
@@ -130,7 +130,7 @@ public class GameSceneManager : MonoBehaviour
             }
         }
         if (keyboard.numpad6Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Fire);
                 if (had_ability) {
@@ -141,7 +141,7 @@ public class GameSceneManager : MonoBehaviour
             }
         }
         if (keyboard.numpad2Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Warp);
                 if (had_ability) {
@@ -153,7 +153,7 @@ public class GameSceneManager : MonoBehaviour
         }
 
         if (keyboard.numpad5Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 player.SaveAbilitySlot(); // 能力スロットセーブ
             }

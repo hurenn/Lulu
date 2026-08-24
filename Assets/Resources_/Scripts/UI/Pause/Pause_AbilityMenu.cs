@@ -372,7 +372,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             return;
         }
 
-        var player = FindAnyObjectByType<Player_Character>();
+        var player = PlayerCharacterManager.Current as Player_Character;
         if (player == null) {
             Debug.LogWarning("Player_Characterが見つかりません");
             return;

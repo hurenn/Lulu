@@ -21,7 +21,7 @@ public class PlayerControlPlayableBehaviour : PlayableBehaviour {
     public override void OnBehaviourPlay(Playable playable, FrameData info) {
 
         // プレイヤーが着地するまで待つ
-        var character = GameObject.FindAnyObjectByType<Player_Character>();
+        var character = PlayerCharacterManager.Current as Player_Character;
         if (character != null) {
             character.StartCoroutine(_WaitPlayerStop(playable, character));
         }

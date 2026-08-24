@@ -43,7 +43,7 @@ public class ChangeScene : StageObject_Base
         }
         // プレイヤーの状態を保存
         if (is_save_ability) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 player.SavePlayerState();
             } else {
