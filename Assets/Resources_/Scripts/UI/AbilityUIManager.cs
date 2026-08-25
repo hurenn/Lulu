@@ -166,32 +166,4 @@ public class AbilityUIManager : MonoBehaviour {
         flashImage.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// 二つのスロットのUIを入れ替える
-    /// </summary>
-    public void SwapAbilityUI(eAbilitySlot slotA, eAbilitySlot slotB) {
-        var uiA = GetAbilityUI(slotA);
-        var uiB = GetAbilityUI(slotB);
-
-        if (uiA == null || uiB == null) {
-            Debug.LogWarning($"UIが見つかりません: {slotA}, {slotB}");
-            return;
-        }
-
-        // 親とローカル位置を保存
-        var parentA = uiA.transform.parent;
-        var parentB = uiB.transform.parent;
-        var localPosA = uiA.transform.localPosition;
-        var localPosB = uiB.transform.localPosition;
-
-        // 親を入れ替え
-        uiA.transform.SetParent(parentB, false);
-        uiB.transform.SetParent(parentA, false);
-
-        // ローカル位置をゼロに戻す
-        uiA.transform.localPosition = Vector3.zero;
-        uiB.transform.localPosition = Vector3.zero;
-
-        Debug.Log($"UI入れ替え完了: {slotA} ⇔ {slotB}");
-    }
 }

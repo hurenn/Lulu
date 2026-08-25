@@ -53,21 +53,72 @@ public class PlayerParameter : MonoBehaviour {
     }
     public LevelParameter levelParameter = new LevelParameter();
 
-    private Dictionary<eAbilityType, eAbilitySlot> _abilities = new Dictionary<eAbilityType, eAbilitySlot>(); // 取得済みの能力
-    public Dictionary<eAbilityType, eAbilitySlot> Abilities => _abilities;
-    public void AddAbility(eAbilityType ability_type, eAbilitySlot ability_slot) {
-        if (!_abilities.ContainsKey(ability_type)) {
-            _abilities.Add(ability_type, ability_slot);
-        }
+    // 能力タイプごとの割り当てスロット（所有の有無に関わらず、常に全タイプ分存在する）
+    private Dictionary<eAbilityType, eAbilitySlot> _abilitySlotAssignment = new Dictionary<eAbilityType, eAbilitySlot> {
+        { eAbilityType.Ice, eAbilitySlot.Y },
+        { eAbilityType.Light, eAbilitySlot.X },
+        { eAbilityType.Fire, eAbilitySlot.A },
+        { eAbilityType.Warp, eAbilitySlot.B },
+    };
+    // 所有済みの能力タイプ（Warpは最初から所有）
+    private HashSet<eAbilityType> _ownedAbilities = new HashSet<eAbilityType> { eAbilityType.Warp };
+    public IReadOnlyCollection<eAbilityType> OwnedAbilities => _ownedAbilities;
+
+    /// <summary>
+    /// 指定した能力タイプを所有しているか
+    /// </summary>
+    public bool IsOwned(eAbilityType ability_type) {
+        return _ownedAbilities.Contains(ability_type);
     }
+
+    /// <summary>
+    /// 指定した能力タイプが現在割り当てられているスロットを取得（所有していなくても常に取得できる）
+    /// </summary>
+    public eAbilitySlot GetAssignedSlot(eAbilityType ability_type) {
+        return _abilitySlotAssignment.TryGetValue(ability_type, out var slot) ? slot : default;
+    }
+
+    /// <summary>
+    /// 能力タイプを所有済みにする
+    /// </summary>
+    public void AddAbility(eAbilityType ability_type) {
+        _ownedAbilities.Add(ability_type);
+    }
+
+    /// <summary>
+    /// 指定スロットに割り当てられている能力タイプを所有解除する
+    /// </summary>
     public void RemoveAbility(eAbilitySlot ability_slot) {
-        // 指定されたスロットの能力を削除
-        foreach (var kvp in _abilities) {
+        foreach (var kvp in _abilitySlotAssignment) {
             if (kvp.Value == ability_slot) {
-                _abilities.Remove(kvp.Key);
+                _ownedAbilities.Remove(kvp.Key);
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// 2つのスロットの割り当てを入れ替える（所有状況に関わらず、割り当てテーブルそのものを更新する）
+    /// </summary>
+    public void SwapAssignedSlots(eAbilitySlot slotA, eAbilitySlot slotB) {
+        eAbilityType? typeInA = null;
+        eAbilityType? typeInB = null;
+        foreach (var kvp in _abilitySlotAssignment) {
+            if (kvp.Value == slotA) typeInA = kvp.Key;
+            else if (kvp.Value == slotB) typeInB = kvp.Key;
+        }
+        if (typeInA.HasValue) _abilitySlotAssignment[typeInA.Value] = slotB;
+        if (typeInB.HasValue) _abilitySlotAssignment[typeInB.Value] = slotA;
+    }
+
+    /// <summary>
+    /// 能力の割り当てを初期状態に戻す
+    /// </summary>
+    public void ResetAbilitySlotAssignment() {
+        _abilitySlotAssignment[eAbilityType.Ice] = eAbilitySlot.Y;
+        _abilitySlotAssignment[eAbilityType.Light] = eAbilitySlot.X;
+        _abilitySlotAssignment[eAbilityType.Fire] = eAbilitySlot.A;
+        _abilitySlotAssignment[eAbilityType.Warp] = eAbilitySlot.B;
     }
 
     public enum eLanguage {

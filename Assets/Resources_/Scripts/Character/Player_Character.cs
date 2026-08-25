@@ -58,7 +58,7 @@ public class Player_Character : Character_Base {
     public void SaveAbilitySlot() {
         foreach (var ability in _tmpAbilitySlot) {
             if (ability.Key != eAbilityType.None) {
-                _playerParam.AddAbility(ability.Key, ability.Value);
+                _playerParam.AddAbility(ability.Key);
             } else {
                 _playerParam.RemoveAbility(ability.Value);
             }
@@ -68,10 +68,6 @@ public class Player_Character : Character_Base {
     // プレイヤー用パラメーター
     private PlayerParameter _playerParam;
 
-    // 起動時に固定で設定する能力（デフォルトはBスロットのワープ）
-    [SerializeField] private eAbilityType _lockedSlotAbility = eAbilityType.Warp;
-    [SerializeField] private eAbilitySlot _lockedSlot = eAbilitySlot.B;
-
     protected override void _Setup() {
         base._Setup();
         if (_warpControl != null) {
@@ -80,18 +76,14 @@ public class Player_Character : Character_Base {
         _playerParam = PlayerParameter.Instance;
         ApplyPlayerParameter();
         _SetupHadAbility();
-
-        // 固定スロットに常に指定の能力を設定
-        SetAbilitySlot(_lockedSlotAbility, _lockedSlot, false);
     }
 
     /// <summary>
-    /// 取得済み能力のセットアップ
+    /// 取得済み能力のセットアップ（Warpも含め、所有している能力を全て割り当て済みスロットに配置）
     /// </summary>
     private void _SetupHadAbility() {
-        var had_ability = _playerParam.Abilities;
-        foreach (var ability in had_ability) {
-            SetAbilitySlot(ability.Key, ability.Value, false);
+        foreach (var ability_type in _playerParam.OwnedAbilities) {
+            SetAbilitySlot(ability_type, _playerParam.GetAssignedSlot(ability_type), false);
         }
     }
 
@@ -1027,6 +1019,13 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
+    /// 指定した能力タイプが現在装備されているスロットを取得（未装備ならnull）
+    /// </summary>
+    public eAbilitySlot? GetCurrentSlot(eAbilityType ability_type) {
+        return _tmpAbilitySlot.TryGetValue(ability_type, out var slot) ? slot : null;
+    }
+
+    /// <summary>
     /// スロットの参照をクリア
     /// </summary>
     /// <param name="slot">クリアするスロット</param>
@@ -1090,7 +1089,36 @@ public class Player_Character : Character_Base {
         _abilities[(int)slotA] = abilityB;
         _abilities[(int)slotB] = abilityA;
 
+        // 割り当てテーブル（永続データ）も入れ替え。未所有の能力が絡む場合も含めて常に更新する
+        _playerParam.SwapAssignedSlots(slotA, slotB);
+
         Debug.Log($"スロット{slotA}({abilityTypeA})とスロット{slotB}({abilityTypeB})を入れ替えました");
+    }
+
+    /// <summary>
+    /// 指定スロットのUI表示を、現在の装備状況に合わせて更新する
+    /// </summary>
+    public void RefreshAbilityUI(eAbilitySlot slot) {
+        var abilityUIManager = FindAnyObjectByType<AbilityUIManager>();
+        if (abilityUIManager == null) {
+            return;
+        }
+
+        var ability = _abilities[(int)slot];
+        if (ability == null) {
+            abilityUIManager.RemoveAbilityUI(slot);
+            return;
+        }
+
+        // このスロットの能力タイプを特定
+        eAbilityType type = eAbilityType.None;
+        foreach (var kvp in _tmpAbilitySlot) {
+            if (kvp.Value == slot) {
+                type = kvp.Key;
+                break;
+            }
+        }
+        abilityUIManager.SetAbilityUI(slot, type, ability, is_effect: false);
     }
 
     /// <summary>

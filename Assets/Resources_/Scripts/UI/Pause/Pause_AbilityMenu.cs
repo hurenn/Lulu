@@ -108,25 +108,23 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _iconToAbilityType[_LightTriggerIcon] = eAbilityType.Light;
         _iconToAbilityType[_FireTriggerIcon] = eAbilityType.Fire;
 
-        // 初期割り当て
-        _buttonToIcon[eButtonIndex.B] = _WarpIcon;
-        _buttonToIcon[eButtonIndex.Y] = _IceIcon;
-        _buttonToIcon[eButtonIndex.X] = _LightIcon;
-        _buttonToIcon[eButtonIndex.A] = _FireIcon;
+        // 現在の割り当てから初期配置を構築（B,Y,X,Aは入れ替えが反映される）
+        _buttonToIcon.Clear();
+        var playerParam = PlayerParameter.Instance;
+        _buttonToIcon[_AbilitySlotToButtonIndex(playerParam.GetAssignedSlot(eAbilityType.Warp))] = _WarpIcon;
+        _buttonToIcon[_AbilitySlotToButtonIndex(playerParam.GetAssignedSlot(eAbilityType.Ice))] = _IceIcon;
+        _buttonToIcon[_AbilitySlotToButtonIndex(playerParam.GetAssignedSlot(eAbilityType.Light))] = _LightIcon;
+        _buttonToIcon[_AbilitySlotToButtonIndex(playerParam.GetAssignedSlot(eAbilityType.Fire))] = _FireIcon;
+        // トリガーボタン（SL/ZL/SR/ZR）は現在オミット中の機能のため固定配置のまま
         _buttonToIcon[eButtonIndex.SR] = _WarpTriggerIcon;
         _buttonToIcon[eButtonIndex.ZL] = _IceTriggerIcon;
         _buttonToIcon[eButtonIndex.ZR] = _LightTriggerIcon;
         _buttonToIcon[eButtonIndex.SL] = _FireTriggerIcon;
 
         // アイコンを各ボタンに配置
-        _PlaceIconOnButton(_WarpIcon, _MenuButtonB);
-        _PlaceIconOnButton(_IceIcon, _MenuButtonY);
-        _PlaceIconOnButton(_LightIcon, _MenuButtonX);
-        _PlaceIconOnButton(_FireIcon, _MenuButtonA);
-        _PlaceIconOnButton(_WarpTriggerIcon, _MenuButtonSR);
-        _PlaceIconOnButton(_IceTriggerIcon, _MenuButtonZL);
-        _PlaceIconOnButton(_LightTriggerIcon, _MenuButtonZR);
-        _PlaceIconOnButton(_FireTriggerIcon, _MenuButtonSL);
+        foreach (var kvp in _buttonToIcon) {
+            _PlaceIconOnButton(kvp.Value, _GetButtonRect(kvp.Key));
+        }
 
         // 最初の選択肢に枠を移動
         MoveFrameToSelected(_MenuButtonB, true);
@@ -277,6 +275,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
 
         if(_currentButton == eButtonIndex.Reset) {
             // リセット：全ての割り当てを初期状態に戻す
+            _ResetAbilityAssignment();
             Open(OnSwitchMenu, OnCloseMenu, _audioSource, _seSelect, _seDecide);
             _currentButton = eButtonIndex.Reset;
             _UpdateExplain();
@@ -292,8 +291,6 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             return;
         }
 
-        // ボタンコンフィグ機能：オミット中
-        /*
         // 1回目の決定：アイコンを掴む
         if (_grabbedIcon == null) {
             _GrabIcon(_currentButton);
@@ -302,7 +299,38 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         else {
             _SwapIcon(_currentButton);
         }
-        */
+    }
+
+    /// <summary>
+    /// 能力の割り当てを初期状態に戻す（既存の能力インスタンスは維持したまま、スロットの中身だけ入れ替える）
+    /// </summary>
+    private void _ResetAbilityAssignment() {
+        var playerParam = PlayerParameter.Instance;
+        var defaultSlots = new Dictionary<eAbilityType, eAbilitySlot> {
+            { eAbilityType.Ice, eAbilitySlot.Y },
+            { eAbilityType.Light, eAbilitySlot.X },
+            { eAbilityType.Fire, eAbilitySlot.A },
+            { eAbilityType.Warp, eAbilitySlot.B },
+        };
+
+        var player = PlayerCharacterManager.Current as Player_Character;
+        if (player != null) {
+            // 装備中の能力インスタンスを初期スロットへ移動（SwapAbilitySlotは割り当てテーブルも更新するため、
+            // テーブルの最終確定は全ての入れ替えが終わった後に行う）
+            foreach (var kvp in defaultSlots) {
+                var currentSlot = player.GetCurrentSlot(kvp.Key);
+                if (currentSlot.HasValue && currentSlot.Value != kvp.Value) {
+                    player.SwapAbilitySlot(currentSlot.Value, kvp.Value);
+                }
+            }
+
+            foreach (var slot in defaultSlots.Values) {
+                player.RefreshAbilityUI(slot);
+            }
+        }
+
+        // 未所有の能力も含め、割り当てテーブルを確実に初期状態へ確定させる
+        playerParam.ResetAbilitySlotAssignment();
     }
 
     /// <summary>
@@ -382,24 +410,12 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         eAbilitySlot fromSlot = _ButtonIndexToAbilitySlot(fromButton);
         eAbilitySlot toSlot = _ButtonIndexToAbilitySlot(toButton);
 
-        // スロットの能力を入れ替え
+        // スロットの能力を入れ替え（内部で割り当てテーブルの永続化も行われる）
         player.SwapAbilitySlot(fromSlot, toSlot);
 
-        // UIも入れ替え
-        _SwapAbilityUI(fromSlot, toSlot);
-    }
-
-    /// <summary>
-    /// AbilityUIを入れ替える
-    /// </summary>
-    private void _SwapAbilityUI(eAbilitySlot slotA, eAbilitySlot slotB) {
-        var abilityUIManager = FindAnyObjectByType<AbilityUIManager>();
-        if (abilityUIManager == null) {
-            Debug.LogWarning("AbilityUIManagerが見つかりません");
-            return;
-        }
-
-        abilityUIManager.SwapAbilityUI(slotA, slotB);
+        // HUD側のUI表示も装備状況から再構築
+        player.RefreshAbilityUI(fromSlot);
+        player.RefreshAbilityUI(toSlot);
     }
 
     /// <summary>
@@ -420,6 +436,19 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             eButtonIndex.X => eAbilitySlot.X,
             eButtonIndex.A => eAbilitySlot.A,
             _ => eAbilitySlot.B // デフォルト
+        };
+    }
+
+    /// <summary>
+    /// eAbilitySlotをボタンIndexに変換
+    /// </summary>
+    private eButtonIndex _AbilitySlotToButtonIndex(eAbilitySlot slot) {
+        return slot switch {
+            eAbilitySlot.B => eButtonIndex.B,
+            eAbilitySlot.Y => eButtonIndex.Y,
+            eAbilitySlot.X => eButtonIndex.X,
+            eAbilitySlot.A => eButtonIndex.A,
+            _ => eButtonIndex.B // デフォルト
         };
     }
 

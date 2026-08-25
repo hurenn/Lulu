@@ -110,7 +110,7 @@ public class GameSceneManager : MonoBehaviour
         if (keyboard.numpad4Key.wasPressedThisFrame) {
             var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
-                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Ice);
+                var had_ability = PlayerParameter.Instance.IsOwned(eAbilityType.Ice);
                 if (had_ability) {
                     player.RemoveAbility(eAbilitySlot.Y);
                 } else {
@@ -121,7 +121,7 @@ public class GameSceneManager : MonoBehaviour
         if (keyboard.numpad8Key.wasPressedThisFrame) {
             var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
-                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Light);
+                var had_ability = PlayerParameter.Instance.IsOwned(eAbilityType.Light);
                 if (had_ability) {
                     player.RemoveAbility(eAbilitySlot.X);
                 } else {
@@ -132,7 +132,7 @@ public class GameSceneManager : MonoBehaviour
         if (keyboard.numpad6Key.wasPressedThisFrame) {
             var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
-                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Fire);
+                var had_ability = PlayerParameter.Instance.IsOwned(eAbilityType.Fire);
                 if (had_ability) {
                     player.RemoveAbility(eAbilitySlot.A);
                 } else {
@@ -143,7 +143,7 @@ public class GameSceneManager : MonoBehaviour
         if (keyboard.numpad2Key.wasPressedThisFrame) {
             var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
-                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Warp);
+                var had_ability = PlayerParameter.Instance.IsOwned(eAbilityType.Warp);
                 if (had_ability) {
                     player.RemoveAbility(eAbilitySlot.B);
                 } else {

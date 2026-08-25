@@ -45,13 +45,8 @@ public class JoinAbilityObject : StageObject_Base {
             return;
         }
 
-        // 設定先のスロットを決定
-        eAbilitySlot ability_slot = _abilityType switch {
-            eAbilityType.Ice => eAbilitySlot.Y,
-            eAbilityType.Fire => eAbilitySlot.A,
-            eAbilityType.Light => eAbilitySlot.X,
-            _ => throw new System.ArgumentOutOfRangeException()
-        };
+        // 設定先のスロットを決定（事前に入れ替えられていた場合はそちらが優先される）
+        eAbilitySlot ability_slot = PlayerParameter.Instance.GetAssignedSlot(_abilityType);
 
         // プレイヤーに能力を追加
         player.SetAbilitySlot(_abilityType, ability_slot);
