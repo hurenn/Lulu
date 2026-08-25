@@ -79,6 +79,18 @@ public class PlayerParameter : MonoBehaviour {
     }
 
     /// <summary>
+    /// 指定したスロットに現在割り当てられている能力タイプを取得（所有していなくても常に取得できる）
+    /// </summary>
+    public eAbilityType GetAssignedAbilityType(eAbilitySlot slot) {
+        foreach (var kvp in _abilitySlotAssignment) {
+            if (kvp.Value == slot) {
+                return kvp.Key;
+            }
+        }
+        return eAbilityType.None;
+    }
+
+    /// <summary>
     /// 能力タイプを所有済みにする
     /// </summary>
     public void AddAbility(eAbilityType ability_type) {

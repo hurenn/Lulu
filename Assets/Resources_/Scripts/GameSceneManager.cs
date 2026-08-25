@@ -106,50 +106,18 @@ public class GameSceneManager : MonoBehaviour
             }
         }
 
-        // デバッグ用：数字キーで能力の付与/解除
+        // デバッグ用：数字キーでボタンごとに割り当てられている能力の付与/解除
         if (keyboard.numpad4Key.wasPressedThisFrame) {
-            var player = PlayerCharacterManager.Current as Player_Character;
-            if (player != null) {
-                var had_ability = PlayerParameter.Instance.IsOwned(eAbilityType.Ice);
-                if (had_ability) {
-                    player.RemoveAbility(eAbilitySlot.Y);
-                } else {
-                    player.SetAbilitySlot(eAbilityType.Ice, eAbilitySlot.Y);
-                }
-            }
+            _ToggleAbilityBySlot(eAbilitySlot.Y);
         }
         if (keyboard.numpad8Key.wasPressedThisFrame) {
-            var player = PlayerCharacterManager.Current as Player_Character;
-            if (player != null) {
-                var had_ability = PlayerParameter.Instance.IsOwned(eAbilityType.Light);
-                if (had_ability) {
-                    player.RemoveAbility(eAbilitySlot.X);
-                } else {
-                    player.SetAbilitySlot(eAbilityType.Light, eAbilitySlot.X);
-                }
-            }
+            _ToggleAbilityBySlot(eAbilitySlot.X);
         }
         if (keyboard.numpad6Key.wasPressedThisFrame) {
-            var player = PlayerCharacterManager.Current as Player_Character;
-            if (player != null) {
-                var had_ability = PlayerParameter.Instance.IsOwned(eAbilityType.Fire);
-                if (had_ability) {
-                    player.RemoveAbility(eAbilitySlot.A);
-                } else {
-                    player.SetAbilitySlot(eAbilityType.Fire, eAbilitySlot.A);
-                }
-            }
+            _ToggleAbilityBySlot(eAbilitySlot.A);
         }
         if (keyboard.numpad2Key.wasPressedThisFrame) {
-            var player = PlayerCharacterManager.Current as Player_Character;
-            if (player != null) {
-                var had_ability = PlayerParameter.Instance.IsOwned(eAbilityType.Warp);
-                if (had_ability) {
-                    player.RemoveAbility(eAbilitySlot.B);
-                } else {
-                    player.SetAbilitySlot(eAbilityType.Warp, eAbilitySlot.B);
-                }
-            }
+            _ToggleAbilityBySlot(eAbilitySlot.B);
         }
 
         if (keyboard.numpad5Key.wasPressedThisFrame) {
@@ -165,6 +133,29 @@ public class GameSceneManager : MonoBehaviour
             var new_language = player_param.language == PlayerParameter.eLanguage.Japanese ?
                 PlayerParameter.eLanguage.English : PlayerParameter.eLanguage.Japanese;
             player_param.language = new_language;
+        }
+    }
+
+    /// <summary>
+    /// 指定スロットに現在割り当てられている能力を付与/解除する（デバッグ用）
+    /// </summary>
+    private void _ToggleAbilityBySlot(eAbilitySlot slot) {
+        var player = PlayerCharacterManager.Current as Player_Character;
+        if (player == null) {
+            return;
+        }
+
+        var player_param = PlayerParameter.Instance;
+        var ability_type = player_param.GetAssignedAbilityType(slot);
+        if (ability_type == eAbilityType.None) {
+            return;
+        }
+
+        var had_ability = player_param.IsOwned(ability_type);
+        if (had_ability) {
+            player.RemoveAbility(slot);
+        } else {
+            player.SetAbilitySlot(ability_type, slot);
         }
     }
 
