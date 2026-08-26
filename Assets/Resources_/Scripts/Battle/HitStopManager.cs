@@ -11,7 +11,6 @@ public class HitStopManager : MonoBehaviour {
         } else {
             Destroy(gameObject);
         }
-        Instance = this;
     }
 
     /// <summary>

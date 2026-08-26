@@ -21,7 +21,9 @@ public class AutoIceAttackChecker : MonoBehaviour {
         }
     }
     private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+        // 現在追跡中の敵が退出した場合のみ対象を解除する（他の敵の退出で誤って消去しない）
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") &&
+            collision.GetComponent<Enemy_Base>() == _targetEnemy) {
             _targetEnemy = null;
         }
     }

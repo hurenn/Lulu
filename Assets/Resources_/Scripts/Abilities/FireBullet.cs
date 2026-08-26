@@ -24,6 +24,6 @@ public class FireBullet : AutoDestroy
 
     private void FixedUpdate() {
         // 右に直進
-        transform.position += transform.right * _speed * (_isRight ? 1 : -1);
+        transform.position += transform.right * _speed * Time.fixedDeltaTime * (_isRight ? 1 : -1);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -23,11 +24,21 @@ public class GameSceneManager : MonoBehaviour
         }
     }
     private string _titleSceneName = "Title";
-    
+
     // リトライ種別を記憶
     private static bool _isDeathRetry = false;
 
-    private void Start() {
+    private void Awake() {
+        // DontDestroyOnLoadで永続化されるため、Start()は生存期間中に一度しか呼ばれない。
+        // シーン再読み込みのたびに復帰処理を行うため、sceneLoadedイベントを使用する
+        SceneManager.sceneLoaded += _OnSceneLoaded;
+    }
+
+    private void OnDestroy() {
+        SceneManager.sceneLoaded -= _OnSceneLoaded;
+    }
+
+    private void _OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         // シーン再読み込み時のみリスポーン地点に移動
         var player = PlayerCharacterManager.Current as Player_Character;
         var checkpointManager = CheckpointManager.Instance;
