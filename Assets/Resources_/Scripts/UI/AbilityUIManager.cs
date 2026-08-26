@@ -39,8 +39,21 @@ public class AbilityUIManager : MonoBehaviour {
     private Dictionary<eAbilityType, AbilityUI_Base> _abilityUIByType;
     // スロット→配置先コンテナ（各UI要素の起動時点の親を、そのスロットの画面位置として記憶する）
     private Dictionary<eAbilitySlot, Transform> _slotContainers;
+    private bool _isInitialized = false;
 
     private void Awake() {
+        _EnsureInitialized();
+    }
+
+    /// <summary>
+    /// 対応表を初期化する（Awakeより前に外部から呼ばれた場合でも安全に動作するよう、遅延初期化として実装）
+    /// </summary>
+    private void _EnsureInitialized() {
+        if (_isInitialized) {
+            return;
+        }
+        _isInitialized = true;
+
         _abilityUIByType = new Dictionary<eAbilityType, AbilityUI_Base> {
             { eAbilityType.Ice, _abilityUI_Y },
             { eAbilityType.Light, _abilityUI_X },
@@ -63,6 +76,7 @@ public class AbilityUIManager : MonoBehaviour {
     /// <param name="slot">スロット指定</param>
     /// <param name="ability_type">能力タイプ</param>
     public void SetAbilityUI(eAbilitySlot slot, eAbilityType ability_type, Ability_Base ability, bool is_effect = true) {
+        _EnsureInitialized();
         if (!_abilityUIByType.TryGetValue(ability_type, out var ui) || ui == null) {
             Debug.LogError("不明な能力タイプ：" + ability_type);
             return;
@@ -87,6 +101,7 @@ public class AbilityUIManager : MonoBehaviour {
     /// </summary>
     /// <param name="slot">スロット指定</param>
     public void RemoveAbilityUI(eAbilitySlot slot) {
+        _EnsureInitialized();
         if (!_slotContainers.TryGetValue(slot, out var container) || container == null) {
             return;
         }
@@ -100,6 +115,7 @@ public class AbilityUIManager : MonoBehaviour {
     /// 指定スロットに現在配置されているAbilityUI_Baseを取得
     /// </summary>
     public AbilityUI_Base GetAbilityUI(eAbilitySlot slot) {
+        _EnsureInitialized();
         if (!_slotContainers.TryGetValue(slot, out var container) || container == null) {
             return null;
         }
