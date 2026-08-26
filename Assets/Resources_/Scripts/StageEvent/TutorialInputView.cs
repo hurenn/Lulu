@@ -17,7 +17,10 @@ public class TutorialInputView : MonoBehaviour {
 
     private void Update() {
         if(_PlayerController == null) {
-            _PlayerController = FindAnyObjectByType<PlayerController>();
+            _PlayerController = PlayerCharacterManager.Controller;
+        }
+        if (_PlayerController == null) {
+            return;
         }
 
         var input = _PlayerController.virtualInput;

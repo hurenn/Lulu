@@ -16,7 +16,6 @@ public class PlayerControlPlayableAsset : PlayableAsset {
 
 public class PlayerControlPlayableBehaviour : PlayableBehaviour {
     public bool enableControl = true;
-    private PlayerController controller;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info) {
 
@@ -27,9 +26,7 @@ public class PlayerControlPlayableBehaviour : PlayableBehaviour {
         }
 
         // プレイヤーコントローラーの有効/無効を切り替え
-        if (controller == null) {
-            controller = GameObject.FindAnyObjectByType<PlayerController>();
-        }
+        var controller = PlayerCharacterManager.Controller;
         if (controller != null) {
             controller.isEnabledCharacterInput = enableControl;
         }

@@ -10,7 +10,7 @@ public class Signal_LightTutorial : MonoBehaviour {
             Instance = this;
         }
         if (playerController == null) {
-            playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            playerController = PlayerCharacterManager.Controller;
         }
     }
 

@@ -14,7 +14,7 @@ public class StageEvent_Opening : StageObject_Base
         if(_isTriggered) return;
 
         if (_controller == null) {
-            _controller = FindAnyObjectByType<PlayerController>();
+            _controller = PlayerCharacterManager.Controller;
         }
         if(_messageViewer == null) {
             _messageViewer = FindAnyObjectByType<MessageViewer>();

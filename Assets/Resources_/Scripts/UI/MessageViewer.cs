@@ -65,7 +65,7 @@ public class MessageViewer : MonoBehaviour {
     private void OnEnable() {
         _messagePanel.SetActive(false); // パネルを非表示
         if(_playerController == null) {
-            _playerController = FindAnyObjectByType<PlayerController>();
+            _playerController = PlayerCharacterManager.Controller;
         }
         _playerParameter = PlayerParameter.Instance;
     }

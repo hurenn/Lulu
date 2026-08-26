@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour {
 
         // 操作中のキャラクターとして登録
         PlayerCharacterManager.SetCurrent(character);
+        PlayerCharacterManager.SetController(this);
     }
 
     /// <summary>

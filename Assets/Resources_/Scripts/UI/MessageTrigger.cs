@@ -27,7 +27,7 @@ public class MessageTrigger : MonoBehaviour {
         }
         // プレイヤーコントローラーを探す (WIP)
         while(_playerController == null) {
-            _playerController = FindAnyObjectByType<PlayerController>();
+            _playerController = PlayerCharacterManager.Controller;
             yield return null;
         }
 

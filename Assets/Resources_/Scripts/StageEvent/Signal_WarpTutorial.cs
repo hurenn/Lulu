@@ -14,7 +14,7 @@ public class Signal_WarpTutorial : MonoBehaviour
             Instance = this;
         }
         if (playerController == null) {
-            playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            playerController = PlayerCharacterManager.Controller;
         }
     }
 
