@@ -74,6 +74,12 @@ public class WaveBattleManager : MonoBehaviour
                     // 敵を出現させる
                     var enemy_obj = Instantiate(enemyInfo.enemyPrefab, spawnPoint.position, Quaternion.identity);
                     var enemy_base = enemy_obj.GetComponent<Enemy_Base>();
+                    if (enemy_base == null) {
+                        // プレハブ設定ミス（Enemy_Base未添付）。この敵はスキップして道封鎖の永久ロックを防ぐ
+                        Debug.LogError($"WaveBattleManager: {enemyInfo.enemyPrefab.name} にEnemy_Baseコンポーネントがありません", enemy_obj);
+                        Destroy(enemy_obj);
+                        continue;
+                    }
                     spawnedEnemies.Add(enemy_base);
                     // 敵が倒されたときの処理
                     enemy_base.OnDied += () => {
