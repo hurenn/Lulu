@@ -24,16 +24,20 @@ public class StageObject_Base : MonoBehaviour
     public virtual void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player")) {
-            var player = collision.gameObject.GetComponent<Player_Character>();
-            _HitPlayer(player);
+            var player = collision.gameObject.GetComponentInChildren<Player_Character>();
+            if (player != null) {
+                _HitPlayer(player);
+            }
         }
     }
     public virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            var player = collision.gameObject.GetComponent<Player_Character>();
-            _HitPlayer(player);
+            var player = collision.gameObject.GetComponentInChildren<Player_Character>();
+            if (player != null) {
+                _HitPlayer(player);
+            }
         }
     }
 
@@ -44,8 +48,10 @@ public class StageObject_Base : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Player")) {
-            var player = collision.gameObject.GetComponent<Player_Character>();
-            _ExitPlayer(player);
+            var player = collision.gameObject.GetComponentInChildren<Player_Character>();
+            if (player != null) {
+                _ExitPlayer(player);
+            }
         }
     }
 
