@@ -3,38 +3,20 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class GameSceneManager : MonoBehaviour
+public class GameSceneManager : PersistentSingleton<GameSceneManager>
 {
-    private static GameSceneManager _instance;
-    public static GameSceneManager Instance {
-        get {
-            // シーン上のGameSceneManagerを探す
-            if (_instance == null) {
-                _instance = FindAnyObjectByType<GameSceneManager>();
-                if (_instance == null) {
-                    // 見つからなければ新規作成
-                    _instance = new GameObject("GameSceneManager").AddComponent<GameSceneManager>();
-                    DontDestroyOnLoad(_instance.gameObject);
-                }
-            }
-            return _instance;
-        }
-        set {
-            _instance = value;
-        }
-    }
     private string _titleSceneName = "Title";
 
     // リトライ種別を記憶
     private static bool _isDeathRetry = false;
 
-    private void Awake() {
+    protected override void OnSingletonAwake() {
         // DontDestroyOnLoadで永続化されるため、Start()は生存期間中に一度しか呼ばれない。
         // シーン再読み込みのたびに復帰処理を行うため、sceneLoadedイベントを使用する
         SceneManager.sceneLoaded += _OnSceneLoaded;
     }
 
-    private void OnDestroy() {
+    protected override void OnSingletonDestroy() {
         SceneManager.sceneLoaded -= _OnSceneLoaded;
     }
 

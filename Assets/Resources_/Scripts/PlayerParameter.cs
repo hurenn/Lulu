@@ -2,31 +2,12 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PlayerParameter : MonoBehaviour {
-    private static PlayerParameter _instance;
-    public static PlayerParameter Instance {
-        get {
-            if (_instance == null) {
-                _CreateInstance();
-            }
-            return _instance;
-        }
-    }
-
+public class PlayerParameter : PersistentSingleton<PlayerParameter> {
     /// <summary>
     /// インスタンスを強制的に生成/初期化
     /// </summary>
     public static void CreateNewInstance() {
-        if (_instance != null) {
-            Destroy(_instance.gameObject);
-            _instance = null;
-        }
-        _CreateInstance();
-    }
-    private static void _CreateInstance() {
-        GameObject obj = new GameObject("PlayerParameter");
-        _instance = obj.AddComponent<PlayerParameter>();
-        DontDestroyOnLoad(obj);
+        ForceRecreate();
     }
 
     [SerializeField]
@@ -138,15 +119,6 @@ public class PlayerParameter : MonoBehaviour {
         English,
     }
     public eLanguage language = eLanguage.Japanese; // 言語設定
-
-    private void Awake() {
-        if (_instance != null && _instance != this) {
-            Destroy(gameObject);
-            return;
-        }
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
 
     public bool AddExp(int amount, System.Action apply_status_callback) {
         bool is_level_up = false;

@@ -1,17 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HitStopManager : MonoBehaviour {
-    public static HitStopManager Instance { get; private set; }
+public class HitStopManager : SceneSingleton<HitStopManager> {
     private List<LocalTimeController> _targets = new List<LocalTimeController>();
-
-    private void Awake() {
-        if (Instance == null) {
-            Instance = this;
-        } else {
-            Destroy(gameObject);
-        }
-    }
 
     /// <summary>
     /// ターゲット登録

@@ -2,22 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CheckpointManager : MonoBehaviour
+public class CheckpointManager : PersistentSingleton<CheckpointManager>
 {
-    private static CheckpointManager _instance;
-    public static CheckpointManager Instance {
-        get {
-            if (_instance == null) {
-                GameObject obj = new GameObject("CheckpointManager");
-                _instance = obj.AddComponent<CheckpointManager>();
-                DontDestroyOnLoad(obj);
-            }
-            return _instance;
-        }
-        set {
-            _instance = value;
-        }
-    }
     private Vector3 _respawnPosition;
     private PlayerParameterSnapshot _playerSnapshot;
     private string _respawnSceneName;

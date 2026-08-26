@@ -4,19 +4,15 @@ using UnityEngine;
 /// <summary>
 /// ロックオン管理
 /// </summary>
-public class LockonManager : MonoBehaviour
+public class LockonManager : SceneSingleton<LockonManager>
 {
-    private static LockonManager _instance;
-    
-    public static LockonManager Instance {
+    // インスタンスがない場合は生成してから返す
+    public static new LockonManager Instance {
         get {
-            // インスタンスがない場合は生成
-            _Instantiate();
+            InstantiateIfMissing();
             return _instance;
         }
     }
-    
-    public static bool HasInstance => _instance != null;
 
     // ロックオンターゲット
     private Enemy_Base _currentTarget;
@@ -31,41 +27,14 @@ public class LockonManager : MonoBehaviour
 
     public bool HasTarget => _currentTarget != null;
 
-    private void Awake() {
-        if (_instance != null && _instance != this) {
-            Debug.LogWarning("二重生成防止のため、LockonManager削除");
-            Destroy(gameObject);
-            return;
-        }
-
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-
-    private void OnDestroy() {
-        if (_instance == this) {
-            _instance = null;
-        }
-    }
-
-    /// <summary>
-    /// インスタンス生成
-    /// </summary>
-    private static void _Instantiate() {
-        if (!HasInstance) {
-            GameObject obj = new GameObject("LockonManager");
-            obj.AddComponent<LockonManager>();
-        }
-    }
-
     /// <summary>
     /// 外部からターゲット設定
     /// </summary>
     /// <param name="target">ロックオン対象</param>
-    public static void SetTargetStatic(Enemy_Base target) 
+    public static void SetTargetStatic(Enemy_Base target)
     {
         // インスタンスがない場合は生成
-        _Instantiate();
+        InstantiateIfMissing();
 
         if (HasInstance) {
             Instance._SetTarget(target);
