@@ -21,9 +21,17 @@ public class ExpGauge : MonoBehaviour {
 
         if (_playerParameter != null) {
             // 経験値更新イベントに登録
-            _playerParameter.OnExpChanged += (exp) => UpdateExpGauge(exp);
+            _playerParameter.OnExpChanged += UpdateExpGauge;
             // 初期表示
             UpdateExpGauge();
+        }
+    }
+
+    private void OnDestroy() {
+        // PlayerParameterはDontDestroyOnLoadで永続化されるため、
+        // シーンと共に破棄されるこのオブジェクトは明示的に購読解除する必要がある
+        if (_playerParameter != null) {
+            _playerParameter.OnExpChanged -= UpdateExpGauge;
         }
     }
 
