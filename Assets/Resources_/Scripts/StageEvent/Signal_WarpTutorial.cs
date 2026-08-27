@@ -7,7 +7,6 @@ public class Signal_WarpTutorial : MonoBehaviour
 {
     public static Signal_WarpTutorial Instance { get; private set; }
     public PlayerController playerController;
-    private bool _isTutorialActive = false;
 
     private void Awake() {
         if (Instance == null) {
@@ -15,13 +14,6 @@ public class Signal_WarpTutorial : MonoBehaviour
         }
         if (playerController == null) {
             playerController = PlayerCharacterManager.Controller;
-        }
-    }
-
-    private void Update() {
-        if (_isTutorialActive) {
-            // 画面スロー
-            Time.timeScale = 0f;
         }
     }
 
@@ -58,15 +50,14 @@ public class Signal_WarpTutorial : MonoBehaviour
         playerController.insertMoveRight = false;
         playerController.insertMoveDown = false;
         // 画面スロー
-        _isTutorialActive = true;
+        TimeScaleRequestManager.Request(0f);
 
         CharacterInputData specific_input = new CharacterInputData();
         specific_input.move = any_dir ? Vector2.zero : dir_input;
         specific_input.isJumpPressed = jump_input;
         playerController.SetSpecificInput(specific_input, () => {
             // 入力完了後の処理
-            _isTutorialActive = false;
-            Time.timeScale = 1f; // 時間を元に戻す
+            TimeScaleRequestManager.Release(); // 時間を元に戻す
 
             // コントローラー自動入力
             StartCoroutine(_InsertController_Common(dir_input, jump_input));

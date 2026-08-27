@@ -3,7 +3,6 @@ using UnityEngine;
 public class Signal_LightTutorial : MonoBehaviour {
     public static Signal_LightTutorial Instance { get; private set; }
     public PlayerController playerController;
-    private bool _isTutorialActive = false;
 
     private void Awake() {
         if (Instance == null) {
@@ -11,13 +10,6 @@ public class Signal_LightTutorial : MonoBehaviour {
         }
         if (playerController == null) {
             playerController = PlayerCharacterManager.Controller;
-        }
-    }
-
-    private void Update() {
-        if (_isTutorialActive) {
-            // 画面スロー
-            Time.timeScale = 0f;
         }
     }
 
@@ -31,14 +23,13 @@ public class Signal_LightTutorial : MonoBehaviour {
             return;
         }
         // 画面スロー
-        _isTutorialActive = true;
+        TimeScaleRequestManager.Request(0f);
 
         CharacterInputData specific_input = new CharacterInputData();
         specific_input.abilityX.pressed = true; // Xボタン入力を要求
         playerController.SetSpecificInput(specific_input, () => {
             // 入力完了後の処理
-            _isTutorialActive = false;
-            Time.timeScale = 1f; // 時間を元に戻す
+            TimeScaleRequestManager.Release(); // 時間を元に戻す
 
             // プレイヤーコントローラーを有効化
             playerController.isEnabledCharacterInput = true;

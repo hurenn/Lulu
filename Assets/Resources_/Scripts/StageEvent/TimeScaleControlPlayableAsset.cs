@@ -31,28 +31,29 @@ public class TimeScaleControlBehaviour : PlayableBehaviour
 {
     public float timeScale = 1f;
     public bool restoreOnEnd = true;
-    private float _originalTimeScale = 1f;
     private bool _hasStarted = false;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
         if (!_hasStarted)
         {
-            // 元のTimeScaleを保存
-            _originalTimeScale = Time.timeScale;
             _hasStarted = true;
+            // TimeScaleRequestManager経由で設定（他の演出との競合時も正しく復元できるようにする）
+            TimeScaleRequestManager.Request(timeScale);
         }
-
-        // TimeScaleを設定
-        Time.timeScale = timeScale;
+        else
+        {
+            // 既に自分の要求区間内なので値の再設定のみ行う
+            Time.timeScale = timeScale;
+        }
     }
 
     public override void OnBehaviourPause(Playable playable, FrameData info)
     {
         if (restoreOnEnd && _hasStarted)
         {
-            // TimeScaleを元に戻す
-            Time.timeScale = _originalTimeScale;
+            _hasStarted = false;
+            TimeScaleRequestManager.Release();
         }
     }
 
@@ -60,8 +61,8 @@ public class TimeScaleControlBehaviour : PlayableBehaviour
     {
         if (restoreOnEnd && _hasStarted)
         {
-            // TimeScaleを元に戻す（念のため）
-            Time.timeScale = _originalTimeScale;
+            _hasStarted = false;
+            TimeScaleRequestManager.Release();
         }
     }
 }
