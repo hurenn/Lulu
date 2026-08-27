@@ -16,6 +16,9 @@ public class ScreenFlash : MonoBehaviour {
 
     [SerializeField] private Image _flashImage;
 
+    // 実行中のフラッシュ/フェードコルーチン（同時に1つだけ動かすため共有で管理）
+    private Coroutine _activeCoroutine;
+
     private void Reset() {
         _flashImage = GetComponent<Image>();
     }
@@ -32,7 +35,7 @@ public class ScreenFlash : MonoBehaviour {
             return;
         }
 
-        StartCoroutine(_FlashCoroutine(duration, color));
+        _RestartCoroutine(_FlashCoroutine(duration, color));
     }
 
     public void FadeIn(float duration = 0.1f, Color color = default) {
@@ -41,7 +44,18 @@ public class ScreenFlash : MonoBehaviour {
             Debug.LogWarning("ScreenFlash Instance is null.");
             return;
         }
-        StartCoroutine(Fade(duration, color));
+        _RestartCoroutine(Fade(duration, color));
+    }
+
+    /// <summary>
+    /// 実行中のコルーチンを停止してから新しいコルーチンを開始する
+    /// （連続呼び出しで複数のコルーチンが_flashImage.colorを競合更新するのを防ぐ）
+    /// </summary>
+    private void _RestartCoroutine(IEnumerator routine) {
+        if (_activeCoroutine != null) {
+            StopCoroutine(_activeCoroutine);
+        }
+        _activeCoroutine = StartCoroutine(routine);
     }
 
     private IEnumerator _FlashCoroutine(float duration, Color color) {

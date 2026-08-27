@@ -6,8 +6,14 @@ public class UIShake : MonoBehaviour {
     public float duration = 0.5f;
     public float strength = 10f;
 
+    // 実行中のシェイクコルーチン（連続呼び出しでbasePosがズレるのを防ぐ）
+    private Coroutine _shakeCoroutine;
+
     public void Shake() {
-        StartCoroutine(ShakeCoroutine());
+        if (_shakeCoroutine != null) {
+            StopCoroutine(_shakeCoroutine);
+        }
+        _shakeCoroutine = StartCoroutine(ShakeCoroutine());
     }
 
     private IEnumerator ShakeCoroutine() {
@@ -21,5 +27,6 @@ public class UIShake : MonoBehaviour {
         }
 
         target.anchoredPosition = basePos;
+        _shakeCoroutine = null;
     }
 }
