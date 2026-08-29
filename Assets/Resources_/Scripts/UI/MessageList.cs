@@ -6,19 +6,19 @@ using UnityEngine.Playables;
 [System.Serializable]
 public class MessageDataList {
     public MessageData[] messageDatas;
-    public bool isForced;        // ‹­§ƒƒbƒZ[ƒW‚©‚Ç‚¤‚©
+    public bool isForced;        // å¼·åˆ¶ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‹ã©ã†ã‹
 }
 
 [System.Serializable]
 public class MessageData {
     [TextArea(1, 5)]
-    public string text;   // ƒƒbƒZ[ƒW
+    public string text;   // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
     [TextArea(1, 5)]
-    public string englishText; // ‰pŒêƒƒbƒZ[ƒW
-    public Sprite characterIcon;    // ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“
-    public float addShowTime;      // ’Ç‰Á•\¦ŠÔ
+    public string englishText; // è‹±èªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+    public Sprite characterIcon;    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¢ã‚¤ã‚³ãƒ³
+    public float addShowTime;      // è¿½åŠ è¡¨ç¤ºæ™‚é–“
 
-    private PlayableDirector _playableDirector = null;  // ƒCƒxƒ“ƒgƒƒbƒZ[ƒW—p‚Ìƒ^ƒCƒ€ƒ‰ƒCƒ“
+    private PlayableDirector _playableDirector = null;  // ã‚¤ãƒ™ãƒ³ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç”¨ã®ã‚¿ã‚¤ãƒ ãƒ©ã‚¤ãƒ³
     public PlayableDirector playableDirector {
         get { return _playableDirector; }
         set { _playableDirector = value; }
@@ -28,24 +28,24 @@ public class MessageData {
 }
 
 /// <summary>
-/// ƒƒbƒZ[ƒWƒŠƒXƒgŠÇ—ƒNƒ‰ƒX
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒªã‚¹ãƒˆç®¡ç†ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class MessageList : MonoBehaviour {
     public static MessageList Instance { get; private set; }
 
-    public event System.Action OnForceMessage;  // ‹­§ƒƒbƒZ[ƒWŠJnƒCƒxƒ“ƒg
+    public event System.Action OnForceMessage;  // å¼·åˆ¶ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é–‹å§‹ã‚¤ãƒ™ãƒ³ãƒˆ
 
-    // ƒƒbƒZ[ƒWƒLƒ…[
+    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼
     private Queue<MessageData> _messageQueue = new Queue<MessageData>();
 
-    // ƒƒbƒZ[ƒW‚ğ“o˜^‚·‚é
+    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ç™»éŒ²ã™ã‚‹
     public void Enqueue(MessageData messageData) => _messageQueue.Enqueue(messageData);
-    // ƒƒbƒZ[ƒW‚ğæ“¾‚µ‚Äíœ‚·‚é
+    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å–å¾—ã—ã¦å‰Šé™¤ã™ã‚‹
     public MessageData Dequeue() => _messageQueue.Dequeue();
 
     public void Clear() => _messageQueue.Clear();
 
-    // •\¦‘Ò‚¿ƒƒbƒZ[ƒW‚ª‚ ‚é‚©Šm”F‚·‚é
+    // è¡¨ç¤ºå¾…ã¡ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒã‚ã‚‹ã‹ç¢ºèªã™ã‚‹
     public bool HasMessages() {
         return _messageQueue.Count > 0;
     }

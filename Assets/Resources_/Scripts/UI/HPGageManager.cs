@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class HPGageManager : MonoBehaviour {
     /// <summary>
-    /// ‘ÎÛƒLƒƒƒ‰ƒNƒ^[‚Ìƒpƒ‰ƒ[ƒ^[
+    /// å¯¾è±¡ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼
     /// </summary>
     [SerializeField] private CharacterParameter_Player _characterParameter;
 
@@ -17,14 +17,14 @@ public class HPGageManager : MonoBehaviour {
     }
 
     private void Start() {
-        // ‰Šú‰»
+        // åˆæœŸåŒ–
         if (_characterParameter == null) {
             _characterParameter = FindAnyObjectByType<CharacterParameter_Player>();
         }
         if (_characterParameter != null) {
-            // HPXVƒCƒxƒ“ƒg‚É“o˜^
+            // HPæ›´æ–°ã‚¤ãƒ™ãƒ³ãƒˆã«ç™»éŒ²
             _characterParameter.OnHPChanged += UpdateHPGage;
-            // ‰Šú•\¦
+            // åˆæœŸè¡¨ç¤º
             UpdateHPGage(_characterParameter.CurrentHP);
 
             _characterParameter.OnMaxHPChanged += UpdateMaxHP;
@@ -32,40 +32,40 @@ public class HPGageManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// HPƒQ[ƒW‚Ì‰Šú‰»
+    /// HPã‚²ãƒ¼ã‚¸ã®åˆæœŸåŒ–
     /// </summary>
-    /// <param name="max_hp">Å‘åHP</param>
+    /// <param name="max_hp">æœ€å¤§HP</param>
     public void UpdateMaxHP(int max_hp) {
         var childCount = _heartParent.childCount;
         for (int i = 0; i < childCount; i++) {
-            // ‰Šú‰»‚Ì‚½‚ß‚ÉŠù‘¶‚ÌqƒIƒuƒWƒFƒNƒg‚ğíœ
+            // åˆæœŸåŒ–ã®ãŸã‚ã«æ—¢å­˜ã®å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‰Šé™¤
             Destroy(_heartParent.GetChild(i).gameObject);
         }
         _hearts.Clear();
 
-        // Å‘åHP•ª‚Ìƒn[ƒg‚ğ¶¬
+        // æœ€å¤§HPåˆ†ã®ãƒãƒ¼ãƒˆã‚’ç”Ÿæˆ
         for (int i = 0; i < max_hp; i++) {
             var heart = Instantiate(_heartPrefab, _heartParent);
             if (isInitialized && i == max_hp - 1) {
-                // ÅŒã‚Ìƒn[ƒg‚Ì‚İƒXƒ|[ƒ“ƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
+                // æœ€å¾Œã®ãƒãƒ¼ãƒˆã®ã¿ã‚¹ãƒãƒ¼ãƒ³ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿ
                 heart.OnPlaySpawnAnim();
             }
             _hearts.Add(heart);
         }
 
-        // ‰Šú‰»ƒtƒ‰ƒO‚ğİ’è
+        // åˆæœŸåŒ–ãƒ•ãƒ©ã‚°ã‚’è¨­å®š
         if (!isInitialized) {
             isInitialized = true;
         }
     }
 
     /// <summary>
-    /// HPƒQ[ƒW‚ÌXV
+    /// HPã‚²ãƒ¼ã‚¸ã®æ›´æ–°
     /// </summary>
-    /// <param name="current_hp">Œ»İ‚ÌHP</param>
+    /// <param name="current_hp">ç¾åœ¨ã®HP</param>
     private void UpdateHPGage(int current_hp) {
         for (int i = 0; i < _hearts.Count; i++) {
-            // Œ»İ‚ÌHP‚É‰‚¶‚Äƒn[ƒg‚ğ–ƒ^ƒ“‚É‚·‚é‚©‚Ç‚¤‚©‚ğİ’è
+            // ç¾åœ¨ã®HPã«å¿œã˜ã¦ãƒãƒ¼ãƒˆã‚’æº€ã‚¿ãƒ³ã«ã™ã‚‹ã‹ã©ã†ã‹ã‚’è¨­å®š
             _hearts[i].SetFill(i < current_hp);
         }
     }

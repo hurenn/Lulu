@@ -17,12 +17,12 @@ public class CoinPool : MonoBehaviour {
         }
     }
 
-    // ƒRƒCƒ“‚ÌƒvƒŒƒnƒu
+    // ã‚³ã‚¤ãƒ³ã®ãƒ—ãƒ¬ãƒãƒ–
     [SerializeField] private Coin_Object _coinPrefab;
-    // ƒRƒCƒ“ƒv[ƒ‹
+    // ã‚³ã‚¤ãƒ³ãƒ—ãƒ¼ãƒ«
     private Queue<Coin_Object> _coinPool = new Queue<Coin_Object>();
 
-    // ƒRƒCƒ“‚ğ¶¬‚Ü‚½‚Íƒv[ƒ‹‚©‚çæ“¾‚·‚é
+    // ã‚³ã‚¤ãƒ³ã‚’ç”Ÿæˆã¾ãŸã¯ãƒ—ãƒ¼ãƒ«ã‹ã‚‰å–å¾—ã™ã‚‹
     public Coin_Object SpawnCoin(Vector3 position) {
         Coin_Object coin;
         if (_coinPool.Count > 0) {

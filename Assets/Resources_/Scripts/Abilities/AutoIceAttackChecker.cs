@@ -4,7 +4,7 @@ public class AutoIceAttackChecker : MonoBehaviour {
     private Enemy_Base _targetEnemy;
 
     /// <summary>
-    /// �U���Ώۂ̓G���擾���ăN���A
+    /// 攻撃対象の敵を取得してクリア
     /// </summary>
     public Enemy_Base PopTargetEnemy() {
         if (_targetEnemy != null && _targetEnemy.isDead) {
@@ -21,7 +21,9 @@ public class AutoIceAttackChecker : MonoBehaviour {
         }
     }
     private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+        // 現在追跡中の敵が退出した場合のみ対象を解除する（他の敵の退出で誤って消去しない）
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") &&
+            collision.GetComponent<Enemy_Base>() == _targetEnemy) {
             _targetEnemy = null;
         }
     }

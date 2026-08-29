@@ -6,7 +6,7 @@ public class CameraShakeTest : StageObject_Base {
 
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);
-        // ƒJƒƒ‰‚ğ—h‚ç‚·
+        // ã‚«ãƒ¡ãƒ©ã‚’æºã‚‰ã™
         if (impulseSource != null) {
             impulseSource.GenerateImpulse();
             Debug.Log("Shake triggered on hit!");

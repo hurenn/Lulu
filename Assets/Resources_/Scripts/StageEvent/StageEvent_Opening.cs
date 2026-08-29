@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// Note: ステージ1-0にて未使用
+// Note: 繧ｹ繝�繝ｼ繧ｸ1-0縺ｫ縺ｦ譛ｪ菴ｿ逕ｨ
 public class StageEvent_Opening : StageObject_Base
 {
     [SerializeField] private PlayerController _controller;
@@ -14,7 +14,7 @@ public class StageEvent_Opening : StageObject_Base
         if(_isTriggered) return;
 
         if (_controller == null) {
-            _controller = FindAnyObjectByType<PlayerController>();
+            _controller = PlayerCharacterManager.Controller;
         }
         if(_messageViewer == null) {
             _messageViewer = FindAnyObjectByType<MessageViewer>();

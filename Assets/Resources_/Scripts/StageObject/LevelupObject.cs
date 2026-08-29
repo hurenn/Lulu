@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class LevelupObject : StageObject_Base
 {
-    // ƒŒƒxƒ‹ƒAƒbƒv‚Ìí—Ş
+    // ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã®ç¨®é¡
     public PlayerParameter.eLevelType levelType;
 
     protected override void _HitPlayer(Player_Character player)

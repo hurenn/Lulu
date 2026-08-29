@@ -2,16 +2,16 @@ using UnityEngine;
 using UnityEngine.Playables;
 
 /// <summary>
-/// Timelineã‚ÅŠÔ‚Ì—¬‚ê‚ğ§Œä‚·‚é‚½‚ß‚ÌPlayableAssetƒNƒ‰ƒXB
+/// Timelineä¸Šã§æ™‚é–“ã®æµã‚Œã‚’åˆ¶å¾¡ã™ã‚‹ãŸã‚ã®PlayableAssetã‚¯ãƒ©ã‚¹ã€‚
 /// </summary>
 [System.Serializable]
 public class TimeScaleControlPlayableAsset : PlayableAsset
 {
-    [Tooltip("İ’è‚·‚éTimeScale’li0.0`1.0„§j")]
+    [Tooltip("è¨­å®šã™ã‚‹TimeScaleå€¤ï¼ˆ0.0ã€œ1.0æ¨å¥¨ï¼‰")]
     [Range(0f, 2f)]
     public float timeScale = 1f;
 
-    [Tooltip("TimeScale‚ğŒ³‚É–ß‚·‚©‚Ç‚¤‚©")]
+    [Tooltip("TimeScaleã‚’å…ƒã«æˆ»ã™ã‹ã©ã†ã‹")]
     public bool restoreOnEnd = true;
 
     public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
@@ -25,34 +25,35 @@ public class TimeScaleControlPlayableAsset : PlayableAsset
 }
 
 /// <summary>
-/// TimeScale‚ğ§Œä‚·‚éPlayableBehaviourƒNƒ‰ƒX
+/// TimeScaleã‚’åˆ¶å¾¡ã™ã‚‹PlayableBehaviourã‚¯ãƒ©ã‚¹
 /// </summary>
 public class TimeScaleControlBehaviour : PlayableBehaviour
 {
     public float timeScale = 1f;
     public bool restoreOnEnd = true;
-    private float _originalTimeScale = 1f;
     private bool _hasStarted = false;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
         if (!_hasStarted)
         {
-            // Œ³‚ÌTimeScale‚ğ•Û‘¶
-            _originalTimeScale = Time.timeScale;
             _hasStarted = true;
+            // TimeScaleRequestManagerçµŒç”±ã§è¨­å®šï¼ˆä»–ã®æ¼”å‡ºã¨ã®ç«¶åˆæ™‚ã‚‚æ­£ã—ãå¾©å…ƒã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹ï¼‰
+            TimeScaleRequestManager.Request(timeScale);
         }
-
-        // TimeScale‚ğİ’è
-        Time.timeScale = timeScale;
+        else
+        {
+            // æ—¢ã«è‡ªåˆ†ã®è¦æ±‚åŒºé–“å†…ãªã®ã§å€¤ã®å†è¨­å®šã®ã¿è¡Œã†
+            Time.timeScale = timeScale;
+        }
     }
 
     public override void OnBehaviourPause(Playable playable, FrameData info)
     {
         if (restoreOnEnd && _hasStarted)
         {
-            // TimeScale‚ğŒ³‚É–ß‚·
-            Time.timeScale = _originalTimeScale;
+            _hasStarted = false;
+            TimeScaleRequestManager.Release();
         }
     }
 
@@ -60,8 +61,8 @@ public class TimeScaleControlBehaviour : PlayableBehaviour
     {
         if (restoreOnEnd && _hasStarted)
         {
-            // TimeScale‚ğŒ³‚É–ß‚·i”O‚Ì‚½‚ßj
-            Time.timeScale = _originalTimeScale;
+            _hasStarted = false;
+            TimeScaleRequestManager.Release();
         }
     }
 }

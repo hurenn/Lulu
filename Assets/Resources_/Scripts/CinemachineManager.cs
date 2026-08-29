@@ -2,8 +2,7 @@ using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CinemachineManager : MonoBehaviour {
-    public static CinemachineManager Instance;
+public class CinemachineManager : SceneSingleton<CinemachineManager> {
     [SerializeField] private CinemachineCamera _playerCam;
     [SerializeField] private CinemachineCamera _zoomCam;
 
@@ -14,8 +13,6 @@ public class CinemachineManager : MonoBehaviour {
         _zoomCam = GameObject.Find("ZoomCamera").GetComponent<CinemachineCamera>();
         _impulseSource = GetComponent<CinemachineImpulseSource>();
     }
-
-    void Awake() => Instance = this;
 
     public void ZoomOnTarget(Transform target) {
         _zoomCam.Follow = target;

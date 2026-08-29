@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Pause_AbilityMenu : Pause_MenuBase {
-    // ƒƒjƒ…[ƒ{ƒ^ƒ“
+    // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒœã‚¿ãƒ³
     [SerializeField] private RectTransform _MenuButtonB;
     [SerializeField] private RectTransform _MenuButtonY;
     [SerializeField] private RectTransform _MenuButtonX;
@@ -15,7 +15,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     [SerializeField] private RectTransform _MenuButtonSystem;
     [SerializeField] private RectTransform _MenuButtonReset;
 
-    // ”\—ÍƒAƒCƒRƒ“
+    // èƒ½åŠ›ã‚¢ã‚¤ã‚³ãƒ³
     [SerializeField] private RectTransform _IconParent;
     [SerializeField] private RectTransform _WarpIcon;
     [SerializeField] private RectTransform _IceIcon;
@@ -26,7 +26,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     [SerializeField] private RectTransform _LightTriggerIcon;
     [SerializeField] private RectTransform _FireTriggerIcon;
 
-    // ‘Î‰ƒ{ƒ^ƒ“
+    // å¯¾å¿œãƒœã‚¿ãƒ³
     private eButtonIndex _WarpButton = eButtonIndex.B;
     private eButtonIndex _IceButton = eButtonIndex.Y;
     private eButtonIndex _LightButton = eButtonIndex.X;
@@ -36,13 +36,13 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     //private eButtonIndex _LightTriggerButton = eButtonIndex.ZR;
     //private eButtonIndex _FireTriggerButton = eButtonIndex.SL;
 
-    // ”\—Íà–¾•¶
+    // èƒ½åŠ›èª¬æ˜æ–‡
     [SerializeField] private GameObject _WarpExplain;
     [SerializeField] private GameObject _IceExplain;
     [SerializeField] private GameObject _LightExplain;
     [SerializeField] private GameObject _FireExplain;
 
-    // ƒVƒXƒeƒ€ƒeƒLƒXƒg
+    // ã‚·ã‚¹ãƒ†ãƒ ãƒ†ã‚­ã‚¹ãƒˆ
     [SerializeField] private GameObject _SystemText1;
     [SerializeField] private GameObject _SystemText2;
     private bool _isViewSystemText1 = true;
@@ -75,20 +75,20 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         Left = 4,
     }
 
-    // ƒ{ƒ^ƒ“¨ƒAƒCƒRƒ“‚ÌŠ„‚è“–‚ÄŠÇ—
+    // ãƒœã‚¿ãƒ³â†’ã‚¢ã‚¤ã‚³ãƒ³ã®å‰²ã‚Šå½“ã¦ç®¡ç†
     private Dictionary<eButtonIndex, RectTransform> _buttonToIcon = new();
-    // ƒAƒCƒRƒ“¨à–¾•¶‚Ì‘Î‰
+    // ã‚¢ã‚¤ã‚³ãƒ³â†’èª¬æ˜æ–‡ã®å¯¾å¿œ
     private Dictionary<RectTransform, GameObject> _iconToExplain = new();
-    // ƒAƒCƒRƒ“¨”\—Íƒ^ƒCƒv‚Ì‘Î‰
+    // ã‚¢ã‚¤ã‚³ãƒ³â†’èƒ½åŠ›ã‚¿ã‚¤ãƒ—ã®å¯¾å¿œ
     private Dictionary<RectTransform, eAbilityType> _iconToAbilityType = new();
-    // ’Í‚ñ‚Å‚¢‚éƒAƒCƒRƒ“
+    // æ´ã‚“ã§ã„ã‚‹ã‚¢ã‚¤ã‚³ãƒ³
     private RectTransform _grabbedIcon = null;
     private eButtonIndex _grabbedFromButton = eButtonIndex.None;
 
     public override void Open(Action<int> onSwitchMenu, Action onCloseMenu, AudioSource audio_source, AudioClip se_select, AudioClip se_decide) {
         base.Open(onSwitchMenu, onCloseMenu, audio_source, se_select, se_decide);
 
-        // ƒAƒCƒRƒ“¨à–¾•¶‚Ì‘Î‰‚ğ‰Šú‰»
+        // ã‚¢ã‚¤ã‚³ãƒ³â†’èª¬æ˜æ–‡ã®å¯¾å¿œã‚’åˆæœŸåŒ–
         _iconToExplain[_WarpIcon] = _WarpExplain;
         _iconToExplain[_IceIcon] = _IceExplain;
         _iconToExplain[_LightIcon] = _LightExplain;
@@ -98,7 +98,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _iconToExplain[_LightTriggerIcon] = _LightExplain;
         _iconToExplain[_FireTriggerIcon] = _FireExplain;
 
-        // ƒAƒCƒRƒ“¨”\—Íƒ^ƒCƒv‚Ì‘Î‰‚ğ‰Šú‰»
+        // ã‚¢ã‚¤ã‚³ãƒ³â†’èƒ½åŠ›ã‚¿ã‚¤ãƒ—ã®å¯¾å¿œã‚’åˆæœŸåŒ–
         _iconToAbilityType[_WarpIcon] = eAbilityType.Warp;
         _iconToAbilityType[_IceIcon] = eAbilityType.Ice;
         _iconToAbilityType[_LightIcon] = eAbilityType.Light;
@@ -108,36 +108,34 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _iconToAbilityType[_LightTriggerIcon] = eAbilityType.Light;
         _iconToAbilityType[_FireTriggerIcon] = eAbilityType.Fire;
 
-        // ‰ŠúŠ„‚è“–‚Ä
-        _buttonToIcon[eButtonIndex.B] = _WarpIcon;
-        _buttonToIcon[eButtonIndex.Y] = _IceIcon;
-        _buttonToIcon[eButtonIndex.X] = _LightIcon;
-        _buttonToIcon[eButtonIndex.A] = _FireIcon;
+        // ç¾åœ¨ã®å‰²ã‚Šå½“ã¦ã‹ã‚‰åˆæœŸé…ç½®ã‚’æ§‹ç¯‰ï¼ˆB,Y,X,Aã¯å…¥ã‚Œæ›¿ãˆãŒåæ˜ ã•ã‚Œã‚‹ï¼‰
+        _buttonToIcon.Clear();
+        var playerParam = PlayerParameter.Instance;
+        _buttonToIcon[_AbilitySlotToButtonIndex(playerParam.GetAssignedSlot(eAbilityType.Warp))] = _WarpIcon;
+        _buttonToIcon[_AbilitySlotToButtonIndex(playerParam.GetAssignedSlot(eAbilityType.Ice))] = _IceIcon;
+        _buttonToIcon[_AbilitySlotToButtonIndex(playerParam.GetAssignedSlot(eAbilityType.Light))] = _LightIcon;
+        _buttonToIcon[_AbilitySlotToButtonIndex(playerParam.GetAssignedSlot(eAbilityType.Fire))] = _FireIcon;
+        // ãƒˆãƒªã‚¬ãƒ¼ãƒœã‚¿ãƒ³ï¼ˆSL/ZL/SR/ZRï¼‰ã¯ç¾åœ¨ã‚ªãƒŸãƒƒãƒˆä¸­ã®æ©Ÿèƒ½ã®ãŸã‚å›ºå®šé…ç½®ã®ã¾ã¾
         _buttonToIcon[eButtonIndex.SR] = _WarpTriggerIcon;
         _buttonToIcon[eButtonIndex.ZL] = _IceTriggerIcon;
         _buttonToIcon[eButtonIndex.ZR] = _LightTriggerIcon;
         _buttonToIcon[eButtonIndex.SL] = _FireTriggerIcon;
 
-        // ƒAƒCƒRƒ“‚ğŠeƒ{ƒ^ƒ“‚É”z’u
-        _PlaceIconOnButton(_WarpIcon, _MenuButtonB);
-        _PlaceIconOnButton(_IceIcon, _MenuButtonY);
-        _PlaceIconOnButton(_LightIcon, _MenuButtonX);
-        _PlaceIconOnButton(_FireIcon, _MenuButtonA);
-        _PlaceIconOnButton(_WarpTriggerIcon, _MenuButtonSR);
-        _PlaceIconOnButton(_IceTriggerIcon, _MenuButtonZL);
-        _PlaceIconOnButton(_LightTriggerIcon, _MenuButtonZR);
-        _PlaceIconOnButton(_FireTriggerIcon, _MenuButtonSL);
+        // ã‚¢ã‚¤ã‚³ãƒ³ã‚’å„ãƒœã‚¿ãƒ³ã«é…ç½®
+        foreach (var kvp in _buttonToIcon) {
+            _PlaceIconOnButton(kvp.Value, _GetButtonRect(kvp.Key));
+        }
 
-        // Å‰‚Ì‘I‘ğˆ‚É˜g‚ğˆÚ“®
+        // æœ€åˆã®é¸æŠè‚¢ã«æ ã‚’ç§»å‹•
         MoveFrameToSelected(_MenuButtonB, true);
         _currentButton = eButtonIndex.B;
         _grabbedIcon = null;
         _grabbedFromButton = eButtonIndex.None;
 
-        // à–¾•¶‚ğXV
+        // èª¬æ˜æ–‡ã‚’æ›´æ–°
         _UpdateExplain();
 
-        // ƒVƒXƒeƒ€ƒeƒLƒXƒg•\¦XV
+        // ã‚·ã‚¹ãƒ†ãƒ ãƒ†ã‚­ã‚¹ãƒˆè¡¨ç¤ºæ›´æ–°
         _UpdateSystemText();
     }
 
@@ -151,7 +149,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         SelectButton(dir_enum);
     }
 
-    // PlayerController‚©‚çŒÄ‚Î‚ê‚é•ûŒü“ü—Íˆ—
+    // PlayerControllerã‹ã‚‰å‘¼ã°ã‚Œã‚‹æ–¹å‘å…¥åŠ›å‡¦ç†
     private void SelectButton(eInputDirection dir) {
         switch (dir) {
             case eInputDirection.Up:
@@ -257,18 +255,18 @@ public class Pause_AbilityMenu : Pause_MenuBase {
                 break;
         }
         _UpdateFrame();
-        // à–¾•¶‚ğXV
+        // èª¬æ˜æ–‡ã‚’æ›´æ–°
         _UpdateExplain();
     }
 
     public override void ExecuteSelectedMenu() {
         base.ExecuteSelectedMenu();
-        // Œˆ’è‰¹‚ğÄ¶
+        // æ±ºå®šéŸ³ã‚’å†ç”Ÿ
         if (_audioSource != null && _seDecide != null) {
             _audioSource.PlayOneShot(_seDecide);
         }
 
-        // ƒVƒXƒeƒ€ƒeƒLƒXƒgØ‚è‘Ö‚¦
+        // ã‚·ã‚¹ãƒ†ãƒ ãƒ†ã‚­ã‚¹ãƒˆåˆ‡ã‚Šæ›¿ãˆ
         if (_currentButton == eButtonIndex.System) {
             _isViewSystemText1 = !_isViewSystemText1;
             _UpdateSystemText();
@@ -276,7 +274,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         }
 
         if(_currentButton == eButtonIndex.Reset) {
-            // ƒŠƒZƒbƒgF‘S‚Ä‚ÌŠ„‚è“–‚Ä‚ğ‰Šúó‘Ô‚É–ß‚·
+            // ãƒªã‚»ãƒƒãƒˆï¼šå…¨ã¦ã®å‰²ã‚Šå½“ã¦ã‚’åˆæœŸçŠ¶æ…‹ã«æˆ»ã™
+            _ResetAbilityAssignment();
             Open(OnSwitchMenu, OnCloseMenu, _audioSource, _seSelect, _seDecide);
             _currentButton = eButtonIndex.Reset;
             _UpdateExplain();
@@ -284,7 +283,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             return;
         }
 
-        // B,Y,X,A,SL,SR,ZL,ZRƒ{ƒ^ƒ“ˆÈŠO‚Í‰½‚à‚µ‚È‚¢
+        // B,Y,X,A,SL,SR,ZL,ZRãƒœã‚¿ãƒ³ä»¥å¤–ã¯ä½•ã‚‚ã—ãªã„
         if (_currentButton != eButtonIndex.B && _currentButton != eButtonIndex.Y &&
             _currentButton != eButtonIndex.X && _currentButton != eButtonIndex.A &&
             _currentButton != eButtonIndex.SL && _currentButton != eButtonIndex.SR &&
@@ -292,21 +291,50 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             return;
         }
 
-        // ƒ{ƒ^ƒ“ƒRƒ“ƒtƒBƒO‹@”\FƒIƒ~ƒbƒg’†
-        /*
-        // 1‰ñ–Ú‚ÌŒˆ’èFƒAƒCƒRƒ“‚ğ’Í‚Ş
+        // 1å›ç›®ã®æ±ºå®šï¼šã‚¢ã‚¤ã‚³ãƒ³ã‚’æ´ã‚€
         if (_grabbedIcon == null) {
             _GrabIcon(_currentButton);
         }
-        // 2‰ñ–Ú‚ÌŒˆ’èFƒAƒCƒRƒ“‚ğ“ü‚ê‘Ö‚¦‚é
+        // 2å›ç›®ã®æ±ºå®šï¼šã‚¢ã‚¤ã‚³ãƒ³ã‚’å…¥ã‚Œæ›¿ãˆã‚‹
         else {
             _SwapIcon(_currentButton);
         }
-        */
     }
 
     /// <summary>
-    /// ƒAƒCƒRƒ“‚ğ’Í‚Ş
+    /// èƒ½åŠ›ã®å‰²ã‚Šå½“ã¦ã‚’åˆæœŸçŠ¶æ…‹ã«æˆ»ã™ï¼ˆæ—¢å­˜ã®èƒ½åŠ›ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ç¶­æŒã—ãŸã¾ã¾ã€ã‚¹ãƒ­ãƒƒãƒˆã®ä¸­èº«ã ã‘å…¥ã‚Œæ›¿ãˆã‚‹ï¼‰
+    /// </summary>
+    private void _ResetAbilityAssignment() {
+        var playerParam = PlayerParameter.Instance;
+        var defaultSlots = new Dictionary<eAbilityType, eAbilitySlot> {
+            { eAbilityType.Ice, eAbilitySlot.Y },
+            { eAbilityType.Light, eAbilitySlot.X },
+            { eAbilityType.Fire, eAbilitySlot.A },
+            { eAbilityType.Warp, eAbilitySlot.B },
+        };
+
+        var player = PlayerCharacterManager.Current as Player_Character;
+        if (player != null) {
+            // è£…å‚™ä¸­ã®èƒ½åŠ›ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’åˆæœŸã‚¹ãƒ­ãƒƒãƒˆã¸ç§»å‹•ï¼ˆSwapAbilitySlotã¯å‰²ã‚Šå½“ã¦ãƒ†ãƒ¼ãƒ–ãƒ«ã‚‚æ›´æ–°ã™ã‚‹ãŸã‚ã€
+            // ãƒ†ãƒ¼ãƒ–ãƒ«ã®æœ€çµ‚ç¢ºå®šã¯å…¨ã¦ã®å…¥ã‚Œæ›¿ãˆãŒçµ‚ã‚ã£ãŸå¾Œã«è¡Œã†ï¼‰
+            foreach (var kvp in defaultSlots) {
+                var currentSlot = player.GetCurrentSlot(kvp.Key);
+                if (currentSlot.HasValue && currentSlot.Value != kvp.Value) {
+                    player.SwapAbilitySlot(currentSlot.Value, kvp.Value);
+                }
+            }
+
+            foreach (var slot in defaultSlots.Values) {
+                player.RefreshAbilityUI(slot);
+            }
+        }
+
+        // æœªæ‰€æœ‰ã®èƒ½åŠ›ã‚‚å«ã‚ã€å‰²ã‚Šå½“ã¦ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ç¢ºå®Ÿã«åˆæœŸçŠ¶æ…‹ã¸ç¢ºå®šã•ã›ã‚‹
+        playerParam.ResetAbilitySlotAssignment();
+    }
+
+    /// <summary>
+    /// ã‚¢ã‚¤ã‚³ãƒ³ã‚’æ´ã‚€
     /// </summary>
     private void _GrabIcon(eButtonIndex button) {
         if (!_buttonToIcon.TryGetValue(button, out var icon) || icon == null) return;
@@ -314,11 +342,11 @@ public class Pause_AbilityMenu : Pause_MenuBase {
         _grabbedIcon = icon;
         _grabbedFromButton = button;
 
-        // ƒAƒCƒRƒ“‚ğ_selectFrame‚Ìq‚Éİ’è
+        // ã‚¢ã‚¤ã‚³ãƒ³ã‚’_selectFrameã®å­ã«è¨­å®š
         if (_selectFrame != null) {
             _grabbedIcon.SetParent(_selectFrame.rectTransform, false);
             
-            // _selectFrame‚Ì‰Eã‚Éƒ[ƒJƒ‹À•W‚Å”z’u
+            // _selectFrameã®å³ä¸Šã«ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã§é…ç½®
             var iconRect = _grabbedIcon.GetComponent<RectTransform>();
             if (iconRect != null) {
                 var frameRect = _selectFrame.rectTransform;
@@ -332,15 +360,15 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     }
 
     /// <summary>
-    /// ƒAƒCƒRƒ“‚ğ“ü‚ê‘Ö‚¦‚é
+    /// ã‚¢ã‚¤ã‚³ãƒ³ã‚’å…¥ã‚Œæ›¿ãˆã‚‹
     /// </summary>
     private void _SwapIcon(eButtonIndex targetButton) {
         if (_grabbedIcon == null || _grabbedFromButton == eButtonIndex.None) return;
 
-        // “ü‚ê‘Ö‚¦æ‚ÌƒAƒCƒRƒ“‚ğæ“¾
+        // å…¥ã‚Œæ›¿ãˆå…ˆã®ã‚¢ã‚¤ã‚³ãƒ³ã‚’å–å¾—
         _buttonToIcon.TryGetValue(targetButton, out var targetIcon);
 
-        // “ü‚ê‘Ö‚¦
+        // å…¥ã‚Œæ›¿ãˆ
         _buttonToIcon[targetButton] = _grabbedIcon;
         if (targetIcon != null) {
             _buttonToIcon[_grabbedFromButton] = targetIcon;
@@ -349,61 +377,49 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             _buttonToIcon.Remove(_grabbedFromButton);
         }
 
-        // ’Í‚ñ‚Å‚¢‚½ƒAƒCƒRƒ“‚ğ”z’u
+        // æ´ã‚“ã§ã„ãŸã‚¢ã‚¤ã‚³ãƒ³ã‚’é…ç½®
         _PlaceIconOnButton(_grabbedIcon, _GetButtonRect(targetButton));
 
-        // PlayerCharacter‚Ì”\—Í‚à“ü‚ê‘Ö‚¦‚é
+        // PlayerCharacterã®èƒ½åŠ›ã‚‚å…¥ã‚Œæ›¿ãˆã‚‹
         _SwapPlayerAbility(_grabbedFromButton, targetButton);
 
-        // ’Í‚ñ‚Å‚¢‚éó‘Ô‚ğ‰ğœ
+        // æ´ã‚“ã§ã„ã‚‹çŠ¶æ…‹ã‚’è§£é™¤
         _grabbedIcon = null;
         _grabbedFromButton = eButtonIndex.None;
 
-        // à–¾•¶‚ğXV
+        // èª¬æ˜æ–‡ã‚’æ›´æ–°
         _UpdateExplain();
     }
 
     /// <summary>
-    /// PlayerCharacter‚Ì”\—Í‚ğ“ü‚ê‘Ö‚¦‚é
+    /// PlayerCharacterã®èƒ½åŠ›ã‚’å…¥ã‚Œæ›¿ãˆã‚‹
     /// </summary>
     private void _SwapPlayerAbility(eButtonIndex fromButton, eButtonIndex toButton) {
-        // B,Y,X,Aƒ{ƒ^ƒ“‚Ì‚İ‘Î‰iSL,SR,ZL,ZR‚ÍœŠOj
+        // B,Y,X,Aãƒœã‚¿ãƒ³ã®ã¿å¯¾å¿œï¼ˆSL,SR,ZL,ZRã¯é™¤å¤–ï¼‰
         if (!_IsMainButton(fromButton) || !_IsMainButton(toButton)) {
             return;
         }
 
-        var player = FindAnyObjectByType<Player_Character>();
+        var player = PlayerCharacterManager.Current as Player_Character;
         if (player == null) {
-            Debug.LogWarning("Player_Character‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+            Debug.LogWarning("Player_CharacterãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
             return;
         }
 
-        // ƒ{ƒ^ƒ“Index‚©‚çeAbilitySlot‚É•ÏŠ·
+        // ãƒœã‚¿ãƒ³Indexã‹ã‚‰eAbilitySlotã«å¤‰æ›
         eAbilitySlot fromSlot = _ButtonIndexToAbilitySlot(fromButton);
         eAbilitySlot toSlot = _ButtonIndexToAbilitySlot(toButton);
 
-        // ƒXƒƒbƒg‚Ì”\—Í‚ğ“ü‚ê‘Ö‚¦
+        // ã‚¹ãƒ­ãƒƒãƒˆã®èƒ½åŠ›ã‚’å…¥ã‚Œæ›¿ãˆï¼ˆå†…éƒ¨ã§å‰²ã‚Šå½“ã¦ãƒ†ãƒ¼ãƒ–ãƒ«ã®æ°¸ç¶šåŒ–ã‚‚è¡Œã‚ã‚Œã‚‹ï¼‰
         player.SwapAbilitySlot(fromSlot, toSlot);
 
-        // UI‚à“ü‚ê‘Ö‚¦
-        _SwapAbilityUI(fromSlot, toSlot);
+        // HUDå´ã®UIè¡¨ç¤ºã‚‚è£…å‚™çŠ¶æ³ã‹ã‚‰å†æ§‹ç¯‰
+        player.RefreshAbilityUI(fromSlot);
+        player.RefreshAbilityUI(toSlot);
     }
 
     /// <summary>
-    /// AbilityUI‚ğ“ü‚ê‘Ö‚¦‚é
-    /// </summary>
-    private void _SwapAbilityUI(eAbilitySlot slotA, eAbilitySlot slotB) {
-        var abilityUIManager = FindAnyObjectByType<AbilityUIManager>();
-        if (abilityUIManager == null) {
-            Debug.LogWarning("AbilityUIManager‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
-            return;
-        }
-
-        abilityUIManager.SwapAbilityUI(slotA, slotB);
-    }
-
-    /// <summary>
-    /// ƒƒCƒ“ƒ{ƒ^ƒ“iB,Y,X,Aj‚©‚Ç‚¤‚©‚ğ”»’è
+    /// ãƒ¡ã‚¤ãƒ³ãƒœã‚¿ãƒ³ï¼ˆB,Y,X,Aï¼‰ã‹ã©ã†ã‹ã‚’åˆ¤å®š
     /// </summary>
     private bool _IsMainButton(eButtonIndex button) {
         return button == eButtonIndex.B || button == eButtonIndex.Y ||
@@ -411,7 +427,7 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     }
 
     /// <summary>
-    /// ƒ{ƒ^ƒ“Index‚ğeAbilitySlot‚É•ÏŠ·
+    /// ãƒœã‚¿ãƒ³Indexã‚’eAbilitySlotã«å¤‰æ›
     /// </summary>
     private eAbilitySlot _ButtonIndexToAbilitySlot(eButtonIndex button) {
         return button switch {
@@ -419,26 +435,39 @@ public class Pause_AbilityMenu : Pause_MenuBase {
             eButtonIndex.Y => eAbilitySlot.Y,
             eButtonIndex.X => eAbilitySlot.X,
             eButtonIndex.A => eAbilitySlot.A,
-            _ => eAbilitySlot.B // ƒfƒtƒHƒ‹ƒg
+            _ => eAbilitySlot.B // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ
         };
     }
 
     /// <summary>
-    /// ƒAƒCƒRƒ“‚ğƒ{ƒ^ƒ“‚É”z’u
+    /// eAbilitySlotã‚’ãƒœã‚¿ãƒ³Indexã«å¤‰æ›
+    /// </summary>
+    private eButtonIndex _AbilitySlotToButtonIndex(eAbilitySlot slot) {
+        return slot switch {
+            eAbilitySlot.B => eButtonIndex.B,
+            eAbilitySlot.Y => eButtonIndex.Y,
+            eAbilitySlot.X => eButtonIndex.X,
+            eAbilitySlot.A => eButtonIndex.A,
+            _ => eButtonIndex.B // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ
+        };
+    }
+
+    /// <summary>
+    /// ã‚¢ã‚¤ã‚³ãƒ³ã‚’ãƒœã‚¿ãƒ³ã«é…ç½®
     /// </summary>
     private void _PlaceIconOnButton(RectTransform icon, RectTransform button) {
         if (icon == null || button == null) return;
         
-        // ƒAƒCƒRƒ“‚ğ_IconParent‚Ìq‚É–ß‚·
+        // ã‚¢ã‚¤ã‚³ãƒ³ã‚’_IconParentã®å­ã«æˆ»ã™
         if (_IconParent != null) {
             icon.SetParent(_IconParent, true);
         }
         
-        // ƒ[ƒ‹ƒhÀ•W‚Åƒ{ƒ^ƒ“ˆÊ’u‚É”z’u
+        // ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã§ãƒœã‚¿ãƒ³ä½ç½®ã«é…ç½®
         icon.position = button.position;
     }
 
-    // ƒ{ƒ^ƒ“‚ÌRectTransformæ“¾
+    // ãƒœã‚¿ãƒ³ã®RectTransformå–å¾—
     private RectTransform _GetButtonRect(eButtonIndex btn) {
         return btn switch {
             eButtonIndex.B => _MenuButtonB,
@@ -456,40 +485,28 @@ public class Pause_AbilityMenu : Pause_MenuBase {
     }
 
     /// <summary>
-    /// ‘I‘ğ’†‚Ìƒ{ƒ^ƒ“‚É‘Î‰‚·‚éà–¾•¶‚ğ•\¦
+    /// é¸æŠä¸­ã®ãƒœã‚¿ãƒ³ã«å¯¾å¿œã™ã‚‹èª¬æ˜æ–‡ã‚’è¡¨ç¤º
     /// </summary>
     private void _UpdateExplain() {
-        // ‘S‚Ä‚Ìà–¾•¶‚ğ”ñ•\¦
+        // å…¨ã¦ã®èª¬æ˜æ–‡ã‚’éè¡¨ç¤º
         _WarpExplain?.SetActive(false);
         _IceExplain?.SetActive(false);
         _LightExplain?.SetActive(false);
         _FireExplain?.SetActive(false);
 
-        // Œ»İ‘I‘ğ’†‚Ìƒ{ƒ^ƒ“‚É‘Î‰‚·‚éƒAƒCƒRƒ“‚ğæ“¾
+        // ç¾åœ¨é¸æŠä¸­ã®ãƒœã‚¿ãƒ³ã«å¯¾å¿œã™ã‚‹ã‚¢ã‚¤ã‚³ãƒ³ã‚’å–å¾—
         if (_buttonToIcon.TryGetValue(_currentButton, out var currentIcon)) {
-            // ‚»‚ÌƒAƒCƒRƒ“‚É‘Î‰‚·‚éà–¾•¶‚ğ•\¦
+            // ãã®ã‚¢ã‚¤ã‚³ãƒ³ã«å¯¾å¿œã™ã‚‹èª¬æ˜æ–‡ã‚’è¡¨ç¤º
             if (_iconToExplain.TryGetValue(currentIcon, out var explain)) {
                 explain?.SetActive(true);
             }
         }
     }
 
-    // ‘I‘ğ˜g‚ÌˆÊ’uXV
+    // é¸æŠæ ã®ä½ç½®æ›´æ–°
     private void _UpdateFrame() {
-        MoveFrameToSelected(
-            _currentButton switch {
-                eButtonIndex.B => _MenuButtonB,
-                eButtonIndex.Y => _MenuButtonY,
-                eButtonIndex.X => _MenuButtonX,
-                eButtonIndex.A => _MenuButtonA,
-                eButtonIndex.SL => _MenuButtonSL,
-                eButtonIndex.ZL => _MenuButtonZL,
-                eButtonIndex.SR => _MenuButtonSR,
-                eButtonIndex.ZR => _MenuButtonZR,
-                //eButtonIndex.System => _MenuButtonSystem,
-                //eButtonIndex.Reset => _MenuButtonReset,
-                _ => _MenuButtonB
-            });
+        // ãƒœã‚¿ãƒ³â†’RectTransformã®å¯¾å¿œã¯_GetButtonRectã¨é‡è¤‡ã•ã›ãšã€ãã¡ã‚‰ã«ä¸€æœ¬åŒ–ã™ã‚‹
+        MoveFrameToSelected(_GetButtonRect(_currentButton) ?? _MenuButtonB);
     }
 
     private void _UpdateSystemText() {

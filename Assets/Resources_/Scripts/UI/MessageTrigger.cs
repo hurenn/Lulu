@@ -3,53 +3,53 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ƒƒbƒZ[ƒW‚ğ•\¦‚³‚¹‚éƒgƒŠƒK[ƒNƒ‰ƒX
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã•ã›ã‚‹ãƒˆãƒªã‚¬ãƒ¼ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class MessageTrigger : MonoBehaviour {
-    [SerializeField] private MessageList _messageListScript; // ƒƒbƒZ[ƒWƒŠƒXƒgŠÇ—
-    [SerializeField] private MessageDataList _messageDatas;  //ƒƒbƒZ[ƒWƒf[ƒ^”z—ñ
+    [SerializeField] private MessageList _messageListScript; // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒªã‚¹ãƒˆç®¡ç†
+    [SerializeField] private MessageDataList _messageDatas;  //ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿é…åˆ—
 
-    private MessageViewer _messageViewer; // ƒƒbƒZ[ƒWƒrƒ…[ƒA
-    private PlayerController _playerController; // ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[
-    private bool _isPlayerInside = false; // ƒvƒŒƒCƒ„[‚ªƒgƒŠƒK[“à‚É‚¢‚é‚©‚Ç‚¤‚©
+    private MessageViewer _messageViewer; // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ“ãƒ¥ãƒ¼ã‚¢
+    private PlayerController _playerController; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
+    private bool _isPlayerInside = false; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒˆãƒªã‚¬ãƒ¼å†…ã«ã„ã‚‹ã‹ã©ã†ã‹
 
-    // ƒƒbƒZ[ƒW‚ğ’Ç‰Á‚·‚é
+    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¿½åŠ ã™ã‚‹
     private IEnumerator _AddMessage() {
         if(_messageListScript == null) {
-            Debug.LogError("ƒƒbƒZ[ƒWƒŠƒXƒg‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB©“®æ“¾‚µ‚Ü‚·‚ªŒã’öİ’è‚µ‚Ä‚­‚¾‚³‚¢");
+            Debug.LogError("ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒªã‚¹ãƒˆãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚è‡ªå‹•å–å¾—ã—ã¾ã™ãŒå¾Œç¨‹è¨­å®šã—ã¦ãã ã•ã„");
             _messageListScript = FindAnyObjectByType<MessageList>();
         }
 
-        // ƒƒbƒZ[ƒW•\¦‹@”\‚ğ’T‚· (WIP)
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºæ©Ÿèƒ½ã‚’æ¢ã™ (WIP)
         while (_messageViewer == null) {
             _messageViewer = FindAnyObjectByType<MessageViewer>();
             yield return null;
         }
-        // ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[‚ğ’T‚· (WIP)
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’æ¢ã™ (WIP)
         while(_playerController == null) {
-            _playerController = FindAnyObjectByType<PlayerController>();
+            _playerController = PlayerCharacterManager.Controller;
             yield return null;
         }
 
-        // ƒƒbƒZ[ƒW•\¦’†‚Í‘Ò‹@
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºä¸­ã¯å¾…æ©Ÿ
         if (!_messageDatas.isForced) {
             while (_messageListScript.HasMessages() || _messageViewer.IsShowing) {// || !_playerController.isEnabledCharacterInput) {
                 yield return null;
 
                 if (!_isPlayerInside) {
-                    // ƒvƒŒƒCƒ„[‚ªƒgƒŠƒK[ŠO‚Éo‚½ê‡AƒƒbƒZ[ƒW’Ç‰Á‚ğ’†~
+                    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒˆãƒªã‚¬ãƒ¼å¤–ã«å‡ºãŸå ´åˆã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¿½åŠ ã‚’ä¸­æ­¢
                     yield break;
                 }
             }
         }
 
         if (_messageDatas.isForced) {
-            // ‹­§ƒƒbƒZ[ƒW‚Ìê‡A‘¼‚ÌƒƒbƒZ[ƒW‚ğƒNƒŠƒA
+            // å¼·åˆ¶ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®å ´åˆã€ä»–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ã‚¯ãƒªã‚¢
             _messageListScript.Clear();
             _messageViewer.ForceReset();
         }
 
-        // ƒƒbƒZ[ƒW‚ğ’Ç‰Á
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¿½åŠ 
         foreach (MessageData message in _messageDatas.messageDatas) {
             _messageListScript.Enqueue(message);
         }

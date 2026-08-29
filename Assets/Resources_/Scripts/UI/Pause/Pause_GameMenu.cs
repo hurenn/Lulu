@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 
 public class Pause_GameMenu : Pause_MenuBase {
-    [SerializeField] private RectTransform _MenuReturnGame;     // ƒQ[ƒ€‚É–ß‚éƒƒjƒ…[
-    [SerializeField] private RectTransform _MenuStageRetry;     // ƒŠƒgƒ‰ƒCƒƒjƒ…[
-    [SerializeField] private RectTransform _MenuTitle;          // ƒ^ƒCƒgƒ‹‚É–ß‚éƒƒjƒ…[
+    [SerializeField] private RectTransform _MenuReturnGame;     // ã‚²ãƒ¼ãƒ ã«æˆ»ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+    [SerializeField] private RectTransform _MenuStageRetry;     // ãƒªãƒˆãƒ©ã‚¤ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+    [SerializeField] private RectTransform _MenuTitle;          // ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼
 
     private enum eMenuIndex {
         ReturnGame = 0,
@@ -16,13 +16,13 @@ public class Pause_GameMenu : Pause_MenuBase {
     public override void Open(Action<int> onSwitchMenu, Action onCloseMenu, AudioSource audio_source, AudioClip se_select, AudioClip se_decide) {
         base.Open(onSwitchMenu, onCloseMenu, audio_source, se_select, se_decide);
 
-        // Å‰‚Ì‘I‘ğˆ‚É˜g‚ğˆÚ“®
+        // æœ€åˆã®é¸æŠè‚¢ã«æ ã‚’ç§»å‹•
         MoveFrameToSelected(_MenuReturnGame, true);
         _currentMenu = eMenuIndex.ReturnGame;
     }
 
     public override void OnInputVertical(int dir) {
-        // ƒƒjƒ…[‚ÌƒCƒ“ƒfƒbƒNƒX‚ğã‰º‚ÉˆÚ“®
+        // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ä¸Šä¸‹ã«ç§»å‹•
         int nextIndex = (int)_currentMenu + (dir > 0 ? -1 : 1);
         nextIndex = Mathf.Clamp(nextIndex, 0, (int)eMenuIndex.Title);
         OnSwitchGameMenu(nextIndex);
@@ -34,15 +34,15 @@ public class Pause_GameMenu : Pause_MenuBase {
 
     private void OnSwitchGameMenu(int index) {
         switch (index) {
-            case 0: // ƒQ[ƒ€‚É–ß‚é
+            case 0: // ã‚²ãƒ¼ãƒ ã«æˆ»ã‚‹
                 MoveFrameToSelected(_MenuReturnGame);
                 _currentMenu = eMenuIndex.ReturnGame;
                 break;
-            case 1: // ‚â‚è‚È‚¨‚·
+            case 1: // ã‚„ã‚ŠãªãŠã™
                 MoveFrameToSelected(_MenuStageRetry);
                 _currentMenu = eMenuIndex.Retry;
                 break;
-            case 2: // ƒ^ƒCƒgƒ‹‚É–ß‚é
+            case 2: // ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹
                 MoveFrameToSelected(_MenuTitle);
                 _currentMenu = eMenuIndex.Title;
                 break;
@@ -51,19 +51,19 @@ public class Pause_GameMenu : Pause_MenuBase {
 
     public override void ExecuteSelectedMenu() {
         base.ExecuteSelectedMenu();
-        // Œˆ’è‰¹Ä¶
+        // æ±ºå®šéŸ³å†ç”Ÿ
         if (_audioSource != null && _seDecide != null) {
             _audioSource.PlayOneShot(_seDecide);
         }
         switch (_currentMenu) {
-            case eMenuIndex.ReturnGame: // ƒQ[ƒ€‚É–ß‚é
+            case eMenuIndex.ReturnGame: // ã‚²ãƒ¼ãƒ ã«æˆ»ã‚‹
                 OnCloseMenu();
                 break;
-            case eMenuIndex.Retry: // ‚â‚è’¼‚µiƒ|[ƒY‚©‚ç‚ÌƒŠƒgƒ‰ƒC‚È‚Ì‚Å•KEƒ`ƒƒ[ƒW‚È‚µj
+            case eMenuIndex.Retry: // ã‚„ã‚Šç›´ã—ï¼ˆãƒãƒ¼ã‚ºã‹ã‚‰ã®ãƒªãƒˆãƒ©ã‚¤ãªã®ã§å¿…æ®ºãƒãƒ£ãƒ¼ã‚¸ãªã—ï¼‰
                 GameSceneManager.Instance.StageRestart(false, false);
                 OnCloseMenu();
                 break;
-            case eMenuIndex.Title: // ƒ^ƒCƒgƒ‹‚É–ß‚é
+            case eMenuIndex.Title: // ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹
                 GameSceneManager.Instance.GameRestart();
                 OnCloseMenu();
                 break;

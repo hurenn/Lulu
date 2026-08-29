@@ -3,16 +3,16 @@ using UnityEngine.UI;
 
 public class ExpGauge : MonoBehaviour {
     /// <summary>
-    /// �ΏۃL�����N�^�[�̃p�����[�^�[
+    /// 対象キャラクターのパラメーター
     /// </summary>
     private PlayerParameter _playerParameter;
     /// <summary>
-    /// �o���l�Q�[�W�\��
+    /// 経験値ゲージ表示
     /// </summary>
     [SerializeField] private Image _expFillImage;
     [SerializeField] private Image _expWhiteImage;
     /// <summary>
-    /// �o���l�ǉ��A�j���[�V����
+    /// 経験値追加アニメーション
     /// </summary>
     [SerializeField] private Animator _expAddAnim;
 
@@ -20,15 +20,23 @@ public class ExpGauge : MonoBehaviour {
         _playerParameter = PlayerParameter.Instance;
 
         if (_playerParameter != null) {
-            // �o���l�X�V�C�x���g�ɓo�^
-            _playerParameter.OnExpChanged += (exp) => UpdateExpGauge(exp);
-            // �����\��
+            // 経験値更新イベントに登録
+            _playerParameter.OnExpChanged += UpdateExpGauge;
+            // 初期表示
             UpdateExpGauge();
         }
     }
 
+    private void OnDestroy() {
+        // PlayerParameterはDontDestroyOnLoadで永続化されるため、
+        // シーンと共に破棄されるこのオブジェクトは明示的に購読解除する必要がある
+        if (_playerParameter != null) {
+            _playerParameter.OnExpChanged -= UpdateExpGauge;
+        }
+    }
+
     /// <summary>
-    /// �o���l�Q�[�W�̍X�V
+    /// 経験値ゲージの更新
     /// </summary>
     public void UpdateExpGauge(int exp = 0) {
         if(_expFillImage == null || _playerParameter == null) {
@@ -40,7 +48,7 @@ public class ExpGauge : MonoBehaviour {
         _expFillImage.fillAmount = fillAmount;
         //_expWhiteImage.fillAmount = fillAmount;
 
-        // �o���l�ǉ��A�j���[�V�����Đ�
+        // 経験値追加アニメーション再生
         if (exp > 0 && _expAddAnim != null) {
             _expAddAnim.Play("AddExp", 0, 0f);
         }

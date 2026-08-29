@@ -3,22 +3,22 @@ using UnityEngine;
 using UnityEngine.Playables;
 
 /// <summary>
-/// ’‡ŠÔ‚Ì”\—Í‚ğæ“¾‚·‚éƒIƒuƒWƒFƒNƒg
+/// ä»²é–“ã®èƒ½åŠ›ã‚’å–å¾—ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 public class JoinAbilityObject : StageObject_Base {
     /// <summary>
-    /// æ“¾‚·‚é”\—Í‚Ìí—Ş
+    /// å–å¾—ã™ã‚‹èƒ½åŠ›ã®ç¨®é¡
     /// </summary>
     [SerializeField] private eAbilityType _abilityType = eAbilityType.None;
     /// <summary>
-    /// ’‡ŠÔ‰Á“üƒCƒxƒ“ƒg
+    /// ä»²é–“åŠ å…¥ã‚¤ãƒ™ãƒ³ãƒˆ
     /// </summary>
     [SerializeField] private PlayableDirector playableDirector = null;
 
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);
 
-        // ƒCƒxƒ“ƒg–³‚µ
+        // ã‚¤ãƒ™ãƒ³ãƒˆç„¡ã—
         if (playableDirector == null) {
             _JoinAbility(player);
             return;
@@ -27,36 +27,31 @@ public class JoinAbilityObject : StageObject_Base {
         playableDirector.time = 0;
         playableDirector.Play();
         playableDirector.stopped += (pd) => {
-            // ƒCƒxƒ“ƒgI—¹‚É’‡ŠÔ‰Á“ü
+            // ã‚¤ãƒ™ãƒ³ãƒˆçµ‚äº†æ™‚ã«ä»²é–“åŠ å…¥
             _JoinAbility(player);
         };
     }
 
     /// <summary>
-    /// ’‡ŠÔ‰Á“ü
+    /// ä»²é–“åŠ å…¥
     /// </summary>
     private void _JoinAbility(Player_Character player) {
         if (_abilityType == eAbilityType.None) {
-            Debug.LogError("æ“¾”\—Í•s–¾");
+            Debug.LogError("å–å¾—èƒ½åŠ›ä¸æ˜");
             return;
         }
         if (player == null) {
-            Debug.LogError("ƒvƒŒƒCƒ„[•s–¾");
+            Debug.LogError("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä¸æ˜");
             return;
         }
 
-        // İ’èæ‚ÌƒXƒƒbƒg‚ğŒˆ’è
-        eAbilitySlot ability_slot = _abilityType switch {
-            eAbilityType.Ice => eAbilitySlot.Y,
-            eAbilityType.Fire => eAbilitySlot.A,
-            eAbilityType.Light => eAbilitySlot.X,
-            _ => throw new System.ArgumentOutOfRangeException()
-        };
+        // è¨­å®šå…ˆã®ã‚¹ãƒ­ãƒƒãƒˆã‚’æ±ºå®šï¼ˆäº‹å‰ã«å…¥ã‚Œæ›¿ãˆã‚‰ã‚Œã¦ã„ãŸå ´åˆã¯ãã¡ã‚‰ãŒå„ªå…ˆã•ã‚Œã‚‹ï¼‰
+        eAbilitySlot ability_slot = PlayerParameter.Instance.GetAssignedSlot(_abilityType);
 
-        // ƒvƒŒƒCƒ„[‚É”\—Í‚ğ’Ç‰Á
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«èƒ½åŠ›ã‚’è¿½åŠ 
         player.SetAbilitySlot(_abilityType, ability_slot);
 
-        // ƒIƒuƒWƒFƒNƒg‚ğíœ
+        // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‰Šé™¤
         Destroy(gameObject);
     }
 }

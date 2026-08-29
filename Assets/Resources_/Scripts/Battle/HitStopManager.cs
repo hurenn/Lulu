@@ -1,21 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HitStopManager : MonoBehaviour {
-    public static HitStopManager Instance { get; private set; }
+public class HitStopManager : SceneSingleton<HitStopManager> {
     private List<LocalTimeController> _targets = new List<LocalTimeController>();
 
-    private void Awake() {
-        if (Instance == null) {
-            Instance = this;
-        } else {
-            Destroy(gameObject);
-        }
-        Instance = this;
-    }
-
     /// <summary>
-    /// ƒ^[ƒQƒbƒg“o˜^
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç™»éŒ²
     /// </summary>
     public void RegisterTarget(LocalTimeController target) {
         if (!_targets.Contains(target)) {
@@ -24,7 +14,7 @@ public class HitStopManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒg“o˜^‰ğœ
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç™»éŒ²è§£é™¤
     /// </summary>
     public void Unregister(LocalTimeController target) {
         if (_targets.Contains(target)) {

@@ -16,26 +16,23 @@ public class PlayerControlPlayableAsset : PlayableAsset {
 
 public class PlayerControlPlayableBehaviour : PlayableBehaviour {
     public bool enableControl = true;
-    private PlayerController controller;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info) {
 
-        // ƒvƒŒƒCƒ„[‚ª’…’n‚·‚é‚Ü‚Å‘Ò‚Â
-        var character = GameObject.FindAnyObjectByType<Player_Character>();
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç€åœ°ã™ã‚‹ã¾ã§å¾…ã¤
+        var character = PlayerCharacterManager.Current as Player_Character;
         if (character != null) {
             character.StartCoroutine(_WaitPlayerStop(playable, character));
         }
 
-        // ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[‚Ì—LŒø/–³Œø‚ğØ‚è‘Ö‚¦
-        if (controller == null) {
-            controller = GameObject.FindAnyObjectByType<PlayerController>();
-        }
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®æœ‰åŠ¹/ç„¡åŠ¹ã‚’åˆ‡ã‚Šæ›¿ãˆ
+        var controller = PlayerCharacterManager.Controller;
         if (controller != null) {
             controller.isEnabledCharacterInput = enableControl;
         }
     }
 
-    // ƒvƒŒƒCƒ„[‚ª’…’n‚·‚é‚Ü‚Å‘Ò‚ÂƒRƒ‹[ƒ`ƒ“
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç€åœ°ã™ã‚‹ã¾ã§å¾…ã¤ã‚³ãƒ«ãƒ¼ãƒãƒ³
     private IEnumerator _WaitPlayerStop(Playable playable, Player_Character character) {
         if (playable.GetGraph().GetResolver() is PlayableDirector director) {
             director.Pause();

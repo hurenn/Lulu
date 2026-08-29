@@ -1,15 +1,15 @@
 using UnityEngine;
 
 /// <summary>
-/// w’è‚µ‚½ƒIƒuƒWƒFƒNƒg‚ğ—LŒø‰»‚·‚éƒXƒe[ƒWƒIƒuƒWƒFƒNƒg
+/// æŒ‡å®šã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æœ‰åŠ¹åŒ–ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¸ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 public class ObjectActivator : StageObject_Base {
     [SerializeField] private GameObject[] _targetObjects;
 
-    [SerializeField] private BuildConfig.eBuildTypeMask _disableOnBuildTypes; // –³Œø‰»‚·‚éƒrƒ‹ƒhƒ^ƒCƒv
+    [SerializeField] private BuildConfig.eBuildTypeMask _disableOnBuildTypes; // ç„¡åŠ¹åŒ–ã™ã‚‹ãƒ“ãƒ«ãƒ‰ã‚¿ã‚¤ãƒ—
 
     protected override void _HitPlayer(Player_Character player) {
-        // ƒrƒ‹ƒhƒ^ƒCƒv‚É‚æ‚é–³Œø‰»ƒ`ƒFƒbƒN
+        // ãƒ“ãƒ«ãƒ‰ã‚¿ã‚¤ãƒ—ã«ã‚ˆã‚‹ç„¡åŠ¹åŒ–ãƒã‚§ãƒƒã‚¯
         if (BuildConfig.Instance != null && BuildConfig.Instance.Matches(_disableOnBuildTypes)) {
             return;
         }

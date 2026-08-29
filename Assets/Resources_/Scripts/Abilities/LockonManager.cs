@@ -2,26 +2,22 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
-/// ƒƒbƒNƒIƒ“ŠÇ—
+/// ãƒ­ãƒƒã‚¯ã‚ªãƒ³ç®¡ç†
 /// </summary>
-public class LockonManager : MonoBehaviour
+public class LockonManager : SceneSingleton<LockonManager>
 {
-    private static LockonManager _instance;
-    
-    public static LockonManager Instance {
+    // ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒãªã„å ´åˆã¯ç”Ÿæˆã—ã¦ã‹ã‚‰è¿”ã™
+    public static new LockonManager Instance {
         get {
-            // ƒCƒ“ƒXƒ^ƒ“ƒX‚ª‚È‚¢ê‡‚Í¶¬
-            _Instantiate();
+            InstantiateIfMissing();
             return _instance;
         }
     }
-    
-    public static bool HasInstance => _instance != null;
 
-    // ƒƒbƒNƒIƒ“ƒ^[ƒQƒbƒg
+    // ãƒ­ãƒƒã‚¯ã‚ªãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
     private Enemy_Base _currentTarget;
     public Transform targetTransform => _currentTarget?.transform;
-    // ƒ^[ƒQƒbƒg‚Ìƒ[ƒvƒ`ƒFƒbƒJ[æ“¾
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ãƒ¯ãƒ¼ãƒ—ãƒã‚§ãƒƒã‚«ãƒ¼å–å¾—
     public WarpChecker? GetTargetWarpPos(WarpControl.eWarpDirection direction) {
         if (_currentTarget == null) return null;
 
@@ -31,41 +27,14 @@ public class LockonManager : MonoBehaviour
 
     public bool HasTarget => _currentTarget != null;
 
-    private void Awake() {
-        if (_instance != null && _instance != this) {
-            Debug.LogWarning("“ñd¶¬–h~‚Ì‚½‚ßALockonManageríœ");
-            Destroy(gameObject);
-            return;
-        }
-
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-
-    private void OnDestroy() {
-        if (_instance == this) {
-            _instance = null;
-        }
-    }
-
     /// <summary>
-    /// ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
+    /// å¤–éƒ¨ã‹ã‚‰ã‚¿ãƒ¼ã‚²ãƒƒãƒˆè¨­å®š
     /// </summary>
-    private static void _Instantiate() {
-        if (!HasInstance) {
-            GameObject obj = new GameObject("LockonManager");
-            obj.AddComponent<LockonManager>();
-        }
-    }
-
-    /// <summary>
-    /// ŠO•”‚©‚çƒ^[ƒQƒbƒgİ’è
-    /// </summary>
-    /// <param name="target">ƒƒbƒNƒIƒ“‘ÎÛ</param>
-    public static void SetTargetStatic(Enemy_Base target) 
+    /// <param name="target">ãƒ­ãƒƒã‚¯ã‚ªãƒ³å¯¾è±¡</param>
+    public static void SetTargetStatic(Enemy_Base target)
     {
-        // ƒCƒ“ƒXƒ^ƒ“ƒX‚ª‚È‚¢ê‡‚Í¶¬
-        _Instantiate();
+        // ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒãªã„å ´åˆã¯ç”Ÿæˆ
+        InstantiateIfMissing();
 
         if (HasInstance) {
             Instance._SetTarget(target);
@@ -73,11 +42,11 @@ public class LockonManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒgİ’è
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆè¨­å®š
     /// </summary>
     private void _SetTarget(Enemy_Base target) 
     {
-        // Šù‚Éƒ^[ƒQƒbƒg‚ª‚¢‚éê‡‚Í‰ğœ
+        // æ—¢ã«ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ã‚‹å ´åˆã¯è§£é™¤
         ClearTarget();
 
         _currentTarget = target;
@@ -88,7 +57,7 @@ public class LockonManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒ^[ƒQƒbƒg‰ğœ
+    /// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆè§£é™¤
     /// </summary>
     public void ClearTarget() {
         if (_currentTarget != null) {
@@ -100,26 +69,26 @@ public class LockonManager : MonoBehaviour
     private void Update() {
         if (_currentTarget == null) return;
 
-        // ƒ^[ƒQƒbƒg‚ª€‚ñ‚¾‚çƒƒbƒNƒIƒ“‰ğœ
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒæ­»ã‚“ã ã‚‰ãƒ­ãƒƒã‚¯ã‚ªãƒ³è§£é™¤
         if (_currentTarget.isDead) {
             ClearTarget();
             return;
         }
 
-        // ƒ^[ƒQƒbƒg‚ª‰æ–ÊŠO‚Éo‚½‚çƒƒbƒNƒIƒ“‰ğœ
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒç”»é¢å¤–ã«å‡ºãŸã‚‰ãƒ­ãƒƒã‚¯ã‚ªãƒ³è§£é™¤
         if (_IsTargetOffScreen()) {
             ClearTarget();
         }
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚Ì‰æ–ÊŠO‚Éƒ^[ƒQƒbƒg‚ª‚¢‚é‚©
+    /// ã‚«ãƒ¡ãƒ©ã®ç”»é¢å¤–ã«ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ã‚‹ã‹
     /// </summary>
     private bool _IsTargetOffScreen() {
         if (Camera.main == null || _currentTarget == null) return false;
 
         Vector3 screenPos = Camera.main.WorldToScreenPoint(_currentTarget.transform.position);
-        var heightOffset = (Screen.width - Screen.height); // ­‚µ—]—T‚ğ‚½‚¹‚é
+        var heightOffset = (Screen.width - Screen.height); // å°‘ã—ä½™è£•ã‚’æŒãŸã›ã‚‹
 
         return screenPos.x < 0 || screenPos.x > Screen.width ||
                screenPos.y < 0 - heightOffset || screenPos.y > Screen.height + heightOffset;

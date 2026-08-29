@@ -38,6 +38,9 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private float _fadeAlpha = 0.3f;      // フェード時の透明度
     [SerializeField] private float _normalAlpha = 0.9f;    // 通常時の透明度
     [SerializeField] private Animator _messagePanelAnimator;   // メッセージパネルのAnimator
+    [SerializeField] private float _iconBounceHeight = 20f;    // 全文表示時にアイコンが跳ねる高さ
+    [SerializeField] private float _iconBounceDuration = 0.2f; // 全文表示時にアイコンが跳ねる時間
+    [SerializeField] private float _iconAppearDelay = 0.25f;   // アイコンが外から現れるアニメーションの再生時間(ShowMessage.anim準拠)
     private RectTransform _messagePanelRect; // メッセージパネルのRectTransform
     private RectTransform _iconRect;         // キャラクターアイコンのRectTransform
 
@@ -65,7 +68,7 @@ public class MessageViewer : MonoBehaviour {
     private void OnEnable() {
         _messagePanel.SetActive(false); // パネルを非表示
         if(_playerController == null) {
-            _playerController = FindAnyObjectByType<PlayerController>();
+            _playerController = PlayerCharacterManager.Controller;
         }
         _playerParameter = PlayerParameter.Instance;
     }
@@ -194,6 +197,10 @@ public class MessageViewer : MonoBehaviour {
         _messageText.text = message;
         _messageText.maxVisibleCharacters = 0;
         _audioSource.PlayOneShot(_seSpeak);
+
+        // アイコンが外から現れるアニメーション(ShowMessage.anim)の再生後に跳ねさせる
+        if (_iconAppearBounceCoroutine != null) StopCoroutine(_iconAppearBounceCoroutine);
+        _iconAppearBounceCoroutine = StartCoroutine(_BounceIconAfterAppearCo());
         if (message_show_time <= 0) { // 一気に表示
             var view_message = message.Length / 3;
             _messageText.maxVisibleCharacters = view_message;
@@ -329,5 +336,42 @@ public class MessageViewer : MonoBehaviour {
             yield return null;
         }
         target.anchoredPosition = basePos;
+    }
+
+    private Vector2 _iconBasePosition;
+    private bool _iconBasePositionCached;
+    private Coroutine _iconBounceCoroutine;
+    private Coroutine _iconAppearBounceCoroutine;
+
+    private IEnumerator _BounceIconAfterAppearCo() {
+        yield return new WaitForSecondsRealtime(_iconAppearDelay);
+        _BounceIcon();
+        _iconAppearBounceCoroutine = null;
+    }
+
+    // キャラクターアイコンを一瞬跳ねさせる
+    private void _BounceIcon() {
+        if (_iconRect == null) {
+            _iconRect = _iconImage.GetComponent<RectTransform>();
+        }
+        if (!_iconBasePositionCached) {
+            _iconBasePosition = _iconRect.anchoredPosition;
+            _iconBasePositionCached = true;
+        }
+        if (_iconBounceCoroutine != null) StopCoroutine(_iconBounceCoroutine);
+        _iconBounceCoroutine = StartCoroutine(_BounceIconCo());
+    }
+
+    private IEnumerator _BounceIconCo() {
+        float elapsed = 0f;
+        while (elapsed < _iconBounceDuration) {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / _iconBounceDuration);
+            float offset = _iconBounceHeight * 4f * t * (1f - t); // 放物線状に跳ねる
+            _iconRect.anchoredPosition = _iconBasePosition + Vector2.up * offset;
+            yield return null;
+        }
+        _iconRect.anchoredPosition = _iconBasePosition;
+        _iconBounceCoroutine = null;
     }
 }

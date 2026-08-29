@@ -3,26 +3,18 @@ using UnityEngine;
 public class Signal_LightTutorial : MonoBehaviour {
     public static Signal_LightTutorial Instance { get; private set; }
     public PlayerController playerController;
-    private bool _isTutorialActive = false;
 
     private void Awake() {
         if (Instance == null) {
             Instance = this;
         }
         if (playerController == null) {
-            playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-        }
-    }
-
-    private void Update() {
-        if (_isTutorialActive) {
-            // ‰æ–ÊƒXƒ[
-            Time.timeScale = 0f;
+            playerController = PlayerCharacterManager.Controller;
         }
     }
 
     public void Tutorial_First() {
-        // Xƒ{ƒ^ƒ““ü—Í‘Ò‹@
+        // Xãƒœã‚¿ãƒ³å…¥åŠ›å¾…æ©Ÿ
         _LightTutorial_Common();
     }
 
@@ -30,21 +22,20 @@ public class Signal_LightTutorial : MonoBehaviour {
         if (playerController == null) {
             return;
         }
-        // ‰æ–ÊƒXƒ[
-        _isTutorialActive = true;
+        // ç”»é¢ã‚¹ãƒ­ãƒ¼
+        TimeScaleRequestManager.Request(0f);
 
         CharacterInputData specific_input = new CharacterInputData();
-        specific_input.abilityXPressed = true; // Xƒ{ƒ^ƒ““ü—Í‚ğ—v‹
+        specific_input.abilityX.pressed = true; // Xãƒœã‚¿ãƒ³å…¥åŠ›ã‚’è¦æ±‚
         playerController.SetSpecificInput(specific_input, () => {
-            // “ü—ÍŠ®—¹Œã‚Ìˆ—
-            _isTutorialActive = false;
-            Time.timeScale = 1f; // ŠÔ‚ğŒ³‚É–ß‚·
+            // å…¥åŠ›å®Œäº†å¾Œã®å‡¦ç†
+            TimeScaleRequestManager.Release(); // æ™‚é–“ã‚’å…ƒã«æˆ»ã™
 
-            // ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[‚ğ—LŒø‰»
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’æœ‰åŠ¹åŒ–
             playerController.isEnabledCharacterInput = true;
 
-            // Xƒ{ƒ^ƒ““ü—Í‚ğÀs
-            playerController.OnAbilityX();
+            // Xãƒœã‚¿ãƒ³å…¥åŠ›ã‚’å®Ÿè¡Œ
+            playerController.TriggerAbilityInput(eAbilitySlot.X);
         });
     }
 }

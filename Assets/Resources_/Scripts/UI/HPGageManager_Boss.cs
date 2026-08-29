@@ -15,9 +15,9 @@ public class HPGageManager_Boss : MonoBehaviour {
             _characterParameter = GetComponentInParent<CharacterParameter>();
         }
         if (_characterParameter != null) {
-            // HP更新イベントに登録
+            // HP譖ｴ譁ｰ繧､繝吶Φ繝医↓逋ｻ骭ｲ
             _characterParameter.OnHPChanged += UpdateHPGage;
-            // 初期表示
+            // 蛻晄悄陦ｨ遉ｺ
             UpdateHPGage(_characterParameter.CurrentHP);
         }
     }

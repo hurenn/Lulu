@@ -115,39 +115,41 @@ public class Enemy_Base : Character_Base
         if (warp_direction == WarpControl.eWarpDirection.Left) {
             if(is_other_check) {
                 // 反対側もチェック
-                var left_checker = _leftWarpChecker.GetWarpPoint();
-                if (left_checker.HasValue) {
+                if (_HasWarpPoint(_leftWarpChecker)) {
                     return _leftWarpChecker;
                 }
-                var right_checker = _rightWarpChecker.GetWarpPoint();
-                if (right_checker.HasValue) {
+                if (_HasWarpPoint(_rightWarpChecker)) {
                     return _rightWarpChecker;
                 }
                 return null;
             }
-            var checker = _leftWarpChecker.GetWarpPoint();
-            if (checker.HasValue) {
+            if (_HasWarpPoint(_leftWarpChecker)) {
                 return _leftWarpChecker;
             }
         } else if (warp_direction == WarpControl.eWarpDirection.Right) {
             if (is_other_check) {
                 // 反対側もチェック
-                var right_checker = _rightWarpChecker.GetWarpPoint();
-                if (right_checker.HasValue) {
+                if (_HasWarpPoint(_rightWarpChecker)) {
                     return _rightWarpChecker;
                 }
-                var left_checker = _leftWarpChecker.GetWarpPoint();
-                if (left_checker.HasValue) {
+                if (_HasWarpPoint(_leftWarpChecker)) {
                     return _leftWarpChecker;
                 }
                 return null;
             }
-            var checker = _rightWarpChecker.GetWarpPoint();
-            if (checker.HasValue) {
+            if (_HasWarpPoint(_rightWarpChecker)) {
                 return _rightWarpChecker;
             }
         }
         return null;
+    }
+
+    /// <summary>
+    /// WarpCheckerが割り当てられており、かつワープ可能な地点を持っているか
+    /// （未アサインの敵プレハブでもNREにならないようにする）
+    /// </summary>
+    private bool _HasWarpPoint(WarpChecker checker) {
+        return checker != null && checker.GetWarpPoint().HasValue;
     }
 
     /// <summary>

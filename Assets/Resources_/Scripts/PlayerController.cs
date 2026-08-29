@@ -5,34 +5,25 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Character_Base character;
     public Character_Base Character => character;
 
-    // ƒRƒ“ƒgƒ[ƒ‰[
+    // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
     private InputActions _inputActions;
 
-    // •ûŒü“ü—Í
+    // æ–¹å‘å…¥åŠ›
     private Vector2 _moveInputValue;
 
-    // Abilityƒ{ƒ^ƒ“‚Ìó‘Ô
-    private bool _isAbilityYPressed = false;
-    private bool _isAbilityYHeld = false;
-    private bool _isAbilityYReleased = false;
-    private bool _isAbilityXPressed = false;
-    private bool _isAbilityXHeld = false;
-    private bool _isAbilityXReleased = false;
-    private bool _isAbilityAPressed = false;
-    private bool _isAbilityAHeld = false;
-    private bool _isAbilityAReleased = false;
-    private bool _isAbilityBPressed = false;
-    private bool _isAbilityBHeld = false;
-    private bool _isAbilityBReleased = false;
+    // Abilityãƒœã‚¿ãƒ³ã®çŠ¶æ…‹ï¼ˆã‚¹ãƒ­ãƒƒãƒˆã”ã¨ï¼‰
+    private AbilityButtonState[] _abilityButtons = new AbilityButtonState[4];
+    // ã‚¹ãƒ­ãƒƒãƒˆã¨ç‰©ç†ãƒœã‚¿ãƒ³(InputAction)ã®å¯¾å¿œè¡¨ï¼ˆãƒœã‚¿ãƒ³ã‚³ãƒ³ãƒ•ã‚£ã‚°ã®å·®ã—æ›¿ãˆå¯¾è±¡ï¼‰
+    private InputAction[] _abilitySlotActions = new InputAction[4];
 
-    // ƒƒbƒZ[ƒW‘—‚è“ü—Í
+    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ã‚Šå…¥åŠ›
     private bool _isMessageNextPressed = false;
-    private bool _wasMessageNextPressed = false; // ‘OƒtƒŒ[ƒ€‚Ìƒ{ƒ^ƒ“ó‘Ô
+    private bool _wasMessageNextPressed = false; // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®ãƒœã‚¿ãƒ³çŠ¶æ…‹
 
-    // ƒLƒƒƒ‰ƒNƒ^[‘€ì“ü—Íó•tƒtƒ‰ƒO
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æ“ä½œå…¥åŠ›å—ä»˜ãƒ•ãƒ©ã‚°
     public bool isEnabledCharacterInput { get; set; } = true;
 
-    // --- Inspector—pƒRƒ“ƒgƒ[ƒ‰[ ---
+    // --- Inspectorç”¨ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ ---
     [Header("Character Controls")]
     public bool insertMoveLeft = false;
     public bool insertMoveRight = false;
@@ -49,9 +40,9 @@ public class PlayerController : MonoBehaviour {
     public CharacterInputData Input => input;
     public CharacterInputData virtualInput { get; set; }
 
-    // “Á’è“ü—ÍŠ®—¹ƒR[ƒ‹ƒoƒbƒN
+    // ç‰¹å®šå…¥åŠ›å®Œäº†ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
     System.Action _inputCompletedCallback = null;
-    // “Á’è“ü—Í‹L‰¯
+    // ç‰¹å®šå…¥åŠ›è¨˜æ†¶
     CharacterInputData _specificInput = new CharacterInputData();
 
     public void SetSpecificInput(CharacterInputData specific_input, System.Action input_completed) {
@@ -62,11 +53,14 @@ public class PlayerController : MonoBehaviour {
 
     private Pause_UI _pauseUIInstance;
     private float _pauseMenuInputCooldown = 0f;
-    private float _pauseDecideInputCooldown = 0f; // Œˆ’è“ü—Í‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+    private float _pauseDecideInputCooldown = 0f; // æ±ºå®šå…¥åŠ›ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
     private const float PAUSE_MENU_INPUT_COOLDOWN = 0.5f;
-    private const float PAUSE_DECIDE_INPUT_COOLDOWN = 0.3f; // Œˆ’è“ü—Í‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+    private const float PAUSE_DECIDE_INPUT_COOLDOWN = 0.3f; // æ±ºå®šå…¥åŠ›ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 
-    // Pause_UIƒCƒ“ƒXƒ^ƒ“ƒX‚ğƒLƒƒƒbƒVƒ…‚µ‚Äæ“¾
+    // ãƒœã‚¿ãƒ³å‰²ã‚Šå½“ã¦ã®ä¿å­˜ã‚­ãƒ¼
+    private const string BINDING_OVERRIDES_PREF_KEY = "InputBindingOverrides";
+
+    // Pause_UIã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã—ã¦å–å¾—
     private Pause_UI GetPauseUI()
     {
         if (_pauseUIInstance == null)
@@ -78,10 +72,31 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         _inputActions = new InputActions();
+
+        // ã‚¹ãƒ­ãƒƒãƒˆã¨ç‰©ç†ãƒœã‚¿ãƒ³ã®å¯¾å¿œè¡¨ã‚’æ§‹ç¯‰
+        _abilitySlotActions[(int)eAbilitySlot.Y] = _inputActions.Player.AbilityY;
+        _abilitySlotActions[(int)eAbilitySlot.X] = _inputActions.Player.AbilityX;
+        _abilitySlotActions[(int)eAbilitySlot.A] = _inputActions.Player.AbilityA;
+        _abilitySlotActions[(int)eAbilitySlot.B] = _inputActions.Player.AbilityB;
+
+        // ä¿å­˜æ¸ˆã¿ã®ãƒœã‚¿ãƒ³å‰²ã‚Šå½“ã¦ã‚’é©ç”¨
+        _LoadBindingOverrides();
+
+        // æ“ä½œä¸­ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã¨ã—ã¦ç™»éŒ²
+        PlayerCharacterManager.SetCurrent(character);
+        PlayerCharacterManager.SetController(this);
+    }
+
+    /// <summary>
+    /// æ“ä½œå¯¾è±¡ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+    /// </summary>
+    public void Possess(Character_Base new_character) {
+        character = new_character;
+        PlayerCharacterManager.SetCurrent(new_character);
     }
 
     private void Start() {
-        // Pause_UIƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+        // Pause_UIã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
         var pauseUI = FindAnyObjectByType<Pause_UI>();
         if (pauseUI != null) {
             _pauseUIInstance = pauseUI;
@@ -93,35 +108,30 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Move.performed += _OnMove;
         _inputActions.Player.Move.canceled += _OnMove;
 
-        _inputActions.Player.AbilityY.performed += OnAbilityY;
-        _inputActions.Player.AbilityY.canceled += OnAbilityYRelease;
-        _inputActions.Player.AbilityX.performed += OnAbilityX;
-        _inputActions.Player.AbilityX.canceled += OnAbilityXRelease;
-        _inputActions.Player.AbilityA.performed += OnAbilityA;
-        _inputActions.Player.AbilityA.canceled += OnAbilityARelease;
-        _inputActions.Player.AbilityB.performed += OnAbilityB;
-        _inputActions.Player.AbilityB.canceled += OnAbilityBRelease;
-        // PauseƒAƒNƒVƒ‡ƒ“w“Ç
+        foreach (var action in _abilitySlotActions) {
+            action.performed += _OnAbilityPerformed;
+            action.canceled += _OnAbilityCanceled;
+        }
+
+        // Pauseã‚¢ã‚¯ã‚·ãƒ§ãƒ³è³¼èª­
         _inputActions.Player.Pause.performed += OnPause;
     }
 
     private void OnDisable() {
         _inputActions.Player.Move.performed -= _OnMove;
         _inputActions.Player.Move.canceled -= _OnMove;
-        _inputActions.Player.AbilityY.performed -= OnAbilityY;
-        _inputActions.Player.AbilityY.canceled -= OnAbilityYRelease;
-        _inputActions.Player.AbilityX.performed -= OnAbilityX;
-        _inputActions.Player.AbilityX.canceled -= OnAbilityXRelease;
-        _inputActions.Player.AbilityA.performed -= OnAbilityA;
-        _inputActions.Player.AbilityA.canceled -= OnAbilityARelease;
-        _inputActions.Player.AbilityB.performed -= OnAbilityB;
-        _inputActions.Player.AbilityB.canceled -= OnAbilityBRelease;
-        // PauseƒAƒNƒVƒ‡ƒ“‰ğœ
+
+        foreach (var action in _abilitySlotActions) {
+            action.performed -= _OnAbilityPerformed;
+            action.canceled -= _OnAbilityCanceled;
+        }
+
+        // Pauseã‚¢ã‚¯ã‚·ãƒ§ãƒ³è§£é™¤
         _inputActions.Player.Pause.performed -= OnPause;
         _inputActions.Player.Disable();
     }
 
-    // PauseƒAƒNƒVƒ‡ƒ“‚ÌƒR[ƒ‹ƒoƒbƒN
+    // Pauseã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
     private void OnPause(InputAction.CallbackContext context) {
         var pauseUI = GetPauseUI();
         if (pauseUI != null) {
@@ -133,60 +143,60 @@ public class PlayerController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        // ƒ|[ƒY‰æ–Ê‚ğŠJ‚¢‚Ä‚¢‚éŠÔ‚ÍƒLƒƒƒ‰ƒNƒ^[‘€ì“ü—Í‚ğ–³Œø‰»
+        // ãƒãƒ¼ã‚ºç”»é¢ã‚’é–‹ã„ã¦ã„ã‚‹é–“ã¯ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æ“ä½œå…¥åŠ›ã‚’ç„¡åŠ¹åŒ–
         if (Pause_UI.IsOpen) {
             _wasPauseOpen = true;
-            // Pause_UI‚Ìã‰º“ü—ÍƒCƒxƒ“ƒg‚ğ”­‰Î
+            // Pause_UIã®ä¸Šä¸‹å…¥åŠ›ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™ºç«
             var pauseUI = GetPauseUI();
             if (pauseUI != null)
             {
                 if (_pauseMenuInputCooldown > 0f) _pauseMenuInputCooldown -= Time.unscaledDeltaTime;
                 if (_pauseDecideInputCooldown > 0f) _pauseDecideInputCooldown -= Time.unscaledDeltaTime;
-                
+
                 float y = _moveInputValue.y;
                 float x = _moveInputValue.x;
-                // “ü—Í–³‚µ‚Ìê‡‚ÍƒN[ƒ‹ƒ^ƒCƒ€ƒŠƒZƒbƒg
+                // å…¥åŠ›ç„¡ã—ã®å ´åˆã¯ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ãƒªã‚»ãƒƒãƒˆ
                 if (Mathf.Abs(y) < 0.5f && Mathf.Abs(x) < 0.5f) {
                     _pauseMenuInputCooldown = 0f;
                 }
 
                 int dir = 0;
-                if (y > 0.5f) dir = 1; // ã
-                else if (y < -0.5f) dir = -1; // ‰º
+                if (y > 0.5f) dir = 1; // ä¸Š
+                else if (y < -0.5f) dir = -1; // ä¸‹
                 if (dir != 0 && _pauseMenuInputCooldown <= 0f)
                 {
-                    // ƒƒjƒ…[“àˆÚ“®“ü—Í
+                    // ãƒ¡ãƒ‹ãƒ¥ãƒ¼å†…ç§»å‹•å…¥åŠ›
                     pauseUI.InputVerticalDir(dir);
                     _pauseMenuInputCooldown = PAUSE_MENU_INPUT_COOLDOWN;
-                    input.move.y = 0; // “ü—Í‚ğ1ƒtƒŒ[ƒ€‚ÅƒŠƒZƒbƒg
+                    input.move.y = 0; // å…¥åŠ›ã‚’1ãƒ•ãƒ¬ãƒ¼ãƒ ã§ãƒªã‚»ãƒƒãƒˆ
                 }
 
                 dir = 0;
-                if (x > 0.5f) dir = 1; // ‰E
-                else if (x < -0.5f) dir = -1; // ¶
+                if (x > 0.5f) dir = 1; // å³
+                else if (x < -0.5f) dir = -1; // å·¦
                 if (dir != 0 && _pauseMenuInputCooldown <= 0f)
                 {
-                    // ƒpƒlƒ‹Ø‚è‘Ö‚¦“ü—Í
+                    // ãƒ‘ãƒãƒ«åˆ‡ã‚Šæ›¿ãˆå…¥åŠ›
                     pauseUI.InputHorizonDir(dir);
                     _pauseMenuInputCooldown = PAUSE_MENU_INPUT_COOLDOWN;
-                    input.move.x = 0; // “ü—Í‚ğ1ƒtƒŒ[ƒ€‚ÅƒŠƒZƒbƒg
+                    input.move.x = 0; // å…¥åŠ›ã‚’1ãƒ•ãƒ¬ãƒ¼ãƒ ã§ãƒªã‚»ãƒƒãƒˆ
                 }
 
                 if (_isMessageNextPressed && _pauseDecideInputCooldown <= 0f)
                 {
-                    // ƒƒjƒ…[Œˆ’è“ü—Í
+                    // ãƒ¡ãƒ‹ãƒ¥ãƒ¼æ±ºå®šå…¥åŠ›
                     pauseUI.InputDecide();
                     _pauseDecideInputCooldown = PAUSE_DECIDE_INPUT_COOLDOWN;
                 }
             }
-            // ƒ|[ƒY‰æ–Ê’†‚Í_isMessageNextPressed‚ğ•K‚¸false‚ÉƒŠƒZƒbƒg
+            // ãƒãƒ¼ã‚ºç”»é¢ä¸­ã¯_isMessageNextPressedã‚’å¿…ãšfalseã«ãƒªã‚»ãƒƒãƒˆ
             _isMessageNextPressed = false;
             input.Clear();
             character.UpdateControl(input);
             return;
         }
 
-        // “ü—Íæ“¾
+        // å…¥åŠ›å–å¾—
         Vector2 move_input = Vector2.zero;
         if(_moveInputValue.x > 0.5f) move_input.x = 1f;
         if(_moveInputValue.x < -0.5f) move_input.x = -1f;
@@ -194,148 +204,98 @@ public class PlayerController : MonoBehaviour {
         if (_moveInputValue.y < -0.5f) move_input.y = -1f;
         input.move = move_input;
 
-        input.abilityBPressed = _isAbilityBPressed;
-        input.abilityBHeld = _isAbilityBHeld;
-        input.abilityBReleased = _isAbilityBReleased;
-        input.abilityYPressed = _isAbilityYPressed;
-        input.abilityYHeld = _isAbilityYHeld;
-        input.abilityYReleased = _isAbilityYReleased;
-        input.abilityXPressed = _isAbilityXPressed;
-        input.abilityXHeld = _isAbilityXHeld;
-        input.abilityXReleased = _isAbilityXReleased;
-        input.abilityAPressed = _isAbilityAPressed;
-        input.abilityAHeld = _isAbilityAHeld;
-        input.abilityAReleased = _isAbilityAReleased;
+        for (int i = 0; i < _abilityButtons.Length; i++) {
+            input.SetAbilityButton((eAbilitySlot)i, _abilityButtons[i]);
+        }
         input.isJumpPressed = false;
         input.isJumpReleased = false;
         virtualInput = input;
 
         if (_wasPauseOpen) {
-            // ƒ|[ƒY‰æ–Ê‚ğ•Â‚¶‚½’¼Œã‚Í“ü—Í‚ğƒŠƒZƒbƒg
+            // ãƒãƒ¼ã‚ºç”»é¢ã‚’é–‰ã˜ãŸç›´å¾Œã¯å…¥åŠ›ã‚’ãƒªã‚»ãƒƒãƒˆ
             _wasPauseOpen = false;
-            input.abilityBPressed = false;
+            input.abilityB.pressed = false;
         }
 
-        // “Á’è“ü—Í‚Ìƒ`ƒFƒbƒN
+        // ç‰¹å®šå…¥åŠ›ã®ãƒã‚§ãƒƒã‚¯
         if (_inputCompletedCallback != null) {
             GetSpecificInput(input, _specificInput);
         }
 
-        // ƒLƒƒƒ‰ƒNƒ^[‘€ì“ü—Í‚ª–³Œø‚Èê‡A“ü—Í‚ğƒNƒŠƒA
+        // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æ“ä½œå…¥åŠ›ãŒç„¡åŠ¹ãªå ´åˆã€å…¥åŠ›ã‚’ã‚¯ãƒªã‚¢
         if (!isEnabledCharacterInput) {
             input.Clear();
             _ProcessInspectorInputs();
         }
 
-        // ƒƒbƒZ[ƒW‘—‚è“ü—Í
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ã‚Šå…¥åŠ›
         input.messageNextPressed = _isMessageNextPressed;
         _isMessageNextPressed = false;
 
         character.IsEventInvincible = !isEnabledCharacterInput;
         character.UpdateControl(input);
 
-        _isAbilityBPressed = false;
-        _isAbilityBReleased = false;
-        _isAbilityYPressed = false;
-        _isAbilityYReleased = false;
-        _isAbilityXPressed = false;
-        _isAbilityXReleased = false;
-        _isAbilityAPressed = false;
-        _isAbilityAReleased = false;
+        for (int i = 0; i < _abilityButtons.Length; i++) {
+            _abilityButtons[i].pressed = false;
+            _abilityButtons[i].released = false;
+        }
     }
 
     private void _OnMove(InputAction.CallbackContext context) {
         _moveInputValue = context.ReadValue<Vector2>();
     }
 
-    private void OnAbilityB(InputAction.CallbackContext context) {
-        if (!_wasMessageNextPressed) {
-            _isMessageNextPressed = true;
-            _wasMessageNextPressed = true; // ‚±‚±‚Åtrue‚Éİ’è
-        }
-        _isAbilityBPressed = true;
-        _isAbilityBHeld = true;
-        
-        // UIƒtƒ‰ƒbƒVƒ…‰‰o
-        _FlashAbilityUI(eAbilitySlot.B);
+    private void _OnAbilityPerformed(InputAction.CallbackContext context) {
+        TriggerAbilityInput(_GetSlotForAction(context.action));
     }
 
-    private void OnAbilityBRelease(InputAction.CallbackContext context) {
-        _isMessageNextPressed = false;
-        _isAbilityBPressed = false;
-        _isAbilityBHeld = false;
-        _isAbilityBReleased = true;
-        _wasMessageNextPressed = false; // Release‚Éfalse‚É–ß‚·
-    }
-
-    private void OnAbilityY(InputAction.CallbackContext context) {
-        if (!_wasMessageNextPressed) {
-            _isMessageNextPressed = true;
-            _wasMessageNextPressed = true;
-        }
-        _isAbilityYPressed = true;
-        _isAbilityYHeld = true;
-        
-        // UIƒtƒ‰ƒbƒVƒ…‰‰o
-        _FlashAbilityUI(eAbilitySlot.Y);
-    }
-
-    private void OnAbilityYRelease(InputAction.CallbackContext context) {
-        _isMessageNextPressed = false;
-        _isAbilityYPressed = false;
-        _isAbilityYHeld = false;
-        _isAbilityYReleased = true;
-        _wasMessageNextPressed = false;
-    }
-
-    private void OnAbilityX(InputAction.CallbackContext context) {
-        OnAbilityX();
-    }
-    public void OnAbilityX() {
-        if (!_wasMessageNextPressed) {
-            _isMessageNextPressed = true;
-            _wasMessageNextPressed = true;
-        }
-        _isAbilityXPressed = true;
-        _isAbilityXHeld = true;
-        
-        // UIƒtƒ‰ƒbƒVƒ…‰‰o
-        _FlashAbilityUI(eAbilitySlot.X);
-    }
-    
-    private void OnAbilityXRelease(InputAction.CallbackContext context) {
-        _isMessageNextPressed = false;
-        _isAbilityXPressed = false;
-        _isAbilityXHeld = false;
-        _isAbilityXReleased = true;
-        _wasMessageNextPressed = false;
-    }
-
-    private void OnAbilityA(InputAction.CallbackContext context) {
-        if (!_wasMessageNextPressed) {
-            _isMessageNextPressed = true;
-            _wasMessageNextPressed = true;
-        }
-        _isAbilityAPressed = true;
-        _isAbilityAHeld = true;
-        
-        // UIƒtƒ‰ƒbƒVƒ…‰‰o
-        _FlashAbilityUI(eAbilitySlot.A);
-    }
-    
-    private void OnAbilityARelease(InputAction.CallbackContext context) {
-        _isMessageNextPressed = false;
-        _isAbilityAPressed = false;
-        _isAbilityAHeld = false;
-        _isAbilityAReleased = true;
-        _wasMessageNextPressed = false;
+    private void _OnAbilityCanceled(InputAction.CallbackContext context) {
+        ReleaseAbilityInput(_GetSlotForAction(context.action));
     }
 
     /// <summary>
-    /// ”\—ÍUI‚ğŒõ‚ç‚¹‚é
+    /// ç‰©ç†ãƒœã‚¿ãƒ³(InputAction)ã‹ã‚‰ã‚¹ãƒ­ãƒƒãƒˆã‚’é€†å¼•ã
+    /// </summary>
+    private eAbilitySlot _GetSlotForAction(InputAction action) {
+        for (int i = 0; i < _abilitySlotActions.Length; i++) {
+            if (_abilitySlotActions[i] == action) {
+                return (eAbilitySlot)i;
+            }
+        }
+        return default;
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚¹ãƒ­ãƒƒãƒˆã®èƒ½åŠ›ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸæ‰±ã„ã«ã™ã‚‹ï¼ˆãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ç­‰ã‹ã‚‰ã®ç–‘ä¼¼å…¥åŠ›ã«ã‚‚ä½¿ç”¨ï¼‰
+    /// </summary>
+    public void TriggerAbilityInput(eAbilitySlot slot) {
+        if (!_wasMessageNextPressed) {
+            _isMessageNextPressed = true;
+            _wasMessageNextPressed = true; // ã“ã“ã§trueã«è¨­å®š
+        }
+        _abilityButtons[(int)slot].pressed = true;
+        _abilityButtons[(int)slot].held = true;
+
+        // UIãƒ•ãƒ©ãƒƒã‚·ãƒ¥æ¼”å‡º
+        _FlashAbilityUI(slot);
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚¹ãƒ­ãƒƒãƒˆã®èƒ½åŠ›ãƒœã‚¿ãƒ³ãŒé›¢ã•ã‚ŒãŸæ‰±ã„ã«ã™ã‚‹
+    /// </summary>
+    public void ReleaseAbilityInput(eAbilitySlot slot) {
+        _isMessageNextPressed = false;
+        _abilityButtons[(int)slot].pressed = false;
+        _abilityButtons[(int)slot].held = false;
+        _abilityButtons[(int)slot].released = true;
+        _wasMessageNextPressed = false; // Releaseæ™‚ã«falseã«æˆ»ã™
+    }
+
+    /// <summary>
+    /// èƒ½åŠ›UIã‚’å…‰ã‚‰ã›ã‚‹
     /// </summary>
     private void _FlashAbilityUI(eAbilitySlot slot) {
-        // ƒ|[ƒY’†‚âƒLƒƒƒ‰ƒNƒ^[‘€ì–³Œø‚Í‰‰o‚ğƒXƒLƒbƒv
+        // ãƒãƒ¼ã‚ºä¸­ã‚„ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æ“ä½œç„¡åŠ¹æ™‚ã¯æ¼”å‡ºã‚’ã‚¹ã‚­ãƒƒãƒ—
         if (Pause_UI.IsOpen || !isEnabledCharacterInput) {
             return;
         }
@@ -348,10 +308,10 @@ public class PlayerController : MonoBehaviour {
 
     bool _insertMoveMode = false;
     /// <summary>
-    /// Insert—p“ü—Í‚Ìˆ—
+    /// Insertç”¨å…¥åŠ›ã®å‡¦ç†
     /// </summary>
     private void _ProcessInspectorInputs() {
-        // ˆÚ“®“ü—Í
+        // ç§»å‹•å…¥åŠ›
         Vector2 insertMove = Vector2.zero;
         if (insertMoveLeft) insertMove.x = -1f;
         if (insertMoveRight) insertMove.x = 1f;
@@ -364,21 +324,21 @@ public class PlayerController : MonoBehaviour {
         }
         _insertMoveMode = insertMove.magnitude > 0.5f;
 
-        // ƒWƒƒƒ“ƒv“ü—Í
-        if (insertJumpHeld && !_isAbilityBHeld) {
-            _isAbilityBPressed = true;
-            _isAbilityBHeld = true;
-            input.abilityBPressed = _isAbilityBPressed;
-            input.abilityBHeld = _isAbilityBHeld;
+        // ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›ï¼ˆBã‚¹ãƒ­ãƒƒãƒˆæ‰±ã„ï¼‰
+        if (insertJumpHeld && !_abilityButtons[(int)eAbilitySlot.B].held) {
+            _abilityButtons[(int)eAbilitySlot.B].pressed = true;
+            _abilityButtons[(int)eAbilitySlot.B].held = true;
+            input.abilityB.pressed = true;
+            input.abilityB.held = true;
         }
-        if (!insertJumpHeld && _isAbilityBHeld) {
-            _isAbilityBPressed = false;
-            _isAbilityBHeld = false;
-            input.abilityBPressed = _isAbilityBPressed;
-            input.abilityBHeld = _isAbilityBHeld;
+        if (!insertJumpHeld && _abilityButtons[(int)eAbilitySlot.B].held) {
+            _abilityButtons[(int)eAbilitySlot.B].pressed = false;
+            _abilityButtons[(int)eAbilitySlot.B].held = false;
+            input.abilityB.pressed = false;
+            input.abilityB.held = false;
         }
 
-        // ƒƒbƒZ[ƒW‘—‚è“ü—Í
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ã‚Šå…¥åŠ›
         if (insertMessageNext) {
             _isMessageNextPressed = true;
             insertMessageNext = false;
@@ -386,39 +346,39 @@ public class PlayerController : MonoBehaviour {
     }
 
     /// <summary>
-    /// “Á’è‚Ì“ü—Í‚¾‚¯ó‚¯•t‚¯‚é
+    /// ç‰¹å®šã®å…¥åŠ›ã ã‘å—ã‘ä»˜ã‘ã‚‹
     /// </summary>
     /// <param name="dir_input"></param>
     /// <param name="jump_input"></param>
     /// <returns></returns>
     public void GetSpecificInput(CharacterInputData input, CharacterInputData specific_input) {
         bool isInputReceived = true;
-        // •ûŒü“ü—Í‚Ìƒ`ƒFƒbƒN
+        // æ–¹å‘å…¥åŠ›ã®ãƒã‚§ãƒƒã‚¯
         if (specific_input.move.magnitude > 0.1f) {
             if (!(Vector2.Dot(input.move, specific_input.move.normalized) > 0.8f)) {
                 isInputReceived = false;
             }
         } else {
-            isInputReceived = true; // •ûŒü“ü—Í‚ª–³‚¢ê‡‚Íí‚Étrue
+            isInputReceived = true; // æ–¹å‘å…¥åŠ›ãŒç„¡ã„å ´åˆã¯å¸¸ã«true
         }
-        // ƒWƒƒƒ“ƒv“ü—Í‚Ìƒ`ƒFƒbƒN
-        if (specific_input.abilityBPressed && isInputReceived == true) {
-            if (input.abilityBPressed) {
+        // ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›ã®ãƒã‚§ãƒƒã‚¯
+        if (specific_input.abilityB.pressed && isInputReceived == true) {
+            if (input.abilityB.pressed) {
                 isInputReceived = true;
             } else {
                 isInputReceived = false;
             }
         }
-        // Xƒ{ƒ^ƒ““ü—Í‚Ìƒ`ƒFƒbƒN
-        if (specific_input.abilityXPressed && isInputReceived == true) {
-            if (input.abilityXPressed) {
+        // Xãƒœã‚¿ãƒ³å…¥åŠ›ã®ãƒã‚§ãƒƒã‚¯
+        if (specific_input.abilityX.pressed && isInputReceived == true) {
+            if (input.abilityX.pressed) {
                 isInputReceived = true;
             } else {
                 isInputReceived = false;
             }
         }
 
-        // “ü—ÍŠ®—¹ƒR[ƒ‹ƒoƒbƒN‚ÌŒÄ‚Ño‚µ
+        // å…¥åŠ›å®Œäº†ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã®å‘¼ã³å‡ºã—
         if (isInputReceived && _inputCompletedCallback != null) {
             _inputCompletedCallback.Invoke();
             _inputCompletedCallback = null;
@@ -430,9 +390,62 @@ public class PlayerController : MonoBehaviour {
         this.input = input;
     }
 
+    #region ãƒœã‚¿ãƒ³ã‚³ãƒ³ãƒ•ã‚£ã‚°ï¼ˆãƒªãƒã‚¤ãƒ³ãƒ‰ï¼‰
+    /// <summary>
+    /// ä¿å­˜æ¸ˆã¿ã®ãƒœã‚¿ãƒ³å‰²ã‚Šå½“ã¦ã‚’èª­ã¿è¾¼ã‚“ã§é©ç”¨
+    /// </summary>
+    private void _LoadBindingOverrides() {
+        if (PlayerPrefs.HasKey(BINDING_OVERRIDES_PREF_KEY)) {
+            string json = PlayerPrefs.GetString(BINDING_OVERRIDES_PREF_KEY);
+            _inputActions.LoadBindingOverridesFromJson(json);
+        }
+    }
+
+    /// <summary>
+    /// ç¾åœ¨ã®ãƒœã‚¿ãƒ³å‰²ã‚Šå½“ã¦ã‚’ä¿å­˜
+    /// </summary>
+    public void SaveBindingOverrides() {
+        string json = _inputActions.SaveBindingOverridesAsJson();
+        PlayerPrefs.SetString(BINDING_OVERRIDES_PREF_KEY, json);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚¹ãƒ­ãƒƒãƒˆã®ãƒœã‚¿ãƒ³ã‚’å¯¾è©±å¼ã«å†å‰²ã‚Šå½“ã¦ã™ã‚‹
+    /// </summary>
+    /// <param name="slot">å†å‰²ã‚Šå½“ã¦å¯¾è±¡ã®ã‚¹ãƒ­ãƒƒãƒˆ</param>
+    /// <param name="onComplete">å®Œäº†æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯</param>
+    public void RebindAbilitySlot(eAbilitySlot slot, System.Action onComplete = null) {
+        var action = _abilitySlotActions[(int)slot];
+        action.Disable();
+        action.PerformInteractiveRebinding()
+            .WithControlsExcluding("Mouse")
+            .OnMatchWaitForAnother(0.1f)
+            .OnComplete(operation => {
+                operation.Dispose();
+                action.Enable();
+                SaveBindingOverrides();
+                onComplete?.Invoke();
+            })
+            .OnCancel(operation => {
+                operation.Dispose();
+                action.Enable();
+            })
+            .Start();
+    }
+
+    /// <summary>
+    /// æŒ‡å®šã‚¹ãƒ­ãƒƒãƒˆã®ãƒœã‚¿ãƒ³å‰²ã‚Šå½“ã¦ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã«æˆ»ã™
+    /// </summary>
+    public void ResetAbilitySlotBinding(eAbilitySlot slot) {
+        _abilitySlotActions[(int)slot].RemoveAllBindingOverrides();
+        SaveBindingOverrides();
+    }
+    #endregion
+
     #region Inspector Control Methods
     /// <summary>
-    /// Inspector—pF‘S‚Ä‚Ì“ü—Í‚ğƒŠƒZƒbƒg
+    /// Inspectorç”¨ï¼šå…¨ã¦ã®å…¥åŠ›ã‚’ãƒªã‚»ãƒƒãƒˆ
     /// </summary>
     [ContextMenu("Reset All Inspect Inputs")]
     public void ResetAllInspectInputs() {
@@ -446,28 +459,19 @@ public class PlayerController : MonoBehaviour {
     }
 
     /// <summary>
-    /// “ü—Íó‘Ô‚ğƒŠƒZƒbƒg
+    /// å…¥åŠ›çŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆ
     /// </summary>
     private void _ResetInput() {
         _moveInputValue = Vector2.zero;
-        _isAbilityBPressed = false;
-        _isAbilityBHeld = false;
-        _isAbilityBReleased = false;
-        _isAbilityYPressed = false;
-        _isAbilityYHeld = false;
-        _isAbilityYReleased = false;
-        _isAbilityXPressed = false;
-        _isAbilityXHeld = false;
-        _isAbilityXReleased = false;
-        _isAbilityAPressed = false;
-        _isAbilityAHeld = false;
-        _isAbilityAReleased = false;
+        for (int i = 0; i < _abilityButtons.Length; i++) {
+            _abilityButtons[i].Clear();
+        }
         _isMessageNextPressed = false;
         virtualInput.Clear();
     }
 
     /// <summary>
-    /// Inspector—pFƒWƒƒƒ“ƒvƒ{ƒ^ƒ“‚ğ1ƒtƒŒ[ƒ€‚¾‚¯‰Ÿ‚·
+    /// Inspectorç”¨ï¼šã‚¸ãƒ£ãƒ³ãƒ—ãƒœã‚¿ãƒ³ã‚’1ãƒ•ãƒ¬ãƒ¼ãƒ ã ã‘æŠ¼ã™
     /// </summary>
     [ContextMenu("Inspect Jump Press")]
     public void InspectJumpPress() {
@@ -475,7 +479,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     /// <summary>
-    /// Inspector—pFƒƒbƒZ[ƒW‘—‚èƒ{ƒ^ƒ“‚ğ1ƒtƒŒ[ƒ€‚¾‚¯‰Ÿ‚·
+    /// Inspectorç”¨ï¼šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ã‚Šãƒœã‚¿ãƒ³ã‚’1ãƒ•ãƒ¬ãƒ¼ãƒ ã ã‘æŠ¼ã™
     /// </summary>
     [ContextMenu("Inspect Message Next")]
     public void InspectMessageNext() {

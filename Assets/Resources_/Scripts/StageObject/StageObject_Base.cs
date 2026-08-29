@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class StageObject_Base : MonoBehaviour
 {
-    [SerializeField] protected bool _isAlwaysAnimated = false; // èÌÇ…ÉAÉjÉÅÅ[ÉVÉáÉìÇ∑ÇÈÇ©Ç«Ç§Ç©
+    [SerializeField] protected bool _isAlwaysAnimated = false; // Â∏∏„Å´„Ç¢„Éã„É°„Éº„Ç∑„Éß„É≥„Åô„Çã„Åã„Å©„ÅÜ„Åã
     [SerializeField] protected Animator _animator;
 
     private void Reset() {
@@ -24,16 +24,20 @@ public class StageObject_Base : MonoBehaviour
     public virtual void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player")) {
-            var player = collision.gameObject.GetComponent<Player_Character>();
-            _HitPlayer(player);
+            var player = collision.gameObject.GetComponentInChildren<Player_Character>();
+            if (player != null) {
+                _HitPlayer(player);
+            }
         }
     }
     public virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            var player = collision.gameObject.GetComponent<Player_Character>();
-            _HitPlayer(player);
+            var player = collision.gameObject.GetComponentInChildren<Player_Character>();
+            if (player != null) {
+                _HitPlayer(player);
+            }
         }
     }
 
@@ -44,8 +48,10 @@ public class StageObject_Base : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Player")) {
-            var player = collision.gameObject.GetComponent<Player_Character>();
-            _ExitPlayer(player);
+            var player = collision.gameObject.GetComponentInChildren<Player_Character>();
+            if (player != null) {
+                _ExitPlayer(player);
+            }
         }
     }
 

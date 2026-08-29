@@ -2,22 +2,22 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// ƒRƒCƒ“ƒIƒuƒWƒFƒNƒg
+/// ã‚³ã‚¤ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 public class Coin_Object : StageObject_Base {
-    [SerializeField] private int _MpRecoverAmount = 10; // ƒRƒCƒ“æ“¾‚Å‰ñ•œ‚·‚éMP—Ê
-    [SerializeField] private int _coinValue = 1; // ƒRƒCƒ“‚Ì‰¿’l
+    [SerializeField] private int _MpRecoverAmount = 10; // ã‚³ã‚¤ãƒ³å–å¾—ã§å›å¾©ã™ã‚‹MPé‡
+    [SerializeField] private int _coinValue = 1; // ã‚³ã‚¤ãƒ³ã®ä¾¡å€¤
     public int SetCoinValue(int value) {
         _coinValue = value;
         return _coinValue;
     }
 
-    [Header("©“®‰ñûİ’è")]
-    [SerializeField] private bool _isAutoCollect = false;   // ©“®‰ñû‚·‚é‚©‚Ç‚¤‚©
-    [SerializeField] private float _attractForce = 6.0f;    // ƒvƒŒƒCƒ„[‚Éˆø‚«Šñ‚¹‚é—Í
-    [SerializeField] private float _friction = 0.95f; // Šµ«ˆÚ“®‚ÌŒ¸Š—¦
-    [SerializeField] private Vector2 _scatterPowerRandomRange = new Vector2(3.0f, 5.0f); // U‚ç‚Î‚é—Í‚Ìƒ‰ƒ“ƒ_ƒ€”ÍˆÍ
-    [SerializeField] private Vector2 _scatterAngleRange = new Vector2(150.0f, 210.0f); // U‚ç‚Î‚éŠp“x‚Ì”ÍˆÍ
+    [Header("è‡ªå‹•å›åè¨­å®š")]
+    [SerializeField] private bool _isAutoCollect = false;   // è‡ªå‹•å›åã™ã‚‹ã‹ã©ã†ã‹
+    [SerializeField] private float _attractForce = 6.0f;    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å¼•ãå¯„ã›ã‚‹åŠ›
+    [SerializeField] private float _friction = 0.95f; // æ…£æ€§ç§»å‹•ã®æ¸›è¡°ç‡
+    [SerializeField] private Vector2 _scatterPowerRandomRange = new Vector2(3.0f, 5.0f); // æ•£ã‚‰ã°ã‚‹åŠ›ã®ãƒ©ãƒ³ãƒ€ãƒ ç¯„å›²
+    [SerializeField] private Vector2 _scatterAngleRange = new Vector2(150.0f, 210.0f); // æ•£ã‚‰ã°ã‚‹è§’åº¦ã®ç¯„å›²
     private Transform _playerTransform = null;
     private Vector3 _velocity = Vector3.zero;
     [SerializeField] private SpriteRenderer _coinRend;
@@ -25,35 +25,35 @@ public class Coin_Object : StageObject_Base {
     [SerializeField] private TrailRenderer _trail;
     [SerializeField] private GameObject _pickEffect;
 
-    [SerializeField] private AudioClip _seCollectCoin; // ƒRƒCƒ“æ“¾‰¹
+    [SerializeField] private AudioClip _seCollectCoin; // ã‚³ã‚¤ãƒ³å–å¾—éŸ³
 
-    private System.Action<Coin_Object> _releaseCallback = null; // ƒRƒCƒ“ƒv[ƒ‹‚É–ß‚·‚½‚ß‚ÌƒR[ƒ‹ƒoƒbƒN
+    private System.Action<Coin_Object> _releaseCallback = null; // ã‚³ã‚¤ãƒ³ãƒ—ãƒ¼ãƒ«ã«æˆ»ã™ãŸã‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
 
     /// <summary>
-    /// ©“®‰ñû‚Ì‰Šú‰»
+    /// è‡ªå‹•å›åã®åˆæœŸåŒ–
     /// </summary>
     public void InitializeAutoCollect() {
         _isAutoCollect = true;
         if (_trail != null) {
-            _trail.enabled = true; // ƒgƒŒƒCƒ‹‚ğ—LŒø‰»
+            _trail.enabled = true; // ãƒˆãƒ¬ã‚¤ãƒ«ã‚’æœ‰åŠ¹åŒ–
         }
-        // ƒŒƒCƒ„[‚ğ•ÏX
+        // ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å¤‰æ›´
         gameObject.layer = LayerMask.NameToLayer("Default");
 
-        // ƒvƒŒƒCƒ„[‚ÌTransform‚ğæ“¾
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Transformã‚’å–å¾—
         if (_playerTransform == null) {
             _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
             if (_playerTransform == null) {
-                Debug.LogError("PlayerƒIƒuƒWƒFƒNƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB");
+                Debug.LogError("Playerã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
                 return;
             }
         }
 
-        // ƒ‰ƒ“ƒ_ƒ€‚ÈŠp“x‚ÅU‚ç‚Î‚é—Í‚ğİ’è
+        // ãƒ©ãƒ³ãƒ€ãƒ ãªè§’åº¦ã§æ•£ã‚‰ã°ã‚‹åŠ›ã‚’è¨­å®š
         float angle = Random.Range(_scatterAngleRange.x, _scatterAngleRange.y);
         Vector2 direction = Quaternion.Euler(0, 0, angle) * Vector2.right;
         if (transform.position.x > _playerTransform.position.x) {
-            direction.x = -direction.x; // ƒvƒŒƒCƒ„[‚Ì”½‘Î•ûŒü‚ÉU‚ç‚Î‚é
+            direction.x = -direction.x; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åå¯¾æ–¹å‘ã«æ•£ã‚‰ã°ã‚‹
         }
         _velocity = direction.normalized * Random.Range(_scatterPowerRandomRange.x, _scatterPowerRandomRange.y);
     }
@@ -63,31 +63,31 @@ public class Coin_Object : StageObject_Base {
     }
 
     /// <summary>
-    /// ƒRƒCƒ“‚Ì©“®‰ñûXV
+    /// ã‚³ã‚¤ãƒ³ã®è‡ªå‹•å›åæ›´æ–°
     /// </summary>
     private void _UpdateAutoCollect() {
         if (!_isAutoCollect || _playerTransform == null || !_coinRend.enabled) {
             return;
         }
 
-        // ƒvƒŒƒCƒ„[•ûŒü‚Ö‚Ì‹zˆøƒxƒNƒgƒ‹‚ğŒvZ
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ–¹å‘ã¸ã®å¸å¼•ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
         Vector3 directionToPlayer = (_playerTransform.position - transform.position).normalized;
         _velocity += directionToPlayer * _attractForce * Time.deltaTime;
 
-        // Šµ«ˆÚ“®
+        // æ…£æ€§ç§»å‹•
         transform.position += _velocity * Time.deltaTime;
-        // ™X‚É‘¬“x‚ğŒ¸Š‚³‚¹‚é
+        // å¾ã€…ã«é€Ÿåº¦ã‚’æ¸›è¡°ã•ã›ã‚‹
         _velocity *= _friction;
     }
 
     protected override void _HitPlayer(Player_Character player) {
         if (!gameObject.activeSelf || (_coinRend != null && !_coinRend.enabled)) {
-            return; // ”ñƒAƒNƒeƒBƒu‚Íˆ—‚µ‚È‚¢
+            return; // éã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ™‚ã¯å‡¦ç†ã—ãªã„
         }
 
         base._HitPlayer(player);
         if (player != null) {
-            player.RecoverMP(_MpRecoverAmount, true); // ƒRƒCƒ“æ“¾‚ÅMP‚ğ‰ñ•œ
+            player.RecoverMP(_MpRecoverAmount, true); // ã‚³ã‚¤ãƒ³å–å¾—ã§MPã‚’å›å¾©
             player.AddExp(_coinValue);
             if (player.audioSource != null && _seCollectCoin != null) {
                 player.audioSource.PlayOneShot(_seCollectCoin);
@@ -96,7 +96,7 @@ public class Coin_Object : StageObject_Base {
             if (_pickEffect != null) {
                 Instantiate(_pickEffect, transform.position, Quaternion.identity);
             }
-            // ƒŒƒCƒ„[‚ğ•ÏX
+            // ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å¤‰æ›´
             gameObject.layer = LayerMask.NameToLayer("Default");
 
             StartCoroutine(_HideRoutine());
@@ -104,36 +104,36 @@ public class Coin_Object : StageObject_Base {
     }
 
     /// <summary>
-    /// ƒRƒCƒ“¶¬
+    /// ã‚³ã‚¤ãƒ³ç”Ÿæˆ
     /// </summary>
     public void Spawn(Vector2 position, System.Action<Coin_Object> releaseCallback, bool is_auto_collect = true) {
         transform.position = position;
         gameObject.SetActive(true);
-        _coinRend.enabled = true;   // ƒRƒCƒ“‚Ì•\¦‚ğ—LŒø‰»
-        _lightObject.SetActive(true); // ƒ‰ƒCƒg‚ğ—LŒø‰»
+        _coinRend.enabled = true;   // ã‚³ã‚¤ãƒ³ã®è¡¨ç¤ºã‚’æœ‰åŠ¹åŒ–
+        _lightObject.SetActive(true); // ãƒ©ã‚¤ãƒˆã‚’æœ‰åŠ¹åŒ–
 
-        // ƒŒƒCƒ„[‚ğŒ³‚É–ß‚·
+        // ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å…ƒã«æˆ»ã™
         gameObject.layer = LayerMask.NameToLayer("Coin");
 
-        _trail?.Clear(); // ƒgƒŒƒCƒ‹‚ğƒNƒŠƒA
+        _trail?.Clear(); // ãƒˆãƒ¬ã‚¤ãƒ«ã‚’ã‚¯ãƒªã‚¢
 
-        _releaseCallback = releaseCallback; // ƒR[ƒ‹ƒoƒbƒN‚ğİ’è
+        _releaseCallback = releaseCallback; // ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã‚’è¨­å®š
         if (is_auto_collect) {
             InitializeAutoCollect();
         }
     }
 
     /// <summary>
-    /// ƒRƒCƒ“”ñ•\¦ƒ‹[ƒ`ƒ“
+    /// ã‚³ã‚¤ãƒ³éè¡¨ç¤ºãƒ«ãƒ¼ãƒãƒ³
     /// </summary>
     private IEnumerator _HideRoutine() {
         _coinRend.enabled = false;
-        _lightObject.SetActive(false); // ƒ‰ƒCƒg‚ğ–³Œø‰»
+        _lightObject.SetActive(false); // ãƒ©ã‚¤ãƒˆã‚’ç„¡åŠ¹åŒ–
         if (_trail != null) {
             yield return new WaitForSeconds(2.0f);
         }
 
-        // ƒv[ƒ‹‚É–ß‚·
+        // ãƒ—ãƒ¼ãƒ«ã«æˆ»ã™
         _releaseCallback?.Invoke(this);
     }
 }

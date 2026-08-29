@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// —‰º•œ‹A’n“_‚ğŠÇ—‚·‚éƒ}ƒl[ƒWƒƒ[ƒNƒ‰ƒX
+/// è½ä¸‹å¾©å¸°åœ°ç‚¹ã‚’ç®¡ç†ã™ã‚‹ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class FallReturnPointManager : MonoBehaviour {
     private static FallReturnPointManager _instance;
@@ -29,7 +29,7 @@ public class FallReturnPointManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// •œ‹A’n“_‚ğİ’è
+    /// å¾©å¸°åœ°ç‚¹ã‚’è¨­å®š
     /// </summary>
     public void SetReturnPoint(Vector3 position) {
         _lastReturnPoint = position;
@@ -37,7 +37,7 @@ public class FallReturnPointManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// ÅŒã‚Ì•œ‹A’n“_‚ğæ“¾
+    /// æœ€å¾Œã®å¾©å¸°åœ°ç‚¹ã‚’å–å¾—
     /// </summary>
     public Vector3? GetLastReturnPoint() {
         if (_hasReturnPoint) {
@@ -47,7 +47,7 @@ public class FallReturnPointManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// •œ‹A’n“_‚ğƒNƒŠƒA
+    /// å¾©å¸°åœ°ç‚¹ã‚’ã‚¯ãƒªã‚¢
     /// </summary>
     public void ClearReturnPoint() {
         _hasReturnPoint = false;

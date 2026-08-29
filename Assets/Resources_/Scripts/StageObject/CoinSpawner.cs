@@ -5,23 +5,25 @@ public class CoinSpawner : MonoBehaviour {
     [SerializeField] private float _spawnInterval = 0.01f;
 
     /// <summary>
-    /// ƒRƒCƒ“¶¬
+    /// ã‚³ã‚¤ãƒ³ç”Ÿæˆ
     /// </summary>
     public void SpawnCoin(int value) {
         StartCoroutine(SpawnCoinCoroutine(value, _spawnInterval));
     }
 
     /// <summary>
-    /// ƒRƒCƒ“¶¬ƒRƒ‹[ƒ`ƒ“
+    /// ã‚³ã‚¤ãƒ³ç”Ÿæˆã‚³ãƒ«ãƒ¼ãƒãƒ³
     /// </summary>
     private IEnumerator SpawnCoinCoroutine(int value, float interval) {
         int coin_value = 1;
         int coin_count = value;
+        int remainder = 0;
 
-        // ‘å—Ê‚ÌƒRƒCƒ“‚ğˆê“x‚É¶¬‚·‚éê‡A‰¿’l‚Ì‚‚¢ƒRƒCƒ“‚É•ÏŠ·‚µ‚Ä¶¬”‚ğŒ¸‚ç‚·
+        // å¤§é‡ã®ã‚³ã‚¤ãƒ³ã‚’ä¸€åº¦ã«ç”Ÿæˆã™ã‚‹å ´åˆã€ä¾¡å€¤ã®é«˜ã„ã‚³ã‚¤ãƒ³ã«å¤‰æ›ã—ã¦ç”Ÿæˆæ•°ã‚’æ¸›ã‚‰ã™
         if (value > 50) {
             coin_value = 5;
             coin_count = value / coin_value;
+            remainder = value % coin_value; // å‰²ã‚Šåˆ‡ã‚Œãªã„ç«¯æ•°ï¼ˆæ•´æ•°é™¤ç®—ã«ã‚ˆã‚‹ä¾¡å€¤ã®æ¶ˆå¤±ã‚’é˜²ãï¼‰
         }
 
         var coin_pool = CoinPool.Instance;
@@ -30,6 +32,13 @@ public class CoinSpawner : MonoBehaviour {
             var coin = coin_pool.SpawnCoin(spawnPosition);
             coin.SetCoinValue(coin_value);
             yield return new WaitForSeconds(interval);
+        }
+
+        // ç«¯æ•°åˆ†ã‚’1æšã®ã‚³ã‚¤ãƒ³ã¨ã—ã¦ç”Ÿæˆã—ã€ä¾¡å€¤ãŒé™ã‹ã«æ¸›ã‚‹ã®ã‚’é˜²ã
+        if (remainder > 0) {
+            Vector3 spawnPosition = transform.position + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0);
+            var coin = coin_pool.SpawnCoin(spawnPosition);
+            coin.SetCoinValue(remainder);
         }
     }
 }

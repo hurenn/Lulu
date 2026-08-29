@@ -2,23 +2,23 @@ using UnityEngine;
 
 public class RecoverItem_Object : StageObject_Base
 {
-    // ‰ñ•œ—Ê
+    // å›å¾©é‡
     [SerializeField] private int _recoverValue = 1;
-    // ‰ñ•œƒGƒtƒFƒNƒg‚ÌƒvƒŒƒnƒu
+    // å›å¾©ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ãƒ—ãƒ¬ãƒãƒ–
     [SerializeField] private GameObject _pickupEffectPrefab;
 
     protected override void _HitPlayer(Player_Character player) {
         base._HitPlayer(player);
 
-        // ƒvƒŒƒCƒ„[‚Ì‘Ì—Í‚ğ‰ñ•œ‚·‚é
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½“åŠ›ã‚’å›å¾©ã™ã‚‹
         player.RecoverHP(_recoverValue);
 
-        // ‰ñ•œƒGƒtƒFƒNƒg‚ğ¶¬‚·‚é
+        // å›å¾©ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆã™ã‚‹
         if (_pickupEffectPrefab != null) {
             Instantiate(_pickupEffectPrefab, transform.position, Quaternion.identity);
         }
 
-        // ƒAƒCƒeƒ€‚ğÁ‚·
+        // ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ¶ˆã™
         Destroy(gameObject);
     }
 }

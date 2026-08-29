@@ -2,26 +2,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Checkpoint : MonoBehaviour {
-    [SerializeField] private GameObject[] _unableObjects; // ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ª—LŒø‚È‚Æ‚«‚É”ñ•\¦‚É‚·‚éƒIƒuƒWƒFƒNƒg
-    [SerializeField] private GameObject[] _enableObjects; // ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ª—LŒø‚È‚Æ‚«‚É•\¦‚É‚·‚éƒIƒuƒWƒFƒNƒg
+    [SerializeField] private GameObject[] _unableObjects; // ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆãŒæœ‰åŠ¹ãªã¨ãã«éè¡¨ç¤ºã«ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+    [SerializeField] private GameObject[] _enableObjects; // ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆãŒæœ‰åŠ¹ãªã¨ãã«è¡¨ç¤ºã«ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
-    // –‘O‚Éæ“¾‚µ‚½ƒpƒXƒŠƒXƒg
+    // äº‹å‰ã«å–å¾—ã—ãŸãƒ‘ã‚¹ãƒªã‚¹ãƒˆ
     private List<string> _unableObjectPaths = new List<string>();
     private List<string> _enableObjectPaths = new List<string>();
 
     private void Awake() {
-        // ƒpƒX‚ğ–‘O‚Éæ“¾
+        // ãƒ‘ã‚¹ã‚’äº‹å‰ã«å–å¾—
         _CacheObjectPaths();
     }
 
     /// <summary>
-    /// GameObject‚ÌƒpƒX‚ğ–‘O‚ÉƒLƒƒƒbƒVƒ…
+    /// GameObjectã®ãƒ‘ã‚¹ã‚’äº‹å‰ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥
     /// </summary>
     private void _CacheObjectPaths() {
         _unableObjectPaths.Clear();
         _enableObjectPaths.Clear();
 
-        // ”ñ•\¦‘ÎÛƒIƒuƒWƒFƒNƒg‚ÌƒpƒX‚ğæ“¾
+        // éè¡¨ç¤ºå¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ‘ã‚¹ã‚’å–å¾—
         if (_unableObjects != null) {
             foreach (var obj in _unableObjects) {
                 if (obj != null) {
@@ -30,7 +30,7 @@ public class Checkpoint : MonoBehaviour {
             }
         }
 
-        // •\¦‘ÎÛƒIƒuƒWƒFƒNƒg‚ÌƒpƒX‚ğæ“¾
+        // è¡¨ç¤ºå¯¾è±¡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ‘ã‚¹ã‚’å–å¾—
         if (_enableObjects != null) {
             foreach (var obj in _enableObjects) {
                 if (obj != null) {
@@ -41,7 +41,7 @@ public class Checkpoint : MonoBehaviour {
     }
 
     /// <summary>
-    /// GameObject‚ÌƒqƒGƒ‰ƒ‹ƒL[ƒpƒX‚ğæ“¾
+    /// GameObjectã®ãƒ’ã‚¨ãƒ©ãƒ«ã‚­ãƒ¼ãƒ‘ã‚¹ã‚’å–å¾—
     /// </summary>
     private string _GetGameObjectPath(GameObject obj) {
         string path = obj.name;
@@ -58,7 +58,7 @@ public class Checkpoint : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D other) {
         var player = other.GetComponentInChildren<Player_Character>();
         if (player != null) {
-            // ƒpƒX‚ÌƒŠƒXƒg‚ğCheckpointManager‚É“n‚·
+            // ãƒ‘ã‚¹ã®ãƒªã‚¹ãƒˆã‚’CheckpointManagerã«æ¸¡ã™
             CheckpointManager.Instance.SaveCheckpoint(
                 transform.position, 
                 player.GetParameterSnapshot(), 
@@ -66,7 +66,7 @@ public class Checkpoint : MonoBehaviour {
                 _enableObjectPaths
             );
 
-            player.SaveAbilitySlot();   // ”\—Í•Û‘¶
+            player.SaveAbilitySlot();   // èƒ½åŠ›ä¿å­˜
         }
     }
 }

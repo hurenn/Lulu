@@ -39,17 +39,17 @@ public class StageEvent_BossBattle : MonoBehaviour {
     private void Update() {
         _currentMessageTriggerDelay += Time.deltaTime;
         foreach (var activator in _messageTriggerActivators) {
-            // €–SÏ‚İ‚Ìê‡‚ÍƒXƒLƒbƒv
+            // æ­»äº¡æ¸ˆã¿ã®å ´åˆã¯ã‚¹ã‚­ãƒƒãƒ—
             if (_bossEnemy != null) {
                 if (_bossEnemy.isDead) {
                     continue;
                 }
             }
-            // HPğŒ‚ª‡‚í‚È‚¢ê‡‚ÍƒXƒLƒbƒv
+            // HPæ¡ä»¶ãŒåˆã‚ãªã„å ´åˆã¯ã‚¹ã‚­ãƒƒãƒ—
             if (activator.isHalfHPTrigger != _isHalfHp) {
                 continue;
             }
-            // –{‹CğŒ‚ª‡‚í‚È‚¢ê‡‚ÍƒXƒLƒbƒv
+            // æœ¬æ°—æ¡ä»¶ãŒåˆã‚ãªã„å ´åˆã¯ã‚¹ã‚­ãƒƒãƒ—
             if (activator.isSeriouslyTrigger && !_isSeriously) {
                 continue;
             }
@@ -58,9 +58,9 @@ public class StageEvent_BossBattle : MonoBehaviour {
             }
 
             if (_currentMessageTriggerDelay >= activator.delay) {
-                // ’Ç‰ÁƒƒbƒZ[ƒW‚ğ—LŒø‰»
+                // è¿½åŠ ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’æœ‰åŠ¹åŒ–
                 activator.messageTrigger.gameObject.SetActive(true);
-                activator.messageTrigger = null; // ˆê“x‚¾‚¯—LŒø‰»‚·‚é‚½‚ß‚Énull‚Éİ’è
+                activator.messageTrigger = null; // ä¸€åº¦ã ã‘æœ‰åŠ¹åŒ–ã™ã‚‹ãŸã‚ã«nullã«è¨­å®š
             }
         }
     }
@@ -86,7 +86,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
         _isSeriously = true;
     }
     private IEnumerator _BossDownedRoutine() {
-        // ƒvƒŒƒCƒ„[‚Ì‘€ì‚ğ’â~
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ“ä½œã‚’åœæ­¢
         if (_playerController != null) {
             _playerController.isEnabledCharacterInput = false;
         }
@@ -94,7 +94,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
 
         yield return new WaitForSeconds(2.0f);
 
-        // ƒvƒŒƒCƒ„[‚Ì‘€ì‚ğÄŠJ
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ“ä½œã‚’å†é–‹
         if (_playerController != null) {
             _playerController.isEnabledCharacterInput = true;
         }
@@ -104,7 +104,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
     }
 
     private void _OnBossDied() {
-        // ƒvƒŒƒCƒ„[‚Ì‘€ì‚ğ’â~
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ“ä½œã‚’åœæ­¢
         if (_playerController != null) {
             _playerController.isEnabledCharacterInput = false;
         }
@@ -119,7 +119,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
         if(_sparkEffect != null) _sparkEffect.SetActive(true);
         yield return new WaitForSecondsRealtime(1f);
 
-        // ƒXƒe[ƒWƒNƒŠƒAƒƒbƒZ[ƒW•\¦
+        // ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒªã‚¢ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
         _stageClearMessageTrigger.gameObject.SetActive(true);
 
         yield return new WaitForSecondsRealtime(1f);
@@ -127,7 +127,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
     }
 
     private void _OnBossDieEnded() {
-        // ƒXƒe[ƒWƒNƒŠƒA‰‰o
+        // ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒªã‚¢æ¼”å‡º
         _stageClearTimeline.SetActive(true);
     }
 }

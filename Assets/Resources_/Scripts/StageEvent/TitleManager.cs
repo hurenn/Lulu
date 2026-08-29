@@ -78,7 +78,7 @@ public class TitleManager : MonoBehaviour {
     public void Update() {
         // PlayerControllerが未設定の場合は再取得を試行
         if (_playerController == null) {
-            _playerController = FindAnyObjectByType<PlayerController>();
+            _playerController = PlayerCharacterManager.Controller;
         }
 
         // プレイヤーパラメーターが無い、または決定済みの場合は処理をスキップ

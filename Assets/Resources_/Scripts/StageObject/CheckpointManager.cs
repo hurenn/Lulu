@@ -2,32 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CheckpointManager : MonoBehaviour
+public class CheckpointManager : PersistentSingleton<CheckpointManager>
 {
-    private static CheckpointManager _instance;
-    public static CheckpointManager Instance {
-        get {
-            if (_instance == null) {
-                GameObject obj = new GameObject("CheckpointManager");
-                _instance = obj.AddComponent<CheckpointManager>();
-                DontDestroyOnLoad(obj);
-            }
-            return _instance;
-        }
-        set {
-            _instance = value;
-        }
-    }
     private Vector3 _respawnPosition;
     private PlayerParameterSnapshot _playerSnapshot;
     private string _respawnSceneName;
     
-    // GameObject‚ÌƒpƒX‚ğ•Û‘¶
+    // GameObjectã®ãƒ‘ã‚¹ã‚’ä¿å­˜
     private List<string> _unableObjectPaths = new List<string>();
     private List<string> _enableObjectPaths = new List<string>();
 
     /// <summary>
-    /// ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ğ•Û‘¶iƒpƒXƒŠƒXƒg‚ğ’¼Úó‚¯æ‚éj
+    /// ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã‚’ä¿å­˜ï¼ˆãƒ‘ã‚¹ãƒªã‚¹ãƒˆã‚’ç›´æ¥å—ã‘å–ã‚‹ï¼‰
     /// </summary>
     public void SaveCheckpoint(Vector3 position, PlayerParameterSnapshot snapshot,
         List<string> unableObjectPaths, List<string> enableObjectPaths)
@@ -36,7 +22,7 @@ public class CheckpointManager : MonoBehaviour
         _playerSnapshot = snapshot;
         _respawnSceneName = SceneManager.GetActiveScene().name;
         
-        // ƒpƒXƒŠƒXƒg‚ğƒRƒs[
+        // ãƒ‘ã‚¹ãƒªã‚¹ãƒˆã‚’ã‚³ãƒ”ãƒ¼
         _unableObjectPaths.Clear();
         _enableObjectPaths.Clear();
         
@@ -54,19 +40,19 @@ public class CheckpointManager : MonoBehaviour
         player.transform.position = _respawnPosition;
         player.RestoreParameter(_playerSnapshot);
         
-        // •Û‘¶‚³‚ê‚½ƒpƒX‚©‚çGameObject‚ğÄæ“¾‚µ‚Ä”ñ•\¦‰»
+        // ä¿å­˜ã•ã‚ŒãŸãƒ‘ã‚¹ã‹ã‚‰GameObjectã‚’å†å–å¾—ã—ã¦éè¡¨ç¤ºåŒ–
         foreach (var path in _unableObjectPaths) {
             GameObject obj = _FindGameObjectByPath(path);
             if (obj != null) {
-                obj.SetActive(false); // ÄŠJ‚É–³Œø‰»
+                obj.SetActive(false); // å†é–‹æ™‚ã«ç„¡åŠ¹åŒ–
             }
         }
         
-        // •Û‘¶‚³‚ê‚½ƒpƒX‚©‚çGameObject‚ğÄæ“¾‚µ‚Ä•\¦‰»
+        // ä¿å­˜ã•ã‚ŒãŸãƒ‘ã‚¹ã‹ã‚‰GameObjectã‚’å†å–å¾—ã—ã¦è¡¨ç¤ºåŒ–
         foreach (var path in _enableObjectPaths) {
             GameObject obj = _FindGameObjectByPath(path);
             if (obj != null) {
-                obj.SetActive(true); // ÄŠJ‚É—LŒø‰»
+                obj.SetActive(true); // å†é–‹æ™‚ã«æœ‰åŠ¹åŒ–
             }
         }
     }
@@ -77,7 +63,7 @@ public class CheckpointManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒ`ƒFƒbƒNƒ|ƒCƒ“ƒg‚ğƒNƒŠƒA
+    /// ãƒã‚§ãƒƒã‚¯ãƒã‚¤ãƒ³ãƒˆã‚’ã‚¯ãƒªã‚¢
     /// </summary>
     public void ClearCheckpoint() {
         _respawnSceneName = null;
@@ -88,7 +74,7 @@ public class CheckpointManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒqƒGƒ‰ƒ‹ƒL[ƒpƒX‚©‚çGameObject‚ğŒŸõ
+    /// ãƒ’ã‚¨ãƒ©ãƒ«ã‚­ãƒ¼ãƒ‘ã‚¹ã‹ã‚‰GameObjectã‚’æ¤œç´¢
     /// </summary>
     private GameObject _FindGameObjectByPath(string path)
     {
@@ -99,7 +85,7 @@ public class CheckpointManager : MonoBehaviour
         string[] pathParts = path.Split('/');
         GameObject current = null;
 
-        // ƒ‹[ƒgƒIƒuƒWƒFƒNƒg‚ğ’T‚·
+        // ãƒ«ãƒ¼ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¢ã™
         GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
         foreach (var root in rootObjects) {
             if (root.name == pathParts[0]) {
@@ -112,7 +98,7 @@ public class CheckpointManager : MonoBehaviour
             return null;
         }
 
-        // qƒIƒuƒWƒFƒNƒg‚ğ’H‚é
+        // å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¾¿ã‚‹
         for (int i = 1; i < pathParts.Length; i++) {
             Transform child = current.transform.Find(pathParts[i]);
             if (child == null) {

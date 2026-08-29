@@ -1,35 +1,28 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
-public class GameSceneManager : MonoBehaviour
+public class GameSceneManager : PersistentSingleton<GameSceneManager>
 {
-    private static GameSceneManager _instance;
-    public static GameSceneManager Instance {
-        get {
-            // シーン上のGameSceneManagerを探す
-            if (_instance == null) {
-                _instance = FindAnyObjectByType<GameSceneManager>();
-                if (_instance == null) {
-                    // 見つからなければ新規作成
-                    _instance = new GameObject("GameSceneManager").AddComponent<GameSceneManager>();
-                    DontDestroyOnLoad(_instance.gameObject);
-                }
-            }
-            return _instance;
-        }
-        set {
-            _instance = value;
-        }
-    }
     private string _titleSceneName = "Title";
-    
+
     // リトライ種別を記憶
     private static bool _isDeathRetry = false;
 
-    private void Start() {
+    protected override void OnSingletonAwake() {
+        // DontDestroyOnLoadで永続化されるため、Start()は生存期間中に一度しか呼ばれない。
+        // シーン再読み込みのたびに復帰処理を行うため、sceneLoadedイベントを使用する
+        SceneManager.sceneLoaded += _OnSceneLoaded;
+    }
+
+    protected override void OnSingletonDestroy() {
+        SceneManager.sceneLoaded -= _OnSceneLoaded;
+    }
+
+    private void _OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         // シーン再読み込み時のみリスポーン地点に移動
-        var player = FindAnyObjectByType<Player_Character>();
+        var player = PlayerCharacterManager.Current as Player_Character;
         var checkpointManager = CheckpointManager.Instance;
         if (player != null && checkpointManager != null && checkpointManager.ShouldRespawnInCurrentScene()) {
             checkpointManager.RespawnPlayer(player);
@@ -90,7 +83,7 @@ public class GameSceneManager : MonoBehaviour
 
         // デバッグ用：Eキーで経験値200獲得
         if (keyboard.eKey.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 player.AddExp(200);
             }
@@ -106,54 +99,22 @@ public class GameSceneManager : MonoBehaviour
             }
         }
 
-        // デバッグ用：数字キーで能力の付与/解除
+        // デバッグ用：数字キーでボタンごとに割り当てられている能力の付与/解除
         if (keyboard.numpad4Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
-            if (player != null) {
-                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Ice);
-                if (had_ability) {
-                    player.RemoveAbility(eAbilitySlot.Y);
-                } else {
-                    player.SetAbilitySlot(eAbilityType.Ice, eAbilitySlot.Y);
-                }
-            }
+            _ToggleAbilityBySlot(eAbilitySlot.Y);
         }
         if (keyboard.numpad8Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
-            if (player != null) {
-                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Light);
-                if (had_ability) {
-                    player.RemoveAbility(eAbilitySlot.X);
-                } else {
-                    player.SetAbilitySlot(eAbilityType.Light, eAbilitySlot.X);
-                }
-            }
+            _ToggleAbilityBySlot(eAbilitySlot.X);
         }
         if (keyboard.numpad6Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
-            if (player != null) {
-                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Fire);
-                if (had_ability) {
-                    player.RemoveAbility(eAbilitySlot.A);
-                } else {
-                    player.SetAbilitySlot(eAbilityType.Fire, eAbilitySlot.A);
-                }
-            }
+            _ToggleAbilityBySlot(eAbilitySlot.A);
         }
         if (keyboard.numpad2Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
-            if (player != null) {
-                var had_ability = PlayerParameter.Instance.Abilities.ContainsKey(eAbilityType.Warp);
-                if (had_ability) {
-                    player.RemoveAbility(eAbilitySlot.B);
-                } else {
-                    player.SetAbilitySlot(eAbilityType.Warp, eAbilitySlot.B);
-                }
-            }
+            _ToggleAbilityBySlot(eAbilitySlot.B);
         }
 
         if (keyboard.numpad5Key.wasPressedThisFrame) {
-            var player = FindAnyObjectByType<Player_Character>();
+            var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
                 player.SaveAbilitySlot(); // 能力スロットセーブ
             }
@@ -165,6 +126,29 @@ public class GameSceneManager : MonoBehaviour
             var new_language = player_param.language == PlayerParameter.eLanguage.Japanese ?
                 PlayerParameter.eLanguage.English : PlayerParameter.eLanguage.Japanese;
             player_param.language = new_language;
+        }
+    }
+
+    /// <summary>
+    /// 指定スロットに現在割り当てられている能力を付与/解除する（デバッグ用）
+    /// </summary>
+    private void _ToggleAbilityBySlot(eAbilitySlot slot) {
+        var player = PlayerCharacterManager.Current as Player_Character;
+        if (player == null) {
+            return;
+        }
+
+        var player_param = PlayerParameter.Instance;
+        var ability_type = player_param.GetAssignedAbilityType(slot);
+        if (ability_type == eAbilityType.None) {
+            return;
+        }
+
+        var had_ability = player_param.IsOwned(ability_type);
+        if (had_ability) {
+            player.RemoveAbility(slot);
+        } else {
+            player.SetAbilitySlot(ability_type, slot);
         }
     }
 

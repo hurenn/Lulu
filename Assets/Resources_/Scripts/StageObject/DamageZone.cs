@@ -42,6 +42,8 @@ public class DamageZone : MonoBehaviour {
     // ヒット済みキャラの管理
     Dictionary<Character_Base, float> _hitCharacters = new Dictionary<Character_Base, float>();
     private const float _hitInterval = 0.5f; // 同じキャラに連続ヒットさせない時間
+    // クールタイムで自然解除されるエントリ数（一度だけヒットの永続エントリはカウントしない）
+    private int _activeCooldownCount = 0;
 
     // ヒットエフェクト生成用
     [SerializeField] private HitEffect _hitEffectPrefab = null;
@@ -95,16 +97,17 @@ public class DamageZone : MonoBehaviour {
             cinemachineManager.ShakeCamera(_manualShakeIntensity, _manualShakeDuration);
         }
 
-        if (_hitCharacters.Count > 0) {
+        // クールタイムで自然解除されるエントリが無い場合は何もしない
+        // （一度だけヒットの永続エントリのみが残っている状態で、毎フレームリスト確保するのを防ぐ）
+        if (_activeCooldownCount > 0) {
             var keys = new List<Character_Base>(_hitCharacters.Keys);
             foreach (var key in keys) {
                 if (_hitCharacters[key] > 0) {
                     _hitCharacters[key] -= Time.deltaTime;
                     if (_hitCharacters[key] <= 0) {
                         _hitCharacters.Remove(key);
+                        _activeCooldownCount--;
                     }
-                } else if (_hitCharacters[key] < 0) {
-                    // 一度だけヒットの場合はタイマーを更新しない
                 }
             }
         }
@@ -148,6 +151,9 @@ public class DamageZone : MonoBehaviour {
         }
         // ヒット済みキャラのタイマー更新
         _hitCharacters.Add(character, _isOnceHit ? -1 : _hitInterval);
+        if (!_isOnceHit) {
+            _activeCooldownCount++;
+        }
 
         var blow_power = _blowPowerRight;
         if (other.transform.position.x < transform.position.x) {

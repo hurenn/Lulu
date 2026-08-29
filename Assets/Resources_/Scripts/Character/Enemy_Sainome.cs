@@ -7,7 +7,7 @@ public class Enemy_Sainome : Enemy_Base
     [SerializeField] private float _patrolDistance = 5.0f;
     [SerializeField] private bool _enablePatrol = true;
 
-    // ƒpƒgƒ[ƒ‹‚Ì‰ŠúˆÊ’u
+    // ãƒ‘ãƒˆãƒ­ãƒ¼ãƒ«ã®åˆæœŸä½ç½®
     private Vector3 _startPosition;
 
     protected override void _Setup() {
@@ -19,7 +19,7 @@ public class Enemy_Sainome : Enemy_Base
         base._UpdateSpecials();
 
         if (_isDead || _damageReactionTimer > 0) {
-            // ˆÚ“®‘¬“x‚ğ0‚É‚µ‚ÄƒAƒjƒ[ƒVƒ‡ƒ“‚à’â~
+            // ç§»å‹•é€Ÿåº¦ã‚’0ã«ã—ã¦ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚‚åœæ­¢
             Vector2 velocity = _rb.linearVelocity;
             velocity.x = 0;
             _rb.linearVelocity = velocity;
@@ -30,24 +30,24 @@ public class Enemy_Sainome : Enemy_Base
     }
 
     /// <summary>
-    /// •àsAI
+    /// æ­©è¡ŒAI
     /// </summary>
     protected void AI_Walk() {
         if (!_enablePatrol) {
             return;
         }
 
-        // •Ç‚ÉÚG‚µ‚½‚ç•ûŒü“]Š·
+        // å£ã«æ¥è§¦ã—ãŸã‚‰æ–¹å‘è»¢æ›
         if ((_isRight && _isTouchingRight) || (!_isRight && _isTouchingLeft)) {
             _TurnAround();
         }
 
-        // ŠR‚É“’B‚µ‚½‚ç•ûŒü“]Š·i‘O•û‚Ì’n–Êƒ`ƒFƒbƒNj
+        // å´–ã«åˆ°é”ã—ãŸã‚‰æ–¹å‘è»¢æ›ï¼ˆå‰æ–¹ã®åœ°é¢ãƒã‚§ãƒƒã‚¯ï¼‰
         if (!_CheckGroundAhead()) {
             _TurnAround();
         }
 
-        // ƒpƒgƒ[ƒ‹”ÍˆÍ‚ğ’´‚¦‚½‚ç•ûŒü“]Š·
+        // ãƒ‘ãƒˆãƒ­ãƒ¼ãƒ«ç¯„å›²ã‚’è¶…ãˆãŸã‚‰æ–¹å‘è»¢æ›
         if (_patrolDistance > 0f) {
             float distanceFromStart = transform.position.x - _startPosition.x;
             if ((_isRight && distanceFromStart > _patrolDistance) || 
@@ -56,50 +56,50 @@ public class Enemy_Sainome : Enemy_Base
             }
         }
 
-        // ˆÚ“®ˆ—
+        // ç§»å‹•å‡¦ç†
         _Walk();
     }
 
     /// <summary>
-    /// •àsˆ—
+    /// æ­©è¡Œå‡¦ç†
     /// </summary>
     private void _Walk() {
         Vector2 velocity = _rb.linearVelocity;
         velocity.x = _isRight ? _walkSpeed : -_walkSpeed;
         _rb.linearVelocity = velocity;
 
-        // •àsƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        // æ­©è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         if (_anim != null) {
             _anim.SetBool("Walk", true);
         }
     }
 
     /// <summary>
-    /// •ûŒü“]Š·
+    /// æ–¹å‘è»¢æ›
     /// </summary>
     private void _TurnAround() {
         _isRight = !_isRight;
     }
 
     /// <summary>
-    /// ‘O•û‚Ì’n–Ê‚ğƒ`ƒFƒbƒN
+    /// å‰æ–¹ã®åœ°é¢ã‚’ãƒã‚§ãƒƒã‚¯
     /// </summary>
-    /// <returns>’n–Ê‚ª‚ ‚ê‚Îtrue</returns>
+    /// <returns>åœ°é¢ãŒã‚ã‚Œã°true</returns>
     private bool _CheckGroundAhead() {
         if (_param == null) {
             return true;
         }
 
-        // ƒLƒƒƒ‰ƒNƒ^[‚ÌƒTƒCƒY‚ğæ“¾
+        // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚µã‚¤ã‚ºã‚’å–å¾—
         Vector2 characterSize = GetCharacterSize();
 
-        // ƒ`ƒFƒbƒNˆÊ’u‚ğŒvZi‘O•û­‚µæ‚Ì’n–Êj
+        // ãƒã‚§ãƒƒã‚¯ä½ç½®ã‚’è¨ˆç®—ï¼ˆå‰æ–¹å°‘ã—å…ˆã®åœ°é¢ï¼‰
         float checkDistance = characterSize.x * 0.6f;
         Vector2 checkPosition = transform.position;
         checkPosition.x += _isRight ? checkDistance : -checkDistance;
         checkPosition.y -= characterSize.y * 0.5f + _param.groundCheckHeight;
 
-        // ’n–Êƒ`ƒFƒbƒN
+        // åœ°é¢ãƒã‚§ãƒƒã‚¯
         Vector2 boxSize = new Vector2(_param.groundCheckHeight, _param.groundCheckHeight);
         Collider2D hit = Physics2D.OverlapBox(checkPosition, boxSize, 0f, _groundLayer);
 
@@ -107,7 +107,7 @@ public class Enemy_Sainome : Enemy_Base
     }
 
     private void OnDrawGizmosSelected() {
-        // ƒpƒgƒ[ƒ‹”ÍˆÍ‚ğ‰Â‹‰»
+        // ãƒ‘ãƒˆãƒ­ãƒ¼ãƒ«ç¯„å›²ã‚’å¯è¦–åŒ–
         if (_enablePatrol && _patrolDistance > 0f) {
             Gizmos.color = Color.yellow;
             Vector3 startPos = Application.isPlaying ? _startPosition : transform.position;
@@ -119,7 +119,7 @@ public class Enemy_Sainome : Enemy_Base
             Gizmos.DrawLine(leftBound, rightBound);
         }
 
-        // ‘O•û’n–Êƒ`ƒFƒbƒNˆÊ’u‚ğ‰Â‹‰»
+        // å‰æ–¹åœ°é¢ãƒã‚§ãƒƒã‚¯ä½ç½®ã‚’å¯è¦–åŒ–
         if (Application.isPlaying && _param != null) {
             Vector2 characterSize = GetCharacterSize();
             float checkDistance = characterSize.x * 0.6f;

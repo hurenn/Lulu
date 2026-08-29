@@ -5,48 +5,48 @@ using UnityEngine.Playables;
 
 public class Ability_Fire : Ability_Base
 {
-    // ËŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“
+    // å°„æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
     private const string _SHOT_ANIM = "Marlica_Shot";
 
-    // Å‘å’e”
+    // æœ€å¤§å¼¾æ•°
     private int _maxShoot = 3;
     private int _currentShot = 0;
 
-    // ’eƒIƒuƒWƒFƒNƒg
+    // å¼¾ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     [SerializeField] private FireBullet _bulletObj;
-    // ”­Ë’n“_
+    // ç™ºå°„åœ°ç‚¹
     [SerializeField] private Transform _shotPoint;
 
-    // •KEƒIƒuƒWƒFƒNƒg
+    // å¿…æ®ºã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     [SerializeField] private GameObject _specialBulletObj;
     [SerializeField] private GameObject _specialExplosionObj;
 
-    // •KE‹Z’e‚ÌƒIƒuƒWƒFƒNƒgƒv[ƒ‹
+    // å¿…æ®ºæŠ€å¼¾ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ—ãƒ¼ãƒ«
     private Queue<GameObject> _specialBulletPool = new Queue<GameObject>();
-    private const int INITIAL_POOL_SIZE = 10; // ‰Šúƒv[ƒ‹ƒTƒCƒYi2•b € 0.1•b + —]—Tj
-    private const float BULLET_MIN_LIFETIME = 0.05f; // ’e‚ÌÅ¬¶‘¶ŠÔ
-    private const float BULLET_MAX_LIFETIME = 0.2f; // ’e‚ÌÅ‘å¶‘¶ŠÔ
+    private const int INITIAL_POOL_SIZE = 10; // åˆæœŸãƒ—ãƒ¼ãƒ«ã‚µã‚¤ã‚ºï¼ˆ2ç§’ Ã· 0.1ç§’ + ä½™è£•ï¼‰
+    private const float BULLET_MIN_LIFETIME = 0.05f; // å¼¾ã®æœ€å°ç”Ÿå­˜æ™‚é–“
+    private const float BULLET_MAX_LIFETIME = 0.2f; // å¼¾ã®æœ€å¤§ç”Ÿå­˜æ™‚é–“
 
-    // ©“®UŒ‚”ÍˆÍ
+    // è‡ªå‹•æ”»æ’ƒç¯„å›²
     [SerializeField] private Collider2D _autoAttackRange;
-    // ”ÍˆÍ“à‚Ì“GƒŠƒXƒg
+    // ç¯„å›²å†…ã®æ•µãƒªã‚¹ãƒˆ
     private List<Enemy_Base> _enemiesInRange = new List<Enemy_Base>();
-    // ©“®UŒ‚ŠÔŠu
+    // è‡ªå‹•æ”»æ’ƒé–“éš”
     private float _autoAttackInterval = 0.4f;
     private float _autoAttackResetTime = 0.8f;
     private float _currentAutoAttackInterval = 0.0f;
     
-    // ƒgƒŠƒK[ƒwƒ‹ƒp[QÆ
+    // ãƒˆãƒªã‚¬ãƒ¼ãƒ˜ãƒ«ãƒ‘ãƒ¼å‚ç…§
     private FireAutoAttackTrigger _triggerHelper;
 
     public override void UpdateParameter(bool is_right, Transform chara_transform, CommonParameter common_param,  CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
         base.UpdateParameter(is_right, chara_transform, common_param, chara_param, warp_control, motor_states);
         
-        // ©“®UŒ‚”ÍˆÍ‚ÌƒgƒŠƒK[İ’è
+        // è‡ªå‹•æ”»æ’ƒç¯„å›²ã®ãƒˆãƒªã‚¬ãƒ¼è¨­å®š
         if (_autoAttackRange != null) {
             _autoAttackRange.isTrigger = true;
             
-            // ƒgƒŠƒK[ƒCƒxƒ“ƒg‚ğó‚¯æ‚éƒwƒ‹ƒp[ƒRƒ“ƒ|[ƒlƒ“ƒg
+            // ãƒˆãƒªã‚¬ãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚’å—ã‘å–ã‚‹ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
             _triggerHelper = _autoAttackRange.gameObject.GetComponent<FireAutoAttackTrigger>();
             if (_triggerHelper == null) {
                 _triggerHelper = _autoAttackRange.gameObject.AddComponent<FireAutoAttackTrigger>();
@@ -54,12 +54,12 @@ public class Ability_Fire : Ability_Base
             _triggerHelper.Setup(this);
         }
         
-        // ƒIƒuƒWƒFƒNƒgƒv[ƒ‹‚Ì‰Šú‰»
+        // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ—ãƒ¼ãƒ«ã®åˆæœŸåŒ–
         _InitializePool();
     }
 
     /// <summary>
-    /// ƒIƒuƒWƒFƒNƒgƒv[ƒ‹‚Ì‰Šú‰»
+    /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ—ãƒ¼ãƒ«ã®åˆæœŸåŒ–
     /// </summary>
     private void _InitializePool() {
         if (_specialBulletObj == null || _specialBulletPool.Count > 0) return;
@@ -72,7 +72,7 @@ public class Ability_Fire : Ability_Base
     }
 
     /// <summary>
-    /// ƒv[ƒ‹‚©‚ç’e‚ğæ“¾i‚È‚¯‚ê‚ÎV‹Kì¬j
+    /// ãƒ—ãƒ¼ãƒ«ã‹ã‚‰å¼¾ã‚’å–å¾—ï¼ˆãªã‘ã‚Œã°æ–°è¦ä½œæˆï¼‰
     /// </summary>
     private GameObject _GetPooledBullet() {
         if (_specialBulletPool.Count > 0) {
@@ -80,21 +80,21 @@ public class Ability_Fire : Ability_Base
             bullet.SetActive(true);
             return bullet;
         } else {
-            // ƒv[ƒ‹‚ª‹ó‚Ìê‡‚ÍV‹Kì¬
+            // ãƒ—ãƒ¼ãƒ«ãŒç©ºã®å ´åˆã¯æ–°è¦ä½œæˆ
             return Instantiate(_specialBulletObj);
         }
     }
 
     /// <summary>
-    /// ’e‚ğƒv[ƒ‹‚É–ß‚·
+    /// å¼¾ã‚’ãƒ—ãƒ¼ãƒ«ã«æˆ»ã™
     /// </summary>
     private void _ReturnBulletToPool(GameObject bullet) {
         if (bullet == null) return;
         
-        // ’…’eƒGƒtƒFƒNƒgÄ¶
+        // ç€å¼¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿ
         Instantiate(_specialExplosionObj, bullet.transform.position, Quaternion.identity);
         
-        // ƒJƒƒ‰ƒVƒFƒCƒNi”÷–­‚È—h‚êj
+        // ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯ï¼ˆå¾®å¦™ãªæºã‚Œï¼‰
         var cinemachineManager = CinemachineManager.Instance;
         if (cinemachineManager != null) {
             cinemachineManager.ShakeCamera(duration: 0.01f, intensity: 0.01f);
@@ -107,28 +107,28 @@ public class Ability_Fire : Ability_Base
     protected override void _Update() {
         base._Update();
 
-        // ˆÊ’uXV
+        // ä½ç½®æ›´æ–°
         UpdatePartnerTransform();
 
-        // ƒŠƒXƒg“à‚É“G‚ª‚¢‚ê‚Î©“®UŒ‚
+        // ãƒªã‚¹ãƒˆå†…ã«æ•µãŒã„ã‚Œã°è‡ªå‹•æ”»æ’ƒ
         if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0 && !_isSpecialUsing) {
-            // Šù‚É€‚ñ‚Å‚¢‚é“G‚ğƒŠƒXƒg‚©‚çíœ
+            // æ—¢ã«æ­»ã‚“ã§ã„ã‚‹æ•µã‚’ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤
             _enemiesInRange.RemoveAll(enemy => enemy == null || enemy.isDead);
-            // “G‚ªƒŠƒXƒg“à‚É‚¢‚ê‚ÎUŒ‚
+            // æ•µãŒãƒªã‚¹ãƒˆå†…ã«ã„ã‚Œã°æ”»æ’ƒ
             if (_enemiesInRange.Count > 0 && !_cancelByOverheat) {
                 _TryShot(true);
                 _currentAutoAttackInterval = _autoAttackInterval;
             }
         }
 
-        // ©“®UŒ‚ƒ^ƒCƒ}[XV
+        // è‡ªå‹•æ”»æ’ƒã‚¿ã‚¤ãƒãƒ¼æ›´æ–°
         if (_currentAutoAttackInterval > 0) {
             _currentAutoAttackInterval -= Time.deltaTime;
         }
     }
 
     /// <summary>
-    /// ƒI[ƒgUŒ‚ƒ^ƒCƒ}[ƒŠƒZƒbƒg
+    /// ã‚ªãƒ¼ãƒˆæ”»æ’ƒã‚¿ã‚¤ãƒãƒ¼ãƒªã‚»ãƒƒãƒˆ
     /// </summary>
     public void ResetAutoAttackInterval() {
         _currentAutoAttackInterval = _autoAttackResetTime;
@@ -139,22 +139,22 @@ public class Ability_Fire : Ability_Base
     }
 
     /// <summary>
-    /// UŒ‚”»’è
+    /// æ”»æ’ƒåˆ¤å®š
     /// </summary>
-    /// <param name="is_auto">ƒI[ƒgUŒ‚‚É‚æ‚é‚à‚Ì‚©</param>
+    /// <param name="is_auto">ã‚ªãƒ¼ãƒˆæ”»æ’ƒã«ã‚ˆã‚‹ã‚‚ã®ã‹</param>
     private eAbilityResult _TryShot(bool is_auto) {
-        // ƒI[ƒo[ƒq[ƒg’†‚Íg—p•s‰Â
+        // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆä¸­ã¯ä½¿ç”¨ä¸å¯
         if (_cancelByOverheat) {
-            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // ¢Š«ƒGƒtƒFƒNƒgÄ¶
+            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // å¬å–šã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿ
             return eAbilityResult.None;
         }
 
-        // •KE‹Zƒ`ƒƒ[ƒW’â~
+        // å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸åœæ­¢
         if (!is_auto) {
             _StopSpecialCharge();
         }
 
-        // •KE‹Z”­“®
+        // å¿…æ®ºæŠ€ç™ºå‹•
         if (_isSpecialCharged && !is_auto && 
                 !_motorStates.isWarpDashing && !_motorStates.isSliding) {
             _UseSpecial();
@@ -163,7 +163,7 @@ public class Ability_Fire : Ability_Base
 
         var ability_result = _SimpleShot();
 
-        // UŒ‚Às
+        // æ”»æ’ƒå®Ÿè¡Œ
         if (ability_result != eAbilityResult.None) {
             _AppearCheck(eAbilityType.Fire);
             return ability_result;
@@ -173,14 +173,14 @@ public class Ability_Fire : Ability_Base
     }
 
     /// <summary>
-    /// ˆê”­”­Ë
+    /// ä¸€ç™ºç™ºå°„
     /// </summary>
     private eAbilityResult _SimpleShot() {
         if(_currentShot >= _maxShoot) {
             return eAbilityResult.None;
         }
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         _anim?.Play(_SHOT_ANIM, 0, 0.0f);
 
         var shot_pos = transform.position;
@@ -194,7 +194,7 @@ public class Ability_Fire : Ability_Base
         bullet.SetCallback(() => _currentShot--);
         bullet.IsRight = _isRight;
 
-        // is•ûŒü‚É‡‚í‚¹‚Ä”½“]
+        // é€²è¡Œæ–¹å‘ã«åˆã‚ã›ã¦åè»¢
         var scale = bullet.transform.localScale;
         scale.x *= (_isRight ? 1 : -1);
         bullet.transform.localScale = scale;
@@ -206,7 +206,7 @@ public class Ability_Fire : Ability_Base
     public override void UpdatePartnerTransform(Vector3? target_pos = null) {
         base.UpdatePartnerTransform();
 
-        // ©“®UŒ‚”ÍˆÍ‚ÌˆÊ’uXV
+        // è‡ªå‹•æ”»æ’ƒç¯„å›²ã®ä½ç½®æ›´æ–°
         if (_autoAttackRange != null) {
             var range_pos = _autoAttackRange.transform.localPosition;
             range_pos.x = Mathf.Abs(range_pos.x) * (_isRight ? 1 : -1);
@@ -215,7 +215,7 @@ public class Ability_Fire : Ability_Base
     }
 
     /// <summary>
-    /// “G‚ª”ÍˆÍ‚É“ü‚Á‚½iƒgƒŠƒK[ƒwƒ‹ƒp[‚©‚çŒÄ‚Î‚ê‚éj
+    /// æ•µãŒç¯„å›²ã«å…¥ã£ãŸï¼ˆãƒˆãƒªã‚¬ãƒ¼ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‹ã‚‰å‘¼ã°ã‚Œã‚‹ï¼‰
     /// </summary>
     public void OnEnemyEnter(Enemy_Base enemy) {
         if (enemy != null && !_enemiesInRange.Contains(enemy)) {
@@ -224,7 +224,7 @@ public class Ability_Fire : Ability_Base
     }
 
     /// <summary>
-    /// “G‚ª”ÍˆÍ‚©‚ço‚½iƒgƒŠƒK[ƒwƒ‹ƒp[‚©‚çŒÄ‚Î‚ê‚éj
+    /// æ•µãŒç¯„å›²ã‹ã‚‰å‡ºãŸï¼ˆãƒˆãƒªã‚¬ãƒ¼ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‹ã‚‰å‘¼ã°ã‚Œã‚‹ï¼‰
     /// </summary>
     public void OnEnemyExit(Enemy_Base enemy) {
         if (enemy != null && _enemiesInRange.Contains(enemy)) {
@@ -233,7 +233,7 @@ public class Ability_Fire : Ability_Base
     }
 
     protected override void _OnSpecialCutInFinished(PlayableDirector obj) {
-        // ƒJƒbƒgƒCƒ“I—¹’¼Œã‚É_onSpecialAnim‚ğÀs
+        // ã‚«ãƒƒãƒˆã‚¤ãƒ³çµ‚äº†ç›´å¾Œã«_onSpecialAnimã‚’å®Ÿè¡Œ
         _onStartSpecialAnim?.Invoke("Special_Marlica");
 
         base._OnSpecialCutInFinished(obj);
@@ -241,15 +241,15 @@ public class Ability_Fire : Ability_Base
     }
 
     /// <summary>
-    /// •KE‹ZUŒ‚
+    /// å¿…æ®ºæŠ€æ”»æ’ƒ
     /// </summary>
     private IEnumerator _SpecialAttack() {
         float attack_duration = 2.0f;
         float current_time = 0.0f;
-        float spawn_interval = 0.02f; // ’e‚Ì¶¬ŠÔŠu
+        float spawn_interval = 0.02f; // å¼¾ã®ç”Ÿæˆé–“éš”
         float next_spawn_time = 0.0f;
 
-        // ƒJƒƒ‰‚Ì‰æ–Ê”ÍˆÍ‚ğæ“¾
+        // ã‚«ãƒ¡ãƒ©ã®ç”»é¢ç¯„å›²ã‚’å–å¾—
         Camera mainCamera = Camera.main;
         if (mainCamera == null) {
             Debug.LogError("Main Camera not found!");
@@ -257,33 +257,33 @@ public class Ability_Fire : Ability_Base
             yield break;
         }
 
-        // ƒJƒƒ‰‚©‚ç‚ÌZ‹——£‚ğŒvZ
+        // ã‚«ãƒ¡ãƒ©ã‹ã‚‰ã®Zè·é›¢ã‚’è¨ˆç®—
         float cameraDistance = Mathf.Abs(mainCamera.transform.position.z);
 
-        // ‰æ–Ê‚Ì‚‚³‚ğŒvZ‚µ‚ÄA0.1•b‚Å‰¡’f‚·‚é‘¬“x‚ğZo
+        // ç”»é¢ã®é«˜ã•ã‚’è¨ˆç®—ã—ã¦ã€0.1ç§’ã§æ¨ªæ–­ã™ã‚‹é€Ÿåº¦ã‚’ç®—å‡º
         Vector3 topPoint = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, cameraDistance));
         Vector3 bottomPoint = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, cameraDistance));
         float screenHeight = Mathf.Abs(topPoint.y - bottomPoint.y);
-        float bulletSpeed = screenHeight / 0.1f; // 0.1•b‚Å‰æ–Ê‚Ì‚‚³•ªˆÚ“®
+        float bulletSpeed = screenHeight / 0.1f; // 0.1ç§’ã§ç”»é¢ã®é«˜ã•åˆ†ç§»å‹•
 
-        // ‰æ–Ê‚Ì¶ãÀ•W‚ğæ“¾
+        // ç”»é¢ã®å·¦ä¸Šåº§æ¨™ã‚’å–å¾—
         Vector3 topLeft = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, cameraDistance));
         topLeft.z = 0;
         
-        // ‰æ–Ê‚Ì•‚ğŒvZ
+        // ç”»é¢ã®å¹…ã‚’è¨ˆç®—
         Vector3 topRight = mainCamera.ViewportToWorldPoint(new Vector3(1, 1, cameraDistance));
         topRight.z = 0;
         float screenWidth = Mathf.Abs(topRight.x - topLeft.x);
 
-        // ¶¬’n“_‚ğ‰æ–ÊŠO¶ã‚ÉŒÅ’èi‰æ–Ê‚‚³‚Ì20%ãj
+        // ç”Ÿæˆåœ°ç‚¹ã‚’ç”»é¢å¤–å·¦ä¸Šã«å›ºå®šï¼ˆç”»é¢é«˜ã•ã®20%ä¸Šï¼‰
         float spawnHeight = topLeft.y + screenHeight * 0.2f;
         Vector3 spawnPosition = new Vector3(topLeft.x, spawnHeight, 0);
         bool isEndSpecialAnimCalled = false;
 
-        // UŒ‚ŠJn‘O‚Ì‘Ò‹@
+        // æ”»æ’ƒé–‹å§‹å‰ã®å¾…æ©Ÿ
         yield return new WaitForSeconds(0.5f);
         while (current_time < attack_duration) {
-            // ˆê’èŠÔŠu‚Å’e‚ğ”­Ë
+            // ä¸€å®šé–“éš”ã§å¼¾ã‚’ç™ºå°„
             if (current_time >= next_spawn_time) {
                 _SpawnSpecialBulletWithAngle(spawnPosition, bulletSpeed, screenWidth, screenHeight);
                 next_spawn_time += spawn_interval;
@@ -296,45 +296,45 @@ public class Ability_Fire : Ability_Base
     }
 
     /// <summary>
-    /// •KE‹Z‚Ì’e‚ğŠp“x‚ğ•Ï‚¦‚Ä¶¬i‰æ–Ê¶ã‚©‚çj
+    /// å¿…æ®ºæŠ€ã®å¼¾ã‚’è§’åº¦ã‚’å¤‰ãˆã¦ç”Ÿæˆï¼ˆç”»é¢å·¦ä¸Šã‹ã‚‰ï¼‰
     /// </summary>
     private void _SpawnSpecialBulletWithAngle(Vector3 spawnPosition, float bulletSpeed, float screenWidth, float screenHeight) {
         if (_specialBulletObj == null) return;
 
-        // ƒv[ƒ‹‚©‚ç’e‚ğæ“¾
+        // ãƒ—ãƒ¼ãƒ«ã‹ã‚‰å¼¾ã‚’å–å¾—
         GameObject bullet = _GetPooledBullet();
         bullet.transform.position = spawnPosition;
         
-        // ”­ËŠp“x‚ğ0“x`80“x‚Ì”ÍˆÍ‚Åƒ‰ƒ“ƒ_ƒ€‚É¶¬
-        // 0“x = ^‰ºA80“x = ‚Ù‚Ú‰¡•ûŒü
+        // ç™ºå°„è§’åº¦ã‚’0åº¦ã€œ80åº¦ã®ç¯„å›²ã§ãƒ©ãƒ³ãƒ€ãƒ ã«ç”Ÿæˆ
+        // 0åº¦ = çœŸä¸‹ã€80åº¦ = ã»ã¼æ¨ªæ–¹å‘
         float randomAngle = Random.Range(0f, 80f);
         
-        // Šp“x‚©‚ç•ûŒüƒxƒNƒgƒ‹‚ğŒvZi^‰º‚ğ0“x‚Æ‚µ‚Ä‰E•ûŒü‚ÉŠp“x‚ª‘‚¦‚éj
+        // è§’åº¦ã‹ã‚‰æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ï¼ˆçœŸä¸‹ã‚’0åº¦ã¨ã—ã¦å³æ–¹å‘ã«è§’åº¦ãŒå¢—ãˆã‚‹ï¼‰
         float angleInRadians = randomAngle * Mathf.Deg2Rad;
         Vector2 direction = new Vector2(Mathf.Sin(angleInRadians), -Mathf.Cos(angleInRadians));
         
-        // ’e‚Ì•\¦Šp“x‚ğis•ûŒü‚É‡‚í‚¹‚é
-        // Unity‚Ì‰ñ“]‚Í”½Œv‰ñ‚è‚ª³‚È‚Ì‚ÅAis•ûŒü‚ÌŠp“x‚ğŒvZ
+        // å¼¾ã®è¡¨ç¤ºè§’åº¦ã‚’é€²è¡Œæ–¹å‘ã«åˆã‚ã›ã‚‹
+        // Unityã®å›è»¢ã¯åæ™‚è¨ˆå›ã‚ŠãŒæ­£ãªã®ã§ã€é€²è¡Œæ–¹å‘ã®è§’åº¦ã‚’è¨ˆç®—
         float rotationAngle = Mathf.Atan2(direction.x, -direction.y) * Mathf.Rad2Deg;
         bullet.transform.rotation = Quaternion.Euler(0, 0, rotationAngle);
         
-        // ’e‚É‘¬“x‚ğİ’èiRigidbody2D‚ª‚ ‚éê‡j
+        // å¼¾ã«é€Ÿåº¦ã‚’è¨­å®šï¼ˆRigidbody2DãŒã‚ã‚‹å ´åˆï¼‰
         var rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null) {
-            // d—Í‚ğ–³Œø‰»‚µ‚Äˆê’è‘¬“x‚ÅˆÚ“®
+            // é‡åŠ›ã‚’ç„¡åŠ¹åŒ–ã—ã¦ä¸€å®šé€Ÿåº¦ã§ç§»å‹•
             rb.gravityScale = 0f;
             rb.linearVelocity = direction * bulletSpeed;
         }
         
-        // ¶‘¶ŠÔ‚ğƒ‰ƒ“ƒ_ƒ€‚ÉŒˆ’èiMIN‚©‚çMAX‚ÌŠÔj
+        // ç”Ÿå­˜æ™‚é–“ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«æ±ºå®šï¼ˆMINã‹ã‚‰MAXã®é–“ï¼‰
         float randomLifetime = Random.Range(BULLET_MIN_LIFETIME, BULLET_MAX_LIFETIME);
         
-        // ƒ‰ƒ“ƒ_ƒ€‚ÈŠÔŒã‚Éƒv[ƒ‹‚É–ß‚·ƒRƒ‹[ƒ`ƒ“‚ğŠJn
+        // ãƒ©ãƒ³ãƒ€ãƒ ãªæ™‚é–“å¾Œã«ãƒ—ãƒ¼ãƒ«ã«æˆ»ã™ã‚³ãƒ«ãƒ¼ãƒãƒ³ã‚’é–‹å§‹
         StartCoroutine(_ReturnBulletAfterDelay(bullet, randomLifetime));
     }
 
     /// <summary>
-    /// w’èŠÔŒã‚É’e‚ğƒv[ƒ‹‚É–ß‚·
+    /// æŒ‡å®šæ™‚é–“å¾Œã«å¼¾ã‚’ãƒ—ãƒ¼ãƒ«ã«æˆ»ã™
     /// </summary>
     private IEnumerator _ReturnBulletAfterDelay(GameObject bullet, float delay) {
         yield return new WaitForSeconds(delay);
@@ -343,7 +343,7 @@ public class Ability_Fire : Ability_Base
 }
 
 /// <summary>
-/// ©“®UŒ‚”ÍˆÍ‚ÌƒgƒŠƒK[ƒwƒ‹ƒp[ƒNƒ‰ƒX
+/// è‡ªå‹•æ”»æ’ƒç¯„å›²ã®ãƒˆãƒªã‚¬ãƒ¼ãƒ˜ãƒ«ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class FireAutoAttackTrigger : MonoBehaviour {
     private Ability_Fire _parentAbility;

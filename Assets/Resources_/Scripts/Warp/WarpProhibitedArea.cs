@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// ワープ禁止エリア
+/// 繝ｯ繝ｼ繝礼ｦ∵ｭ｢繧ｨ繝ｪ繧｢
 /// </summary>
 public class WarpProhibitedArea : MonoBehaviour
 {

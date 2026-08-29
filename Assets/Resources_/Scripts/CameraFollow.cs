@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    [Header("’Ç]‘ÎÛ")]
+    [Header("è¿½å¾“å¯¾è±¡")]
     public Transform target;
 
-    [Header("ƒJƒƒ‰‚ÌˆÊ’uƒIƒtƒZƒbƒg")]
+    [Header("ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚ªãƒ•ã‚»ãƒƒãƒˆ")]
     public Vector2 offset = new Vector2(2f, 1f);
 
-    [Header("ƒJƒƒ‰‚ÌˆÊ’u‚ª–ß‚é‚Ü‚Å‚ÌŠÔ")]
+    [Header("ã‚«ãƒ¡ãƒ©ã®ä½ç½®ãŒæˆ»ã‚‹ã¾ã§ã®æ™‚é–“")]
     public float warpSmoothTime = 0.1f;
     private float _currentSmoothTime = 0f;
 
-    // ƒXƒ€[ƒYƒ‚[ƒhƒtƒ‰ƒO
+    // ã‚¹ãƒ ãƒ¼ã‚ºãƒ¢ãƒ¼ãƒ‰ãƒ•ãƒ©ã‚°
     private bool _isSmoothMode = false;
     public void SetWarpMode(bool is_enable)
     {
@@ -20,7 +20,7 @@ public class CameraFollow : MonoBehaviour
         _currentSmoothTime = is_enable ? 0f : warpSmoothTime;   
     }
 
-    [Header("ƒJƒƒ‰‚Ì§ŒÀ”ÍˆÍ")]
+    [Header("ã‚«ãƒ¡ãƒ©ã®åˆ¶é™ç¯„å›²")]
     public Vector2 minPosition = new Vector2(-20f, -20f);
     public Vector2 maxPosition = new Vector2(20f, 20f);
     
@@ -34,13 +34,13 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null) return;
 
-        // ’Ç]ˆÊ’u‚ÌŒvZ
+        // è¿½å¾“ä½ç½®ã®è¨ˆç®—
         Vector2 targetPosition = (Vector2)target.position + offset;
         if (_isCameraLock) {
             targetPosition = (Vector2)_lockPosition;
         }
 
-        // ƒJƒƒ‰‚ÌˆÊ’u‚ğ‚È‚ß‚ç‚©‚ÉXV
+        // ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚’ãªã‚ã‚‰ã‹ã«æ›´æ–°
         Vector2 smoothPosition;
         if (_isSmoothMode)
         {
@@ -50,7 +50,7 @@ public class CameraFollow : MonoBehaviour
 
             _currentSmoothTime += Time.deltaTime;
 
-            // ƒJƒƒ‰‚ÌˆÊ’u‚ªtargetPosition‚ÌˆÊ’u‚Ü‚Å“’B‚µ‚½‚çAƒ[ƒvƒ‚[ƒh‚ğ‰ğœ
+            // ã‚«ãƒ¡ãƒ©ã®ä½ç½®ãŒtargetPositionã®ä½ç½®ã¾ã§åˆ°é”ã—ãŸã‚‰ã€ãƒ¯ãƒ¼ãƒ—ãƒ¢ãƒ¼ãƒ‰ã‚’è§£é™¤
             if (Vector2.Distance(transform.position, targetPosition) < 0.1f)
             {
                 SetWarpMode(false);
@@ -61,11 +61,11 @@ public class CameraFollow : MonoBehaviour
             smoothPosition = targetPosition;
         }
 
-        // ƒJƒƒ‰ƒTƒCƒY‚É‰‚¶‚½•\¦”ÍˆÍ‚Ì•â³
+        // ã‚«ãƒ¡ãƒ©ã‚µã‚¤ã‚ºã«å¿œã˜ãŸè¡¨ç¤ºç¯„å›²ã®è£œæ­£
         float cameraHeight = _camera.orthographicSize;
         float cameraWidth = cameraHeight * _camera.aspect;
 
-        // ƒJƒƒ‰‚ÌˆÊ’u‚ğ§ŒÀ”ÍˆÍ“à‚Éû‚ß‚é
+        // ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚’åˆ¶é™ç¯„å›²å†…ã«åã‚ã‚‹
         smoothPosition.x = Mathf.Clamp(smoothPosition.x, minPosition.x + cameraWidth, maxPosition.x - cameraWidth);
         smoothPosition.y = Mathf.Clamp(smoothPosition.y, minPosition.y + cameraHeight, maxPosition.y - cameraHeight);
 

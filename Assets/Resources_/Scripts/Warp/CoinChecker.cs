@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ƒRƒCƒ“‚ÌˆÊ’u‚ğŠÇ—‚·‚é
+/// ã‚³ã‚¤ãƒ³ã®ä½ç½®ã‚’ç®¡ç†ã™ã‚‹
 /// </summary>
 public class CoinChecker : MonoBehaviour {
     [SerializeField] private List<Coin_Object> coin_Objects = new List<Coin_Object>();
@@ -26,12 +26,12 @@ public class CoinChecker : MonoBehaviour {
     }
 
     /// <summary>
-    /// ˆê”Ô‹ß‚¢ƒRƒCƒ“‚ÌˆÊ’u‚ğæ“¾
+    /// ä¸€ç•ªè¿‘ã„ã‚³ã‚¤ãƒ³ã®ä½ç½®ã‚’å–å¾—
     /// </summary>
     /// <param name="playerPos"></param>
     /// <returns></returns>
     public Vector2 GetNearestCoinPos(Vector3 playerPos) {
-        // ƒŠƒXƒg‚©‚çmissing‚ÈƒIƒuƒWƒFƒNƒg‚ğíœ
+        // ãƒªã‚¹ãƒˆã‹ã‚‰missingãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‰Šé™¤
         coin_Objects.RemoveAll(coin => coin == null);
 
         Vector2 nearestPos = Vector2.zero;

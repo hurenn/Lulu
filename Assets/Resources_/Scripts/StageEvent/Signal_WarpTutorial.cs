@@ -7,21 +7,13 @@ public class Signal_WarpTutorial : MonoBehaviour
 {
     public static Signal_WarpTutorial Instance { get; private set; }
     public PlayerController playerController;
-    private bool _isTutorialActive = false;
 
     private void Awake() {
         if (Instance == null) {
             Instance = this;
         }
         if (playerController == null) {
-            playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-        }
-    }
-
-    private void Update() {
-        if (_isTutorialActive) {
-            // ‰æ–ÊƒXƒ[
-            Time.timeScale = 0f;
+            playerController = PlayerCharacterManager.Controller;
         }
     }
 
@@ -54,40 +46,39 @@ public class Signal_WarpTutorial : MonoBehaviour
             return;
         }
 
-        // “ü—ÍƒŠƒZƒbƒg
+        // å…¥åŠ›ãƒªã‚»ãƒƒãƒˆ
         playerController.insertMoveRight = false;
         playerController.insertMoveDown = false;
-        // ‰æ–ÊƒXƒ[
-        _isTutorialActive = true;
+        // ç”»é¢ã‚¹ãƒ­ãƒ¼
+        TimeScaleRequestManager.Request(0f);
 
         CharacterInputData specific_input = new CharacterInputData();
         specific_input.move = any_dir ? Vector2.zero : dir_input;
         specific_input.isJumpPressed = jump_input;
         playerController.SetSpecificInput(specific_input, () => {
-            // “ü—ÍŠ®—¹Œã‚Ìˆ—
-            _isTutorialActive = false;
-            Time.timeScale = 1f; // ŠÔ‚ğŒ³‚É–ß‚·
+            // å…¥åŠ›å®Œäº†å¾Œã®å‡¦ç†
+            TimeScaleRequestManager.Release(); // æ™‚é–“ã‚’å…ƒã«æˆ»ã™
 
-            // ƒRƒ“ƒgƒ[ƒ‰[©“®“ü—Í
+            // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼è‡ªå‹•å…¥åŠ›
             StartCoroutine(_InsertController_Common(dir_input, jump_input));
         });
     }
 
     /// <summary>
-    /// ƒRƒ“ƒgƒ[ƒ‰[©“®“ü—Í
+    /// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼è‡ªå‹•å…¥åŠ›
     /// </summary>
     private IEnumerator _InsertController_Common(Vector2 dir_input, bool jump_input) {
         if (playerController == null) {
             yield break;
         }
 
-        // •ûŒü“ü—Í
+        // æ–¹å‘å…¥åŠ›
         playerController.insertMoveRight = dir_input.x > 0.5f;
         playerController.insertMoveDown = dir_input.y < -0.5f;
 
         yield return null;
 
-        // ƒWƒƒƒ“ƒv“ü—Í
+        // ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›
         if (jump_input) {
             playerController.insertJumpHeld = true;
             yield return null;

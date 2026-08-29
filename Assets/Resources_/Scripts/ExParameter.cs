@@ -2,11 +2,11 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "ExParameter", menuName = "Lulu/ExStatus", order = 1)]
 public class ExParameter : ScriptableObject {
-    [Header("s“®ƒCƒ“ƒ^[ƒoƒ‹")]
+    [Header("è¡Œå‹•ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«")]
     public float ActionInterval = 3.0f;
     public float FastActionInterval = 2.0f;
 
-    [Header("UŒ‚‚Ì‘¬‚³")]
+    [Header("æ”»æ’ƒã®é€Ÿã•")]
     public float ShootTime = 1.0f;
     public float RainShootTime = 0.8f;
     public float BurstTime = 1.5f;
@@ -15,10 +15,10 @@ public class ExParameter : ScriptableObject {
     public float JumpShootTime = 0.2f;
     public float SpecialShootTime = 5.0f;
 
-    [Header("ƒŒ[ƒU[‚©‚ç”š”­‚Ü‚Å‚ÌŽžŠÔ")]
+    [Header("ãƒ¬ãƒ¼ã‚¶ãƒ¼ã‹ã‚‰çˆ†ç™ºã¾ã§ã®æ™‚é–“")]
     public float ShootExplosionTime = 1.0f;
 
-    [Header("s“®‚Ìd‚Ý")]
+    [Header("è¡Œå‹•ã®é‡ã¿")]
     public int ShootWeight = 15;
     public int RainShootWeight = 40;
     public int BurstWeight = 15;
@@ -26,9 +26,9 @@ public class ExParameter : ScriptableObject {
     public int ThreeShootWeight = 15;
     public int FastSpecialWeight = 10;
 
-    [Header("UŒ‚ƒCƒ“ƒ^[ƒoƒ‹")]
+    [Header("æ”»æ’ƒã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«")]
     public float ShootInterval = 0.2f;
 
-    [Header("•KŽEƒŒ[ƒU[–{”")]
+    [Header("å¿…æ®ºãƒ¬ãƒ¼ã‚¶ãƒ¼æœ¬æ•°")]
     public int SpecialLaserCount = 30;
 }

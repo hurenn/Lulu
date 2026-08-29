@@ -3,22 +3,22 @@ using UnityEngine;
 
 public class Ability_Ice : Ability_Base {
 
-    private int _attackStep = 0; // 0:–¢UŒ‚, 1:1’i–Ú, 2:2’i–Ú, 3:3’i–Ú
+    private int _attackStep = 0; // 0:æœªæ”»æ’ƒ, 1:1æ®µç›®, 2:2æ®µç›®, 3:3æ®µç›®
 
     private float _currentComboTime = 0f;
-    // ƒRƒ“ƒ{UŒ‚‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+    // ã‚³ãƒ³ãƒœæ”»æ’ƒã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
     private float _currentComboCoolTime = 0f;
 
-    // ’·‰Ÿ‚µ”»’èŠÔ
+    // é•·æŠ¼ã—åˆ¤å®šæ™‚é–“
     private float _longPressThreshold = 0.3f;
     private float _pressHoldTime = 0f;
 
-    // ’·‰Ÿ‚µÀsÏ‚İƒtƒ‰ƒO
+    // é•·æŠ¼ã—å®Ÿè¡Œæ¸ˆã¿ãƒ•ãƒ©ã‚°
     private bool _isHoldExecuted = false;
-    // UŒ‚•ûŒüƒƒbƒNƒtƒ‰ƒO
+    // æ”»æ’ƒæ–¹å‘ãƒ­ãƒƒã‚¯ãƒ•ãƒ©ã‚°
     private bool _isAttackDirectionLocked = false;
 
-    // ƒqƒbƒgƒXƒgƒbƒvŠÇ—
+    // ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—ç®¡ç†
     [SerializeField] private LocalTimePause _localTimeController;
     
     [SerializeField] private GameObject _slash1;
@@ -28,43 +28,43 @@ public class Ability_Ice : Ability_Base {
     private IEnumerator _separateRoutine = null;
 
     protected override void _Update() {
-        // ƒ^ƒCƒ}[Œ¸­
+        // ã‚¿ã‚¤ãƒãƒ¼æ¸›å°‘
         if (_attackStep > 0) {
             _currentComboTime -= Time.deltaTime;
             if (_currentComboTime <= 0f) {
-                _attackStep = 0; // ƒRƒ“ƒ{ƒŠƒZƒbƒg
+                _attackStep = 0; // ã‚³ãƒ³ãƒœãƒªã‚»ãƒƒãƒˆ
             }
         }
-        // ƒRƒ“ƒ{ƒ^ƒCƒ}[
+        // ã‚³ãƒ³ãƒœã‚¿ã‚¤ãƒãƒ¼
         if (_currentComboCoolTime > 0f) {
             _currentComboCoolTime -= Time.deltaTime;
         }
     }
 
     public override eAbilityResult ExecuteSimple() {
-        // ƒI[ƒo[ƒq[ƒg’†‚Íg—p•s‰Â
+        // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆä¸­ã¯ä½¿ç”¨ä¸å¯
         if (_cancelByOverheat) {
-            UpdatePartnerTransform(); // ˆÊ’uXV
-            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // ¢Š«ƒGƒtƒFƒNƒgÄ¶
+            UpdatePartnerTransform(); // ä½ç½®æ›´æ–°
+            Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // å¬å–šã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿ
             return eAbilityResult.None;
         }
-        // Ø‚è—£‚µUŒ‚I—¹
+        // åˆ‡ã‚Šé›¢ã—æ”»æ’ƒçµ‚äº†
         _EndSeparate();
 
-        // •KE‹Zƒ`ƒƒ[ƒW’â~
+        // å¿…æ®ºæŠ€ãƒãƒ£ãƒ¼ã‚¸åœæ­¢
         _StopSpecialCharge();
 
-        // ƒƒbƒNƒIƒ“UŒ‚”»’è
+        // ãƒ­ãƒƒã‚¯ã‚ªãƒ³æ”»æ’ƒåˆ¤å®š
         if (LockonManager.Instance.HasTarget) {
             if (!_charaParam.isOverheat) {
-                // ƒƒbƒNƒIƒ“’†‚ÌUŒ‚
+                // ãƒ­ãƒƒã‚¯ã‚ªãƒ³ä¸­ã®æ”»æ’ƒ
 
-                // ƒƒbƒNƒIƒ“‘ÎÛ‚Ì•ûŒü‚ğŒü‚­
+                // ãƒ­ãƒƒã‚¯ã‚ªãƒ³å¯¾è±¡ã®æ–¹å‘ã‚’å‘ã
                 var lockon = LockonManager.Instance;
                 Vector3 to_target = lockon.targetTransform.position - _playerTransform.position;
-                to_target.y = 0; // …•½¬•ª‚Ì‚İ
+                to_target.y = 0; // æ°´å¹³æˆåˆ†ã®ã¿
 
-                // ƒ[ƒvƒ`ƒFƒbƒJ[æ“¾
+                // ãƒ¯ãƒ¼ãƒ—ãƒã‚§ãƒƒã‚«ãƒ¼å–å¾—
                 WarpChecker warp_checker = null;
                 if (to_target.x > 0) {
                     warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Left);
@@ -72,24 +72,24 @@ public class Ability_Ice : Ability_Base {
                     warp_checker = lockon.GetTargetWarpPos(WarpControl.eWarpDirection.Right);
                 }
 
-                // ƒƒbƒNƒIƒ“UŒ‚Às
+                // ãƒ­ãƒƒã‚¯ã‚ªãƒ³æ”»æ’ƒå®Ÿè¡Œ
                 if (warp_checker != null) {
                     _LockonSlash(warp_checker, lockon.targetTransform.position);
                     return eAbilityResult.IceLockonSlash;
                 }
             } else {
-                // ƒI[ƒo[ƒq[ƒg’†‚Íg—p•s‰Â
-                UpdatePartnerTransform(); // ˆÊ’uXV
-                Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // ¢Š«ƒGƒtƒFƒNƒgÄ¶
+                // ã‚ªãƒ¼ãƒãƒ¼ãƒ’ãƒ¼ãƒˆä¸­ã¯ä½¿ç”¨ä¸å¯
+                UpdatePartnerTransform(); // ä½ç½®æ›´æ–°
+                Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // å¬å–šã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿ
             }
         }
 
-        // ƒRƒ“ƒ{UŒ‚”»’è
+        // ã‚³ãƒ³ãƒœæ”»æ’ƒåˆ¤å®š
         var attack_result = _ComboSlash();
-        // Ø‚è—£‚µUŒ‚”»’è
+        // åˆ‡ã‚Šé›¢ã—æ”»æ’ƒåˆ¤å®š
         // if(attack_result == eAbilityResult.None) attack_result = _SeparateSlash();
 
-        // UŒ‚Às
+        // æ”»æ’ƒå®Ÿè¡Œ
         if (attack_result != eAbilityResult.None) {
             _AppearCheck(eAbilityType.Ice);
             return attack_result;
@@ -99,11 +99,11 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
-    /// ƒƒbƒNƒIƒ“UŒ‚Às
+    /// ãƒ­ãƒƒã‚¯ã‚ªãƒ³æ”»æ’ƒå®Ÿè¡Œ
     /// </summary>
     private void _LockonSlash(WarpChecker warp_checker, Vector3 target_pos) {
         if (_lockonSlash == null) {
-            Debug.Log("ƒƒbƒNƒIƒ“UŒ‚ƒGƒtƒFƒNƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+            Debug.Log("ãƒ­ãƒƒã‚¯ã‚ªãƒ³æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
             return;
         }
         Debug.Log("Lockon Slash");
@@ -117,50 +117,50 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
-    /// ƒRƒ“ƒ{UŒ‚Às
+    /// ã‚³ãƒ³ãƒœæ”»æ’ƒå®Ÿè¡Œ
     /// </summary>
     private eAbilityResult _ComboSlash() {
 
-        // ƒN[ƒ‹ƒ^ƒCƒ€’†‚ÍÀs•s‰Â
+        // ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ä¸­ã¯å®Ÿè¡Œä¸å¯
         if (_currentComboCoolTime > 0f) {
             return eAbilityResult.None;
         }
 
         if (_attackStep == 0) {
-            // 1’i–Ú
+            // 1æ®µç›®
             Debug.Log("Slash 1");
             StartCoroutine(_UpdateTransformEasing(_slash1, "Node_Attack1"));
             _SetComboStep(1);
-            return eAbilityResult.IceSlash1;            // ÀsŒ‹‰Ê•Ô‹p
+            return eAbilityResult.IceSlash1;            // å®Ÿè¡Œçµæœè¿”å´
         } else if (_attackStep == 1) {
-            // 2’i–Ú
+            // 2æ®µç›®
             Debug.Log("Slash 2");
             StartCoroutine(_UpdateTransformEasing(_slash2, "Node_Attack2"));
             _SetComboStep(2);
-            return eAbilityResult.IceSlash2;            // ÀsŒ‹‰Ê•Ô‹p
+            return eAbilityResult.IceSlash2;            // å®Ÿè¡Œçµæœè¿”å´
         } else if (_attackStep == 2) {
-            // 3’i–Ú
+            // 3æ®µç›®
             Debug.Log("Slash 3");
             StartCoroutine(_UpdateTransformEasing(_slash3, "Node_Attack3"));
-            _SetComboStep(0); // ƒRƒ“ƒ{ƒŠƒZƒbƒg
-            return eAbilityResult.IceSlash3;            // ÀsŒ‹‰Ê•Ô‹p
+            _SetComboStep(0); // ã‚³ãƒ³ãƒœãƒªã‚»ãƒƒãƒˆ
+            return eAbilityResult.IceSlash3;            // å®Ÿè¡Œçµæœè¿”å´
         }
 
         return eAbilityResult.None;
     }
 
     /// <summary>
-    /// ƒRƒ“ƒ{’iŠKXV
+    /// ã‚³ãƒ³ãƒœæ®µéšæ›´æ–°
     /// </summary>
     private void _SetComboStep(int step) {
         _attackStep = step;
-        _currentComboTime = _param.comboReceptionTime;    // Ÿ‚ÌƒRƒ“ƒ{ó•tŠÔ
-        _currentComboCoolTime = step == 0 ? _param.comboCoolTime : _param.comboIntervalTime;     // ƒN[ƒ‹ƒ^ƒCƒ€ƒZƒbƒg
+        _currentComboTime = _param.comboReceptionTime;    // æ¬¡ã®ã‚³ãƒ³ãƒœå—ä»˜æ™‚é–“
+        _currentComboCoolTime = step == 0 ? _param.comboCoolTime : _param.comboIntervalTime;     // ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚»ãƒƒãƒˆ
     }
 
     private IEnumerator _UpdateTransformEasing(GameObject effect, string anim_name) {
         if (_isAppearing) {
-            // ƒC[ƒWƒ“ƒO‚ÅˆÊ’u‚ğXV
+            // ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ã§ä½ç½®ã‚’æ›´æ–°
             float elapsedTime = 0f;
             Vector3 startPos = transform.position;
             Vector3 targetPos = _playerTransform.position + new Vector3(
@@ -174,40 +174,40 @@ public class Ability_Ice : Ability_Base {
             }
         }
         
-        UpdatePartnerTransform();   // ƒLƒƒƒ‰ƒNƒ^[ˆÊ’u‚ğXV
+        UpdatePartnerTransform();   // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ä½ç½®ã‚’æ›´æ–°
 
-        var effect_obj = Instantiate(effect, transform.position, Quaternion.identity);  // ƒGƒtƒFƒNƒg¶¬
+        var effect_obj = Instantiate(effect, transform.position, Quaternion.identity);  // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
         var damage_zone = effect_obj.GetComponentInChildren<DamageZone>();
-        damage_zone?.AddHitStopTarget(_localTimeController); // ƒqƒbƒgƒXƒgƒbƒv‘ÎÛ‚É’Ç‰Á
+        damage_zone?.AddHitStopTarget(_localTimeController); // ãƒ’ãƒƒãƒˆã‚¹ãƒˆãƒƒãƒ—å¯¾è±¡ã«è¿½åŠ 
 
-        _anim?.Play(anim_name, 0, 0.0f);   // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        _anim?.Play(anim_name, 0, 0.0f);   // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
     }
 
     /// <summary>
-    /// Ø‚è—£‚µ˜A‘±UŒ‚
+    /// åˆ‡ã‚Šé›¢ã—é€£ç¶šæ”»æ’ƒ
     /// </summary>
     private IEnumerator _SeparateRoutine() {
         _anim?.SetBool("SeparateEnd", false);
-        _anim?.Play("Node_SeparateAttack", 0, 0.0f);   // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        _anim?.Play("Node_SeparateAttack", 0, 0.0f);   // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         _isHoldExecuted = true;
-        _isAttackDirectionLocked = true; // UŒ‚•ûŒüƒƒbƒN
-        _canForceReturn = false;      // ‹­§‹AŠÒ–³Œø‰»
-        _attackStep = 0; // ƒRƒ“ƒ{ƒŠƒZƒbƒg
-        UpdatePartnerTransform();   // ƒLƒƒƒ‰ƒNƒ^[ˆÊ’u‚ğXV
+        _isAttackDirectionLocked = true; // æ”»æ’ƒæ–¹å‘ãƒ­ãƒƒã‚¯
+        _canForceReturn = false;      // å¼·åˆ¶å¸°é‚„ç„¡åŠ¹åŒ–
+        _attackStep = 0; // ã‚³ãƒ³ãƒœãƒªã‚»ãƒƒãƒˆ
+        UpdatePartnerTransform();   // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ä½ç½®ã‚’æ›´æ–°
 
         float separate_time = 5.5f;
         float current_time = 0f;
-        float attack_delay = 0.3f; // UŒ‚ƒGƒtƒFƒNƒg”­¶‚Ü‚Å‚Ì’x‰„ŠÔ
+        float attack_delay = 0.3f; // æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿã¾ã§ã®é…å»¶æ™‚é–“
         float current_delay = 0f;
-        _ResetReturnTimer(separate_time); // ‹AŠÒƒ^ƒCƒ}[ƒŠƒZƒbƒg
+        _ResetReturnTimer(separate_time); // å¸°é‚„ã‚¿ã‚¤ãƒãƒ¼ãƒªã‚»ãƒƒãƒˆ
         while (current_time < separate_time) {
             current_time += Time.deltaTime;
             if (current_delay < attack_delay) {
                 current_delay += Time.deltaTime;
             } else {
-                // ˆê’èŠÔ‚²‚Æ‚ÉUŒ‚ƒGƒtƒFƒNƒg”­¶
+                // ä¸€å®šæ™‚é–“ã”ã¨ã«æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿ
                 current_delay = 0f;
-                Instantiate(_slash1, transform.position, Quaternion.identity);  // ƒGƒtƒFƒNƒg¶¬
+                Instantiate(_slash1, transform.position, Quaternion.identity);  // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
             }
             yield return null;
         }
@@ -216,22 +216,22 @@ public class Ability_Ice : Ability_Base {
         _anim?.SetBool("SeparateEnd", true);
     }
 
-    // Ø‚è—£‚µUŒ‚I—¹
+    // åˆ‡ã‚Šé›¢ã—æ”»æ’ƒçµ‚äº†
     private void _EndSeparate() {
-        // Às’†‚Ì˜A‘±UŒ‚ƒRƒ‹[ƒ`ƒ“‚ª‚ ‚ê‚Î’â~
+        // å®Ÿè¡Œä¸­ã®é€£ç¶šæ”»æ’ƒã‚³ãƒ«ãƒ¼ãƒãƒ³ãŒã‚ã‚Œã°åœæ­¢
         if (_separateRoutine != null) {
             StopCoroutine(_separateRoutine);
             _separateRoutine = null;
         }
         _isAttackDirectionLocked = false;
-        _canForceReturn = true;      // ‹­§‹AŠÒ—LŒø‰»
+        _canForceReturn = true;      // å¼·åˆ¶å¸°é‚„æœ‰åŠ¹åŒ–
 
         _anim?.SetBool("SeparateEnd", true);
     }
 
     public override eAbilityResult ExecuteLong() {
         return eAbilityResult.None;
-        // Ø‚è—£‚µ
+        // åˆ‡ã‚Šé›¢ã—
         if (!_isHoldExecuted) {
             _pressHoldTime += Time.deltaTime;
             if (_pressHoldTime >= _longPressThreshold) {
@@ -252,18 +252,18 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
-    /// ©“®UŒ‚Às
+    /// è‡ªå‹•æ”»æ’ƒå®Ÿè¡Œ
     /// </summary>
     public void ExecuteAutoAttack(WarpChecker warp_checker, Vector3 enemy_pos) {
         _AutoSlash(warp_checker, enemy_pos);
     }
 
     /// <summary>
-    /// ©“®UŒ‚
+    /// è‡ªå‹•æ”»æ’ƒ
     /// </summary>
     private void _AutoSlash(WarpChecker warp_checker, Vector3 enemy_pos) {
         if (_lockonSlash == null) {
-            Debug.Log("ƒƒbƒNƒIƒ“UŒ‚ƒGƒtƒFƒNƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+            Debug.Log("ãƒ­ãƒƒã‚¯ã‚ªãƒ³æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
             return;
         }
         Debug.Log("Lockon Slash");
@@ -272,55 +272,55 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
-    /// ˆêŒ‚UŒ‚
+    /// ä¸€æ’ƒæ”»æ’ƒ
     /// </summary>
-    /// <param name="target_pos">“G‚ÌˆÊ’u</param>
+    /// <param name="target_pos">æ•µã®ä½ç½®</param>
     private void _OnceAttack(Vector3 target_pos, WarpChecker warp_checker, eAbilityType ability_type) {
         if(_warpControl == null || warp_checker == null) {
-            Debug.Log("ƒ[ƒvƒRƒ“ƒgƒ[ƒ‹‚Ü‚½‚Íƒ[ƒvƒ`ƒFƒbƒJ[‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+            Debug.Log("ãƒ¯ãƒ¼ãƒ—ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã¾ãŸã¯ãƒ¯ãƒ¼ãƒ—ãƒã‚§ãƒƒã‚«ãƒ¼ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
             return;
         }
 
-        // ƒtƒ‰ƒbƒVƒ…
+        // ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
         Color flash_color = Color.white;
         flash_color.a = 0.5f;
         var flash = ScreenFlash.Instance;
         flash?.Flash(color: flash_color);
 
-        // MPÁ”ï
+        // MPæ¶ˆè²»
         _AppearCheck(ability_type, force_appear: true);
 
-        // ƒLƒƒƒ‰ƒNƒ^[ˆÊ’u‚ğXV
+        // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ä½ç½®ã‚’æ›´æ–°
         UpdatePartnerTransform(warp_checker.transform.position);
         var is_right = target_pos.x > transform.position.x;
         _isRight = is_right;
 
-        // ƒGƒtƒFƒNƒg‚ÌŒü‚«‚ğ’²®
+        // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å‘ãã‚’èª¿æ•´
         _AttackEffectSetup(_lockonSlash);
 
-        // ƒGƒtƒFƒNƒg¶¬
+        // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
         Instantiate(_lockonSlash, transform.position, Quaternion.identity);
-        // ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
         _anim?.Play("Node_Attack2", 0, 0.0f);
 
-        // ƒRƒ“ƒ{1’i–Ú‚ğƒXƒLƒbƒv
+        // ã‚³ãƒ³ãƒœ1æ®µç›®ã‚’ã‚¹ã‚­ãƒƒãƒ—
         _SetComboStep(1);
     }
 
     public override void UpdateParameter(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
         base.UpdateParameter(is_right, chara_transform, param, chara_param, warp_control, motor_states);
-        // Œü‚«‚É‰‚¶‚ÄUŒ‚ƒGƒtƒFƒNƒg‚ÌŒü‚«‚ğ’²®
+        // å‘ãã«å¿œã˜ã¦æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å‘ãã‚’èª¿æ•´
         _AttackEffectSetup(_slash1);
         _AttackEffectSetup(_slash2);
         _AttackEffectSetup(_slash3);
     }
 
     /// <summary>
-    /// UŒ‚ƒGƒtƒFƒNƒg‚ÌŒü‚«‚ğ’²®
+    /// æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å‘ãã‚’èª¿æ•´
     /// </summary>
     private void _AttackEffectSetup(GameObject effect) {
         if (effect == null) {
-            Debug.Log($"{effect}‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+            Debug.Log($"{effect}ãŒç™»éŒ²ã•ã‚Œã¦ã„ã¾ã›ã‚“");
             return;
         }
         var scale = effect.transform.localScale;
@@ -331,7 +331,7 @@ public class Ability_Ice : Ability_Base {
     }
 
     public override void OnWarp() {
-        // ‘¦À‚É‹AŠÒ
+        // å³åº§ã«å¸°é‚„
         if (_isAppearing) {
             _ResetReturnTimer(0.01f);
         }
@@ -339,7 +339,7 @@ public class Ability_Ice : Ability_Base {
 
     protected override void _ForceReturn() {
         base._ForceReturn();
-        // Ø‚è—£‚µUŒ‚I—¹
+        // åˆ‡ã‚Šé›¢ã—æ”»æ’ƒçµ‚äº†
         _EndSeparate();
     }
 }

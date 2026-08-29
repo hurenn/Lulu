@@ -16,15 +16,18 @@ public class ScreenFlash : MonoBehaviour {
 
     [SerializeField] private Image _flashImage;
 
+    // å®Ÿè¡Œä¸­ã®ãƒ•ãƒ©ãƒƒã‚·ãƒ¥/ãƒ•ã‚§ãƒ¼ãƒ‰ã‚³ãƒ«ãƒ¼ãƒãƒ³ï¼ˆåŒæ™‚ã«1ã¤ã ã‘å‹•ã‹ã™ãŸã‚å…±æœ‰ã§ç®¡ç†ï¼‰
+    private Coroutine _activeCoroutine;
+
     private void Reset() {
         _flashImage = GetComponent<Image>();
     }
 
     /// <summary>
-    /// ƒtƒ‰ƒbƒVƒ…Às
+    /// ãƒ•ãƒ©ãƒƒã‚·ãƒ¥å®Ÿè¡Œ
     /// </summary>
-    /// <param name="duration">ƒtƒ‰ƒbƒVƒ…Š®—¹‚Ü‚Å‚ÌŠÔ</param>
-    /// <param name="color">ƒtƒ‰ƒbƒVƒ…‚ÌF</param>
+    /// <param name="duration">ãƒ•ãƒ©ãƒƒã‚·ãƒ¥å®Œäº†ã¾ã§ã®æ™‚é–“</param>
+    /// <param name="color">ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ã®è‰²</param>
     public void Flash(float duration = 0.1f, Color color = default) {
         if (color == default) color = Color.white;
         if(_instance == null) {
@@ -32,7 +35,7 @@ public class ScreenFlash : MonoBehaviour {
             return;
         }
 
-        StartCoroutine(_FlashCoroutine(duration, color));
+        _RestartCoroutine(_FlashCoroutine(duration, color));
     }
 
     public void FadeIn(float duration = 0.1f, Color color = default) {
@@ -41,24 +44,35 @@ public class ScreenFlash : MonoBehaviour {
             Debug.LogWarning("ScreenFlash Instance is null.");
             return;
         }
-        StartCoroutine(Fade(duration, color));
-    }
-
-    private IEnumerator _FlashCoroutine(float duration, Color color) {
-        var no_alpha_color = color;         // ƒAƒ‹ƒtƒ@’l0‚ÌF
-        no_alpha_color.a = 0f;
-
-        _flashImage.color = no_alpha_color; // ‰Šúó‘Ô‚Í“§–¾
-
-        yield return Fade(0.05f, color); // ƒtƒF[ƒhƒCƒ“
-        yield return Fade(duration - 0.05f, no_alpha_color); // ƒtƒF[ƒhƒAƒEƒg
+        _RestartCoroutine(Fade(duration, color));
     }
 
     /// <summary>
-    /// ƒtƒF[ƒhˆ—
+    /// å®Ÿè¡Œä¸­ã®ã‚³ãƒ«ãƒ¼ãƒãƒ³ã‚’åœæ­¢ã—ã¦ã‹ã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã‚’é–‹å§‹ã™ã‚‹
+    /// ï¼ˆé€£ç¶šå‘¼ã³å‡ºã—ã§è¤‡æ•°ã®ã‚³ãƒ«ãƒ¼ãƒãƒ³ãŒ_flashImage.colorã‚’ç«¶åˆæ›´æ–°ã™ã‚‹ã®ã‚’é˜²ãï¼‰
     /// </summary>
-    /// <param name="duration">ˆ—ŠÔ</param>
-    /// <param name="next_color">•Ï‰»æƒJƒ‰[</param>
+    private void _RestartCoroutine(IEnumerator routine) {
+        if (_activeCoroutine != null) {
+            StopCoroutine(_activeCoroutine);
+        }
+        _activeCoroutine = StartCoroutine(routine);
+    }
+
+    private IEnumerator _FlashCoroutine(float duration, Color color) {
+        var no_alpha_color = color;         // ã‚¢ãƒ«ãƒ•ã‚¡å€¤0ã®è‰²
+        no_alpha_color.a = 0f;
+
+        _flashImage.color = no_alpha_color; // åˆæœŸçŠ¶æ…‹ã¯é€æ˜
+
+        yield return Fade(0.05f, color); // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
+        yield return Fade(duration - 0.05f, no_alpha_color); // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ
+    }
+
+    /// <summary>
+    /// ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†
+    /// </summary>
+    /// <param name="duration">å‡¦ç†æ™‚é–“</param>
+    /// <param name="next_color">å¤‰åŒ–å…ˆã‚«ãƒ©ãƒ¼</param>
     private IEnumerator Fade(float duration, Color next_color) {
         float timer = 0f;
         Color last_color = _flashImage.color;

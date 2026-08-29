@@ -1,15 +1,15 @@
 using UnityEngine;
 
 /// <summary>
-/// “–‚½‚è”»’èŠO‚Éo‚½‚Æ‚«‚ÉƒAƒjƒ[ƒVƒ‡ƒ“‚ğ’â~‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒg
+/// å½“ãŸã‚Šåˆ¤å®šå¤–ã«å‡ºãŸã¨ãã«ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’åœæ­¢ã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 /// </summary>
 public class AnimationStopper : MonoBehaviour {
-    [SerializeField] private string playerTag = "Player"; // ƒvƒŒƒCƒ„[‚Ìƒ^ƒOw’è
+    [SerializeField] private string playerTag = "Player"; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¿ã‚°æŒ‡å®š
     [SerializeField] private Animator _animator;
 
     void Reset() {
         _animator = GetComponent<Animator>();
-        _animator.enabled = false; // Å‰‚Í’â~
+        _animator.enabled = false; // æœ€åˆã¯åœæ­¢
     }
 
     void Start() {
@@ -20,11 +20,11 @@ public class AnimationStopper : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other) {
         if (other.CompareTag(playerTag))
-            _animator.enabled = true; // ƒvƒŒƒCƒ„[‚ªG‚ê‚½‚çÄ¶
+            _animator.enabled = true; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè§¦ã‚ŒãŸã‚‰å†ç”Ÿ
     }
 
     void OnTriggerExit2D(Collider2D other) {
         if (other.CompareTag(playerTag))
-            _animator.enabled = false; // ƒvƒŒƒCƒ„[‚ª—£‚ê‚½‚ç’â~
+            _animator.enabled = false; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒé›¢ã‚ŒãŸã‚‰åœæ­¢
     }
 }
