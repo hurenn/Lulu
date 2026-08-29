@@ -45,6 +45,7 @@ public class MessageViewer : MonoBehaviour {
     private RectTransform _iconRect;         // キャラクターアイコンのRectTransform
 
     private string _currentText = string.Empty;
+    private int _currentVisibleLength;    // _currentTextからリッチテキストタグを除いた文字数
     private MessageData _currentMessage;  // 現在表示中のメッセージ
     private float _currentShowTime; // 現在の表示時間
     private bool _isShowing;        // メッセージ表示中フラグ
@@ -119,7 +120,7 @@ public class MessageViewer : MonoBehaviour {
         } else if (_currentShowTime > 0) {
             // メッセージ表示の残り時間表示
             _currentShowTime -= deltaTime;
-            _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentText.Length *
+            _nextIcon.fillAmount = _currentShowTime / (_BASE_SHOW_TIME + (_currentVisibleLength *
                 (_playerParameter.language == PlayerParameter.eLanguage.English ? _ADD_ENG_SHOW_TIME : _ADD_SHOW_TIME)));
             if (_currentShowTime <= 0f) {
                 // 表示時間終了
@@ -135,6 +136,7 @@ public class MessageViewer : MonoBehaviour {
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
         _currentText = _playerParameter.language == PlayerParameter.eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
+        _currentVisibleLength = _GetVisibleLength(_currentText);
         if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
             //_currentMessage.playableDirector.Pause(); // Timelineを一時停止
 
@@ -172,7 +174,7 @@ public class MessageViewer : MonoBehaviour {
         _iconImage.sprite = chara_icon;   // キャラクターアイコンをセット
         _isSeries = _messageListScript.HasMessages();   // 次のメッセージがあるかどうか
 
-        _currentShowTime = _BASE_SHOW_TIME + (_currentText.Length *
+        _currentShowTime = _BASE_SHOW_TIME + (_currentVisibleLength *
             (_playerParameter.language == PlayerParameter.eLanguage.English ? _ADD_ENG_SHOW_TIME : _ADD_SHOW_TIME))
             + _currentMessage.addShowTime; // 基本3秒 + 文字数に応じた追加時間 + メッセージ固有の追加時間
 
@@ -209,10 +211,16 @@ public class MessageViewer : MonoBehaviour {
             yield return new WaitForSecondsRealtime(0.01f);
             _messageText.maxVisibleCharacters = message.Length;
         } else {
-            foreach (char c in message) { // 1文字ずつ表示
-                if (_playerParameter.language == PlayerParameter.eLanguage.Japanese ||
-                    (_playerParameter.language == PlayerParameter.eLanguage.English && _messageText.text.Length % 2 == 0)) {
+            int index = 0;
+            while (index < message.Length) { // 1文字ずつ表示(リッチテキストタグは待機なしでスキップ)
+                if (message[index] == '<') {
+                    var close_index = message.IndexOf('>', index);
+                    if (close_index >= 0) {
+                        index = close_index + 1;
+                        continue;
+                    }
                 }
+                index++;
                 _messageText.maxVisibleCharacters++;
 
                 // isUnScaledTimeに応じて待機方法を変更
@@ -221,7 +229,7 @@ public class MessageViewer : MonoBehaviour {
                 } else {
                     yield return new WaitForSeconds(message_show_time);
                 }
-                
+
                 while (_isStopMessage) {
                     yield return null;
                 }
@@ -229,6 +237,24 @@ public class MessageViewer : MonoBehaviour {
             _messageText.maxVisibleCharacters = message.Length; // 念のため最後に全表示
         }
         _typingCoroutine = null;
+    }
+
+    // リッチテキストタグ(<...>)を除いた実際の表示文字数を数える
+    private static int _GetVisibleLength(string text) {
+        int count = 0;
+        int index = 0;
+        while (index < text.Length) {
+            if (text[index] == '<') {
+                var close_index = text.IndexOf('>', index);
+                if (close_index >= 0) {
+                    index = close_index + 1;
+                    continue;
+                }
+            }
+            count++;
+            index++;
+        }
+        return count;
     }
 
     private void _HideOrNext() {
