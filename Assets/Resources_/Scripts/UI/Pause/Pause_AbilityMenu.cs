@@ -505,20 +505,8 @@ public class Pause_AbilityMenu : Pause_MenuBase {
 
     // 選択枠の位置更新
     private void _UpdateFrame() {
-        MoveFrameToSelected(
-            _currentButton switch {
-                eButtonIndex.B => _MenuButtonB,
-                eButtonIndex.Y => _MenuButtonY,
-                eButtonIndex.X => _MenuButtonX,
-                eButtonIndex.A => _MenuButtonA,
-                eButtonIndex.SL => _MenuButtonSL,
-                eButtonIndex.ZL => _MenuButtonZL,
-                eButtonIndex.SR => _MenuButtonSR,
-                eButtonIndex.ZR => _MenuButtonZR,
-                //eButtonIndex.System => _MenuButtonSystem,
-                //eButtonIndex.Reset => _MenuButtonReset,
-                _ => _MenuButtonB
-            });
+        // ボタン→RectTransformの対応は_GetButtonRectと重複させず、そちらに一本化する
+        MoveFrameToSelected(_GetButtonRect(_currentButton) ?? _MenuButtonB);
     }
 
     private void _UpdateSystemText() {
