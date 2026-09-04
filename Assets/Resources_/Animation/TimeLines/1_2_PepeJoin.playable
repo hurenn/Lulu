@@ -12,17 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u2026\u2026\u9A12\u304C\u3057\u3044\u304B\u3089\u7F6E\u3044\u3066\u3044\u304B\u306A\u3044\uFF1F"
-    englishText: "\u2026Aren\u2019t we just gonna leave him behind? He\u2019s way
-      too loud\u2026"
-    characterIcon: {fileID: 21300000, guid: 1562749aa6247d84c98b6c043e3751a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 5da08599daa32ff47b2d4d9ac8538cf3, type: 2}
 --- !u!114 &-8194236887185404400
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -760,18 +750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u306F\u3044\u306F\u3044\u5206\u304B\u3063\u305F\u304B\u3089\u4E00\u7DD2\u306B\u884C\u3053\u3046\u3002"
-    englishText: 'Yeah, yeah, I got it.
-
-      Come on, let''s go.'
-    characterIcon: {fileID: 21300000, guid: 07539e5e326a4ed4abf74227884b33a0, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 2c785dade3782fe4781487081ab82b14, type: 2}
 --- !u!114 &-3315625134692462316
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -909,19 +888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u3046\u3080\uFF01\u3060\u304C\u898B\u3066\u306E\u901A\u308A\u3001\n\u3053\u306E\u5148\u3084\u305F\u3089\u7F60\u304C\u5F35\u3089\u308C\u3066\u3044\u3066\u306A\uFF01"
-    englishText: 'Indeed!
-
-      As you can plainly see, this place is crawling with
-      traps!'
-    characterIcon: {fileID: 21300000, guid: e5aeb4aa60d7ebf438bfa1159f74f3f0, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 79b48ec2aba1b334cbe6ea9991c6749f, type: 2}
 --- !u!114 &-2555580366433997359
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1169,16 +1136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u3053\u308C\u306F\u3072\u3069\u3044"
-    englishText: ...Yikes.
-    characterIcon: {fileID: 21300000, guid: 3a358e054af59bb4d8188da9d8fd5afe, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 94203e910f110c244a074f1133171e62, type: 2}
 --- !u!114 &1699664361811204652
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1191,16 +1149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u30DA\u30DA\u3068\u5408\u6D41\u3057\u305F\uFF01"
-    englishText: Pepe has joined!
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: -1.5
-    isAutoForce: 1
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 9e3037a8a1a2ad248bf4d6eec812f76c, type: 2}
 --- !u!114 &2216826052653102635
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1254,18 +1203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u30DA\u30DA\uFF01\n\u3053\u3053\u306B\u3044\u305F\u3093\u3060\uFF01"
-    englishText: 'Pepe!
-
-      There you are! I found you!'
-    characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 03bb5bb256e359448af74f6ee2bc51b5, type: 2}
 --- !u!114 &2527960659856021369
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1278,18 +1216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u59EB\uFF01\n\u30DE\u30EB\u30EA\u30AB\u304F\u3093\u3082\u4E00\u7DD2\u304B\uFF01"
-    englishText: 'My princess!
-
-      Marlica''s with you too, I see!'
-    characterIcon: {fileID: 21300000, guid: 846575d3ed56a44438cac6995f860ebe, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 9d0d2352dcaf1df429667754d4d834a5, type: 2}
 --- !u!114 &2953269076957966159
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1315,18 +1242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u3068\u3044\u3046\u3053\u3068\u3067\u52A9\u3051\u3066\u304F\u3060\u3055\u3044\uFF01\n\u304A\u9858\u3044\u3057\u307E\u3059\uFF01"
-    englishText: 'Which is why... please help me!
-
-      I beg of you!'
-    characterIcon: {fileID: 21300000, guid: 846575d3ed56a44438cac6995f860ebe, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: a8790fc63ea3f214d8da489fef419426, type: 2}
 --- !u!114 &4681823898290469130
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1339,25 +1255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u3046\u3080\u3001\u304B\u305F\u3058\u3051\u306A\u3044\uFF01"
-    englishText: Much obliged!
-    characterIcon: {fileID: 21300000, guid: f199f40227e7a524db48ac9fe8783f27, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u3053\u306E\u30DA\u30DA\u30EA\u30A8\u30EB\u30A2\u30A2\uFF1D\u30BC\u30E9\u30AC\u30EB\u30AF\u3001\u59EB\u3092\u5B88\u308B\u9A0E\u58EB\u3068\u306A\u308D\u3046\uFF01\n\u306F\u3063\u30FC\u306F\u3063\u306F\u3063\u306F\uFF01\uFF01"
-    englishText: 'I, Peperiel Aa-Zeragaruk, shall be your knight and guard you, my
-      princess!
-
-      Ha-ha-ha!!'
-    characterIcon: {fileID: 21300000, guid: 846575d3ed56a44438cac6995f860ebe, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 7f2060ddba40f9e409127322fb6b953f, type: 2}
 --- !u!114 &5417783914559076174
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1370,16 +1268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u305D\u3093\u306A\u3053\u3068\u8A00\u308F\u306A\u3044\u306E\u3002"
-    englishText: "No way, I\u2019m not saying that."
-    characterIcon: {fileID: 21300000, guid: 07539e5e326a4ed4abf74227884b33a0, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: b4dc4877557f57248846cc23bf7635ca, type: 2}
 --- !u!114 &6536807965200046142
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 /// <summary>
@@ -66,12 +68,17 @@ public class MessageViewer : MonoBehaviour {
 
     private PlayerParameter _playerParameter;
 
+    private Locale _jaLocale;
+    private Locale _enLocale;
+
     private void OnEnable() {
         _messagePanel.SetActive(false); // パネルを非表示
         if(_playerController == null) {
             _playerController = PlayerCharacterManager.Controller;
         }
         _playerParameter = PlayerParameter.Instance;
+        _jaLocale = LocalizationSettings.AvailableLocales.GetLocale(SystemLanguage.Japanese);
+        _enLocale = LocalizationSettings.AvailableLocales.GetLocale(SystemLanguage.English);
     }
 
     private void Update() {
@@ -135,7 +142,8 @@ public class MessageViewer : MonoBehaviour {
             StopCoroutine(_typingCoroutine);            // 表示中のコルーチンを停止
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
-        _currentText = _playerParameter.language == PlayerParameter.eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
+        LocalizationSettings.SelectedLocale = _playerParameter.language == PlayerParameter.eLanguage.English ? _enLocale : _jaLocale;
+        _currentText = _currentMessage.text.GetLocalizedString();
         _currentVisibleLength = _GetVisibleLength(_currentText);
         if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
             //_currentMessage.playableDirector.Pause(); // Timelineを一時停止

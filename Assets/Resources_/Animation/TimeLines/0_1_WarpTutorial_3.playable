@@ -12,12 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u3042\u305F\u3057\u3001\u30EB\u30EB\uFF01\n\u3053\u308C\u304B\u3089\u3088\u308D\u3057\u304F\u306D\uFF01"
-    englishText: "I\u2019m Lulu!\nNice to meet you from now on!"
-    characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
-    addShowTime: 0
-    isAutoForce: 1
+  _messageSequence: {fileID: 11400000, guid: f0edf29e80e229a419c9ae9af30c70d5, type: 2}
 --- !u!114 &-8604388210561025899
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -191,30 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u3042\u3001\u5371\u306A\u304B\u3063\u305F\u2026\u2026\u3002"
-    englishText: "Ah, that was close\u2026"
-    characterIcon: {fileID: 21300000, guid: 07539e5e326a4ed4abf74227884b33a0, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-  - text: "\u2026\u2026\u2026\u2026"
-    englishText: "\u2026\u2026\u2026\u2026"
-    characterIcon: {fileID: 21300000, guid: e5cca281e95e8b947a7142c492d6eb7b, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-  - text: "\u2026\u2026\u30AD\u30DF\u3001\u3072\u3087\u3063\u3068\u3057\u3066\u30D7\u30EC\u30A4\u30E4\u30FC\uFF1F"
-    englishText: "\u2026You\u2026 could it be that you\u2019re the player?"
-    characterIcon: {fileID: 21300000, guid: f167bb1aee55c4841b12f91ae63f9400, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-  - text: "\u3059\u3054\u3044\uFF01\u307B\u3093\u3068\u306B\u7E4B\u304C\u3063\u305F\uFF01\n\u3042\u3001\u52A9\u3051\u3066\u304F\u308C\u3066\u3042\u308A\u304C\u3068\u3046\uFF01"
-    englishText: 'Amazing! It actually connected!
-
-      Ah, thank you for helping
-      me!'
-    characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
+  _messageSequence: {fileID: 11400000, guid: ff73fa60b5e5e85468438591cee63c48, type: 2}
 --- !u!114 &-2008091812044947128
 MonoBehaviour:
   m_ObjectHideFlags: 1

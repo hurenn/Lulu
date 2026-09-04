@@ -1,20 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Playables;
 
 [System.Serializable]
-public class MessageDataList {
-    public MessageData[] messageDatas;
-    public bool isForced;        // 強制メッセージかどうか
-}
-
-[System.Serializable]
 public class MessageData {
-    [TextArea(1, 5)]
-    public string text;   // メッセージ
-    [TextArea(1, 5)]
-    public string englishText; // 英語メッセージ
+    public LocalizedString text;   // メッセージ(表示直前にLocalizationSettings.SelectedLocaleを同期して解決する)
     public Sprite characterIcon;    // キャラクターアイコン
     public float addShowTime;      // 追加表示時間
 

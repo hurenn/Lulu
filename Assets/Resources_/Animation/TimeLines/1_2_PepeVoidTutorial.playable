@@ -325,13 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\uFF01"
-    englishText: "\uFF01"
-    characterIcon: {fileID: 21300000, guid: 7208d2215ae4b304392f6ab10ec173f7, type: 3}
-    addShowTime: -1.5
-    isAutoForce: 1
-    isUnScaledTime: 0
+  _messageSequence: {fileID: 11400000, guid: 2aa85510050a4c84fadab45de53ddfeb, type: 2}
 --- !u!114 &-2008091812044947128
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -881,13 +875,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "X\u30DC\u30BF\u30F3\u3092\u62BC\u3057\u7D9A\u3051\u3066\uFF01"
-    englishText: Hold down X!
-    characterIcon: {fileID: 21300000, guid: d22f1f60a0428d742becfe99c34dcac2, type: 3}
-    addShowTime: -1
-    isAutoForce: 1
-    isUnScaledTime: 0
+  _messageSequence: {fileID: 11400000, guid: 16231051b9cceed48869e8a607600984, type: 2}
 --- !u!114 &4630119513718634473
 MonoBehaviour:
   m_ObjectHideFlags: 1

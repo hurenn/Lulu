@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class MessageTrigger : MonoBehaviour {
     [SerializeField] private MessageList _messageListScript; // メッセージリスト管理
-    [SerializeField] private MessageDataList _messageDatas;  //メッセージデータ配列
+    [SerializeField] private MessageSequenceAsset _messageSequence;  //メッセージデータアセット
 
     private MessageViewer _messageViewer; // メッセージビューア
     private PlayerController _playerController; // プレイヤーコントローラー
@@ -18,6 +18,10 @@ public class MessageTrigger : MonoBehaviour {
         if(_messageListScript == null) {
             Debug.LogError("メッセージリストが設定されていません。自動取得しますが後程設定してください");
             _messageListScript = FindAnyObjectByType<MessageList>();
+        }
+        if (_messageSequence == null) {
+            Debug.LogError(gameObject.name + ": _messageSequenceが設定されていません。");
+            yield break;
         }
 
         // メッセージ表示機能を探す (WIP)
@@ -32,7 +36,7 @@ public class MessageTrigger : MonoBehaviour {
         }
 
         // メッセージ表示中は待機
-        if (!_messageDatas.isForced) {
+        if (!_messageSequence.isForced) {
             while (_messageListScript.HasMessages() || _messageViewer.IsShowing) {// || !_playerController.isEnabledCharacterInput) {
                 yield return null;
 
@@ -43,15 +47,21 @@ public class MessageTrigger : MonoBehaviour {
             }
         }
 
-        if (_messageDatas.isForced) {
+        if (_messageSequence.isForced) {
             // 強制メッセージの場合、他のメッセージをクリア
             _messageListScript.Clear();
             _messageViewer.ForceReset();
         }
 
         // メッセージを追加
-        foreach (MessageData message in _messageDatas.messageDatas) {
-            _messageListScript.Enqueue(message);
+        foreach (var entry in _messageSequence.messages) {
+            _messageListScript.Enqueue(new MessageData {
+                text = entry.text,
+                characterIcon = entry.characterIcon,
+                addShowTime = entry.addShowTime,
+                isAutoForce = entry.isAutoForce,
+                isUnScaledTime = entry.isUnScaledTime,
+            });
         }
         Destroy(gameObject);
     }

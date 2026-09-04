@@ -3,15 +3,24 @@ using UnityEngine.Playables;
 
 [System.Serializable]
 public class MessagePlayableAsset : PlayableAsset {
-    [SerializeField] private MessageData[] messageDatas;  //メッセージデータ配列
-    [Header("ウィンドウ振動")]
-    [SerializeField] private bool shakeWindow = false;
-    [SerializeField] private float shakeIntensity = 20f;
-    [SerializeField] private float shakeDuration = 0.4f;
+    [SerializeField] private MessageSequenceAsset _messageSequence;  //メッセージデータアセット
 
     public override Playable CreatePlayable(PlayableGraph graph, GameObject owner) {
         var playable = ScriptPlayable<MessagePlayableBehaviour>.Create(graph);
         var behaviour = playable.GetBehaviour();
+
+        var messageDatas = new MessageData[_messageSequence.messages.Length];
+        for (int i = 0; i < messageDatas.Length; i++) {
+            var entry = _messageSequence.messages[i];
+            messageDatas[i] = new MessageData {
+                text = entry.text,
+                characterIcon = entry.characterIcon,
+                addShowTime = entry.addShowTime,
+                isAutoForce = entry.isAutoForce,
+                isUnScaledTime = entry.isUnScaledTime,
+            };
+        }
+
         if (playable.GetGraph().GetResolver() is PlayableDirector director) {
             foreach (var data in messageDatas) {
                 data.playableDirector = director;
@@ -19,9 +28,9 @@ public class MessagePlayableAsset : PlayableAsset {
             behaviour.director = director;
         }
         behaviour.messageDatas = messageDatas;
-        behaviour.shakeWindow = shakeWindow;
-        behaviour.shakeIntensity = shakeIntensity;
-        behaviour.shakeDuration = shakeDuration;
+        behaviour.shakeWindow = _messageSequence.shakeWindow;
+        behaviour.shakeIntensity = _messageSequence.shakeIntensity;
+        behaviour.shakeDuration = _messageSequence.shakeDuration;
         return playable;
     }
 }

@@ -575,16 +575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u904A\u3093\u3067\u3044\u305F\u3060\u304D\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3057\u305F\uFF01\n\u30A6\u30A3\u30C3\u30B7\u30E5\u30EA\u30B9\u30C8\u767B\u9332\u3057\u3066\n\u5B8C\u6210\u3092\u304A\u5F85\u3061\u304F\u3060\u3055\u3044\uFF01"
-    englishText: Please add it to your wishlist and stay tuned for its release!
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 163b8439a7c6e514b963a2c7f6fc93b6, type: 2}
 --- !u!114 &-3931124069735748447
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -597,16 +588,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u30DF\u30EA\u30FC\uFF01 \u5927\u4E08\u592B\u304B\uFF01"
-    englishText: "Milly! Hey\u2014Milly!! Are you okay!?"
-    characterIcon: {fileID: 21300000, guid: a10af6ded7bbe5543b1ce36e9fa21deb, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 0656cb3db7acb0a44b5a303bdabff3d3, type: 2}
 --- !u!74 &-3381590471662288107
 AnimationClip:
   m_ObjectHideFlags: 0
@@ -989,40 +971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u3082\u3057\u3082\u3057\uFF1F"
-    englishText: Hello?
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u3046\u3093\u3001\u30D7\u30EC\u30A4\u30E4\u30FC\u306B\u4F1A\u3048\u305F\u3088\uFF01\n\u30DC\u30B9\u306E\u8A00\u3063\u305F\u901A\u308A\u3060\u3063\u305F\uFF01"
-    englishText: 'Yeah, I met the Player!
-
-      You were right, Boss!'
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u3048\u3001\u8A08\u753B\uFF1F\n\u2026\u2026\u3042\u3002\u5FD8\u308C\u3066\u305F\u3002"
-    englishText: 'Huh? The plan?
-
-      ...Oh. I forgot.'
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u306F\u30FC\u3044\u3002\n\u3058\u3083\u3042\u307E\u305F\u306D\u3002\u30DC\u30B9\u3002"
-    englishText: 'Okay.
-
-      See you later, Boss.'
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: d847d2c61b12b9340a3ecc00a64c3434, type: 2}
 --- !u!114 &-2622875884853020488
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1035,18 +984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u2026\u2026\u307E\u305F\u4F1A\u304A\u3046\u306D\u3002\u30D7\u30EC\u30A4\u30E4\u30FC\u3002\n\u7D76\u5BFE\u3060\u3088\u3002"
-    englishText: 'We''ll meet again, Player.
-
-      That''s a promise.'
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 75be872ec46ba1a42acbe4977bc09442, type: 2}
 --- !u!114 &-2545060240234631603
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1151,16 +1089,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u304A\u5144\u3061\u3083\u3093\uFF01\n\u306F\u3044\u3001\u30DF\u30EA\u30FC\u3061\u3083\u3093\u306F\u5927\u4E08\u592B\u3067\u3059\uFF01"
-    englishText: "Big brother!\nIt\u2019s okay \u2014 Milly\u2019s fine!"
-    characterIcon: {fileID: 21300000, guid: a1f7b2950a69b0f4ba5a2b5039ce6c8a, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 73db70c1f5ec9d747bc6e7050949b78e, type: 2}
 --- !u!114 &-720714022765163111
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1173,16 +1102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u826F\u304B\u3063\u305F\u2026\u2026\uFF01"
-    englishText: Thank goodness...!
-    characterIcon: {fileID: 21300000, guid: 8f037a52c0459f341ab9ec2c590a8b6f, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: a827148568a1ace40b6e5de6ad685917, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1267,28 +1187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u79C1\u305F\u3061\u3082\u884C\u3053\u3046\u3002\u30EB\u30EB\u3061\u3083\u3093\u3002"
-    englishText: "Let\u2019s go too, Lulu-chan."
-    characterIcon: {fileID: 21300000, guid: 21a616f61046fb34bb4c24fcd3501c06, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u3046\u3093\uFF01"
-    englishText: Yeah!
-    characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u2026\u2026\u3042\u3063\u3002"
-    englishText: "\u2026\u2026Oh, wait!"
-    characterIcon: {fileID: 21300000, guid: f167bb1aee55c4841b12f91ae63f9400, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: ea97b9a92fd9d03428ca2179292e6728, type: 2}
 --- !u!114 &2764898451960149666
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3085,34 +2984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u529B\u3092\u8CB8\u3057\u3066\u304F\u308C\u3066\u3042\u308A\u304C\u3068\u3046\u3001\u30D7\u30EC\u30A4\u30E4\u30FC\uFF01"
-    englishText: Thank you for playing with me, Player!
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u3082\u3063\u3068\u305F\u304F\u3055\u3093\u304A\u8A71\u3057\u305F\u3044\u3051\u3069\u2026\u2026\n\u4ECA\u65E5\u306F\u3082\u3046\u3059\u3050\u63A5\u7D9A\u304C\u5207\u308C\u3061\u3083\u3046\u307F\u305F\u3044\u3002"
-    englishText: 'I''d love to keep talking with you, but...
-
-      it looks like
-      our connection is about to end.'
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u3042\u306E\u306D\u3001\u307E\u305F\u904A\u3073\u306B\u6765\u3066\u306D\uFF01\n\u5F85\u3063\u3066\u308B\u3088\uFF01"
-    englishText: 'Promise you''ll come visit me again, okay?
-
-      I''ll be waiting
-      for you!'
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: 0fd61690d9740cc4b8db8ed0e2601062, type: 2}
 --- !u!114 &4540610433346502278
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3153,40 +3025,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u3046\u3080\u3002\u3067\u306F\u65E9\u304F\u3053\u3053\u304B\u3089\u96E2\u308C\u308B\u3068\u3057\u3088\u3046\u3002\n\u305D\u308D\u305D\u308D\u5927\u4EBA\u305F\u3061\u3082\u5230\u7740\u3059\u308B\u9803\u5408\u3044\u3060\u308D\u3046\u3057\u306A\u3002"
-    englishText: "Well then, let\u2019s get out of here.\nThe adults should be arriving
-      any minute now."
-    characterIcon: {fileID: 21300000, guid: f6389e54db455ce4aa0a012ed47c6a25, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u3042\u3042\u3002\u307E\u305F\u6012\u3089\u308C\u308B\u306E\u306F\u3054\u3081\u3093\u3060\u3002"
-    englishText: "Yeah... I\u2019d rather not get another lecture."
-    characterIcon: {fileID: 21300000, guid: 5697ec96c8bffbb419d192c29b731381, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u306F\u3063\u306F\u3063\u306F\uFF01\n\u975E\u516C\u5F0F\u6D3B\u52D5\u306E\u8F9B\u3044\u3068\u3053\u308D\u3060\u306A\uFF01"
-    englishText: 'Ha ha ha!
-
-      The hardships of an unofficial mission, eh?'
-    characterIcon: {fileID: 21300000, guid: 846575d3ed56a44438cac6995f860ebe, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u3055\u3042\u3001\u884C\u3053\u3046\u3002\u30DF\u30EA\u30FC\u3002\n\u7ACB\u3066\u308B\uFF1F"
-    englishText: "Come on, Milly\u2026 \nCan you stand?"
-    characterIcon: {fileID: 21300000, guid: 8f037a52c0459f341ab9ec2c590a8b6f, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  - text: "\u306F\u3044\u3063\uFF01"
-    englishText: Yes!
-    characterIcon: {fileID: 21300000, guid: 0040aa3c9de3b45418f2080e41781db9, type: 3}
-    addShowTime: 0
-    isAutoForce: 0
-    isUnScaledTime: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
+  _messageSequence: {fileID: 11400000, guid: bdcd65ba841cbbb4abd88c3d31afa03f, type: 2}

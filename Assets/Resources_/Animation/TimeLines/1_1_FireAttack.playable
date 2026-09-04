@@ -352,13 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
-  messageDatas:
-  - text: "\u307E\u305F\u6575\u304C\u3044\u308B\u306D\u3002\n\u5F53\u305F\u3089\u306A\u3044\u3088\u3046\u306B\u907F\u3051\u3066\u2026\u2026"
-    englishText: "There\u2019s another enemy. \nLet\u2019s dodge so we don\u2019t
-      get hit, and\u2014"
-    characterIcon: {fileID: 21300000, guid: 7208d2215ae4b304392f6ab10ec173f7, type: 3}
-    addShowTime: -1
-    isAutoForce: 1
+  _messageSequence: {fileID: 11400000, guid: ed93178f4c7bd214eb1fc30edf634719, type: 2}
 --- !u!114 &-2709937416342327967
 MonoBehaviour:
   m_ObjectHideFlags: 1
