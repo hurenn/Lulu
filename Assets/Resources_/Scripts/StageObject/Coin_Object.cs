@@ -15,7 +15,8 @@ public class Coin_Object : StageObject_Base {
     [Header("自動回収設定")]
     [SerializeField] private bool _isAutoCollect = false;   // 自動回収するかどうか
     [SerializeField] private float _attractForce = 6.0f;    // プレイヤーに引き寄せる力
-    [SerializeField] private float _friction = 0.95f; // 慣性移動の減衰率
+    [SerializeField] private float _friction = 0.95f; // 慣性移動の減衰率（60fps基準の1フレームあたりの減衰率）
+    private const float FRICTION_REFERENCE_DELTA_TIME = 1f / 60f; // _frictionの基準フレーム時間
     [SerializeField] private Vector2 _scatterPowerRandomRange = new Vector2(3.0f, 5.0f); // 散らばる力のランダム範囲
     [SerializeField] private Vector2 _scatterAngleRange = new Vector2(150.0f, 210.0f); // 散らばる角度の範囲
     private Transform _playerTransform = null;
@@ -76,8 +77,8 @@ public class Coin_Object : StageObject_Base {
 
         // 慣性移動
         transform.position += _velocity * Time.deltaTime;
-        // 徐々に速度を減衰させる
-        _velocity *= _friction;
+        // 徐々に速度を減衰させる（経過時間ベースにすることでTimeScaleが変化しても飛び散り方を一定に保つ）
+        _velocity *= Mathf.Pow(_friction, Time.deltaTime / FRICTION_REFERENCE_DELTA_TIME);
     }
 
     protected override void _HitPlayer(Player_Character player) {
