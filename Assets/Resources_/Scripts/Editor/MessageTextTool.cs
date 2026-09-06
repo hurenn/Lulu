@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -13,38 +12,6 @@ using UnityEngine.Timeline;
 /// シーン/Timelineに新しいメッセージを追加した際のキー自動採番と、キー参照の整合性チェックを行う。
 /// </summary>
 public static class MessageTextTool {
-    private const string _JSON_ASSET_PATH = "Assets/Resources/Localization/Messages.json";
-
-    // キーは「ステージID2桁+メッセージID3桁」の5桁数値文字列(例: 01001)。
-    // シーン名/Timeline名の"Stage(\d+)"または先頭の"数字_"からステージ番号を判定し、無ければ00とする。
-    private static string _StageIdFromName(string name) {
-        var m = Regex.Match(name, @"Stage(\d+)");
-        if (!m.Success) m = Regex.Match(name, @"^(\d+)_");
-        return m.Success ? int.Parse(m.Groups[1].Value).ToString("D2") : "00";
-    }
-
-    // ビルド設定のシーン一覧だけでは未登録シーンを見落とすため、プロジェクトの全シーンを対象にする
-    private static IEnumerable<string> _EnabledScenePaths() {
-        foreach (var guid in AssetDatabase.FindAssets("t:Scene", new[] { "Assets/Resources_/Scenes" })) {
-            yield return AssetDatabase.GUIDToAssetPath(guid);
-        }
-    }
-
-    private static Dictionary<string, Dictionary<string, string>> _LoadTable() {
-        if (!File.Exists(_JSON_ASSET_PATH)) return new Dictionary<string, Dictionary<string, string>>();
-        var json = File.ReadAllText(_JSON_ASSET_PATH);
-        return Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(json)
-               ?? new Dictionary<string, Dictionary<string, string>>();
-    }
-
-    private static void _SaveTable(Dictionary<string, Dictionary<string, string>> table) {
-        var sorted = new SortedDictionary<string, Dictionary<string, string>>(table);
-        var json = Newtonsoft.Json.JsonConvert.SerializeObject(sorted, Newtonsoft.Json.Formatting.Indented);
-        Directory.CreateDirectory(Path.GetDirectoryName(_JSON_ASSET_PATH));
-        File.WriteAllText(_JSON_ASSET_PATH, json, new System.Text.UTF8Encoding(false));
-        AssetDatabase.Refresh();
-    }
-
     [MenuItem("Lulu/Localization/未設定キーへ自動採番")]
     public static void AssignMissingKeys() {
         if (EditorApplication.isPlaying) { Debug.LogError("Play Mode中は実行できません。"); return; }
@@ -52,30 +19,15 @@ public static class MessageTextTool {
             if (SceneManager.GetSceneAt(i).isDirty) { Debug.LogError("未保存のシーンがあります。保存してから実行してください。"); return; }
         }
 
-        var table = _LoadTable();
+        var table = MessageJsonUtil.LoadTable();
         int added = 0;
 
-        // 既存キー(5桁ID)からステージごとの現在の最大番号を復元し、そこから連番を継続する
-        var nextNumber = new Dictionary<string, int>();
-        foreach (var k in table.Keys) {
-            if (!Regex.IsMatch(k, @"^\d{5}$")) continue;
-            var stage = k.Substring(0, 2);
-            var num = int.Parse(k.Substring(2));
-            if (!nextNumber.TryGetValue(stage, out var cur) || num > cur) nextNumber[stage] = num;
-        }
-        string NewKey(string stageId) {
-            nextNumber.TryGetValue(stageId, out var cur);
-            cur++;
-            nextNumber[stageId] = cur;
-            return stageId + cur.ToString("D3");
-        }
-
         var fiTrig = typeof(MessageTrigger).GetField("_messageDatas", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        foreach (var scenePath in _EnabledScenePaths()) {
+        foreach (var scenePath in MessageJsonUtil.AllScenePaths()) {
             if (!scenePath.StartsWith("Assets/")) continue;
             var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
             bool changed = false;
-            var stageId = _StageIdFromName(Path.GetFileNameWithoutExtension(scenePath));
+            var stageId = MessageJsonUtil.StageIdFromName(Path.GetFileNameWithoutExtension(scenePath));
             foreach (var trig in Object.FindObjectsByType<MessageTrigger>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
                 var so = new SerializedObject(trig);
                 var arr = so.FindProperty("_messageDatas")?.FindPropertyRelative("messageDatas");
@@ -83,7 +35,7 @@ public static class MessageTextTool {
                 for (int idx = 0; idx < arr.arraySize; idx++) {
                     var keyProp = arr.GetArrayElementAtIndex(idx).FindPropertyRelative("key");
                     if (!string.IsNullOrEmpty(keyProp.stringValue)) continue;
-                    var key = NewKey(stageId);
+                    var key = MessageJsonUtil.NewKeyForStage(table, stageId);
                     keyProp.stringValue = key;
                     table[key] = new Dictionary<string, string> { { "ja", "" }, { "en", "" } };
                     added++;
@@ -101,7 +53,7 @@ public static class MessageTextTool {
         foreach (var guid in AssetDatabase.FindAssets("t:TimelineAsset")) {
             var tlPath = AssetDatabase.GUIDToAssetPath(guid);
             var timeline = AssetDatabase.LoadAssetAtPath<TimelineAsset>(tlPath);
-            var stageId = _StageIdFromName(Path.GetFileNameWithoutExtension(tlPath));
+            var stageId = MessageJsonUtil.StageIdFromName(Path.GetFileNameWithoutExtension(tlPath));
             bool changed = false;
             foreach (var track in timeline.GetOutputTracks()) {
                 foreach (var clip in track.GetClips()) {
@@ -111,7 +63,7 @@ public static class MessageTextTool {
                     for (int idx = 0; idx < arr.arraySize; idx++) {
                         var keyProp = arr.GetArrayElementAtIndex(idx).FindPropertyRelative("key");
                         if (string.IsNullOrEmpty(keyProp.stringValue)) {
-                            var key = NewKey(stageId);
+                            var key = MessageJsonUtil.NewKeyForStage(table, stageId);
                             keyProp.stringValue = key;
                             table[key] = new Dictionary<string, string> { { "ja", "" }, { "en", "" } };
                             added++;
@@ -125,7 +77,7 @@ public static class MessageTextTool {
             if (changed) AssetDatabase.SaveAssets();
         }
 
-        _SaveTable(table);
+        MessageJsonUtil.SaveTable(table);
         Debug.Log($"未設定キーへの自動採番が完了しました。新規キー追加数: {added}");
     }
 
@@ -135,7 +87,7 @@ public static class MessageTextTool {
             if (SceneManager.GetSceneAt(i).isDirty) { Debug.LogError("未保存のシーンがあります。保存してから実行してください。"); return; }
         }
 
-        var table = _LoadTable();
+        var table = MessageJsonUtil.LoadTable();
         var usedKeys = new HashSet<string>();
         int emptyKeyCount = 0, missingCount = 0, duplicateCount = 0, missingLangCount = 0;
 
@@ -153,7 +105,7 @@ public static class MessageTextTool {
         }
 
         var fiTrig = typeof(MessageTrigger).GetField("_messageDatas", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        foreach (var scenePath in _EnabledScenePaths()) {
+        foreach (var scenePath in MessageJsonUtil.AllScenePaths()) {
             if (!scenePath.StartsWith("Assets/")) continue;
             EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
             foreach (var trig in Object.FindObjectsByType<MessageTrigger>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
