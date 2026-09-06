@@ -135,7 +135,7 @@ public class MessageViewer : MonoBehaviour {
             StopCoroutine(_typingCoroutine);            // 表示中のコルーチンを停止
 
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
-        _currentText = _playerParameter.language == PlayerParameter.eLanguage.English ? _currentMessage.englishText : _currentMessage.text;
+        _currentText = MessageTextTable.GetText(_currentMessage.key, _playerParameter.language);
         _currentVisibleLength = _GetVisibleLength(_currentText);
         if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
             //_currentMessage.playableDirector.Pause(); // Timelineを一時停止

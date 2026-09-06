@@ -169,14 +169,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &48984848
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -383,14 +385,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &134982075
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -731,14 +735,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &170888100
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -945,14 +951,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &196706601
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1408,14 +1416,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &249302877
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1512,14 +1522,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &250513936
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1716,14 +1728,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &299145136
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2196,14 +2210,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!1 &353706296
 GameObject:
   m_ObjectHideFlags: 0
@@ -2254,14 +2270,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &353706299
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2358,14 +2376,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &385313974
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2799,12 +2819,23 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _isTrapDamage: 0
+  _selfCharacter: {fileID: 0}
+  _damageToSelf: 0
+  _invincibleTimeToSelf: 0.5
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 1
   _hitEffectSize: 1
+  _localTimePauses: []
   _hitStopTime: 0.05
-  _hitStopDelay: 0.01
-  _hitStop_Heavy: 0
+  _manualCameraShake: 0
+  _manualShakeIntensity: 0.5
+  _manualShakeDuration: 0.5
+  _hitCameraShakeIntensity: 0
+  _hitPlayerEvent: []
+  _avoidPlayerEvent: []
 --- !u!61 &445964558
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3066,14 +3097,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &468670596
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3639,14 +3672,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &530375584
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4121,12 +4156,23 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _isTrapDamage: 0
+  _selfCharacter: {fileID: 0}
+  _damageToSelf: 0
+  _invincibleTimeToSelf: 0.5
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 1
   _hitEffectSize: 1
+  _localTimePauses: []
   _hitStopTime: 0.05
-  _hitStopDelay: 0.01
-  _hitStop_Heavy: 0
+  _manualCameraShake: 0
+  _manualShakeIntensity: 0.5
+  _manualShakeDuration: 0.5
+  _hitCameraShakeIntensity: 0
+  _hitPlayerEvent: []
+  _avoidPlayerEvent: []
 --- !u!61 &613628868
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4604,14 +4650,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &689424152
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4818,14 +4866,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &715851879
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5713,14 +5763,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &889990807
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5902,11 +5954,11 @@ MonoBehaviour:
   _messageListScript: {fileID: 544547198}
   _messageDatas:
     messageDatas:
-    - text: "\u30C6\u30B9\u30C8\u4E2D\u30FB\u30FB\u30FB"
-      englishText: 
+    - key: 
       characterIcon: {fileID: 21300000, guid: 29b0c692ad879ce47b5d433d4cde2025, type: 3}
       addShowTime: 0
       isAutoForce: 0
+      isUnScaledTime: 0
     isForced: 0
 --- !u!4 &919979580
 Transform:
@@ -6239,14 +6291,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!1 &971535548
 GameObject:
   m_ObjectHideFlags: 0
@@ -6342,14 +6396,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &991781850
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6492,14 +6548,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!1 &1054303057
 GameObject:
   m_ObjectHideFlags: 0
@@ -6550,14 +6608,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1054303060
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6654,14 +6714,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1082266502
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6758,14 +6820,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1091673467
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7574,14 +7638,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1254710237
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7765,14 +7831,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1297513773
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7869,14 +7937,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1319135091
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8019,14 +8089,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!1 &1337855493
 GameObject:
   m_ObjectHideFlags: 0
@@ -8249,14 +8321,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1366030781
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8570,14 +8644,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!1 &1397817183
 GameObject:
   m_ObjectHideFlags: 0
@@ -8927,14 +9003,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1439551915
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9581,14 +9659,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1560661650
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9890,14 +9970,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1596303914
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9994,14 +10076,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1600508661
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10098,14 +10182,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1602565624
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10202,14 +10288,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1653861198
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10430,12 +10518,23 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _isTrapDamage: 0
+  _selfCharacter: {fileID: 0}
+  _damageToSelf: 0
+  _invincibleTimeToSelf: 0.5
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 1
   _hitEffectSize: 1
+  _localTimePauses: []
   _hitStopTime: 0.05
-  _hitStopDelay: 0.01
-  _hitStop_Heavy: 0
+  _manualCameraShake: 0
+  _manualShakeIntensity: 0.5
+  _manualShakeDuration: 0.5
+  _hitCameraShakeIntensity: 0
+  _hitPlayerEvent: []
+  _avoidPlayerEvent: []
 --- !u!61 &1681267746
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10797,16 +10896,16 @@ MonoBehaviour:
   _messageListScript: {fileID: 544547198}
   _messageDatas:
     messageDatas:
-    - text: "\u79C1\u304C\u6765\u305F\uFF01\uFF01"
-      englishText: 
+    - key: 
       characterIcon: {fileID: 21300000, guid: c3e57244dc06b8347a09176cd0e78425, type: 3}
       addShowTime: 0
       isAutoForce: 0
-    - text: "\u30DA\u30DA\u3046\u308B\u3055\u3044"
-      englishText: 
+      isUnScaledTime: 0
+    - key: 
       characterIcon: {fileID: 21300000, guid: 472d7fe381e2db8478ab66a49a1f54e1, type: 3}
       addShowTime: 0
       isAutoForce: 0
+      isUnScaledTime: 0
     isForced: 1
 --- !u!1 &1703609846
 GameObject:
@@ -11034,14 +11133,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1750705968
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -11138,14 +11239,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1770924217
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -11462,14 +11565,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1830441682
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -11566,14 +11671,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1830568604
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -11841,14 +11948,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &1952775621
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -12055,14 +12164,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &2037949461
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -12269,14 +12380,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &2081951658
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -12727,14 +12840,16 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _MpRecoverAmount: 5
   _coinValue: 10
-  _collectSound: {fileID: 0}
   _isAutoCollect: 0
   _attractForce: 6
   _friction: 0.95
   _scatterPowerRandomRange: {x: 3, y: 5}
   _scatterAngleRange: {x: 150, y: 210}
+  _coinRend: {fileID: 0}
+  _lightObject: {fileID: 0}
   _trail: {fileID: 0}
   _pickEffect: {fileID: 0}
+  _seCollectCoin: {fileID: 0}
 --- !u!61 &2133493583
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -13119,7 +13234,7 @@ PrefabInstance:
     - target: {fileID: 5260072912760010773, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: _characterParameter
       value: 
-      objectReference: {fileID: 7941261264762058576}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13308,6 +13423,14 @@ PrefabInstance:
       propertyPath: _messageListScript
       value: 
       objectReference: {fileID: 544547198}
+    - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
+      propertyPath: _messageDatas.messageDatas.Array.data[0].key
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 512709528090022214, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
+      propertyPath: _messageDatas.messageDatas.Array.data[1].key
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 784869042385548296, guid: 9a4d519b2e46a55498391b25dbe6dc79, type: 3}
       propertyPath: m_Name
       value: MessageTrigger
@@ -13480,17 +13603,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4800534621973140495, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
   m_PrefabInstance: {fileID: 494103190347707067}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7941261264762058576 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4239974138943333648, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
-  m_PrefabInstance: {fileID: 494103190347707067}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9f5d22f392f9bc4783351c9001c6734, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8369236170261666990 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2780845963305904891, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
