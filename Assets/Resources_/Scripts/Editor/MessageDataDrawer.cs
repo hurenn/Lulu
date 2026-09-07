@@ -55,9 +55,13 @@ public class MessageDataDrawer : PropertyDrawer {
         return MessageJsonUtil.StageIdFromName(name);
     }
 
+    // 空文字だけでなく、フォーマット不正・JSON未登録のキーも「新規発行が必要」とみなす
+    // (Inspectorで手入力した不正なキー等をボタン一つで正しいIDに置き換えられるようにするため)
+    private static bool _NeedsNewKey(string key) => _EntryOrNull(key) == null;
+
     public static string AssignNewKey(SerializedProperty property) {
         var keyProp = property.FindPropertyRelative("key");
-        if (!string.IsNullOrEmpty(keyProp.stringValue)) return keyProp.stringValue;
+        if (!_NeedsNewKey(keyProp.stringValue)) return keyProp.stringValue;
         var stageId = ContextStageId(property.serializedObject.targetObject);
         var table = MessageJsonUtil.LoadTable();
         var newKey = MessageJsonUtil.NewKeyForStage(table, stageId);
@@ -92,11 +96,10 @@ public class MessageDataDrawer : PropertyDrawer {
         float height = EditorGUI.GetPropertyHeight(property, previewLabel, true);
 
         if (property.isExpanded) {
-            if (string.IsNullOrEmpty(key)) {
-                height += EditorGUIUtility.singleLineHeight + 4f;
+            if (_NeedsNewKey(key)) {
+                height += (EditorGUIUtility.singleLineHeight * (string.IsNullOrEmpty(key) ? 1 : 2)) + 4f;
             } else {
-                var entry = _EntryOrNull(key);
-                height += entry == null ? EditorGUIUtility.singleLineHeight + 4f : _EditableAreaHeight(entry) + 4f;
+                height += _EditableAreaHeight(_EntryOrNull(key)) + 4f;
             }
         }
         return height;
@@ -115,18 +118,19 @@ public class MessageDataDrawer : PropertyDrawer {
         if (property.isExpanded) {
             var areaRect = new Rect(position.x, position.y + childHeight + 2f, position.width,
                 position.height - childHeight - 2f);
-            if (string.IsNullOrEmpty(key)) {
-                var buttonRect = new Rect(areaRect.x, areaRect.y, areaRect.width, EditorGUIUtility.singleLineHeight);
+            if (_NeedsNewKey(key)) {
+                float y = areaRect.y;
+                if (!string.IsNullOrEmpty(key)) {
+                    EditorGUI.LabelField(new Rect(areaRect.x, y, areaRect.width, EditorGUIUtility.singleLineHeight),
+                        "現在の値「" + key + "」はJSONに未登録です。", EditorStyles.miniLabel);
+                    y += EditorGUIUtility.singleLineHeight;
+                }
+                var buttonRect = new Rect(areaRect.x, y, areaRect.width, EditorGUIUtility.singleLineHeight);
                 if (GUI.Button(buttonRect, "IDを新規発行")) {
                     AssignNewKey(property);
                 }
             } else {
-                var entry = _EntryOrNull(key);
-                if (entry == null) {
-                    EditorGUI.LabelField(areaRect, "(JSONに未登録のキーです: " + key + ")", _PreviewBoxStyle());
-                } else {
-                    _DrawEditableFields(areaRect, key, entry);
-                }
+                _DrawEditableFields(areaRect, key, _EntryOrNull(key));
             }
         }
 
