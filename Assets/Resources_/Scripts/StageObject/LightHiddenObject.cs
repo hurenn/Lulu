@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 /// <summary>
 /// LightAbility使用中(isLightInvincible/isAutoLightInvincible)だけ、イージング付きフェードで
@@ -7,10 +8,12 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class LightHiddenObject : MonoBehaviour {
     [SerializeField] private Renderer _renderer; // SpriteRenderer/TilemapRendererどちらも可
+    [SerializeField] private Graphic _graphic; // UIのImage等はこちら
     [SerializeField] private Collider2D _collider;
     [SerializeField] private float _fadeDuration = 0.3f; // 消える/現れるアニメーションの時間(秒)
 
     private Tilemap _tilemap;
+    private float _initialAlpha = 1f; // 元々設定されていた(消える前の)透明度
     private float _currentAlpha = 1f;
     private float _fadeStartAlpha = 1f;
     private float _fadeElapsed;
@@ -18,11 +21,22 @@ public class LightHiddenObject : MonoBehaviour {
 
     private void Reset() {
         _renderer = GetComponent<Renderer>();
+        _graphic = GetComponent<Graphic>();
         _collider = GetComponent<Collider2D>();
     }
 
     private void Awake() {
         if (_renderer != null) _tilemap = _renderer.GetComponent<Tilemap>();
+        _initialAlpha = _GetCurrentAlpha();
+        _currentAlpha = _initialAlpha;
+        _fadeStartAlpha = _initialAlpha;
+    }
+
+    private float _GetCurrentAlpha() {
+        if (_graphic != null) return _graphic.color.a;
+        if (_tilemap != null) return _tilemap.color.a;
+        if (_renderer is SpriteRenderer sr) return sr.color.a;
+        return 1f;
     }
 
     private void Update() {
@@ -37,7 +51,7 @@ public class LightHiddenObject : MonoBehaviour {
             _fadeElapsed = 0f;
         }
 
-        float targetAlpha = _targetVisible ? 1f : 0f;
+        float targetAlpha = _targetVisible ? _initialAlpha : 0f;
         if (_fadeDuration <= 0f) {
             _currentAlpha = targetAlpha;
         } else {
@@ -51,6 +65,12 @@ public class LightHiddenObject : MonoBehaviour {
     }
 
     private void _ApplyAlpha(float alpha) {
+        if (_graphic != null) {
+            var gc = _graphic.color;
+            gc.a = alpha;
+            _graphic.color = gc;
+        }
+
         if (_renderer == null) return;
         if (_tilemap != null) {
             var c = _tilemap.color;
