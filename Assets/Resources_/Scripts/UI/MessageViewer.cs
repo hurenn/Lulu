@@ -64,6 +64,12 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private AudioClip _seSpeak;
     [SerializeField] private AudioClip _seSpeakOne;
 
+    [SerializeField] private MessageChoicePanel _choicePanel;   // 選択肢UI
+    private MessageChoiceOption[] _pendingChoices;               // 表示中の選択肢
+    private int _selectedChoiceIndex;                            // 選択中のインデックス
+    private UnityEngine.Playables.PlayableDirector _choiceDirector; // 選択肢表示のために一時停止したTimeline
+    public bool IsChoiceActive { get; private set; }             // 選択肢表示中フラグ
+
     private PlayerParameter _playerParameter;
 
     private void OnEnable() {
@@ -81,6 +87,10 @@ public class MessageViewer : MonoBehaviour {
             return;
         }
         if (_isStopMessage) {
+            return;
+        }
+        // 選択肢表示中は通常の進行を止める
+        if (IsChoiceActive) {
             return;
         }
 
@@ -260,6 +270,12 @@ public class MessageViewer : MonoBehaviour {
     private void _HideOrNext() {
         _isShowing = false;
 
+        // このメッセージに選択肢が付いていれば、通常の終了/継続処理の代わりに選択肢モードへ
+        if (_currentMessage.choices != null && _currentMessage.choices.Length > 0) {
+            EnterChoiceMode(_currentMessage.choices, _currentMessage.playableDirector);
+            return;
+        }
+
         // 一連のメッセージ表示中で無ければ一旦パネルを消す
         if (!_isSeries) {
             if(_currentMessage.playableDirector != null) {
@@ -267,6 +283,50 @@ public class MessageViewer : MonoBehaviour {
             }
             _SwitchShowAnimation(_isShowing);
             _currentCoolTime = _COOL_TIME;  // クールタイム設定
+        }
+    }
+
+    /// <summary>
+    /// 選択肢モードへ移行する(パネルは開いたまま維持する)
+    /// </summary>
+    public void EnterChoiceMode(MessageChoiceOption[] choices, UnityEngine.Playables.PlayableDirector pausedDirector) {
+        _pendingChoices = choices;
+        _choiceDirector = pausedDirector;
+        _selectedChoiceIndex = 0;
+        IsChoiceActive = true;
+        _choicePanel.Show(choices, _selectedChoiceIndex, _playerParameter.language);
+    }
+
+    // 選択肢のカーソルを移動する(dir: -1で上、+1で下)
+    public void MoveChoiceCursor(int dir) {
+        if (!IsChoiceActive) return;
+        // ループさせず、端で止める
+        _selectedChoiceIndex = Mathf.Clamp(_selectedChoiceIndex + dir, 0, _pendingChoices.Length - 1);
+        _choicePanel.UpdateCursor(_selectedChoiceIndex);
+    }
+
+    // 選択中の項目を決定する
+    public void ConfirmChoice() {
+        if (!IsChoiceActive) return;
+        var selected = _pendingChoices[_selectedChoiceIndex];
+        IsChoiceActive = false;
+        _choicePanel.Hide();
+
+        if (selected.nextTimeline != null) {
+            // 分岐先のTimelineに制御を渡す。元のTimelineはPauseしたまま再開しない
+            selected.nextTimeline.Play();
+            return;
+        }
+
+        // endsSequenceならbranchMessages表示後にTimelineを再開させない(directorをnullにして既存の終了処理に乗せる)
+        var director_for_branch = selected.endsSequence ? null : _choiceDirector;
+        if (selected.branchMessages != null && selected.branchMessages.Length > 0) {
+            foreach (var m in selected.branchMessages) {
+                m.playableDirector = director_for_branch;
+            }
+            _messageListScript.InsertFront(selected.branchMessages);
+        } else if (!selected.endsSequence) {
+            _choiceDirector?.Resume();
         }
     }
 

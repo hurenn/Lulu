@@ -57,6 +57,13 @@ public class PlayerController : MonoBehaviour {
     private const float PAUSE_MENU_INPUT_COOLDOWN = 0.5f;
     private const float PAUSE_DECIDE_INPUT_COOLDOWN = 0.3f; // 決定入力のクールタイム
 
+    // メッセージ選択肢UI用
+    private MessageViewer _messageViewerInstance;
+    private float _choiceMenuInputCooldown = 0f;
+    private float _choiceDecideInputCooldown = 0f;
+    private const float CHOICE_MENU_INPUT_COOLDOWN = 0.5f;
+    private const float CHOICE_DECIDE_INPUT_COOLDOWN = 0.3f;
+
     // ボタン割り当ての保存キー
     private const string BINDING_OVERRIDES_PREF_KEY = "InputBindingOverrides";
 
@@ -68,6 +75,16 @@ public class PlayerController : MonoBehaviour {
             _pauseUIInstance = FindAnyObjectByType<Pause_UI>();
         }
         return _pauseUIInstance;
+    }
+
+    // MessageViewerインスタンスをキャッシュして取得
+    private MessageViewer GetMessageViewer()
+    {
+        if (_messageViewerInstance == null)
+        {
+            _messageViewerInstance = FindAnyObjectByType<MessageViewer>();
+        }
+        return _messageViewerInstance;
     }
 
     private void Awake() {
@@ -190,6 +207,38 @@ public class PlayerController : MonoBehaviour {
                 }
             }
             // ポーズ画面中は_isMessageNextPressedを必ずfalseにリセット
+            _isMessageNextPressed = false;
+            input.Clear();
+            character.UpdateControl(input);
+            return;
+        }
+
+        // メッセージの選択肢表示中はキャラクター操作入力を無効化し、上下入力をカーソル移動、ABXYいずれかを決定として扱う
+        var messageViewer = GetMessageViewer();
+        if (messageViewer != null && messageViewer.IsChoiceActive) {
+            if (_choiceMenuInputCooldown > 0f) _choiceMenuInputCooldown -= Time.unscaledDeltaTime;
+            if (_choiceDecideInputCooldown > 0f) _choiceDecideInputCooldown -= Time.unscaledDeltaTime;
+
+            float y = _moveInputValue.y;
+            // 入力無しの場合はクールタイムリセット
+            if (Mathf.Abs(y) < 0.5f) {
+                _choiceMenuInputCooldown = 0f;
+            }
+
+            int dir = 0;
+            if (y > 0.5f) dir = -1;  // 上：前の選択肢
+            else if (y < -0.5f) dir = 1; // 下：次の選択肢
+            if (dir != 0 && _choiceMenuInputCooldown <= 0f) {
+                messageViewer.MoveChoiceCursor(dir);
+                _choiceMenuInputCooldown = CHOICE_MENU_INPUT_COOLDOWN;
+            }
+
+            if (_isMessageNextPressed && _choiceDecideInputCooldown <= 0f) {
+                // ABXYいずれかの押下で決定
+                messageViewer.ConfirmChoice();
+                _choiceDecideInputCooldown = CHOICE_DECIDE_INPUT_COOLDOWN;
+            }
+
             _isMessageNextPressed = false;
             input.Clear();
             character.UpdateControl(input);
