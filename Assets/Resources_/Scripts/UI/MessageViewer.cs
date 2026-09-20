@@ -118,7 +118,7 @@ public class MessageViewer : MonoBehaviour {
         if (!_isShowing) return;
 
         // ボタン表示切替
-        var is_event_message = _currentMessage.playableDirector != null && !_currentMessage.isAutoForce;
+        var is_event_message = (_currentMessage.playableDirector != null || _currentMessage.waitForButton) && !_currentMessage.isAutoForce;
         _nextButtonIcon.gameObject.SetActive(is_event_message);
         _nextIcon.gameObject.SetActive(!is_event_message);
 
@@ -147,7 +147,7 @@ public class MessageViewer : MonoBehaviour {
         _currentMessage = _messageListScript.Dequeue(); // 次のメッセージを取得
         _currentText = MessageTextTable.GetText(_currentMessage.key, _playerParameter.language);
         _currentVisibleLength = _GetVisibleLength(_currentText);
-        if (_currentMessage.playableDirector != null && !_currentMessage.isAutoForce) {
+        if ((_currentMessage.playableDirector != null || _currentMessage.waitForButton) && !_currentMessage.isAutoForce) {
             //_currentMessage.playableDirector.Pause(); // Timelineを一時停止
 
             _isEventMessage = true;

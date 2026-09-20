@@ -23,6 +23,9 @@ public class MessageData {
     public bool isAutoForce = false;
     public bool isUnScaledTime = false;
 
+    // trueならTimelineが無くてもボタン入力を待って手動送りにする(TalkTrigger等の会話イベント用)
+    public bool waitForButton = false;
+
     // 非nullならこの行の表示完了後に選択肢を表示する。
     // ChoiceMarkerが実行時にセットするだけの値なのでInspectorでは編集させない
     // (MessageChoiceOption.branchMessagesがMessageData[]を持つため、Serializableのままだと
