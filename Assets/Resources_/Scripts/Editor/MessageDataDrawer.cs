@@ -86,7 +86,8 @@ public class MessageDataDrawer : PropertyDrawer {
         var style = EditorStyles.textArea;
         float jaH = Mathf.Max(EditorGUIUtility.singleLineHeight * 2, style.CalcHeight(new GUIContent(entry.GetValueOrDefault("ja", "")), w));
         float enH = Mathf.Max(EditorGUIUtility.singleLineHeight * 2, style.CalcHeight(new GUIContent(entry.GetValueOrDefault("en", "")), w));
-        return EditorGUIUtility.singleLineHeight + jaH + EditorGUIUtility.singleLineHeight + enH + 6f;
+        return EditorGUIUtility.singleLineHeight + jaH + EditorGUIUtility.singleLineHeight + enH
+            + EditorGUIUtility.singleLineHeight + 8f; // Keyクリアボタン分
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
@@ -130,14 +131,15 @@ public class MessageDataDrawer : PropertyDrawer {
                     AssignNewKey(property);
                 }
             } else {
-                _DrawEditableFields(areaRect, key, _EntryOrNull(key));
+                _DrawEditableFields(areaRect, keyProp, _EntryOrNull(key));
             }
         }
 
         EditorGUI.EndProperty();
     }
 
-    private static void _DrawEditableFields(Rect rect, string key, Dictionary<string, string> entry) {
+    private static void _DrawEditableFields(Rect rect, SerializedProperty keyProp, Dictionary<string, string> entry) {
+        var key = keyProp.stringValue;
         var ja = entry.GetValueOrDefault("ja", "");
         var en = entry.GetValueOrDefault("en", "");
         var style = EditorStyles.textArea;
@@ -145,6 +147,16 @@ public class MessageDataDrawer : PropertyDrawer {
         float enH = Mathf.Max(EditorGUIUtility.singleLineHeight * 2, style.CalcHeight(new GUIContent(en), rect.width));
 
         float y = rect.y;
+        var keyRowRect = new Rect(rect.x, y, rect.width, EditorGUIUtility.singleLineHeight);
+        var clearButtonRect = new Rect(keyRowRect.xMax - 80f, keyRowRect.y, 80f, keyRowRect.height);
+        EditorGUI.LabelField(new Rect(keyRowRect.x, keyRowRect.y, keyRowRect.width - 84f, keyRowRect.height), "Key: " + key, EditorStyles.miniLabel);
+        if (GUI.Button(clearButtonRect, "Keyをクリア")) {
+            keyProp.stringValue = string.Empty;
+            keyProp.serializedObject.ApplyModifiedProperties();
+            return; // キーが変わったのでこのフレームでの以降の描画は打ち切る
+        }
+        y += EditorGUIUtility.singleLineHeight + 4f;
+
         EditorGUI.LabelField(new Rect(rect.x, y, rect.width, EditorGUIUtility.singleLineHeight), "JA");
         y += EditorGUIUtility.singleLineHeight;
         EditorGUI.BeginChangeCheck();

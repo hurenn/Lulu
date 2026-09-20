@@ -1,10 +1,12 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Playables;
 
 // 話しかけるたびに進む1回分のメッセージセット
 [System.Serializable]
 public class TalkMessageSet {
-    public MessageData[] messageDatas;
+    public MessageData[] messageDatas;   // 直接入力するメッセージ(timelineが未設定の場合に使用)
+    public PlayableDirector timeline;    // 設定した場合はメッセージの代わりにこのTimelineを再生する
 }
 
 // 判定内で上入力すると登録済みのメッセージセットを1つずつ再生する汎用会話イベント。
@@ -22,6 +24,7 @@ public class TalkTrigger : MonoBehaviour {
     private bool _isPlayerInside = false;
     private bool _wasUpHeld = false;
     private bool _isWaitingForMessageEnd = false;
+    private bool _isWaitingForTimeline = false;
     private int _currentSetIndex = 0;
     private Coroutine _signalFadeCoroutine;
 
@@ -39,7 +42,7 @@ public class TalkTrigger : MonoBehaviour {
         if (_messageViewer == null) _messageViewer = FindAnyObjectByType<MessageViewer>();
         _playerController = PlayerCharacterManager.Controller;
 
-        if (!_isWaitingForMessageEnd) _ShowSignal();
+        if (!_isWaitingForMessageEnd && !_isWaitingForTimeline) _ShowSignal();
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
@@ -61,6 +64,7 @@ public class TalkTrigger : MonoBehaviour {
             }
             return;
         }
+        if (_isWaitingForTimeline) return; // 完了はTimelineのstoppedイベントで処理する
 
         if (!_isPlayerInside || _playerController == null) return;
         if (_messageSets == null || _messageSets.Length == 0) return;
@@ -87,18 +91,32 @@ public class TalkTrigger : MonoBehaviour {
         _HideSignal(); // 会話開始と同時に合図を消す
 
         var set = _messageSets[_currentSetIndex];
-        foreach (var message in set.messageDatas) {
-            message.waitForButton = true; // 会話中はタイマー自動送りにせず手動送りにする
-            _messageListScript.Enqueue(message);
-        }
+        _playerController.isEnabledCharacterInput = false; // 終了まで操作を止める
 
-        _playerController.isEnabledCharacterInput = false; // メッセージ終了まで操作を止める
-        _isWaitingForMessageEnd = true;
+        if (set.timeline != null) {
+            // メッセージの代わりにTimelineを再生する
+            set.timeline.stopped += _OnTimelineStopped;
+            _isWaitingForTimeline = true;
+            set.timeline.Play();
+        } else {
+            foreach (var message in set.messageDatas) {
+                message.waitForButton = true; // 会話中はタイマー自動送りにせず手動送りにする
+                _messageListScript.Enqueue(message);
+            }
+            _isWaitingForMessageEnd = true;
+        }
 
         // 最後のセットに到達したらそれ以降は進めず、最後のセットをループ再生する
         if (_currentSetIndex < _messageSets.Length - 1) {
             _currentSetIndex++;
         }
+    }
+
+    private void _OnTimelineStopped(PlayableDirector director) {
+        director.stopped -= _OnTimelineStopped;
+        _playerController.isEnabledCharacterInput = true;
+        _isWaitingForTimeline = false;
+        if (_isPlayerInside) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
     }
 
     private void _ShowSignal() {
