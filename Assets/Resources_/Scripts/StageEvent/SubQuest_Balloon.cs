@@ -18,9 +18,11 @@ public class SubQuest_Balloon : MonoBehaviour {
     [SerializeField] private MessageData[] _clearMessages;   // 目標到達時に表示するメッセージ
     [SerializeField] private MessageData[] _timeUpMessages;  // 時間切れ時に表示するメッセージ
     [SerializeField] private TalkTrigger _addFlagTarget;     // 設定されていれば、クリア時にこのTriggerのフラグを増加させる
+    [SerializeField] private int _flagRewardExp = 200;       // addFlagTargetのフラグが2以上になった瞬間に付与する経験値(100=1レベル分)
 
     private bool _isRunning = false;
     private bool _isCleared = false;
+    private bool _hasGrantedFlagReward = false;
     private float _remainingTime;
 
     public bool IsRunning => _isRunning;
@@ -50,6 +52,13 @@ public class SubQuest_Balloon : MonoBehaviour {
     }
 
     private void Update() {
+        // addFlagTargetのフラグ到達は会話イベント完了後など非同期に起こりうるため、Updateで継続的に監視する
+        if (!_hasGrantedFlagReward && _addFlagTarget != null && _addFlagTarget.Flag >= 2) {
+            _hasGrantedFlagReward = true;
+            var player = PlayerCharacterManager.Current as Player_Character;
+            player?.AddExp(_flagRewardExp);
+        }
+
         if (!_isRunning || Pause_UI.IsOpen) return;
 
         _remainingTime -= Time.deltaTime;

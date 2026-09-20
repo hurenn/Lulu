@@ -123,12 +123,15 @@ public class PlayerParameter : PersistentSingleton<PlayerParameter> {
     public bool AddExp(int amount, System.Action apply_status_callback) {
         bool is_level_up = false;
         _exp += amount;
-        OnExpChanged?.Invoke(_exp);
+        // レベルアップ処理(_expToNextLevel分の繰り下げ)より先に通知すると、
+        // ちょうどレベルアップした時にゲージが繰り下げ前のMAX値のまま更新されず止まってしまうため、
+        // 繰り下げ後の最終的な値で通知する(amountは常に正の値なので、演出トリガー用の判定には支障ない)
         while (_exp >= _expToNextLevel) {
             LevelUp();
             apply_status_callback?.Invoke();
             is_level_up = true;
         }
+        OnExpChanged?.Invoke(amount);
         return is_level_up;
     }
     private void LevelUp(eLevelType level_type = eLevelType.All) {

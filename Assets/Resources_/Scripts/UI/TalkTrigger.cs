@@ -78,6 +78,7 @@ public class TalkTrigger : MonoBehaviour {
             if (!_messageViewer.IsShowing && !_messageListScript.HasMessages()) {
                 _playerController.isEnabledCharacterInput = true;
                 _isWaitingForMessageEnd = false;
+                CinemachineManager.Instance?.ReturnToPlayer(); // 直接メッセージ用のズームを戻す
                 _activeSet?.addFlagTarget?.AdvanceFlag();
                 if (_isPlayerInside) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
             }
@@ -137,6 +138,7 @@ public class TalkTrigger : MonoBehaviour {
             _isWaitingForTimeline = true;
             set.timeline.Play();
         } else {
+            CinemachineManager.Instance?.ZoomOnTarget(_playerController.Character.transform); // 直接メッセージ表示中はプレイヤーに少しズームする
             foreach (var message in set.messageDatas) {
                 message.waitForButton = true; // 会話中はタイマー自動送りにせず手動送りにする
                 _messageListScript.Enqueue(message);

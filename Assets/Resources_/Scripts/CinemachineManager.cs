@@ -16,6 +16,9 @@ public class CinemachineManager : SceneSingleton<CinemachineManager> {
 
     public void ZoomOnTarget(Transform target) {
         _zoomCam.Follow = target;
+        // 休眠中だった直前の位置からの補間(ダンピング)を無効化し、切り替わった瞬間に正しい位置へ即座にスナップさせる
+        // (これが無いと、非アクティブだった間の古い位置から遠くを飛んできたようにカメラがブレて見える)
+        _zoomCam.PreviousStateIsValid = false;
         _zoomCam.Priority = 20; // プレイヤーカメラより高く
     }
 
