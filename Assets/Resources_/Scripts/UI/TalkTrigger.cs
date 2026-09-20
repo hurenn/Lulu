@@ -7,6 +7,8 @@ using UnityEngine.Playables;
 public class TalkMessageSet {
     public MessageData[] messageDatas;   // 直接入力するメッセージ(timelineが未設定の場合に使用)
     public PlayableDirector timeline;    // 設定した場合はメッセージの代わりにこのTimelineを再生する
+    public int requiredFlag = 0;         // このセットに進むために必要なフラグ値(Flagがこの値以上なら解放)
+    public TalkTrigger addFlagTarget;       // 設定されていれば、このセットの表示完了後にこのTriggerのフラグを増加させる
 }
 
 // 判定内で上入力すると登録済みのメッセージセットを1つずつ再生する汎用会話イベント。
@@ -25,8 +27,24 @@ public class TalkTrigger : MonoBehaviour {
     private bool _wasUpHeld = false;
     private bool _isWaitingForMessageEnd = false;
     private bool _isWaitingForTimeline = false;
-    private int _currentSetIndex = 0;
     private Coroutine _signalFadeCoroutine;
+    private int _currentSetIndex = -1; // まだ何も再生していない状態
+    private TalkMessageSet _activeSet; // 現在再生中のセット(完了時にflagTargetを参照するため保持)
+
+    // イベントの進行状況で話す内容を変えたい場合に使うフラグ。基本的には0のまま進行する。
+    // 話しかけるたびに自分で進めることも、他スクリプトからSetFlagで直接与えることもできる
+    [SerializeField] private int _flag = 0;
+    public int Flag => _flag;
+
+    // フラグを直接指定した値にする(他スクリプトから与える用)
+    public void SetFlag(int value) {
+        _flag = value;
+    }
+
+    // フラグを1進める(自分で進める用)
+    public void AdvanceFlag() {
+        _flag++;
+    }
 
     private void Awake() {
         if (_talkSignal != null) {
@@ -60,6 +78,7 @@ public class TalkTrigger : MonoBehaviour {
             if (!_messageViewer.IsShowing && !_messageListScript.HasMessages()) {
                 _playerController.isEnabledCharacterInput = true;
                 _isWaitingForMessageEnd = false;
+                _activeSet?.addFlagTarget?.AdvanceFlag();
                 if (_isPlayerInside) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
             }
             return;
@@ -90,7 +109,17 @@ public class TalkTrigger : MonoBehaviour {
     private void _PlayCurrentSet() {
         _HideSignal(); // 会話開始と同時に合図を消す
 
-        var set = _messageSets[_currentSetIndex];
+        // 次のセットに進めるかどうかをフラグで判定する。
+        // 現在のフラグ値がそのセットのrequiredFlag以上なら解放して進み、未到達なら直前の会話でループする
+        int nextIndex = Mathf.Min(_currentSetIndex + 1, _messageSets.Length - 1);
+        bool isUnlocked = _flag >= _messageSets[nextIndex].requiredFlag;
+        if (isUnlocked) {
+            _currentSetIndex = nextIndex;
+        }
+        int playIndex = Mathf.Max(_currentSetIndex, 0);
+
+        var set = _messageSets[playIndex];
+        _activeSet = set;
         _playerController.isEnabledCharacterInput = false; // 終了まで操作を止める
 
         if (set.timeline != null) {
@@ -105,17 +134,13 @@ public class TalkTrigger : MonoBehaviour {
             }
             _isWaitingForMessageEnd = true;
         }
-
-        // 最後のセットに到達したらそれ以降は進めず、最後のセットをループ再生する
-        if (_currentSetIndex < _messageSets.Length - 1) {
-            _currentSetIndex++;
-        }
     }
 
     private void _OnTimelineStopped(PlayableDirector director) {
         director.stopped -= _OnTimelineStopped;
         _playerController.isEnabledCharacterInput = true;
         _isWaitingForTimeline = false;
+        _activeSet?.addFlagTarget?.AdvanceFlag();
         if (_isPlayerInside) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
     }
 

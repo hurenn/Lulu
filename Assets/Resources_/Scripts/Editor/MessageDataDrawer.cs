@@ -59,9 +59,9 @@ public class MessageDataDrawer : PropertyDrawer {
     // (Inspectorで手入力した不正なキー等をボタン一つで正しいIDに置き換えられるようにするため)
     private static bool _NeedsNewKey(string key) => _EntryOrNull(key) == null;
 
+    // 現在のkeyが有効な場合でも、常に新しいIDを発行してKeyを置き換える(クリア+新規発行を1操作で行う)
     public static string AssignNewKey(SerializedProperty property) {
         var keyProp = property.FindPropertyRelative("key");
-        if (!_NeedsNewKey(keyProp.stringValue)) return keyProp.stringValue;
         var stageId = ContextStageId(property.serializedObject.targetObject);
         var table = MessageJsonUtil.LoadTable();
         var newKey = MessageJsonUtil.NewKeyForStage(table, stageId);
@@ -86,8 +86,7 @@ public class MessageDataDrawer : PropertyDrawer {
         var style = EditorStyles.textArea;
         float jaH = Mathf.Max(EditorGUIUtility.singleLineHeight * 2, style.CalcHeight(new GUIContent(entry.GetValueOrDefault("ja", "")), w));
         float enH = Mathf.Max(EditorGUIUtility.singleLineHeight * 2, style.CalcHeight(new GUIContent(entry.GetValueOrDefault("en", "")), w));
-        return EditorGUIUtility.singleLineHeight + jaH + EditorGUIUtility.singleLineHeight + enH
-            + EditorGUIUtility.singleLineHeight + 8f; // Keyクリアボタン分
+        return EditorGUIUtility.singleLineHeight + jaH + EditorGUIUtility.singleLineHeight + enH + 6f;
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
@@ -97,9 +96,12 @@ public class MessageDataDrawer : PropertyDrawer {
         float height = EditorGUI.GetPropertyHeight(property, previewLabel, true);
 
         if (property.isExpanded) {
-            if (_NeedsNewKey(key)) {
-                height += (EditorGUIUtility.singleLineHeight * (string.IsNullOrEmpty(key) ? 1 : 2)) + 4f;
-            } else {
+            bool needsNewKey = _NeedsNewKey(key);
+            if (needsNewKey && !string.IsNullOrEmpty(key)) {
+                height += EditorGUIUtility.singleLineHeight; // 未登録警告分
+            }
+            height += EditorGUIUtility.singleLineHeight + 4f; // 「IDを新規発行」ボタン分(常時表示)
+            if (!needsNewKey) {
                 height += _EditableAreaHeight(_EntryOrNull(key)) + 4f;
             }
         }
@@ -117,29 +119,34 @@ public class MessageDataDrawer : PropertyDrawer {
         EditorGUI.PropertyField(fieldRect, property, previewLabel, true);
 
         if (property.isExpanded) {
-            var areaRect = new Rect(position.x, position.y + childHeight + 2f, position.width,
-                position.height - childHeight - 2f);
-            if (_NeedsNewKey(key)) {
-                float y = areaRect.y;
-                if (!string.IsNullOrEmpty(key)) {
-                    EditorGUI.LabelField(new Rect(areaRect.x, y, areaRect.width, EditorGUIUtility.singleLineHeight),
-                        "現在の値「" + key + "」はJSONに未登録です。", EditorStyles.miniLabel);
-                    y += EditorGUIUtility.singleLineHeight;
-                }
-                var buttonRect = new Rect(areaRect.x, y, areaRect.width, EditorGUIUtility.singleLineHeight);
-                if (GUI.Button(buttonRect, "IDを新規発行")) {
-                    AssignNewKey(property);
-                }
-            } else {
-                _DrawEditableFields(areaRect, keyProp, _EntryOrNull(key));
+            bool needsNewKey = _NeedsNewKey(key);
+            float y = position.y + childHeight + 2f;
+
+            if (needsNewKey && !string.IsNullOrEmpty(key)) {
+                EditorGUI.LabelField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
+                    "現在の値「" + key + "」はJSONに未登録です。", EditorStyles.miniLabel);
+                y += EditorGUIUtility.singleLineHeight;
+            }
+
+            // 「IDを新規発行」ボタンは常時表示。ID入力済みの状態で押された場合はKeyクリア+新規発行を自動で行う
+            var buttonRect = new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight);
+            bool keyJustReassigned = false;
+            if (GUI.Button(buttonRect, "IDを新規発行")) {
+                AssignNewKey(property);
+                keyJustReassigned = true;
+            }
+            y += EditorGUIUtility.singleLineHeight + 4f;
+
+            if (!needsNewKey && !keyJustReassigned) {
+                var areaRect = new Rect(position.x, y, position.width, position.height - (y - position.y));
+                _DrawEditableFields(areaRect, key, _EntryOrNull(key));
             }
         }
 
         EditorGUI.EndProperty();
     }
 
-    private static void _DrawEditableFields(Rect rect, SerializedProperty keyProp, Dictionary<string, string> entry) {
-        var key = keyProp.stringValue;
+    private static void _DrawEditableFields(Rect rect, string key, Dictionary<string, string> entry) {
         var ja = entry.GetValueOrDefault("ja", "");
         var en = entry.GetValueOrDefault("en", "");
         var style = EditorStyles.textArea;
@@ -147,16 +154,6 @@ public class MessageDataDrawer : PropertyDrawer {
         float enH = Mathf.Max(EditorGUIUtility.singleLineHeight * 2, style.CalcHeight(new GUIContent(en), rect.width));
 
         float y = rect.y;
-        var keyRowRect = new Rect(rect.x, y, rect.width, EditorGUIUtility.singleLineHeight);
-        var clearButtonRect = new Rect(keyRowRect.xMax - 80f, keyRowRect.y, 80f, keyRowRect.height);
-        EditorGUI.LabelField(new Rect(keyRowRect.x, keyRowRect.y, keyRowRect.width - 84f, keyRowRect.height), "Key: " + key, EditorStyles.miniLabel);
-        if (GUI.Button(clearButtonRect, "Keyをクリア")) {
-            keyProp.stringValue = string.Empty;
-            keyProp.serializedObject.ApplyModifiedProperties();
-            return; // キーが変わったのでこのフレームでの以降の描画は打ち切る
-        }
-        y += EditorGUIUtility.singleLineHeight + 4f;
-
         EditorGUI.LabelField(new Rect(rect.x, y, rect.width, EditorGUIUtility.singleLineHeight), "JA");
         y += EditorGUIUtility.singleLineHeight;
         EditorGUI.BeginChangeCheck();
