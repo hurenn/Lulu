@@ -114,7 +114,16 @@ public class TalkTrigger : MonoBehaviour {
         int nextIndex = Mathf.Min(_currentSetIndex + 1, _messageSets.Length - 1);
         bool isUnlocked = _flag >= _messageSets[nextIndex].requiredFlag;
         if (isUnlocked) {
-            _currentSetIndex = nextIndex;
+            // Flagが既に複数階層を追い越している場合、到達可能な最も高いrequiredFlag階層のうち
+            // 「最初」のインデックスまでスキップする(その階層の2件目以降まで飛び越さない)
+            int target = nextIndex;
+            for (int i = nextIndex; i < _messageSets.Length - 1; i++) {
+                if (_messageSets[i + 1].requiredFlag > _flag) break; // 次はまだ未到達、ここで打ち切り
+                if (_messageSets[i + 1].requiredFlag > _messageSets[target].requiredFlag) {
+                    target = i + 1; // より高い階層に到達したら更新(同じ階層なら最初のインデックスを維持)
+                }
+            }
+            _currentSetIndex = target;
         }
         int playIndex = Mathf.Max(_currentSetIndex, 0);
 

@@ -31,6 +31,9 @@ public class MessageDataDrawer : PropertyDrawer {
 
     private static GUIStyle _PreviewBoxStyle() => new GUIStyle(EditorStyles.helpBox) { wordWrap = true, richText = false };
 
+    // labelKey等、MessageData以外のキー用フィールドからも見出しラベルを組み立てられるように公開
+    public static GUIContent BuildKeyLabel(GUIContent label, string key) => _BuildLabel(label, key);
+
     private static GUIContent _BuildLabel(GUIContent label, string key) {
         var entry = _EntryOrNull(key);
         string preview = entry != null ? entry.GetValueOrDefault("ja", "") : (string.IsNullOrEmpty(key) ? "" : "(JSONに未登録)");
@@ -59,16 +62,16 @@ public class MessageDataDrawer : PropertyDrawer {
     // (Inspectorで手入力した不正なキー等をボタン一つで正しいIDに置き換えられるようにするため)
     private static bool _NeedsNewKey(string key) => _EntryOrNull(key) == null;
 
-    // 現在のkeyが有効な場合でも、常に新しいIDを発行してKeyを置き換える(クリア+新規発行を1操作で行う)
-    public static string AssignNewKey(SerializedProperty property) {
-        var keyProp = property.FindPropertyRelative("key");
-        var stageId = ContextStageId(property.serializedObject.targetObject);
+    // 現在のkeyが有効な場合でも、常に新しいIDを発行してKeyを置き換える(クリア+新規発行を1操作で行う)。
+    // keyProp自体を渡すので、MessageData.keyに限らずMessageChoiceOption.labelKey等の単体string PropertyからでもID発行に使える
+    public static string AssignNewKey(SerializedProperty keyProp) {
+        var stageId = ContextStageId(keyProp.serializedObject.targetObject);
         var table = MessageJsonUtil.LoadTable();
         var newKey = MessageJsonUtil.NewKeyForStage(table, stageId);
         table[newKey] = new Dictionary<string, string> { { "ja", "" }, { "en", "" } };
         MessageJsonUtil.SaveTable(table);
         keyProp.stringValue = newKey;
-        property.serializedObject.ApplyModifiedProperties();
+        keyProp.serializedObject.ApplyModifiedProperties();
         return newKey;
     }
 
@@ -96,14 +99,7 @@ public class MessageDataDrawer : PropertyDrawer {
         float height = EditorGUI.GetPropertyHeight(property, previewLabel, true);
 
         if (property.isExpanded) {
-            bool needsNewKey = _NeedsNewKey(key);
-            if (needsNewKey && !string.IsNullOrEmpty(key)) {
-                height += EditorGUIUtility.singleLineHeight; // 未登録警告分
-            }
-            height += EditorGUIUtility.singleLineHeight + 4f; // 「IDを新規発行」ボタン分(常時表示)
-            if (!needsNewKey) {
-                height += _EditableAreaHeight(_EntryOrNull(key)) + 4f;
-            }
+            height += GetKeyFieldHeight(keyProp);
         }
         return height;
     }
@@ -119,31 +115,60 @@ public class MessageDataDrawer : PropertyDrawer {
         EditorGUI.PropertyField(fieldRect, property, previewLabel, true);
 
         if (property.isExpanded) {
-            bool needsNewKey = _NeedsNewKey(key);
-            float y = position.y + childHeight + 2f;
-
-            if (needsNewKey && !string.IsNullOrEmpty(key)) {
-                EditorGUI.LabelField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
-                    "現在の値「" + key + "」はJSONに未登録です。", EditorStyles.miniLabel);
-                y += EditorGUIUtility.singleLineHeight;
-            }
-
-            // 「IDを新規発行」ボタンは常時表示。ID入力済みの状態で押された場合はKeyクリア+新規発行を自動で行う
-            var buttonRect = new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight);
-            bool keyJustReassigned = false;
-            if (GUI.Button(buttonRect, "IDを新規発行")) {
-                AssignNewKey(property);
-                keyJustReassigned = true;
-            }
-            y += EditorGUIUtility.singleLineHeight + 4f;
-
-            if (!needsNewKey && !keyJustReassigned) {
-                var areaRect = new Rect(position.x, y, position.width, position.height - (y - position.y));
-                _DrawEditableFields(areaRect, key, _EntryOrNull(key));
-            }
+            var areaRect = new Rect(position.x, position.y + childHeight + 2f, position.width,
+                position.height - childHeight - 2f);
+            DrawKeyField(areaRect, keyProp);
         }
 
         EditorGUI.EndProperty();
+    }
+
+    // --- keyプロパティ単体に対する「ID発行/JA・EN編集」UI。MessageData.key、MessageChoiceOption.labelKey等から共用する ---
+
+    public static float GetKeyFieldHeight(SerializedProperty keyProp, GUIContent headerLabel = null) {
+        var key = keyProp.stringValue;
+        bool needsNewKey = _NeedsNewKey(key);
+        float height = headerLabel != null ? EditorGUIUtility.singleLineHeight : 0f;
+
+        if (needsNewKey && !string.IsNullOrEmpty(key)) {
+            height += EditorGUIUtility.singleLineHeight; // 未登録警告分
+        }
+        height += EditorGUIUtility.singleLineHeight + 4f; // 「IDを新規発行」ボタン分(常時表示)
+        if (!needsNewKey) {
+            height += _EditableAreaHeight(_EntryOrNull(key)) + 4f;
+        }
+        return height;
+    }
+
+    public static void DrawKeyField(Rect position, SerializedProperty keyProp, GUIContent headerLabel = null) {
+        var key = keyProp.stringValue;
+        bool needsNewKey = _NeedsNewKey(key);
+        float y = position.y;
+
+        if (headerLabel != null) {
+            EditorGUI.LabelField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight), headerLabel);
+            y += EditorGUIUtility.singleLineHeight;
+        }
+
+        if (needsNewKey && !string.IsNullOrEmpty(key)) {
+            EditorGUI.LabelField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight),
+                "現在の値「" + key + "」はJSONに未登録です。", EditorStyles.miniLabel);
+            y += EditorGUIUtility.singleLineHeight;
+        }
+
+        // 「IDを新規発行」ボタンは常時表示。ID入力済みの状態で押された場合はKeyクリア+新規発行を自動で行う
+        var buttonRect = new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight);
+        bool keyJustReassigned = false;
+        if (GUI.Button(buttonRect, "IDを新規発行")) {
+            AssignNewKey(keyProp);
+            keyJustReassigned = true;
+        }
+        y += EditorGUIUtility.singleLineHeight + 4f;
+
+        if (!needsNewKey && !keyJustReassigned) {
+            var areaRect = new Rect(position.x, y, position.width, position.height - (y - position.y));
+            _DrawEditableFields(areaRect, key, _EntryOrNull(key));
+        }
     }
 
     private static void _DrawEditableFields(Rect rect, string key, Dictionary<string, string> entry) {

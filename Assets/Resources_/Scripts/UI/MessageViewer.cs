@@ -63,6 +63,7 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _seSpeak;
     [SerializeField] private AudioClip _seSpeakOne;
+    [SerializeField] private AudioClip _seDecide; // 選択肢決定音
 
     [SerializeField] private MessageChoicePanel _choicePanel;   // 選択肢UI
     private MessageChoiceOption[] _pendingChoices;               // 表示中の選択肢
@@ -311,6 +312,10 @@ public class MessageViewer : MonoBehaviour {
         var selected = _pendingChoices[_selectedChoiceIndex];
         IsChoiceActive = false;
         _choicePanel.Hide();
+
+        if (_seDecide != null) {
+            _audioSource.PlayOneShot(_seDecide);
+        }
 
         if (selected.nextTimeline != null) {
             // 分岐先のTimelineに制御を渡す。元のTimelineはPauseしたまま再開しない
