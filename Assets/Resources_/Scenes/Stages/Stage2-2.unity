@@ -11760,7 +11760,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &422478981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140060,6 +140060,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1962556073253016631, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2018889152331678858, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: m_Name
       value: UI
@@ -140166,14 +140170,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4125678617649683959, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 940
       objectReference: {fileID: 0}
     - target: {fileID: 4125678617649683959, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 470
       objectReference: {fileID: 0}
     - target: {fileID: 4125678617649683959, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: -127.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4125678617649683959, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+      propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4421373631291310206, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
@@ -140306,14 +140314,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6001201557645219312, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 940
       objectReference: {fileID: 0}
     - target: {fileID: 6001201557645219312, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 470
       objectReference: {fileID: 0}
     - target: {fileID: 6001201557645219312, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: -42.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6001201557645219312, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
+      propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6176521289507501401, guid: a299f6ae9f090a7499b47bec44ec4601, type: 3}
