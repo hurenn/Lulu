@@ -76,4 +76,9 @@ public class GoalMarker : MonoBehaviour
     public void SetMarkerActive(bool isActive) {
         _isActive = isActive;
     }
+
+    // 追跡対象を実行時に切り替える(サブクエスト等、動的な対象を指す場合に使用)
+    public void SetGoal(Transform target) {
+        goal = target;
+    }
 }

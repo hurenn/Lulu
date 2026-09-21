@@ -8,6 +8,7 @@ public class SubQuestBalloonTarget : MonoBehaviour {
     [SerializeField] private SubQuest_Balloon _quest;
     [SerializeField] private AudioClip _seCatch;     // 取得時の効果音
     [SerializeField] private float _disappearDuration = 0.3f; // 取得時に収縮して消えるまでの時間
+    [SerializeField] private GoalMarker _goalMarker;  // サブクエスト中に風船の方向を示す矢印
 
     [Header("待機中の漂い")]
     [SerializeField] private float _hoverAmplitude = 0.2f; // 上下に揺れる振れ幅
@@ -23,6 +24,7 @@ public class SubQuestBalloonTarget : MonoBehaviour {
 
     private void Awake() {
         _basePosition = transform.position;
+        _goalMarker?.SetGoal(transform);
     }
 
     private void Update() {
@@ -30,12 +32,14 @@ public class SubQuestBalloonTarget : MonoBehaviour {
 
         if (_quest.IsRunning) {
             _wasRunning = true;
+            _goalMarker?.SetMarkerActive(true); // サブクエスト中は風船の方向を示す
             // その場で上下にゆっくり漂う
             float offsetY = Mathf.Sin(Time.time * _hoverSpeed) * _hoverAmplitude;
             transform.position = new Vector3(_basePosition.x, _basePosition.y + offsetY, _basePosition.z);
         } else if (_wasRunning && !_quest.IsCleared) {
             // 実行中から非実行に変わり、かつクリアもしていない = 時間切れ
             _wasRunning = false;
+            _goalMarker?.SetMarkerActive(false);
             StartCoroutine(_FlyAwayCo());
         }
     }
@@ -43,6 +47,7 @@ public class SubQuestBalloonTarget : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision) {
         if (_isCaught || _quest == null || !_quest.IsRunning || !collision.CompareTag("Player")) return;
         _isCaught = true;
+        _goalMarker?.SetMarkerActive(false);
 
         _quest.OnBalloonReached();
 
