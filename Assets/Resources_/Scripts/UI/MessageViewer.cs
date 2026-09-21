@@ -290,11 +290,15 @@ public class MessageViewer : MonoBehaviour {
     /// <summary>
     /// 選択肢モードへ移行する(パネルは開いたまま維持する)
     /// </summary>
+    private const float _CHOICE_DECIDE_LOCK_TIME = 1.0f; // 表示直後にこの時間だけ決定入力を無視する
+    private float _choiceEnteredTime;
+
     public void EnterChoiceMode(MessageChoiceOption[] choices, UnityEngine.Playables.PlayableDirector pausedDirector) {
         _pendingChoices = choices;
         _choiceDirector = pausedDirector;
         _selectedChoiceIndex = 0;
         IsChoiceActive = true;
+        _choiceEnteredTime = Time.unscaledTime;
         _choicePanel.Show(choices, _selectedChoiceIndex, _playerParameter.language);
     }
 
@@ -309,6 +313,7 @@ public class MessageViewer : MonoBehaviour {
     // 選択中の項目を決定する
     public void ConfirmChoice() {
         if (!IsChoiceActive) return;
+        if (Time.unscaledTime - _choiceEnteredTime < _CHOICE_DECIDE_LOCK_TIME) return; // 表示直後の誤決定を防ぐ
         var selected = _pendingChoices[_selectedChoiceIndex];
         IsChoiceActive = false;
         _choicePanel.Hide();

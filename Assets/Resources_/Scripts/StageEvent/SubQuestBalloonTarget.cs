@@ -7,6 +7,7 @@ public class SubQuestBalloonTarget : MonoBehaviour {
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private SubQuest_Balloon _quest;
     [SerializeField] private AudioClip _seCatch;     // 取得時の効果音
+    [SerializeField] private float _seCatchVolume = 2f; // クリップ自体の収録音量が小さいため増幅する
     [SerializeField] private float _disappearDuration = 0.3f; // 取得時に収縮して消えるまでの時間
     [SerializeField] private GoalMarker _goalMarker;  // サブクエスト中に風船の方向を示す矢印
 
@@ -53,7 +54,7 @@ public class SubQuestBalloonTarget : MonoBehaviour {
 
         // SetActive(false)すると自身のAudioSourceも止まってしまうため、PlayClipAtPointで独立に再生する
         if (_seCatch != null) {
-            AudioSource.PlayClipAtPoint(_seCatch, transform.position);
+            AudioUtil.PlayClipAtPointUnclamped(_seCatch, transform.position, _seCatchVolume);
         }
 
         var col = GetComponent<Collider2D>();
