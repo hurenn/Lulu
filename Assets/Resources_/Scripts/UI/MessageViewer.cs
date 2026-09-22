@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -159,6 +160,11 @@ public class MessageViewer : MonoBehaviour {
             // メッセージを1文字ずつ表示するコルーチン開始
             _typingCoroutine = _TypeText(_currentText, _playerParameter.language == PlayerParameter.eLanguage.Japanese ? _AUTO_MESSAGE_SHOW_TIME : _AUTO_ENG_MESSAGE_SHOW_TIME);
             StartCoroutine(_typingCoroutine);
+        }
+
+        // メッセージ固有の効果音を表示開始と同時に再生する(_TypeText内の_audioSource.Stop()より後に呼ぶ必要がある)
+        if (_currentMessage.soundEffect != null) {
+            _audioSource.PlayOneShot(_currentMessage.soundEffect);
         }
 
         // キャラクター名とアイコンの設定
@@ -322,9 +328,15 @@ public class MessageViewer : MonoBehaviour {
             _audioSource.PlayOneShot(_seDecide);
         }
 
-        if (selected.nextTimeline != null) {
-            // 分岐先のTimelineに制御を渡す。元のTimelineはPauseしたまま再開しない
-            selected.nextTimeline.Play();
+        // ExposedReferenceはシーン上のPlayableDirectorを、元のTimelineを再生しているdirectorの
+        // バインドテーブル経由で解決する(ChoiceMarkerはTimelineAsset内のデータのため直接参照不可)
+        var nextTimeline = selected.nextTimeline.Resolve(_choiceDirector);
+        if (nextTimeline != null) {
+            // 分岐先のTimelineに制御を渡す。元のTimelineはPauseしたまま再開しない。
+            // 元のTimelineのstopped購読者(TalkTrigger等の完了待ち)を分岐先に引き継がないと、
+            // 元は二度と止まらずstoppedが発火しないため、完了通知が誰にも届かなくなる
+            _TransferStoppedSubscribers(_choiceDirector, nextTimeline);
+            nextTimeline.Play();
             return;
         }
 
@@ -338,6 +350,21 @@ public class MessageViewer : MonoBehaviour {
         } else if (!selected.endsSequence) {
             _choiceDirector?.Resume();
         }
+    }
+
+    // PlayableDirector.stoppedは通常のevent(外部からGetInvocationList不可)のため、
+    // Timeline分岐時に購読者を引き継ぐにはリフレクションでバッキングフィールドを直接操作する
+    private static readonly FieldInfo _stoppedField =
+        typeof(UnityEngine.Playables.PlayableDirector).GetField("stopped", BindingFlags.Instance | BindingFlags.NonPublic);
+
+    private static void _TransferStoppedSubscribers(UnityEngine.Playables.PlayableDirector from, UnityEngine.Playables.PlayableDirector to) {
+        if (_stoppedField == null) return;
+        if (_stoppedField.GetValue(from) is not System.Action<UnityEngine.Playables.PlayableDirector> handler) return;
+
+        foreach (var d in handler.GetInvocationList()) {
+            to.stopped += (System.Action<UnityEngine.Playables.PlayableDirector>)d;
+        }
+        _stoppedField.SetValue(from, null); // 元のdirectorはもう再生されないため、二重登録を防ぐ目的でクリアする
     }
 
     /// <summary>

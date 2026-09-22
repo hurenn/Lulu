@@ -14,6 +14,7 @@ public class MessageData {
     public string key;   // 外部テキストテーブル(Assets/Resources/Localization/Messages.json)を引くキー
     public Sprite characterIcon;    // キャラクターアイコン
     public float addShowTime;      // 追加表示時間
+    public AudioClip soundEffect;   // 表示開始と同時に再生する効果音
 
     private PlayableDirector _playableDirector = null;  // イベントメッセージ用のタイムライン
     public PlayableDirector playableDirector {

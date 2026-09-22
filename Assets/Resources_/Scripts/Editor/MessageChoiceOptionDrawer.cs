@@ -18,7 +18,7 @@ public class MessageChoiceOptionDrawer : PropertyDrawer {
         var endsSequenceProp = property.FindPropertyRelative("endsSequence");
 
         float height = EditorGUIUtility.singleLineHeight; // foldoutヘッダー行
-        height += 2f + MessageDataDrawer.GetKeyFieldHeight(labelKeyProp, new GUIContent("選択肢テキスト"));
+        height += 2f + MessageDataDrawer.GetKeyFieldHeight(labelKeyProp, new GUIContent("選択肢テキスト"), true);
         height += 2f + EditorGUI.GetPropertyHeight(branchMessagesProp, true);
         height += 2f + EditorGUI.GetPropertyHeight(nextTimelineProp, true);
         height += 2f + EditorGUI.GetPropertyHeight(endsSequenceProp, true);
@@ -43,8 +43,8 @@ public class MessageChoiceOptionDrawer : PropertyDrawer {
 
             y += 2f;
             var keyHeaderLabel = new GUIContent("選択肢テキスト");
-            float keyFieldHeight = MessageDataDrawer.GetKeyFieldHeight(labelKeyProp, keyHeaderLabel);
-            MessageDataDrawer.DrawKeyField(new Rect(position.x, y, position.width, keyFieldHeight), labelKeyProp, keyHeaderLabel);
+            float keyFieldHeight = MessageDataDrawer.GetKeyFieldHeight(labelKeyProp, keyHeaderLabel, true);
+            MessageDataDrawer.DrawKeyField(new Rect(position.x, y, position.width, keyFieldHeight), labelKeyProp, keyHeaderLabel, true);
             y += keyFieldHeight;
 
             y += 2f;

@@ -125,10 +125,14 @@ public class MessageDataDrawer : PropertyDrawer {
 
     // --- keyプロパティ単体に対する「ID発行/JA・EN編集」UI。MessageData.key、MessageChoiceOption.labelKey等から共用する ---
 
-    public static float GetKeyFieldHeight(SerializedProperty keyProp, GUIContent headerLabel = null) {
+    public static float GetKeyFieldHeight(SerializedProperty keyProp, GUIContent headerLabel = null, bool showRawKeyField = false) {
         var key = keyProp.stringValue;
         bool needsNewKey = _NeedsNewKey(key);
         float height = headerLabel != null ? EditorGUIUtility.singleLineHeight : 0f;
+
+        if (showRawKeyField) {
+            height += EditorGUIUtility.singleLineHeight + 2f; // ID直接入力欄
+        }
 
         if (needsNewKey && !string.IsNullOrEmpty(key)) {
             height += EditorGUIUtility.singleLineHeight; // 未登録警告分
@@ -140,7 +144,7 @@ public class MessageDataDrawer : PropertyDrawer {
         return height;
     }
 
-    public static void DrawKeyField(Rect position, SerializedProperty keyProp, GUIContent headerLabel = null) {
+    public static void DrawKeyField(Rect position, SerializedProperty keyProp, GUIContent headerLabel = null, bool showRawKeyField = false) {
         var key = keyProp.stringValue;
         bool needsNewKey = _NeedsNewKey(key);
         float y = position.y;
@@ -148,6 +152,18 @@ public class MessageDataDrawer : PropertyDrawer {
         if (headerLabel != null) {
             EditorGUI.LabelField(new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight), headerLabel);
             y += EditorGUIUtility.singleLineHeight;
+        }
+
+        if (showRawKeyField) {
+            var idFieldRect = new Rect(position.x, y, position.width, EditorGUIUtility.singleLineHeight);
+            EditorGUI.BeginChangeCheck();
+            var typedKey = EditorGUI.TextField(idFieldRect, "ID", key);
+            if (EditorGUI.EndChangeCheck()) {
+                keyProp.stringValue = typedKey;
+                key = typedKey;
+                needsNewKey = _NeedsNewKey(key);
+            }
+            y += EditorGUIUtility.singleLineHeight + 2f;
         }
 
         if (needsNewKey && !string.IsNullOrEmpty(key)) {

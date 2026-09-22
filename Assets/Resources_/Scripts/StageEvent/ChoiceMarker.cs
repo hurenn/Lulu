@@ -7,7 +7,9 @@ using UnityEngine.Timeline;
 public class MessageChoiceOption {
     public string labelKey;                // 選択肢テキストのローカライズキー
     public MessageData[] branchMessages;    // 選択後に表示する軽量な分岐セリフ(任意、Timelineを使わない場合用)
-    public PlayableDirector nextTimeline;   // 選択後に再生する分岐先Timeline(任意)
+    // ChoiceMarkerはTimelineAsset内のデータ(ScriptableObject)のため、シーン上のPlayableDirectorを
+    // 直接参照できない。ExposedReferenceで実行時にPlayableDirectorのバインドテーブル経由で解決する
+    public ExposedReference<PlayableDirector> nextTimeline;   // 選択後に再生する分岐先Timeline(任意)
     public bool endsSequence;               // 分岐再生後、会話を終了する(元のTimelineを再開しない)
 }
 

@@ -8,7 +8,7 @@ public class TalkMessageSet {
     public MessageData[] messageDatas;   // 直接入力するメッセージ(timelineが未設定の場合に使用)
     public PlayableDirector timeline;    // 設定した場合はメッセージの代わりにこのTimelineを再生する
     public int requiredFlag = 0;         // このセットに進むために必要なフラグ値(Flagがこの値以上なら解放)
-    public TalkTrigger addFlagTarget;       // 設定されていれば、このセットの表示完了後にこのTriggerのフラグを増加させる
+    public TalkTrigger[] addFlagTargets;    // 設定されていれば、このセットの表示完了後にこれらのTriggerのフラグを増加させる
 }
 
 // 判定内で上入力すると登録済みのメッセージセットを1つずつ再生する汎用会話イベント。
@@ -79,7 +79,7 @@ public class TalkTrigger : MonoBehaviour {
                 _playerController.isEnabledCharacterInput = true;
                 _isWaitingForMessageEnd = false;
                 CinemachineManager.Instance?.ReturnToPlayer(); // 直接メッセージ用のズームを戻す
-                _activeSet?.addFlagTarget?.AdvanceFlag();
+                _AdvanceFlagTargets();
                 if (_isPlayerInside) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
             }
             return;
@@ -151,8 +151,16 @@ public class TalkTrigger : MonoBehaviour {
         director.stopped -= _OnTimelineStopped;
         _playerController.isEnabledCharacterInput = true;
         _isWaitingForTimeline = false;
-        _activeSet?.addFlagTarget?.AdvanceFlag();
+        _AdvanceFlagTargets();
         if (_isPlayerInside) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
+    }
+
+    // 現在のセットに設定された全てのaddFlagTargetsのフラグを進める
+    private void _AdvanceFlagTargets() {
+        if (_activeSet?.addFlagTargets == null) return;
+        foreach (var target in _activeSet.addFlagTargets) {
+            target?.AdvanceFlag();
+        }
     }
 
     private void _ShowSignal() {

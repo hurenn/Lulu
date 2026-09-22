@@ -213,6 +213,8 @@ MonoBehaviour:
       isUnScaledTime: 0
       waitForButton: 0
     timeline: {fileID: 0}
+    requiredFlag: 0
+    addFlagTarget: {fileID: 0}
   - messageDatas:
     - key: 02009
       characterIcon: {fileID: -5964146832624348724, guid: 07a364568fa7aca47bffaaa13b3037db, type: 3}
@@ -221,10 +223,13 @@ MonoBehaviour:
       isUnScaledTime: 0
       waitForButton: 0
     timeline: {fileID: 0}
+    requiredFlag: 0
+    addFlagTarget: {fileID: 0}
   _messageListScript: {fileID: 0}
   _messageViewer: {fileID: 0}
   _talkSignal: {fileID: 8185802735766760552}
   _signalFadeDuration: 0.2
+  _flag: 0
 --- !u!1 &8285612305303277273
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,10 +304,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -782728787
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 5362123048043423998, guid: 88c8851dad10e684ca32f934bcefef0b, type: 3}
+  m_Sprite: {fileID: 1297234698, guid: abb9d8d625d0c694aa323947670cef99, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

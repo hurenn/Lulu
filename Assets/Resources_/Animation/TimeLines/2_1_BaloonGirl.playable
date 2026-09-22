@@ -25,7 +25,7 @@ MonoBehaviour:
     m_Start: 0.5
     m_ClipIn: 0
     m_Asset: {fileID: 3319151166560963882}
-    m_Duration: 0.01666666666666672
+    m_Duration: 0.15
     m_TimeScale: 1
     m_ParentTrack: {fileID: -8845220327296685750}
     m_EaseInDuration: 0
@@ -91,10 +91,10 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.5166666666666667
+    m_Start: 0.65
     m_ClipIn: 0
     m_Asset: {fileID: 7505135018214352362}
-    m_Duration: 0.01666666666666672
+    m_Duration: 0.15
     m_TimeScale: 1
     m_ParentTrack: {fileID: -8845220327296685750}
     m_EaseInDuration: 0
@@ -142,10 +142,10 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: MessagePlayableAsset
   - m_Version: 1
-    m_Start: 0.5333333333333333
+    m_Start: 0.8
     m_ClipIn: 0
     m_Asset: {fileID: 3771161869374759632}
-    m_Duration: 0.01666666666666672
+    m_Duration: 0.15
     m_TimeScale: 1
     m_ParentTrack: {fileID: -8845220327296685750}
     m_EaseInDuration: 0
@@ -540,7 +540,7 @@ MonoBehaviour:
   m_Children: []
   m_Clips:
   - m_Version: 1
-    m_Start: 4.15
+    m_Start: 4.55
     m_ClipIn: 0
     m_Asset: {fileID: 7117442111974842300}
     m_Duration: 0.03333339691162074
@@ -838,7 +838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
   m_Name: Signal Emitter
   m_EditorClassIdentifier: 
-  m_Time: 4.183333396911621
+  m_Time: 4.5833
   m_Retroactive: 0
   m_EmitOnce: 0
   m_Asset: {fileID: 11400000, guid: cb48fb788c7f0de4e9f7c81f23f87100, type: 2}
@@ -1053,7 +1053,7 @@ MonoBehaviour:
     m_Start: 0.3
     m_ClipIn: 0
     m_Asset: {fileID: 925133658296346219}
-    m_Duration: 3.8833333969116213
+    m_Duration: 4.2833
     m_TimeScale: 1
     m_ParentTrack: {fileID: 212603463861460762}
     m_EaseInDuration: 0
@@ -1158,7 +1158,7 @@ MonoBehaviour:
     m_Start: 0
     m_ClipIn: 0
     m_Asset: {fileID: 6300910041959395784}
-    m_Duration: 4.033333333333333
+    m_Duration: 4.4333
     m_TimeScale: 1
     m_ParentTrack: {fileID: 1538751014640022027}
     m_EaseInDuration: 0
@@ -1241,11 +1241,12 @@ MonoBehaviour:
   - key: 02010
     characterIcon: {fileID: -7401300553546427371, guid: b3c0b5aabdb4f1445b4323187f289e97, type: 3}
     addShowTime: 0
+    soundEffect: {fileID: 0}
     isAutoForce: 0
     isUnScaledTime: 0
     waitForButton: 0
-  shakeWindow: 0
-  shakeIntensity: 20
+  shakeWindow: 1
+  shakeIntensity: 40
   shakeDuration: 0.4
 --- !u!114 &3771161869374759632
 MonoBehaviour:
@@ -1263,6 +1264,7 @@ MonoBehaviour:
   - key: 02012
     characterIcon: {fileID: -7401300553546427371, guid: b3c0b5aabdb4f1445b4323187f289e97, type: 3}
     addShowTime: 0
+    soundEffect: {fileID: 0}
     isAutoForce: 0
     isUnScaledTime: 0
     waitForButton: 0
@@ -1376,11 +1378,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a021af42019031247a7176feb529aecf, type: 3}
   m_Name: Choice Marker
   m_EditorClassIdentifier: 
-  m_Time: 4
+  m_Time: 4.4
   prompt:
     key: 02014
     characterIcon: {fileID: 21300000, guid: fca1f8d1651fb6e4a9554c78063a242c, type: 3}
     addShowTime: 0
+    soundEffect: {fileID: 0}
     isAutoForce: 0
     isUnScaledTime: 0
     waitForButton: 0
@@ -1390,32 +1393,40 @@ MonoBehaviour:
     - key: 02015
       characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
       addShowTime: 0
+      soundEffect: {fileID: 0}
       isAutoForce: 0
       isUnScaledTime: 0
       waitForButton: 0
     - key: 02016
       characterIcon: {fileID: 21300000, guid: 32bafaaf813207c4aabc302fdca056f4, type: 3}
       addShowTime: 0
+      soundEffect: {fileID: 0}
       isAutoForce: 0
       isUnScaledTime: 0
       waitForButton: 0
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 0
   - labelKey: 02034
     branchMessages:
     - key: 02017
       characterIcon: {fileID: 21300000, guid: b1fd4a93ce93ddc4bbbdfa7b7447de95, type: 3}
       addShowTime: 0
+      soundEffect: {fileID: 0}
       isAutoForce: 0
       isUnScaledTime: 0
       waitForButton: 0
     - key: 02018
       characterIcon: {fileID: 21300000, guid: 6a8e9ac36434ff24d935c3aab7895299, type: 3}
       addShowTime: 0
+      soundEffect: {fileID: 0}
       isAutoForce: 0
       isUnScaledTime: 0
       waitForButton: 0
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 0
 --- !u!114 &7117442111974842300
 MonoBehaviour:
@@ -1486,6 +1497,7 @@ MonoBehaviour:
   - key: 02011
     characterIcon: {fileID: 21300000, guid: 6a8e9ac36434ff24d935c3aab7895299, type: 3}
     addShowTime: 0
+    soundEffect: {fileID: 0}
     isAutoForce: 0
     isUnScaledTime: 0
     waitForButton: 0
