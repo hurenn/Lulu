@@ -296,8 +296,9 @@ public class MessageViewer : MonoBehaviour {
     /// <summary>
     /// 選択肢モードへ移行する(パネルは開いたまま維持する)
     /// </summary>
-    private const float _CHOICE_DECIDE_LOCK_TIME = 1.0f; // 表示直後にこの時間だけ決定入力を無視する
+    private const float _CHOICE_DECIDE_LOCK_TIME = 0.5f; // 表示直後にこの時間だけ決定入力を無視する
     private float _choiceEnteredTime;
+    private bool _hasMovedChoiceCursor; // 一度でも上下移動したら猶予時間を無効化する
 
     public void EnterChoiceMode(MessageChoiceOption[] choices, UnityEngine.Playables.PlayableDirector pausedDirector) {
         _pendingChoices = choices;
@@ -305,12 +306,14 @@ public class MessageViewer : MonoBehaviour {
         _selectedChoiceIndex = 0;
         IsChoiceActive = true;
         _choiceEnteredTime = Time.unscaledTime;
+        _hasMovedChoiceCursor = false;
         _choicePanel.Show(choices, _selectedChoiceIndex, _playerParameter.language);
     }
 
     // 選択肢のカーソルを移動する(dir: -1で上、+1で下)
     public void MoveChoiceCursor(int dir) {
         if (!IsChoiceActive) return;
+        _hasMovedChoiceCursor = true; // 移動操作があった以上、誤決定の心配はないため猶予時間を無効化する
         // ループさせず、端で止める
         _selectedChoiceIndex = Mathf.Clamp(_selectedChoiceIndex + dir, 0, _pendingChoices.Length - 1);
         _choicePanel.UpdateCursor(_selectedChoiceIndex);
@@ -319,7 +322,7 @@ public class MessageViewer : MonoBehaviour {
     // 選択中の項目を決定する
     public void ConfirmChoice() {
         if (!IsChoiceActive) return;
-        if (Time.unscaledTime - _choiceEnteredTime < _CHOICE_DECIDE_LOCK_TIME) return; // 表示直後の誤決定を防ぐ
+        if (!_hasMovedChoiceCursor && Time.unscaledTime - _choiceEnteredTime < _CHOICE_DECIDE_LOCK_TIME) return; // 表示直後の誤決定を防ぐ
         var selected = _pendingChoices[_selectedChoiceIndex];
         IsChoiceActive = false;
         _choicePanel.Hide();
