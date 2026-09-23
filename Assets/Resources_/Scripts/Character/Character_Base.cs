@@ -395,8 +395,9 @@ public class Character_Base : MonoBehaviour {
     /// <param name="invincible_time">無敵時間</param>
     /// <param name="damage_reaction_time">動けない時間</param>
     /// <param name="is_trap_damage">トラップなど、氷の無敵を貫通させるダメージかどうか</param>
-    public virtual bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false) {
-        if (isInvincible || _isDead) {
+    /// <param name="ignore_invincibility">落下などの地形死判定用。被ダメ無敵や光の回避無敵等、全ての無敵を貫通させる</param>
+    public virtual bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false, bool ignore_invincibility = false) {
+        if (_isDead || (!ignore_invincibility && isInvincible)) {
             return false;
         }
 

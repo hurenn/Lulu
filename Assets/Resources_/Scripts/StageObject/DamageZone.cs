@@ -27,6 +27,9 @@ public class DamageZone : MonoBehaviour {
     // トラップなどの環境ダメージ扱いにするか（氷の能力によるワープ無敵を貫通してダメージを与える）
     [SerializeField] private bool _isTrapDamage = false;
 
+    // 落下などの地形死判定用。被ダメ無敵・光の回避無敵等、全ての無敵を貫通してダメージを与える
+    [SerializeField] private bool _ignoreInvincibility = false;
+
     [Header("Self Damage Settings")]
     // このDamageZoneの所有者（設定した場合、ダメージを与えた時に自分にもダメージを与える）
     [SerializeField] private Character_Base _selfCharacter = null;
@@ -146,7 +149,7 @@ public class DamageZone : MonoBehaviour {
         if (character == null) {
             return;
         }
-        if (character.isInvincible || _hitCharacters.ContainsKey(character)) {
+        if ((!_ignoreInvincibility && character.isInvincible) || _hitCharacters.ContainsKey(character)) {
             return;
         }
         // ヒット済みキャラのタイマー更新
@@ -163,7 +166,7 @@ public class DamageZone : MonoBehaviour {
         // ヒット時のコールバック実行
         _hitCallback?.Invoke(character);
 
-        var damage_result = character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime, _isTrapDamage);
+        var damage_result = character.Damage(damage, blow_power, _invincibleTime, _damageReactionTime, _isTrapDamage, _ignoreInvincibility);
 
         // ダメージ演出
         if (damage_result) {

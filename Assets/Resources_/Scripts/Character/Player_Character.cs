@@ -534,19 +534,19 @@ public class Player_Character : Character_Base {
         }
     }
 
-    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false) {
-        if (isInvincible || _isDead || _specialUsing) {
+    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false, bool ignore_invincibility = false) {
+        if (_isDead || (!ignore_invincibility && (isInvincible || _specialUsing))) {
             return false;
         }
 
         // 氷の能力で無敵（仮対応）。トラップなどのダメージは貫通させる
-        if (_isIceInvincible && !is_trap_damage) {
+        if (!ignore_invincibility && _isIceInvincible && !is_trap_damage) {
             return false;
         }
 
         // 光の能力で無敵回避
         bool is_light_avoid = _player_charaParam.isLightInvincible || _player_charaParam.isAutoLightInvincible;
-        if (is_light_avoid && !_player_charaParam.isOverheat) {
+        if (!ignore_invincibility && is_light_avoid && !_player_charaParam.isOverheat) {
             // MP消費
             _player_charaParam.ConsumeMP(_player_charaParam.isLightInvincible ? eAbilityType.LightAvoid : eAbilityType.LightAutoAvoid);
 
@@ -567,7 +567,7 @@ public class Player_Character : Character_Base {
             return false;
         }
 
-        if (_isSliding || _isEventInvincible) {
+        if (!ignore_invincibility && (_isSliding || _isEventInvincible)) {
             return false; // ダメージ無効
         }
 
@@ -585,7 +585,7 @@ public class Player_Character : Character_Base {
             }
         }
 
-        bool isDamaged = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time, is_trap_damage);
+        bool isDamaged = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
         if (isDamaged) {
             ScreenFlash.Instance?.Flash(0.4f, new Color(1f, 0f, 0f, 0.2f));
         }

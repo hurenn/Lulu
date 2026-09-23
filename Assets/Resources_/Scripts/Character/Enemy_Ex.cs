@@ -326,8 +326,8 @@ public class Enemy_Ex : Enemy_Base {
         _isExecutingAction = false;
     }
 
-    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false) {
-        var result = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time, is_trap_damage);
+    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false, bool ignore_invincibility = false) {
+        var result = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
 
         if (_isHalfHp && !_isDowned) {
             StartCoroutine(_Down());
