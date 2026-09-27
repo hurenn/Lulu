@@ -39,7 +39,10 @@ public class LightHiddenObject : MonoBehaviour {
         return 1f;
     }
 
-    private void Update() {
+    // ワープのコルーチン(yield return null相当で再開)がUpdate後・LateUpdate前に発光フラグを立てて
+    // テレポートするため、Update()で判定すると同一フレーム内で反映が間に合わないことがある。
+    // LateUpdate()なら、その回の処理が確実に済んだ後で判定できる
+    private void LateUpdate() {
         var player = PlayerCharacterManager.Current as Player_Character;
         bool isUsingLight = player != null &&
             (player.PlayerCharaParam.isLightInvincible || player.PlayerCharaParam.isAutoLightInvincible);
