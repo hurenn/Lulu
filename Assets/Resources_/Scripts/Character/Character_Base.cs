@@ -420,7 +420,7 @@ public class Character_Base : MonoBehaviour {
             }
 
             // アニメーション
-            if (_anim.HasState(0, Animator.StringToHash("Damage"))) {
+            if (_anim != null && _anim.HasState(0, Animator.StringToHash("Damage"))) {
                 _anim.Play("Damage");
             }
 
