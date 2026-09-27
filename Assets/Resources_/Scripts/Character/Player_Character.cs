@@ -89,13 +89,16 @@ public class Player_Character : Character_Base {
 
     protected override void _UpdateSpecials() {
         base._UpdateSpecials();
+
+        // 自動発光設定は_UpdateWarpDash()より先に行う。
+        // _UpdateWarpDash()内の壁接触チェックで同一フレーム中に_isWarpDashingがfalseに戻ることがあり、
+        // 後から判定すると壁ダッシュへの切替が発光より先に確定してしまうため
+        _SetAutoLight(_isWarpDashing || _isWarpDelay);
+
         _UpdateWarpDash();
         _UpdateSliding();
         _UpdateWallSlideMove();
         _UpdateSlideJump();
-
-        // 自動発光設定
-        _SetAutoLight(_isWarpDashing);
 
         // 氷無敵時間計測
         if (_isIceInvincible) {
@@ -314,6 +317,9 @@ public class Player_Character : Character_Base {
     /// ワープダッシュ実行
     /// </summary>
     private void _ExecuteWarpDash() {
+        // ダッシュ開始時にも明示的に発光を有効化する(直前に_isWarpDelayが解除される空白フレームの保険)
+        _SetAutoLight(true);
+
         _isVerticalWarpDash = Mathf.Approximately(_warpDashDirection.x, 0f);
         _isDownwardWarpDash = _isVerticalWarpDash && _warpDashDirection.y < 0f;
         _SetDash(_isRight, is_effect: false);
@@ -847,9 +853,8 @@ public class Player_Character : Character_Base {
                 _ => Vector2.zero
             };
 
-            yield return null;
-
-            // ワープダッシュ実行
+            // ワープダッシュ実行(直前に1フレーム待機していたが、その間_isWarpDelay/_isWarpDashingが
+            // 両方falseになり発光が途切れる空白フレームになっていたため、間を置かず実行する)
             _ExecuteWarpDash();
         }
     }
@@ -867,6 +872,10 @@ public class Player_Character : Character_Base {
     };
 
     void _OnPreWarpCommon() {
+        // ワープ実行直前に明示的に発光を有効化する(Updateの巡回を待つと、消える地形の壁到達より後になり
+        // 発光せずに壁ダッシュへ移行してしまうことがあるため)
+        _SetAutoLight(true);
+
         // スライディングリセット
         _SetSliding(false);
         // 重力を無効化
