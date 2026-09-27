@@ -450,29 +450,6 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events: []
---- !u!114 &-4413983911680900726
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
-  m_Name: MessagePlayableAsset
-  m_EditorClassIdentifier: 
-  messageDatas:
-  - key: 01196
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
 --- !u!114 &-3931124069735748447
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -486,75 +463,8 @@ MonoBehaviour:
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
   messageDatas:
-  - key: 01185
-    characterIcon: {fileID: 21300000, guid: a10af6ded7bbe5543b1ce36e9fa21deb, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
---- !u!114 &-2640439687664618081
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
-  m_Name: MessagePlayableAsset(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  messageDatas:
-  - key: 01200
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01201
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01202
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01203
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
---- !u!114 &-2622875884853020488
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
-  m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  messageDatas:
-  - key: 01204
-    characterIcon: {fileID: 21300000, guid: 84a90998f9c38024486e890e57afc0a3, type: 3}
+  - key: 02141
+    characterIcon: {fileID: 5972562454343091465, guid: d5d97f203f53267499cf0e3b21e9a659, type: 3}
     addShowTime: 0
     soundEffect: {fileID: 0}
     isAutoForce: 0
@@ -668,8 +578,8 @@ MonoBehaviour:
   m_Name: MessagePlayableAsset
   m_EditorClassIdentifier: 
   messageDatas:
-  - key: 01186
-    characterIcon: {fileID: 21300000, guid: a1f7b2950a69b0f4ba5a2b5039ce6c8a, type: 3}
+  - key: 02142
+    characterIcon: {fileID: 21300000, guid: 86a0c29236cff2647a7d32be1072ef49, type: 3}
     addShowTime: 0
     soundEffect: {fileID: 0}
     isAutoForce: 0
@@ -691,8 +601,8 @@ MonoBehaviour:
   m_Name: MessagePlayableAsset(Clone)
   m_EditorClassIdentifier: 
   messageDatas:
-  - key: 01187
-    characterIcon: {fileID: 21300000, guid: 8f037a52c0459f341ab9ec2c590a8b6f, type: 3}
+  - key: 02143
+    characterIcon: {fileID: -2594968094574163731, guid: 450320234be810340bd3c9e65a871060, type: 3}
     addShowTime: 0
     soundEffect: {fileID: 0}
     isAutoForce: 0
@@ -729,43 +639,6 @@ MonoBehaviour:
     m_ScenePreview: 1
   m_DurationMode: 0
   m_MarkerTrack: {fileID: 0}
---- !u!114 &692860840756701016
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d01984c64812b9448751b37fd617dba, type: 3}
-  m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  messageDatas:
-  - key: 01197
-    characterIcon: {fileID: 21300000, guid: 21a616f61046fb34bb4c24fcd3501c06, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01198
-    characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01199
-    characterIcon: {fileID: 21300000, guid: f167bb1aee55c4841b12f91ae63f9400, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  shakeWindow: 0
-  shakeIntensity: 20
-  shakeDuration: 0.4
 --- !u!114 &2960327874987100616
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1041,264 +914,6 @@ MonoBehaviour:
     m_MixInCurve:
       serializedVersion: 2
       m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: MessagePlayableAsset
-  - m_Version: 1
-    m_Start: 13.316666666666666
-    m_ClipIn: 0
-    m_Asset: {fileID: -4413983911680900726}
-    m_Duration: 0.16201122508694787
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: 2960327874987100616}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: MessagePlayableAsset
-  - m_Version: 1
-    m_Start: 5.066666666666666
-    m_ClipIn: 0
-    m_Asset: {fileID: 692860840756701016}
-    m_Duration: 0.016666666666666607
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: 2960327874987100616}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: MessagePlayableAsset
-  - m_Version: 1
-    m_Start: 9.833333333333334
-    m_ClipIn: 0
-    m_Asset: {fileID: -2640439687664618081}
-    m_Duration: 0.033333333333333215
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: 2960327874987100616}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: MessagePlayableAsset
-  - m_Version: 1
-    m_Start: 10.666666666666666
-    m_ClipIn: 0
-    m_Asset: {fileID: -2622875884853020488}
-    m_Duration: 0.033333333333333215
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: 2960327874987100616}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -2147,36 +1762,8 @@ MonoBehaviour:
   m_Name: MessagePlayableAsset(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   messageDatas:
-  - key: 01188
-    characterIcon: {fileID: 21300000, guid: f6389e54db455ce4aa0a012ed47c6a25, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01189
-    characterIcon: {fileID: 21300000, guid: 5697ec96c8bffbb419d192c29b731381, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01190
-    characterIcon: {fileID: 21300000, guid: 846575d3ed56a44438cac6995f860ebe, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01191
-    characterIcon: {fileID: 21300000, guid: 8f037a52c0459f341ab9ec2c590a8b6f, type: 3}
-    addShowTime: 0
-    soundEffect: {fileID: 0}
-    isAutoForce: 0
-    isUnScaledTime: 0
-    waitForButton: 0
-  - key: 01192
-    characterIcon: {fileID: 21300000, guid: 0040aa3c9de3b45418f2080e41781db9, type: 3}
+  - key: 02144
+    characterIcon: {fileID: 21300000, guid: d901474487655db45aa0f3ee2bb5647e, type: 3}
     addShowTime: 0
     soundEffect: {fileID: 0}
     isAutoForce: 0

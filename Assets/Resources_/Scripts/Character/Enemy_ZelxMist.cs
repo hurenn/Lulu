@@ -24,6 +24,7 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
     [SerializeField] private GameObject _mistBurstPrefab; // 被ダメ時に発生させるパーティクル
     [SerializeField] private MistShield _mistShield;
     [SerializeField] private GameObject _bodyHitEffectPrefab; // スタン中に本体へFireBulletが当たった時のエフェクト
+    [SerializeField] private GameObject _firstStunMessageObject; // 初めてスタンした時にActiveにするGameObject(メッセージ表示用)
 
     [Header("生成設定")]
     [SerializeField] private GameObject _sylxMistPrefab;    // 生成するSylxMistのプレハブ
@@ -56,6 +57,9 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
     private bool _isActive = false; // false中はTimelineの合図があるまで行動(移動・生成)を止めておく
     private Coroutine _stunTimeoutCoroutine;
     private Coroutine _explodeCoroutine;
+    private bool _hasStunnedBefore = false; // 初回スタン判定用
+    private bool _hasExplodedBefore = false; // 初回爆発判定用
+    private int _explosionCount = 0; // 爆発回数
 
     protected override void _Setup() {
         base._Setup();
@@ -130,6 +134,12 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
         _currentMoveSpeedRate = _stunMoveSpeedRate;
         if (_mistShield != null) _mistShield.gameObject.SetActive(false);
         _stunTimeoutCoroutine = StartCoroutine(_StunTimeoutCo());
+
+        if (!_hasStunnedBefore) {
+            // 初めてスタンした時だけ、指定したGameObjectをActiveにする(メッセージ表示用)
+            _hasStunnedBefore = true;
+            if (_firstStunMessageObject != null) _firstStunMessageObject.SetActive(true);
+        }
     }
 
     // 爆発に至らなくても、スタンしてから一定時間が経てば自動で復帰する
@@ -174,6 +184,18 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
         // 爆発の瞬間は完全に動きを止める
         _isFrozen = true;
 
+        if (!_hasExplodedBefore) {
+            // 初めて爆発した時だけ、ダウン演出等のOnDownedを呼ぶ
+            _hasExplodedBefore = true;
+            OnDowned?.Invoke();
+        }
+
+        _explosionCount++;
+        if (_explosionCount == 2) {
+            // 2回爆発した後は本気モードへ
+            OnSeriously?.Invoke();
+        }
+
         transform.localScale = _normalScale;
         _stunHitCount = 0;
 
@@ -194,6 +216,12 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
         IsEventInvincible = true;
 
         yield return new WaitForSeconds(_postExplosionDelay);
+
+        // 大暴れに入る直前で死亡判定を行う。爆発ダメージがとどめだった場合はシールドを復活させず、
+        // 大暴れフェーズにも入らない(Die()側でシールドを消したままにしているのを上書きしないため)
+        if (_isDead) {
+            yield break;
+        }
 
         if (_mistShield != null) {
             _mistShield.ResetToFull();

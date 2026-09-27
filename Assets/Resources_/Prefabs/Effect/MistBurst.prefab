@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1105228798036436143}
   - component: {fileID: 5932702781513059559}
   - component: {fileID: 80659578644646117}
+  - component: {fileID: 354827969249479136}
   m_Layer: 0
   m_Name: MistBurst
   m_TagString: Untagged
@@ -4900,3 +4901,17 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &354827969249479136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091990258888570070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 263b28c4ea561dd4aab9494ba2573d65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 0}
+  _particleSystem: {fileID: 5932702781513059559}

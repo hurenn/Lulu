@@ -12,14 +12,14 @@ public class StageEvent_BossBattle : MonoBehaviour {
         public bool isSeriouslyTrigger = false;
     }
     [SerializeField] private MessageTriggerActivator[] _messageTriggerActivators;
-    private float _currentMessageTriggerDelay = 0f;
-    private bool _isHalfHp = false;
+    protected float _currentMessageTriggerDelay = 0f;
+    protected bool _isHalfHp = false;
     private bool _isSeriously = false;
 
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private Enemy_Base _bossEnemy;
     [SerializeField] private GameObject _stageClearTimeline;
-    [SerializeField] private MessageViewer _messageViewer;
+    [SerializeField] protected MessageViewer _messageViewer;
     [SerializeField] private MessageTrigger _stageClearMessageTrigger;
     [SerializeField] private GameObject _sparkEffect;
 
@@ -74,13 +74,13 @@ public class StageEvent_BossBattle : MonoBehaviour {
         }
     }
 
-    private void _OnBossDowned() {
+    protected virtual void _OnBossDowned() {
         _currentMessageTriggerDelay = 0f;
         _messageViewer?.ForceReset();
         _isHalfHp = true;
         StartCoroutine(_BossDownedRoutine());
     }
-    private void _OnBossSeriously() {
+    protected virtual void _OnBossSeriously() {
         //_messageViewer?.ForceReset();
         //_currentMessageTriggerDelay = 0f;
         _isSeriously = true;
@@ -103,7 +103,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
         yield break;
     }
 
-    private void _OnBossDied() {
+    protected virtual void _OnBossDied() {
         // プレイヤーの操作を停止
         if (_playerController != null) {
             _playerController.isEnabledCharacterInput = false;
@@ -126,7 +126,7 @@ public class StageEvent_BossBattle : MonoBehaviour {
         if (_sparkEffect != null) _sparkEffect.SetActive(false);
     }
 
-    private void _OnBossDieEnded() {
+    protected virtual void _OnBossDieEnded() {
         // ステージクリア演出
         _stageClearTimeline.SetActive(true);
     }
