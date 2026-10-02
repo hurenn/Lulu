@@ -6,7 +6,7 @@ public class GoalMarker : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private Transform goal;
     [SerializeField] private RectTransform markerUI;
-    [SerializeField] private Image markerImage;
+    [SerializeField] private CanvasGroup markerImageGroup;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float edgeOffset = 50f; // 画面端から少し内側に
     private bool _isActive = false;
@@ -15,7 +15,7 @@ public class GoalMarker : MonoBehaviour
         player = GameObject.FindWithTag("Player")?.transform;
         goal = GameObject.FindAnyObjectByType<ChangeScene>()?.transform;
         markerUI = GetComponent<RectTransform>();
-        markerImage = GetComponent<Image>();
+        markerImageGroup = GetComponent<CanvasGroup>();
         mainCamera = Camera.main;
     }
 
@@ -25,13 +25,11 @@ public class GoalMarker : MonoBehaviour
         }
 
         // フェードイン・アウト処理
-        var color = markerImage.color;
-        if (_isActive && color.a < 1f) {
-            color.a += Time.deltaTime * 3;
-            markerImage.color = color;
-        } else if (!_isActive && color.a > 0f) {
-            color.a -= Time.deltaTime * 3;
-            markerImage.color = color;
+        var alpha = markerImageGroup.alpha;
+        if (_isActive && alpha < 1f) {
+            markerImageGroup.alpha += Time.deltaTime * 3;
+        } else if (!_isActive && alpha > 0f) {
+            markerImageGroup.alpha -= Time.deltaTime * 3;
         }
         if (!_isActive) {
             return;
