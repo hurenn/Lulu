@@ -12,7 +12,7 @@ public class AutoDestroy : MonoBehaviour {
         _destroyedCallback = callback;
     }
 
-    private void Start() {
+    protected virtual void Start() {
         StartCoroutine(_DestroyCoroutine());
     }
 

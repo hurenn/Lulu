@@ -20,6 +20,7 @@ public class Character_Base : MonoBehaviour {
 
     [SerializeField] protected Collider2D _col;
     [SerializeField] protected Rigidbody2D _rb;
+    public Vector2 Velocity => _rb.linearVelocity;
     [SerializeField] protected SpriteRenderer _sprite;
     [SerializeField] protected Animator _anim;
     [SerializeField] protected AudioSource _audioSource;

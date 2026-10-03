@@ -8,6 +8,7 @@ public enum eAbilitySlot {
     X,
     A,
     B,
+    None, // デバッグ用：どのボタンにも割り当てられていない状態（_abilitiesの添字としては使用しない）
 }
 
 public class AbilityUIManager : MonoBehaviour {
@@ -59,6 +60,7 @@ public class AbilityUIManager : MonoBehaviour {
             { eAbilityType.Light, _abilityUI_X },
             { eAbilityType.Fire, _abilityUI_A },
             { eAbilityType.Warp, _abilityUI_B },
+            { eAbilityType.Water, _abilityUI_A }, // デバッグ用：専用アイコン未整備のためFireと同じ枠を流用
         };
         _slotContainers = new Dictionary<eAbilitySlot, Transform> {
             { eAbilitySlot.Y, _abilityUI_Y.transform.parent },

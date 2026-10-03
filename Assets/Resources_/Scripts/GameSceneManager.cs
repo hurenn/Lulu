@@ -21,6 +21,10 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
     }
 
     private void _OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        // デバッグ用：AボタンのFire/Water入れ替えは、シーン再読み込みのたびに解除する
+        // （PlayerParameterは永続化されるため、入れ替えたままだと次回シーンでもNumpad6がFireに戻らない）
+        _ResetWaterDebugSlot();
+
         // シーン再読み込み時のみリスポーン地点に移動
         var player = PlayerCharacterManager.Current as Player_Character;
         var checkpointManager = CheckpointManager.Instance;
@@ -31,6 +35,17 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
         if (_isDeathRetry) {
             StartCoroutine(_ChargeAbilitiesOnRespawn(0.5f));
             _isDeathRetry = false; // フラグをリセット
+        }
+    }
+
+    /// <summary>
+    /// デバッグ用：AボタンがWaterに入れ替わったままの場合、Fireへ戻す
+    /// </summary>
+    private void _ResetWaterDebugSlot() {
+        var player_param = PlayerParameter.Instance;
+        if (player_param.GetAssignedAbilityType(eAbilitySlot.A) == eAbilityType.Water) {
+            player_param.SetAssignedSlot(eAbilityType.Water, eAbilitySlot.None);
+            player_param.SetAssignedSlot(eAbilityType.Fire, eAbilitySlot.A);
         }
     }
 
@@ -113,6 +128,11 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
             _ToggleAbilityBySlot(eAbilitySlot.B);
         }
 
+        // デバッグ用：Numpad3キーでWaterをAボタンに配置（Water検証用）
+        if (keyboard.numpad3Key.wasPressedThisFrame) {
+            _PlaceAbilityOnSlot(eAbilityType.Water, eAbilitySlot.A);
+        }
+
         if (keyboard.numpad5Key.wasPressedThisFrame) {
             var player = PlayerCharacterManager.Current as Player_Character;
             if (player != null) {
@@ -150,6 +170,31 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
         } else {
             player.SetAbilitySlot(ability_type, slot);
         }
+    }
+
+    /// <summary>
+    /// 指定スロットに指定した能力を強制的に配置する（デバッグ用：元々そのスロットにあった能力は外される）
+    /// </summary>
+    private void _PlaceAbilityOnSlot(eAbilityType ability_type, eAbilitySlot slot) {
+        var player = PlayerCharacterManager.Current as Player_Character;
+        if (player == null) {
+            return;
+        }
+
+        var player_param = PlayerParameter.Instance;
+        var current_type = player_param.GetAssignedAbilityType(slot);
+        if (current_type == ability_type) {
+            return; // 既に配置済み
+        }
+
+        if (current_type != eAbilityType.None) {
+            if (player_param.IsOwned(current_type)) {
+                player.RemoveAbility(slot);
+            }
+            player_param.SetAssignedSlot(current_type, eAbilitySlot.None);
+        }
+        player_param.SetAssignedSlot(ability_type, slot);
+        player.SetAbilitySlot(ability_type, slot);
     }
 
     /// <summary>

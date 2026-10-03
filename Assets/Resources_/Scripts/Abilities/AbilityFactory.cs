@@ -8,6 +8,7 @@ public enum eAbilityType {
     Fire,
     Light,
     Warp,
+    Water, // デバッグ用：テンキー6でFireと入れ替えてAボタンに付与できる
     // ここまで固定
 
     LockonSlash,
@@ -25,6 +26,7 @@ public static class AbilityFactory {
             { eAbilityType.Fire, "Prefabs/Abilities/Ability_Fire" },
             { eAbilityType.Light, "Prefabs/Abilities/Ability_Light" },
             { eAbilityType.Warp, "Prefabs/Abilities/Ability_Warp" },
+            { eAbilityType.Water, "Prefabs/Abilities/Ability_Water" },
         };
 
     // 能力UI全体管理

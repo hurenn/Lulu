@@ -19,6 +19,7 @@ public class SubQuest_Balloon : MonoBehaviour {
     [SerializeField] private MessageData[] _timeUpMessages;  // 時間切れ時に表示するメッセージ
     [SerializeField] private TalkTrigger _addFlagTarget;     // 設定されていれば、クリア時にこのTriggerのフラグを増加させる
     [SerializeField] private int _flagRewardExp = 200;       // addFlagTargetのフラグが2以上になった瞬間に付与する経験値(100=1レベル分)
+    [SerializeField] private GameObject _outOfBoundsZone;    // 場外判定オブジェクト(開始時にアクティブ、クリア時に非アクティブ)
 
     private bool _isRunning = false;
     private bool _isCleared = false;
@@ -48,6 +49,7 @@ public class SubQuest_Balloon : MonoBehaviour {
         if (_timerText != null) {
             _timerText.gameObject.SetActive(true);
         }
+        _outOfBoundsZone?.SetActive(true);
         _UpdateTimerText();
     }
 
@@ -80,12 +82,21 @@ public class SubQuest_Balloon : MonoBehaviour {
         if (_timerText != null) {
             _timerText.gameObject.SetActive(false);
         }
+        _outOfBoundsZone?.SetActive(false);
 
         foreach (var message in _clearMessages) {
             _messageListScript.Enqueue(message);
         }
 
         _addFlagTarget?.AdvanceFlag();
+    }
+
+    // 場外判定など、タイマー以外の要因で強制的に時間切れにする
+    public void ForceTimeUp() {
+        if (!_isRunning) return;
+        _remainingTime = 0f;
+        _UpdateTimerText();
+        _OnTimeUp();
     }
 
     private void _OnTimeUp() {

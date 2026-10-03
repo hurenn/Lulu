@@ -40,6 +40,7 @@ public class PlayerParameter : PersistentSingleton<PlayerParameter> {
         { eAbilityType.Light, eAbilitySlot.X },
         { eAbilityType.Fire, eAbilitySlot.A },
         { eAbilityType.Warp, eAbilitySlot.B },
+        { eAbilityType.Water, eAbilitySlot.None }, // デバッグ用：まだボタンには割り当てられていない
     };
     // 所有済みの能力タイプ（Warpは最初から所有）
     private HashSet<eAbilityType> _ownedAbilities = new HashSet<eAbilityType> { eAbilityType.Warp };
@@ -88,6 +89,14 @@ public class PlayerParameter : PersistentSingleton<PlayerParameter> {
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// 指定した能力タイプの割り当てスロットを直接設定する
+    /// （デバッグ用：ボタン未割り当ての能力を一時的にボタンへ割り当てる、またはその逆に使う）
+    /// </summary>
+    public void SetAssignedSlot(eAbilityType ability_type, eAbilitySlot slot) {
+        _abilitySlotAssignment[ability_type] = slot;
     }
 
     /// <summary>
