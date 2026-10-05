@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Character_Base : MonoBehaviour {
+public class Character_Base : MonoBehaviour, IDamageable {
     // 共通パラメータ
     [SerializeField] protected CommonParameter _param;
     // キャラクターパラメータ

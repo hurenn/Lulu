@@ -367,12 +367,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageToPlayer: 0
   _damageToEnemy: 1
+  _damageToOther: 1
   _invincibleTime: 0
   _blowPowerRight: {x: 0, y: 0}
   _damageReactionTime: 0.2
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 1
+  _isTrapDamage: 0
+  _ignoreInvincibility: 0
   _selfCharacter: {fileID: 0}
   _damageToSelf: 0
   _invincibleTimeToSelf: 0.5

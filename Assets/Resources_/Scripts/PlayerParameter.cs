@@ -121,6 +121,7 @@ public class PlayerParameter : PersistentSingleton<PlayerParameter> {
         _abilitySlotAssignment[eAbilityType.Light] = eAbilitySlot.X;
         _abilitySlotAssignment[eAbilityType.Fire] = eAbilitySlot.A;
         _abilitySlotAssignment[eAbilityType.Warp] = eAbilitySlot.B;
+        _abilitySlotAssignment[eAbilityType.Water] = eAbilitySlot.None; // デバッグ用：まだボタンには割り当てられていない
     }
 
     public enum eLanguage {

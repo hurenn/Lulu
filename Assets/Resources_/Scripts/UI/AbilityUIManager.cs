@@ -19,6 +19,7 @@ public class AbilityUIManager : MonoBehaviour {
     [SerializeField] private AbilityUI_Base _abilityUI_X;
     [SerializeField] private AbilityUI_Base _abilityUI_A;
     [SerializeField] private AbilityUI_Base _abilityUI_B;
+    [SerializeField] private AbilityUI_Base _abilityUI_Water; // デバッグ用：Water専用UI（Aボタンに差し込まれる）
 
     // フラッシュ用の画像（各スロット専用、能力の入れ替えに関わらず位置固定）
     [SerializeField] private Image _flashY;
@@ -60,7 +61,7 @@ public class AbilityUIManager : MonoBehaviour {
             { eAbilityType.Light, _abilityUI_X },
             { eAbilityType.Fire, _abilityUI_A },
             { eAbilityType.Warp, _abilityUI_B },
-            { eAbilityType.Water, _abilityUI_A }, // デバッグ用：専用アイコン未整備のためFireと同じ枠を流用
+            { eAbilityType.Water, _abilityUI_Water },
         };
         _slotContainers = new Dictionary<eAbilitySlot, Transform> {
             { eAbilitySlot.Y, _abilityUI_Y.transform.parent },

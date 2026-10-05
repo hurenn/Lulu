@@ -128,9 +128,9 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
             _ToggleAbilityBySlot(eAbilitySlot.B);
         }
 
-        // デバッグ用：Numpad3キーでWaterをAボタンに配置（Water検証用）
+        // デバッグ用：Numpad3キーでWaterをAボタンに付与/解除（Water検証用）
         if (keyboard.numpad3Key.wasPressedThisFrame) {
-            _PlaceAbilityOnSlot(eAbilityType.Water, eAbilitySlot.A);
+            _ToggleWaterOnSlotA();
         }
 
         if (keyboard.numpad5Key.wasPressedThisFrame) {
@@ -151,6 +151,8 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
 
     /// <summary>
     /// 指定スロットに現在割り当てられている能力を付与/解除する（デバッグ用）
+    /// 「既に付与されている」は実際にそのスロットへ装備中かどうかで判定する
+    /// （所有フラグはNumpad5で保存するまで立たないため、保存前でも正しくトグルできるようにする）
     /// </summary>
     private void _ToggleAbilityBySlot(eAbilitySlot slot) {
         var player = PlayerCharacterManager.Current as Player_Character;
@@ -164,9 +166,9 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
             return;
         }
 
-        var had_ability = player_param.IsOwned(ability_type);
-        if (had_ability) {
-            player.RemoveAbility(slot);
+        bool is_equipped = player.GetCurrentSlot(ability_type) == slot;
+        if (is_equipped) {
+            player.RemoveAbility(slot); // ボタンから外し、シーン上のAbilityも削除する
         } else {
             player.SetAbilitySlot(ability_type, slot);
         }
@@ -188,13 +190,33 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
         }
 
         if (current_type != eAbilityType.None) {
-            if (player_param.IsOwned(current_type)) {
-                player.RemoveAbility(slot);
+            if (player.GetCurrentSlot(current_type) == slot) {
+                player.RemoveAbility(slot); // 元々装備されていた能力をボタンから外し、シーン上のAbilityも削除する
             }
             player_param.SetAssignedSlot(current_type, eAbilitySlot.None);
         }
         player_param.SetAssignedSlot(ability_type, slot);
         player.SetAbilitySlot(ability_type, slot);
+    }
+
+    /// <summary>
+    /// デバッグ用：AボタンのWaterを付与/解除する（解除時はAボタンの割り当てをFireに戻す）
+    /// </summary>
+    private void _ToggleWaterOnSlotA() {
+        var player = PlayerCharacterManager.Current as Player_Character;
+        if (player == null) {
+            return;
+        }
+
+        bool is_water_equipped = player.GetCurrentSlot(eAbilityType.Water) == eAbilitySlot.A;
+        if (is_water_equipped) {
+            player.RemoveAbility(eAbilitySlot.A); // ボタンから外し、シーン上のAbilityも削除する
+            var player_param = PlayerParameter.Instance;
+            player_param.SetAssignedSlot(eAbilityType.Water, eAbilitySlot.None);
+            player_param.SetAssignedSlot(eAbilityType.Fire, eAbilitySlot.A);
+        } else {
+            _PlaceAbilityOnSlot(eAbilityType.Water, eAbilitySlot.A);
+        }
     }
 
     /// <summary>

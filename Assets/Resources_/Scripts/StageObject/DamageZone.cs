@@ -5,7 +5,7 @@ using UnityEngine;
 public class DamageZone : MonoBehaviour {
     // プレイヤーに与えるダメージ
     [SerializeField] private int _damageToPlayer = 1;
-    // 敵に与えるダメージ
+    // 敵に与えるダメージ(Player/Enemy以外のIDamageable、破壊可能オブジェクト等にもこれを使用する)
     [SerializeField] private int _damageToEnemy = 100;
 
     // 無敵時間
@@ -43,7 +43,7 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private bool _enableSelfDamage = false;
 
     // ヒット済みキャラの管理
-    Dictionary<Character_Base, float> _hitCharacters = new Dictionary<Character_Base, float>();
+    Dictionary<IDamageable, float> _hitCharacters = new Dictionary<IDamageable, float>();
     private const float _hitInterval = 0.5f; // 同じキャラに連続ヒットさせない時間
     // クールタイムで自然解除されるエントリ数（一度だけヒットの永続エントリはカウントしない）
     private int _activeCooldownCount = 0;
@@ -69,7 +69,7 @@ public class DamageZone : MonoBehaviour {
     private bool _isEnable = true;
 
     // ヒット時のコールバック
-    private System.Action<Character_Base> _hitCallback = default;
+    private System.Action<IDamageable> _hitCallback = default;
 
     private void Reset() {
         _hitEffectPrefab = Resources.Load<HitEffect>("Prefabs/Effects/HitEffect");
@@ -79,7 +79,7 @@ public class DamageZone : MonoBehaviour {
     /// セットアップ
     /// </summary>
     /// <param name="callback">ヒット時のコールバック設定</param>
-    public void Setup(System.Action<Character_Base> callback) {
+    public void Setup(System.Action<IDamageable> callback) {
         _hitCallback = callback;
     }
 
@@ -103,7 +103,7 @@ public class DamageZone : MonoBehaviour {
         // クールタイムで自然解除されるエントリが無い場合は何もしない
         // （一度だけヒットの永続エントリのみが残っている状態で、毎フレームリスト確保するのを防ぐ）
         if (_activeCooldownCount > 0) {
-            var keys = new List<Character_Base>(_hitCharacters.Keys);
+            var keys = new List<IDamageable>(_hitCharacters.Keys);
             foreach (var key in keys) {
                 if (_hitCharacters[key] > 0) {
                     _hitCharacters[key] -= Time.deltaTime;
@@ -134,18 +134,17 @@ public class DamageZone : MonoBehaviour {
     private void _OnDamage(Collider2D other) {
         int damage = 0;
 
-        // ダメージ量取得
-        if (_damageToPlayer > 0 && other.gameObject.layer == LayerMask.NameToLayer("Player")) {
+        // ダメージ量取得(Playerレイヤー以外は、敵・破壊可能オブジェクト問わずDamageToEnemyを参照する)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player")) {
             damage = _damageToPlayer;
-        }
-        if (_damageToEnemy > 0 && other.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+        } else {
             damage = _damageToEnemy;
         }
         if (damage == 0) {
             return;
         }
 
-        Character_Base character = other.GetComponent<Character_Base>();
+        IDamageable character = other.GetComponent<IDamageable>();
         if (character == null) {
             return;
         }
