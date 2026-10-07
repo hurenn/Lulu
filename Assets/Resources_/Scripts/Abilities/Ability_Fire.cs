@@ -43,9 +43,10 @@ public class Ability_Fire : Ability_Base
         base.UpdateParameter(is_right, chara_transform, common_param, chara_param, warp_control, motor_states);
         
         // 自動攻撃範囲のトリガー設定
-        if (_autoAttackRange != null) {
+        // UpdateParameterはFixedUpdate毎に呼ばれるため、未セットアップ時のみ行う
+        if (_autoAttackRange != null && _triggerHelper == null) {
             _autoAttackRange.isTrigger = true;
-            
+
             // トリガーイベントを受け取るヘルパーコンポーネント
             _triggerHelper = _autoAttackRange.gameObject.GetComponent<FireAutoAttackTrigger>();
             if (_triggerHelper == null) {
