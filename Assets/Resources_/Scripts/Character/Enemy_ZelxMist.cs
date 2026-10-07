@@ -291,7 +291,7 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
         OnDied?.Invoke();
 
         if (_seFinish != null) {
-            _audioSource?.PlayOneShot(_seDead);
+            if (_seDead != null) _audioSource?.PlayOneShot(_seDead);
             _audioSource?.PlayOneShot(_seFinish);
         }
 

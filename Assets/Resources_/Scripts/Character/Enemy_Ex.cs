@@ -354,7 +354,7 @@ public class Enemy_Ex : Enemy_Base {
         IsEventInvincible = true;
 
         if (_seFinish != null) {
-            _audioSource?.PlayOneShot(_seDead);
+            if (_seDead != null) _audioSource?.PlayOneShot(_seDead);
             _audioSource?.PlayOneShot(_seFinish);
         }
         OnDowned?.Invoke();
@@ -379,9 +379,11 @@ public class Enemy_Ex : Enemy_Base {
         yield return new WaitForSeconds(1.0f);
 
         // BGM切り替え
-        _audioBGM.volume = _currentBGMVolume;
-        _audioBGM.clip = _bgmSerious;
-        _audioBGM.Play();
+        if (_audioBGM != null) {
+            _audioBGM.volume = _currentBGMVolume;
+            _audioBGM.clip = _bgmSerious;
+            _audioBGM.Play();
+        }
 
         // 現在の行動をリセット
         _nextActionTime = _exParameter.FastActionInterval;
@@ -400,7 +402,7 @@ public class Enemy_Ex : Enemy_Base {
         OnDied?.Invoke();
 
         if (_seFinish != null) {
-            _audioSource?.PlayOneShot(_seDead);
+            if (_seDead != null) _audioSource?.PlayOneShot(_seDead);
             _audioSource?.PlayOneShot(_seFinish);
         }
         _ResetLaser();
@@ -458,9 +460,11 @@ public class Enemy_Ex : Enemy_Base {
         yield return new WaitForSeconds(5.0f);
 
         // BGM切り替え
-        _audioBGM.volume = _currentBGMVolume;
-        _audioBGM.clip = _bgmFlower;
-        _audioBGM.Play();
+        if (_audioBGM != null) {
+            _audioBGM.volume = _currentBGMVolume;
+            _audioBGM.clip = _bgmFlower;
+            _audioBGM.Play();
+        }
     }
 
     private void _ResetLaser() {
