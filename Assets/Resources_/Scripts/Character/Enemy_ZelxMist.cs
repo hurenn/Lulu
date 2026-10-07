@@ -121,7 +121,10 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
             for (int i = 0; i < 3; i++) {
                 if (_mistBurstPrefab != null) Instantiate(_mistBurstPrefab, transform.position, Quaternion.identity);
             }
-            _EnterStun();
+            // とどめの一撃の場合はDie()が先に走っているため、スタン(シールド復活タイマー)を開始しない
+            if (!_isDead) {
+                _EnterStun();
+            }
         }
 
         return result;
