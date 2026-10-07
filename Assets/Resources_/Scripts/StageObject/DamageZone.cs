@@ -234,7 +234,7 @@ public class DamageZone : MonoBehaviour {
                 hitEffect.Setup(type, _hitEffectSize);
             }
         }
-        return effect.gameObject;
+        return effect != null ? effect.gameObject : null;
     }
 
     private void _HitStop(LocalTimePause hit_target, LocalTimePause hit_effect) {
