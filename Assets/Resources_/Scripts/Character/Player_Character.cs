@@ -83,7 +83,10 @@ public class Player_Character : Character_Base {
     /// </summary>
     private void _SetupHadAbility() {
         foreach (var ability_type in _playerParam.OwnedAbilities) {
-            SetAbilitySlot(ability_type, _playerParam.GetAssignedSlot(ability_type), false);
+            var ability_slot = _playerParam.GetAssignedSlot(ability_type);
+            // ボタン未割り当て(None)の能力は配置しない（_abilitiesの範囲外になるため）
+            if (ability_slot == eAbilitySlot.None) continue;
+            SetAbilitySlot(ability_type, ability_slot, false);
         }
     }
 
