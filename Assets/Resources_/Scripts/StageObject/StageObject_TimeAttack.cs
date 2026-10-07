@@ -31,6 +31,7 @@ public class StageObject_TimeAttack : StageObject_Base {
     private static float _bestTime = float.MaxValue;
     private static bool _isRunning = false;
     private static IEnumerator _coroutine;
+    private static MonoBehaviour _coroutineOwner; // 点滅コルーチンを開始したインスタンス（停止は同じインスタンスで行う必要がある）
 
     private void Update() {
         if (!_isRunning || _isStartPoint != TimeAttackType.StartPoint) {
@@ -111,6 +112,7 @@ public class StageObject_TimeAttack : StageObject_Base {
         if (_recordText != null) {
             _recordText.text = $"Time: {_FormatTime(_currentTime)}";
             _coroutine = _BlinkText(_recordText, 3, 3f);
+            _coroutineOwner = this;
             StartCoroutine(_coroutine);
         }
 
@@ -135,8 +137,11 @@ public class StageObject_TimeAttack : StageObject_Base {
         _currentTime = 0f;
         _bestTime = _DEFAULT_BEST_TIME;
         if(_coroutine != null) {
-            StopCoroutine(_coroutine);
+            if (_coroutineOwner != null) {
+                _coroutineOwner.StopCoroutine(_coroutine);
+            }
             _coroutine = null;
+            _coroutineOwner = null;
         }
 
         // 両方非表示
