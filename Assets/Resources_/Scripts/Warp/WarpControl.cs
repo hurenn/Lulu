@@ -290,6 +290,7 @@ public class WarpControl : MonoBehaviour {
             // ワープ先取得
             var coin_pos = GetCoinWarpCheck();
             if (!coin_pos.HasValue) break;
+            count++;
 
             // ワープ先に移動
             yield return _ExecuteWarpCommon(
