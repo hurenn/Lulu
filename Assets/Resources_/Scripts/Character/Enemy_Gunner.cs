@@ -50,6 +50,12 @@ public class Enemy_Gunner : Enemy_Base {
         if (_seCharge != null) _audioSource.PlayOneShot(_seCharge);
         yield return new WaitForSeconds(_chargeTime);
 
+        // チャージ中に倒された場合は発射しない
+        if (_isDead) {
+            _isCharging = false;
+            yield break;
+        }
+
         _anim.Play("Shoot");
         if (_seShoot != null) _audioSource.PlayOneShot(_seShoot);
         _FireBullet();
