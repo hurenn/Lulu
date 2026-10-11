@@ -112,7 +112,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 254120183998218709}
@@ -451,7 +451,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageToPlayer: 0
   _damageToEnemy: 9
-  _damageToOther: 9
   _invincibleTime: 0
   _blowPowerRight: {x: 0, y: 0}
   _damageReactionTime: 0.2

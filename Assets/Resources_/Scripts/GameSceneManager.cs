@@ -39,10 +39,15 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
     }
 
     /// <summary>
-    /// デバッグ用：AボタンがWaterに入れ替わったままの場合、Fireへ戻す
+    /// デバッグ用：Numpad3でAボタンをWaterに入れ替えたままの場合、Fireへ戻す
+    /// （JoinAbilityで正式に取得したWaterは解除しない）
     /// </summary>
     private void _ResetWaterDebugSlot() {
         var player_param = PlayerParameter.Instance;
+        if (!player_param.isWaterDebugEquipped) {
+            return;
+        }
+        player_param.isWaterDebugEquipped = false;
         if (player_param.GetAssignedAbilityType(eAbilitySlot.A) == eAbilityType.Water) {
             player_param.SetAssignedSlot(eAbilityType.Water, eAbilitySlot.None);
             player_param.SetAssignedSlot(eAbilityType.Fire, eAbilitySlot.A);
@@ -214,8 +219,10 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
             var player_param = PlayerParameter.Instance;
             player_param.SetAssignedSlot(eAbilityType.Water, eAbilitySlot.None);
             player_param.SetAssignedSlot(eAbilityType.Fire, eAbilitySlot.A);
+            player_param.isWaterDebugEquipped = false;
         } else {
             _PlaceAbilityOnSlot(eAbilityType.Water, eAbilitySlot.A);
+            PlayerParameter.Instance.isWaterDebugEquipped = true;
         }
     }
 

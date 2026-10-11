@@ -42,6 +42,8 @@ public class PlayerParameter : PersistentSingleton<PlayerParameter> {
         { eAbilityType.Warp, eAbilitySlot.B },
         { eAbilityType.Water, eAbilitySlot.None }, // デバッグ用：まだボタンには割り当てられていない
     };
+    // デバッグ用：Numpad3でWaterをボタンに付与中か（JoinAbilityでの正式な取得と区別し、シーン再読み込み時の解除対象を判定する）
+    public bool isWaterDebugEquipped = false;
     // 所有済みの能力タイプ（Warpは最初から所有）
     private HashSet<eAbilityType> _ownedAbilities = new HashSet<eAbilityType> { eAbilityType.Warp };
     public IReadOnlyCollection<eAbilityType> OwnedAbilities => _ownedAbilities;

@@ -28,6 +28,11 @@ public class WaterBullet : AutoDestroy
 
     private void Awake() {
         _damageZone.Setup((character) => {
+            // 破壊可能ブロックへのヒット音
+            if (character is DestructibleBlock block) {
+                block.PlayWaterHitSE();
+            }
+
             // 当たった敵をロックオン
             Enemy_Base enemy = character as Enemy_Base;
             LockonManager.SetTargetStatic(enemy);

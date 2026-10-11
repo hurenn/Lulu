@@ -30,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -65.7, y: 107.88, z: 0}
-  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 2, y: 2.5, z: 2.5}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4843327347821851306}
   m_Father: {fileID: 0}
@@ -128,6 +128,10 @@ MonoBehaviour:
   _hp: 3
   _col: {fileID: 7430573518135737299}
   _anim: {fileID: 1975780766485861365}
+  _seWaterHit: {fileID: 8300000, guid: 49310710ade74f04abaf99a4bc9ef99c, type: 3}
+  _seWaterHitVolume: 1
+  _dropCoinCount: 5
+  _dropItems: []
 --- !u!61 &7430573518135737299
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -188,11 +192,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2760298684931003039, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.0457559
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 2760298684931003039, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.94014657
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 2760298684931003039, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
       propertyPath: m_LocalScale.z
@@ -204,7 +208,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2760298684931003039, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.2889
+      value: 0.0255
       objectReference: {fileID: 0}
     - target: {fileID: 2760298684931003039, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
       propertyPath: m_LocalPosition.z

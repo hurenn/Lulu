@@ -4,6 +4,22 @@ using UnityEngine;
 public class CoinSpawner : MonoBehaviour {
     [SerializeField] private float _spawnInterval = 0.01f;
 
+    // 生成完了後に自身を削除するか（SpawnCoinAtで一時生成した場合）
+    private bool _isDestroyOnFinish = false;
+
+    /// <summary>
+    /// 指定位置にコイン生成（生成元がすぐ消える場合用。一時的なCoinSpawnerを作り、生成完了後に削除する）
+    /// </summary>
+    public static void SpawnCoinAt(Vector3 position, int value) {
+        if (value <= 0) return;
+
+        var go = new GameObject("CoinSpawner(Temp)");
+        go.transform.position = position;
+        var spawner = go.AddComponent<CoinSpawner>();
+        spawner._isDestroyOnFinish = true;
+        spawner.SpawnCoin(value);
+    }
+
     /// <summary>
     /// コイン生成
     /// </summary>
@@ -39,6 +55,10 @@ public class CoinSpawner : MonoBehaviour {
             Vector3 spawnPosition = transform.position + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0);
             var coin = coin_pool.SpawnCoin(spawnPosition);
             coin.SetCoinValue(remainder);
+        }
+
+        if (_isDestroyOnFinish) {
+            Destroy(gameObject);
         }
     }
 }
