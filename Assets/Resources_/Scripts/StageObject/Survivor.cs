@@ -8,6 +8,9 @@ public class Survivor : StageObject_Base {
 
     protected bool _isRescued = false;
 
+    // 救出済みか（リトライ時、Start前に参照されても判定できるようCheckpointManagerの記録も見る）
+    public bool IsRescued => _isRescued || CheckpointManager.Instance.IsRescuedSurvivor(SurvivorId);
+
     // 救出時にRescueMissionの救出メッセージを出すか（イベントキャラは出さない）
     protected virtual bool _ShowsRescueMessage => true;
 

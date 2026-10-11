@@ -12,7 +12,6 @@ public class Ability_Light : Ability_Base
     private float _lightDefaultIntensity = 0.7f;
 
     private bool _isNotHide => _rend.color.a > 0.9f;
-    private GoalMarker _goalMarker;
 
     // 自動発光タイマー
     private bool _isAutoLight = false;
@@ -20,11 +19,6 @@ public class Ability_Light : Ability_Base
 
     public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
         base.UpdateParameter(is_right, chara_pos, common_param, chara_param, warp_control, motor_states);
-
-        var goal_marker = FindAnyObjectByType<GoalMarker>();
-        if (goal_marker != null) {
-            _goalMarker = goal_marker;
-        }
 
         if (_lightDomeInstance == null) {
             _lightDomeInstance = Instantiate(_lightDomePrefab, _playerTransform);
@@ -81,11 +75,6 @@ public class Ability_Light : Ability_Base
         // ライトドーム表示
         _isManualLight = true;
 
-        if (_goalMarker != null) {
-            // ゴールマーカー表示
-            _goalMarker.SetMarkerActive(true);
-        }
-
         // ジャスト回避判定
         _warpControl.SpawnJustAvoidZone();
 
@@ -126,10 +115,6 @@ public class Ability_Light : Ability_Base
         // 無敵解除
         _charaParam.isLightInvincible = false;
 
-        if(_goalMarker != null) {
-            // ゴールマーカー非表示
-            _goalMarker.SetMarkerActive(false);
-        }
         return eAbilityResult.None;
     }
 

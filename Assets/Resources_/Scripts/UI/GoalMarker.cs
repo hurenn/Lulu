@@ -24,14 +24,8 @@ public class GoalMarker : MonoBehaviour
             return;
         }
 
-        // フェードイン・アウト処理
-        var alpha = markerImageGroup.alpha;
-        if (_isActive && alpha < 1f) {
-            markerImageGroup.alpha += Time.deltaTime * 3;
-        } else if (!_isActive && alpha > 0f) {
-            markerImageGroup.alpha -= Time.deltaTime * 3;
-        }
         if (!_isActive) {
+            _Fade(false);
             return;
         }
 
@@ -68,7 +62,21 @@ public class GoalMarker : MonoBehaviour
             screenPos.y > 0 && screenPos.y < Screen.height &&
             !isBehind;
 
-        markerUI.gameObject.SetActive(!isOnScreen);
+        // 画面内なら非表示にする。SetActive(false)だと、markerUIがこのオブジェクト自身の場合に
+        // Update自体が止まり、ゴールが画面外に出ても二度と表示されなくなるため、フェードで消す
+        _Fade(!isOnScreen);
+    }
+
+    // フェードイン・アウト処理
+    private void _Fade(bool is_visible) {
+        if (markerImageGroup == null) return;
+
+        var alpha = markerImageGroup.alpha;
+        if (is_visible && alpha < 1f) {
+            markerImageGroup.alpha += Time.deltaTime * 3;
+        } else if (!is_visible && alpha > 0f) {
+            markerImageGroup.alpha -= Time.deltaTime * 3;
+        }
     }
 
     public void SetMarkerActive(bool isActive) {

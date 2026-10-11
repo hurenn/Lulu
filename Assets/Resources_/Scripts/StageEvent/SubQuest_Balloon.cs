@@ -111,6 +111,9 @@ public class SubQuest_Balloon : MonoBehaviour {
             playerController.isEnabledCharacterInput = false;
         }
 
+        // 表示中・待機中の他のメッセージをスキップして、時間切れメッセージを即座に表示する
+        _messageListScript.Clear();
+        _messageViewer?.ForceReset();
         foreach (var message in _timeUpMessages) {
             _messageListScript.Enqueue(message);
         }
