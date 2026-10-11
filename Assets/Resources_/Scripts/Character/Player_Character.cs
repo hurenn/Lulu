@@ -44,6 +44,9 @@ public class Player_Character : Character_Base {
     [SerializeField] protected Ability_Base[] _abilities = new Ability_Base[4];
     // 能力スロット一時保存
     private Dictionary<eAbilityType, eAbilitySlot> _tmpAbilitySlot = new Dictionary<eAbilityType, eAbilitySlot>();
+    // Fireの能力をWaterに差し替えているか（スロット管理上はFireのまま、発動する能力とHUDアイコンだけWaterになる）
+    private bool _isWaterMode = false;
+    public bool IsWaterMode => _isWaterMode;
 
     // レベルアップオブジェクト
     [SerializeField] private Animator _levelUpAnimator;
@@ -63,6 +66,7 @@ public class Player_Character : Character_Base {
                 _playerParam.RemoveAbility(ability.Value);
             }
         }
+        _playerParam.isFireReplacedByWater = _isWaterMode;
     }
 
     // プレイヤー用パラメーター
@@ -75,6 +79,7 @@ public class Player_Character : Character_Base {
         }
         _playerParam = PlayerParameter.Instance;
         ApplyPlayerParameter();
+        _isWaterMode = _playerParam.isFireReplacedByWater;
         _SetupHadAbility();
     }
 
@@ -429,7 +434,8 @@ public class Player_Character : Character_Base {
     /// 能力スロットにセット
     /// </summary>
     public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot, bool is_effect = true) {
-        var ability = AbilityFactory.CreateAbility(ability_type, ability_slot,
+        // Water差し替え中のFireはWaterの能力として生成する（スロット管理上はFireとして扱う）
+        var ability = AbilityFactory.CreateAbility(_GetInstanceType(ability_type), ability_slot,
             (special_anim) => PlayAnim(special_anim),
             () => _AbilityResult(eAbilityResult.SpecialEnd, _inputData.move), is_effect);
 
@@ -1130,7 +1136,35 @@ public class Player_Character : Character_Base {
                 break;
             }
         }
-        abilityUIManager.SetAbilityUI(slot, type, ability, is_effect: false);
+        abilityUIManager.SetAbilityUI(slot, _GetInstanceType(type), ability, is_effect: false);
+    }
+
+    /// <summary>
+    /// Fireの能力をWaterに差し替える/戻す（Fireを装備中なら、同じスロットの能力を作り直す）
+    /// </summary>
+    public void SetWaterMode(bool is_water_mode) {
+        if (_isWaterMode == is_water_mode) {
+            return;
+        }
+        _isWaterMode = is_water_mode;
+
+        var fire_slot = GetCurrentSlot(eAbilityType.Fire);
+        if (!fire_slot.HasValue) {
+            return; // Fire未装備：次にFireを装備した時に反映される
+        }
+
+        // 所有状態は変えずに、能力インスタンスだけ作り直す（RemoveAbilityは所有も解除してしまうため使わない）
+        var slot = fire_slot.Value;
+        _abilities[(int)slot]?.DestroyAbility();
+        _abilities[(int)slot] = null;
+        SetAbilitySlot(eAbilityType.Fire, slot);
+    }
+
+    /// <summary>
+    /// 能力タイプから、実際に生成する能力（UI）のタイプを取得（Water差し替え中のFireはWater）
+    /// </summary>
+    private eAbilityType _GetInstanceType(eAbilityType ability_type) {
+        return ability_type == eAbilityType.Fire && _isWaterMode ? eAbilityType.Water : ability_type;
     }
 
     /// <summary>

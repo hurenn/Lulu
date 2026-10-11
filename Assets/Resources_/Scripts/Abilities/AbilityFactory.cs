@@ -8,7 +8,7 @@ public enum eAbilityType {
     Fire,
     Light,
     Warp,
-    Water, // デバッグ用：テンキー6でFireと入れ替えてAボタンに付与できる
+    Water, // スロットを持たない特殊状態。Fireのスロットのまま、発動する能力とHUDアイコンだけWaterに差し替わる（Player_Character.SetWaterMode）
     // ここまで固定
 
     LockonSlash,

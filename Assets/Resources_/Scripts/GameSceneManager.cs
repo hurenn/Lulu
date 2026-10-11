@@ -21,10 +21,6 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
     }
 
     private void _OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        // デバッグ用：AボタンのFire/Water入れ替えは、シーン再読み込みのたびに解除する
-        // （PlayerParameterは永続化されるため、入れ替えたままだと次回シーンでもNumpad6がFireに戻らない）
-        _ResetWaterDebugSlot();
-
         // シーン再読み込み時のみリスポーン地点に移動
         var player = PlayerCharacterManager.Current as Player_Character;
         var checkpointManager = CheckpointManager.Instance;
@@ -35,22 +31,6 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
         if (_isDeathRetry) {
             StartCoroutine(_ChargeAbilitiesOnRespawn(0.5f));
             _isDeathRetry = false; // フラグをリセット
-        }
-    }
-
-    /// <summary>
-    /// デバッグ用：Numpad3でAボタンをWaterに入れ替えたままの場合、Fireへ戻す
-    /// （JoinAbilityで正式に取得したWaterは解除しない）
-    /// </summary>
-    private void _ResetWaterDebugSlot() {
-        var player_param = PlayerParameter.Instance;
-        if (!player_param.isWaterDebugEquipped) {
-            return;
-        }
-        player_param.isWaterDebugEquipped = false;
-        if (player_param.GetAssignedAbilityType(eAbilitySlot.A) == eAbilityType.Water) {
-            player_param.SetAssignedSlot(eAbilityType.Water, eAbilitySlot.None);
-            player_param.SetAssignedSlot(eAbilityType.Fire, eAbilitySlot.A);
         }
     }
 
@@ -133,9 +113,9 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
             _ToggleAbilityBySlot(eAbilitySlot.B);
         }
 
-        // デバッグ用：Numpad3キーでWaterをAボタンに付与/解除（Water検証用）
+        // デバッグ用：Numpad3キーでFireとWaterを切り替え（Water検証用）
         if (keyboard.numpad3Key.wasPressedThisFrame) {
-            _ToggleWaterOnSlotA();
+            _ToggleWaterMode();
         }
 
         if (keyboard.numpad5Key.wasPressedThisFrame) {
@@ -180,49 +160,17 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
     }
 
     /// <summary>
-    /// 指定スロットに指定した能力を強制的に配置する（デバッグ用：元々そのスロットにあった能力は外される）
+    /// デバッグ用：FireとWaterを切り替える（Fire未装備なら、Fireの割り当てボタンに装備する）
     /// </summary>
-    private void _PlaceAbilityOnSlot(eAbilityType ability_type, eAbilitySlot slot) {
+    private void _ToggleWaterMode() {
         var player = PlayerCharacterManager.Current as Player_Character;
         if (player == null) {
             return;
         }
 
-        var player_param = PlayerParameter.Instance;
-        var current_type = player_param.GetAssignedAbilityType(slot);
-        if (current_type == ability_type) {
-            return; // 既に配置済み
-        }
-
-        if (current_type != eAbilityType.None) {
-            if (player.GetCurrentSlot(current_type) == slot) {
-                player.RemoveAbility(slot); // 元々装備されていた能力をボタンから外し、シーン上のAbilityも削除する
-            }
-            player_param.SetAssignedSlot(current_type, eAbilitySlot.None);
-        }
-        player_param.SetAssignedSlot(ability_type, slot);
-        player.SetAbilitySlot(ability_type, slot);
-    }
-
-    /// <summary>
-    /// デバッグ用：AボタンのWaterを付与/解除する（解除時はAボタンの割り当てをFireに戻す）
-    /// </summary>
-    private void _ToggleWaterOnSlotA() {
-        var player = PlayerCharacterManager.Current as Player_Character;
-        if (player == null) {
-            return;
-        }
-
-        bool is_water_equipped = player.GetCurrentSlot(eAbilityType.Water) == eAbilitySlot.A;
-        if (is_water_equipped) {
-            player.RemoveAbility(eAbilitySlot.A); // ボタンから外し、シーン上のAbilityも削除する
-            var player_param = PlayerParameter.Instance;
-            player_param.SetAssignedSlot(eAbilityType.Water, eAbilitySlot.None);
-            player_param.SetAssignedSlot(eAbilityType.Fire, eAbilitySlot.A);
-            player_param.isWaterDebugEquipped = false;
-        } else {
-            _PlaceAbilityOnSlot(eAbilityType.Water, eAbilitySlot.A);
-            PlayerParameter.Instance.isWaterDebugEquipped = true;
+        player.SetWaterMode(!player.IsWaterMode);
+        if (!player.GetCurrentSlot(eAbilityType.Fire).HasValue) {
+            player.SetAbilitySlot(eAbilityType.Fire, PlayerParameter.Instance.GetAssignedSlot(eAbilityType.Fire));
         }
     }
 

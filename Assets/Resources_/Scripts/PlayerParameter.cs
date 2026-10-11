@@ -40,10 +40,9 @@ public class PlayerParameter : PersistentSingleton<PlayerParameter> {
         { eAbilityType.Light, eAbilitySlot.X },
         { eAbilityType.Fire, eAbilitySlot.A },
         { eAbilityType.Warp, eAbilitySlot.B },
-        { eAbilityType.Water, eAbilitySlot.None }, // デバッグ用：まだボタンには割り当てられていない
     };
-    // デバッグ用：Numpad3でWaterをボタンに付与中か（JoinAbilityでの正式な取得と区別し、シーン再読み込み時の解除対象を判定する）
-    public bool isWaterDebugEquipped = false;
+    // Fireの能力をWaterに差し替えているか（Waterはスロットを持たず、Fireのスロットのまま発動する能力だけ差し替わる）
+    public bool isFireReplacedByWater = false;
     // 所有済みの能力タイプ（Warpは最初から所有）
     private HashSet<eAbilityType> _ownedAbilities = new HashSet<eAbilityType> { eAbilityType.Warp };
     public IReadOnlyCollection<eAbilityType> OwnedAbilities => _ownedAbilities;
@@ -122,9 +121,7 @@ public class PlayerParameter : PersistentSingleton<PlayerParameter> {
         _abilitySlotAssignment[eAbilityType.Ice] = eAbilitySlot.Y;
         _abilitySlotAssignment[eAbilityType.Light] = eAbilitySlot.X;
         _abilitySlotAssignment[eAbilityType.Fire] = eAbilitySlot.A;
-        _abilitySlotAssignment[eAbilityType.Warp] = eAbilitySlot.B;
-        _abilitySlotAssignment[eAbilityType.Water] = eAbilitySlot.None; // デバッグ用：まだボタンには割り当てられていない
-    }
+        _abilitySlotAssignment[eAbilityType.Warp] = eAbilitySlot.B;    }
 
     public enum eLanguage {
         Japanese,
