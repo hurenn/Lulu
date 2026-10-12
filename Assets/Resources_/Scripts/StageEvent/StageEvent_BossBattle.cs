@@ -71,7 +71,14 @@ public class StageEvent_BossBattle : MonoBehaviour {
             _bossEnemy.OnDieEnded += _OnBossDieEnded;
             _bossEnemy.OnDowned += _OnBossDowned;
             _bossEnemy.OnSeriously += _OnBossSeriously;
+            _bossEnemy.OnHalfHP += _OnBossHalfHP;
         }
+    }
+
+    // ダウン演出を伴わずにHalfHPフラグだけを立てる(HalfHP用メッセージの遅延はここから数える)
+    protected virtual void _OnBossHalfHP() {
+        _currentMessageTriggerDelay = 0f;
+        _isHalfHp = true;
     }
 
     protected virtual void _OnBossDowned() {

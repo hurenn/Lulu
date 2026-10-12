@@ -445,8 +445,8 @@ public class MessageViewer : MonoBehaviour {
     private float _pendingShakeDuration;
 
     // メッセージ個別(MessageData.isShakeWindow)のウィンドウ振動の強さ・時間(現状は固定値)
-    private const float _MESSAGE_SHAKE_INTENSITY = 40f;
-    private const float _MESSAGE_SHAKE_DURATION = 0.8f;
+    private const float _MESSAGE_SHAKE_INTENSITY = 30f;
+    private const float _MESSAGE_SHAKE_DURATION = 0.6f;
 
     // 実行中のウィンドウ振動（振動中に次の振動が始まった場合、元の位置を基準にやり直してズレを防ぐ）
     private Coroutine _shakeWindowCoroutine;

@@ -33,6 +33,37 @@ Transform:
   - {fileID: 4097526630389276817}
   m_Father: {fileID: 4781359985121371997}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2276554033458726286
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2986335020169544917}
+  m_Layer: 0
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2986335020169544917
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2276554033458726286}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.26, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4781359985121371997}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2579847099804971523
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,6 +551,7 @@ Transform:
   - {fileID: 3810970899680654784}
   - {fileID: 3660898629274429675}
   - {fileID: 8559365982656350808}
+  - {fileID: 2986335020169544917}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2122792331352147977
@@ -716,7 +748,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7094263161161442921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edd2940e9f4798843bfa2da81646d9cf, type: 3}
+  m_Script: {fileID: 11500000, guid: 366911dc79608ca4a979f504f99985a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _param: {fileID: 11400000, guid: 109acb4e2818ef442ac66fc2ddb0b528, type: 2}
@@ -755,33 +787,12 @@ MonoBehaviour:
   _damageZone: {fileID: 4002514426718995566}
   _dieExplosion: {fileID: 2517521421506470330, guid: 1e344d30bed35294c804f29dfda3bea1, type: 3}
   _hpGauge: {fileID: 0}
-  _seFinish: {fileID: 8300000, guid: b3d4427b5b8e65f46b53c7da8ac10408, type: 3}
-  _audioBGM: {fileID: 0}
-  _bgmFlower: {fileID: 8300000, guid: ebb83608023c97e42b23ca142855536f, type: 3}
-  _moveSpeed: 5
-  _moveArea: {fileID: 0}
-  _initialMoveDirection: {x: 1, y: 0.5}
-  _mistBurstPrefab: {fileID: 7091990258888570070, guid: ab3902effaa09bc4ea358680ef9f5dd2, type: 3}
-  _mistShield: {fileID: 0}
-  _bodyHitEffectPrefab: {fileID: 7091990258888570070, guid: ab3902effaa09bc4ea358680ef9f5dd2, type: 3}
-  _firstStunMessageObject: {fileID: 0}
-  _sylxMistPrefab: {fileID: 7170546945892641709, guid: 456f762cd0206fd46bfc3b1b7e9b54b1, type: 3}
-  _generatePoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  _generateInterval: 5
-  _stunBulletsToExplode: 20
-  _growPerStunHit: 0.05
-  _explosionDamageRate: 0.4
-  _explosionEffectPrefab: {fileID: 2517521421506470330, guid: 1e344d30bed35294c804f29dfda3bea1, type: 3}
-  _explosionShakeIntensity: 0.3
-  _explosionShakeDuration: 0.3
-  _shieldGrowthPerExplosion: 1.2
-  _postExplosionDelay: 1
-  _fastMoveSpeedRate: 6
-  _fastMoveDuration: 5
-  _stunAutoRecoverTime: 7
-  _stunMoveSpeedRate: 0.33333334
+  _bulletPrefab: {fileID: 1768460564520094953, guid: 9ef23eda527ff834f8f603d2ed7667bd, type: 3}
+  _muzzle: {fileID: 2986335020169544917}
+  _fireInterval: 1
+  _bulletCount: 6
+  _fanAngle: 120
+  _seShoot: {fileID: 8300000, guid: c8e9ac39a23761248b429500b4d55692, type: 3}
 --- !u!1 &7277622514177363867
 GameObject:
   m_ObjectHideFlags: 0

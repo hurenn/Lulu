@@ -70,6 +70,8 @@ public class DamageZone : MonoBehaviour {
 
     // ヒット時のコールバック
     private System.Action<IDamageable> _hitCallback = default;
+    // ヒットで消える時の処理(未設定なら_destroyObjectをDestroyする)
+    private System.Action _hitDestroyCallback = default;
 
     private void Reset() {
         _hitEffectPrefab = Resources.Load<HitEffect>("Prefabs/Effects/HitEffect");
@@ -84,11 +86,26 @@ public class DamageZone : MonoBehaviour {
     }
 
     /// <summary>
+    /// ヒットで消える時(_isHitDestroy)、Destroyの代わりに呼ぶ処理を設定する（プールへ返却する弾など）
+    /// </summary>
+    public void SetHitDestroyCallback(System.Action callback) {
+        _hitDestroyCallback = callback;
+    }
+
+    /// <summary>
     /// 自分自身のキャラクターを設定
     /// </summary>
     /// <param name="character">このDamageZoneの所有者</param>
     public void SetSelfCharacter(Character_Base character) {
         _selfCharacter = character;
+    }
+
+    /// <summary>
+    /// ヒット済みキャラの記録を消去する（プールで再利用する弾などが、前回ヒットした相手に再びヒットできるようにする）
+    /// </summary>
+    public void ResetHitCharacters() {
+        _hitCharacters.Clear();
+        _activeCooldownCount = 0;
     }
 
     // Update is called once per frame
@@ -196,8 +213,14 @@ public class DamageZone : MonoBehaviour {
             if (obj != null) obj.SetActive(!isAvoid);
         }
 
-        if (_isHitDestroy && _destroyObject != null) {
-            Destroy(_destroyObject);
+        // 光の能力で回避された場合は消えずにすり抜ける
+        bool is_light_avoided = isAvoid && !damage_result;
+        if (_isHitDestroy && !is_light_avoided) {
+            if (_hitDestroyCallback != null) {
+                _hitDestroyCallback.Invoke();
+            } else if (_destroyObject != null) {
+                Destroy(_destroyObject);
+            }
         }
     }
 

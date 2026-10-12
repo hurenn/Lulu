@@ -32,10 +32,6 @@ public class WaterBullet : AutoDestroy
             if (character is DestructibleBlock block) {
                 block.PlayWaterHitSE();
             }
-
-            // 当たった敵をロックオン
-            Enemy_Base enemy = character as Enemy_Base;
-            LockonManager.SetTargetStatic(enemy);
         });
     }
 
