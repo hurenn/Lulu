@@ -203,10 +203,14 @@ public class MessageViewer : MonoBehaviour {
         }
 
         _isShowing = true;
-        if (_pendingInstantShake) {
+        // Timeline(MessagePlayableAsset)からの指定、またはメッセージ個別の指定でウィンドウを振動させる
+        // (両方指定されている場合はTimeline側の強さ・時間を優先する)
+        if (_pendingInstantShake || _currentMessage.isShakeWindow) {
+            float shake_intensity = _pendingInstantShake ? _pendingShakeIntensity : _MESSAGE_SHAKE_INTENSITY;
+            float shake_duration = _pendingInstantShake ? _pendingShakeDuration : _MESSAGE_SHAKE_DURATION;
             _pendingInstantShake = false;
             if (_messagePanelAnimator != null) { _messagePanelAnimator.SetBool("Show", true); _messagePanelAnimator.Update(999f); }
-            ShakeWindow(_pendingShakeIntensity, _pendingShakeDuration);
+            ShakeWindow(shake_intensity, shake_duration);
         }
     }
 
@@ -440,6 +444,15 @@ public class MessageViewer : MonoBehaviour {
     private float _pendingShakeIntensity;
     private float _pendingShakeDuration;
 
+    // メッセージ個別(MessageData.isShakeWindow)のウィンドウ振動の強さ・時間(現状は固定値)
+    private const float _MESSAGE_SHAKE_INTENSITY = 40f;
+    private const float _MESSAGE_SHAKE_DURATION = 0.8f;
+
+    // 実行中のウィンドウ振動（振動中に次の振動が始まった場合、元の位置を基準にやり直してズレを防ぐ）
+    private Coroutine _shakeWindowCoroutine;
+    private RectTransform _shakeWindowTarget;
+    private Vector2 _shakeWindowBasePos;
+
     public void PrepareShakeOnShow(float intensity, float duration) {
         _pendingInstantShake = true;
         _pendingShakeIntensity = intensity;
@@ -449,12 +462,20 @@ public class MessageViewer : MonoBehaviour {
     public void ShakeWindow(float intensity, float duration) {
         var rect = _messageViewer != null ? _messageViewer.GetComponent<RectTransform>() : null;
         if (rect == null) return;
-        StartCoroutine(_ShakeWindowCo(rect, intensity, duration));
+
+        // 振動中なら元の位置に戻してからやり直す（振動途中の位置を基準にすると、ウィンドウがずれたままになる）
+        if (_shakeWindowCoroutine != null) {
+            StopCoroutine(_shakeWindowCoroutine);
+            if (_shakeWindowTarget != null) _shakeWindowTarget.anchoredPosition = _shakeWindowBasePos;
+        }
+        _shakeWindowTarget = rect;
+        _shakeWindowBasePos = rect.anchoredPosition;
+        _shakeWindowCoroutine = StartCoroutine(_ShakeWindowCo(rect, intensity, duration));
     }
 
     private System.Collections.IEnumerator _ShakeWindowCo(RectTransform target, float intensity, float duration) {
         float elapsed = 0f;
-        Vector2 basePos = target.anchoredPosition;
+        Vector2 basePos = _shakeWindowBasePos;
         while (elapsed < duration) {
             elapsed += Time.unscaledDeltaTime;
             float current = intensity * (1f - elapsed / duration);
@@ -462,6 +483,7 @@ public class MessageViewer : MonoBehaviour {
             yield return null;
         }
         target.anchoredPosition = basePos;
+        _shakeWindowCoroutine = null;
     }
 
     private Vector2 _iconBasePosition;

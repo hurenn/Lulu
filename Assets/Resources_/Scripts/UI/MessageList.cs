@@ -15,6 +15,7 @@ public class MessageData {
     public Sprite characterIcon;    // キャラクターアイコン
     public float addShowTime;      // 追加表示時間
     public AudioClip soundEffect;   // 表示開始と同時に再生する効果音
+    public bool isShakeWindow = false; // 表示開始と同時にウィンドウを振動させる(強さ・時間はMessageViewerの固定値)
 
     private PlayableDirector _playableDirector = null;  // イベントメッセージ用のタイムライン
     public PlayableDirector playableDirector {
