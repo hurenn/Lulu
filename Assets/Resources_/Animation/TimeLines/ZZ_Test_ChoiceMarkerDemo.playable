@@ -178,6 +178,8 @@ MonoBehaviour:
     key: TEST_QUESTION
     characterIcon: {fileID: 0}
     addShowTime: 0
+    soundEffect: {fileID: 0}
+    isShakeWindow: 0
     isAutoForce: 0
     isUnScaledTime: 0
     waitForButton: 0
@@ -187,44 +189,62 @@ MonoBehaviour:
     - key: TEST_BRANCH_TEXT
       characterIcon: {fileID: 0}
       addShowTime: 0
+      soundEffect: {fileID: 0}
+      isShakeWindow: 0
       isAutoForce: 0
       isUnScaledTime: 0
       waitForButton: 0
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 0
   - labelKey: TEST_OPTION_B
     branchMessages: []
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 1
   - labelKey: TEST_OPTION_C
     branchMessages:
     - key: TEST_MESSAGE_2
       characterIcon: {fileID: 0}
       addShowTime: 0
+      soundEffect: {fileID: 0}
+      isShakeWindow: 0
       isAutoForce: 0
       isUnScaledTime: 0
       waitForButton: 0
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 1
   - labelKey: TEST_OPTION_D
     branchMessages:
     - key: TEST_MESSAGE_3
       characterIcon: {fileID: 0}
       addShowTime: 0
+      soundEffect: {fileID: 0}
+      isShakeWindow: 0
       isAutoForce: 0
       isUnScaledTime: 0
       waitForButton: 0
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 1
   - labelKey: TEST_OPTION_E
     branchMessages:
     - key: TEST_MESSAGE_4
       characterIcon: {fileID: 0}
       addShowTime: 0
+      soundEffect: {fileID: 0}
+      isShakeWindow: 0
       isAutoForce: 0
       isUnScaledTime: 0
       waitForButton: 0
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 1
 --- !u!114 &-2465323327609112073
 MonoBehaviour:
@@ -243,6 +263,8 @@ MonoBehaviour:
     key: 
     characterIcon: {fileID: 0}
     addShowTime: 0
+    soundEffect: {fileID: 0}
+    isShakeWindow: 0
     isAutoForce: 0
     isUnScaledTime: 0
     waitForButton: 0
@@ -252,14 +274,20 @@ MonoBehaviour:
     - key: TEST_BRANCH_TEXT
       characterIcon: {fileID: 0}
       addShowTime: 0
+      soundEffect: {fileID: 0}
+      isShakeWindow: 0
       isAutoForce: 1
       isUnScaledTime: 0
       waitForButton: 0
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 0
   - labelKey: TEST_OPTION_B
     branchMessages: []
-    nextTimeline: {fileID: 0}
+    nextTimeline:
+      exposedName: 
+      defaultValue: {fileID: 0}
     endsSequence: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -298,6 +326,8 @@ MonoBehaviour:
   - key: TEST_PROMPT
     characterIcon: {fileID: 0}
     addShowTime: 0
+    soundEffect: {fileID: 0}
+    isShakeWindow: 0
     isAutoForce: 0
     isUnScaledTime: 0
     waitForButton: 0
@@ -320,6 +350,8 @@ MonoBehaviour:
   - key: TEST_COMMON_AFTER
     characterIcon: {fileID: 0}
     addShowTime: 0
+    soundEffect: {fileID: 0}
+    isShakeWindow: 0
     isAutoForce: 0
     isUnScaledTime: 0
     waitForButton: 0
