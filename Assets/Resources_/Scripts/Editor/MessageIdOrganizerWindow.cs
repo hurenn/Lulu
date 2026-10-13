@@ -10,8 +10,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
 
 /// <summary>
-/// 指定したシーン群をHierarchy順(MessageTrigger+PlayableDirectorを深さ優先で走査)に
-/// 沿ってID(ステージID2桁+連番3桁)へ振り直すロジック。GUIを持たないのでreflection等からも直接呼べる。
+/// 指定したシーン群をHierarchy順(深さ優先)に走査し、メッセージキーを持つ全コンポーネント/Timelineの
+/// 出現順に沿ってID(ステージID2桁+連番3桁)へ振り直すロジック。GUIを持たないのでreflection等からも直接呼べる。
 /// </summary>
 public static class MessageIdOrganizer {
     public class PreviewEntry {
@@ -26,48 +26,78 @@ public static class MessageIdOrganizer {
         public bool ok => warnings.Count == 0 && entries.Count > 0;
     }
 
-    private static readonly System.Reflection.FieldInfo _fiTrig =
-        typeof(MessageTrigger).GetField("_messageDatas", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-    private static readonly System.Reflection.FieldInfo _fiPlayable =
-        typeof(MessagePlayableAsset).GetField("messageDatas", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-    private static List<string> _GetTimelineKeys(TimelineAsset timeline, List<string> warnings) {
-        var result = new List<string>();
-        foreach (var track in timeline.GetOutputTracks()) {
-            var clips = new List<TimelineClip>();
-            foreach (var clip in track.GetClips()) if (clip.asset is MessagePlayableAsset) clips.Add(clip);
-            clips.Sort((a, b) => a.start.CompareTo(b.start));
-            foreach (var clip in clips) {
-                var arr = _fiPlayable.GetValue(clip.asset as MessagePlayableAsset) as MessageData[];
-                foreach (var md in arr) {
-                    if (string.IsNullOrEmpty(md.key)) warnings.Add($"キー未設定のメッセージがあります(Timeline: {timeline.name})");
-                    else result.Add(md.key);
-                }
-            }
+    // MessageData.key / MessageChoiceOption.labelKey をシリアライズ順に列挙する。
+    // MessageTrigger/TalkTrigger/SubQuest系/ChoiceMarker等、メッセージを持つ型が増えても追従できるよう型は限定しない
+    private static List<SerializedProperty> _KeyProps(SerializedObject so) {
+        var result = new List<SerializedProperty>();
+        var it = so.GetIterator();
+        while (it.Next(true)) {
+            if (it.propertyType != SerializedPropertyType.String) continue;
+            string ownerType;
+            if (it.name == "key") ownerType = nameof(MessageData);
+            else if (it.name == "labelKey") ownerType = nameof(MessageChoiceOption);
+            else continue;
+            int dot = it.propertyPath.LastIndexOf('.');
+            if (dot < 0 || so.FindProperty(it.propertyPath.Substring(0, dot))?.type != ownerType) continue;
+            result.Add(it.Copy());
         }
         return result;
     }
 
-    private static void _Walk(Transform t, List<string> acc, HashSet<PlayableAsset> consumed, List<string> warnings) {
-        var trig = t.GetComponent<MessageTrigger>();
-        if (trig != null) {
-            var mdl = _fiTrig.GetValue(trig) as MessageDataList;
-            if (mdl?.messageDatas != null) {
-                foreach (var md in mdl.messageDatas) {
-                    if (string.IsNullOrEmpty(md.key)) warnings.Add($"キー未設定のメッセージがあります: {t.name}");
-                    else acc.Add(md.key);
-                }
+    // Timeline内のクリップ・マーカーを全トラック横断で時刻順に並べる(同時刻はトラック順)
+    private static List<UnityEngine.Object> _TimelineItems(TimelineAsset timeline) {
+        var items = new List<(double time, UnityEngine.Object obj)>();
+        var tracks = new HashSet<TrackAsset>();
+        foreach (var track in timeline.GetOutputTracks().Append(timeline.markerTrack)) {
+            if (track == null || !tracks.Add(track)) continue;
+            foreach (var clip in track.GetClips()) if (clip.asset != null) items.Add((clip.start, clip.asset));
+            foreach (var marker in track.GetMarkers()) if (marker is UnityEngine.Object mo) items.Add((marker.time, mo));
+        }
+        return items.OrderBy(x => x.time).Select(x => x.obj).ToList();
+    }
+
+    private static IEnumerable<UnityEngine.Object> _AllTimelineAssets() {
+        foreach (var guid in AssetDatabase.FindAssets("t:TimelineAsset")) {
+            var timeline = AssetDatabase.LoadAssetAtPath<TimelineAsset>(AssetDatabase.GUIDToAssetPath(guid));
+            if (timeline != null) foreach (var item in _TimelineItems(timeline)) yield return item;
+        }
+    }
+
+    private static void _Collect(UnityEngine.Object obj, string where, string stageId, List<string> acc, List<string> warnings) {
+        foreach (var p in _KeyProps(new SerializedObject(obj))) {
+            var key = p.stringValue;
+            if (string.IsNullOrEmpty(key)) {
+                // ChoiceMarker.promptは空キー=「直前の表示を維持」の意味で正当
+                if (p.propertyPath != "prompt.key") warnings.Add($"キー未設定のメッセージがあります: {where} ({p.propertyPath})");
+                continue;
             }
+            // 他ステージのメッセージを流用している箇所は、そのステージの採番を崩さないよう対象外。
+            // ID形式でないキー(ZZ_Test系のテスト用キー等)も採番対象外
+            if (!MessageJsonUtil.IsValidKey(key) || !key.StartsWith(stageId)) continue;
+            acc.Add(key);
+        }
+    }
+
+    private static void _Walk(Transform t, string stageId, List<string> acc, HashSet<PlayableAsset> consumed, List<string> warnings) {
+        foreach (var mb in t.GetComponents<MonoBehaviour>()) {
+            if (mb != null) _Collect(mb, $"{t.name} [{mb.GetType().Name}]", stageId, acc, warnings);
         }
         var dir = t.GetComponent<PlayableDirector>();
-        if (dir != null && dir.playableAsset is TimelineAsset timeline && !consumed.Contains(dir.playableAsset)) {
-            var keys = _GetTimelineKeys(timeline, warnings);
-            if (keys.Count > 0) {
-                acc.AddRange(keys);
-                consumed.Add(dir.playableAsset);
-            }
+        if (dir != null && dir.playableAsset is TimelineAsset timeline && consumed.Add(timeline)) {
+            foreach (var item in _TimelineItems(timeline)) _Collect(item, $"Timeline {timeline.name}", stageId, acc, warnings);
         }
-        for (int i = 0; i < t.childCount; i++) _Walk(t.GetChild(i), acc, consumed, warnings);
+        for (int i = 0; i < t.childCount; i++) _Walk(t.GetChild(i), stageId, acc, consumed, warnings);
+    }
+
+    // 対象シーンを順に開いて処理する。開いていなかったシーンは追加で開き、処理後に閉じる(ユーザーの開いているシーンを差し替えない)
+    private static void _ForEachScene(IList<string> scenePaths, Action<Scene> action) {
+        foreach (var scenePath in scenePaths) {
+            var scene = SceneManager.GetSceneByPath(scenePath);
+            bool wasOpen = scene.IsValid() && scene.isLoaded;
+            if (!wasOpen) scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+            action(scene);
+            if (!wasOpen) EditorSceneManager.CloseScene(scene, true);
+        }
     }
 
     /// <summary>チェックされたシーンを渡された順に走査し、新IDへの付け替え案を計算する(書き込みは行わない)。</summary>
@@ -84,15 +114,14 @@ public static class MessageIdOrganizer {
             return result;
         }
 
-        var orderedOldKeys = new List<string>();
+        var foundKeys = new List<string>();
         var consumed = new HashSet<PlayableAsset>();
-        foreach (var scenePath in scenePathsInOrder) {
-            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
-            foreach (var root in scene.GetRootGameObjects()) _Walk(root.transform, orderedOldKeys, consumed, result.warnings);
-        }
+        _ForEachScene(scenePathsInOrder, scene => {
+            foreach (var root in scene.GetRootGameObjects()) _Walk(root.transform, stageId, foundKeys, consumed, result.warnings);
+        });
 
-        var seen = new HashSet<string>();
-        foreach (var k in orderedOldKeys) if (!seen.Add(k)) result.warnings.Add("重複キー: " + k);
+        // 同じキーを複数箇所から参照している場合(共通の選択肢ラベル、TalkTriggerとTimelineの併用等)は最初の出現位置で採番する
+        var orderedOldKeys = foundKeys.Distinct().ToList();
 
         var table = MessageJsonUtil.LoadTable();
         var oldKeySet = new HashSet<string>(orderedOldKeys);
@@ -110,12 +139,25 @@ public static class MessageIdOrganizer {
             });
         }
 
-        int existingStageCount = table.Keys.Count(k => MessageJsonUtil.IsValidKey(k) && k.StartsWith(stageId));
-        if (existingStageCount != orderedOldKeys.Count) {
-            result.warnings.Add($"JSON内の既存ステージ{stageId}件数({existingStageCount})と選択シーンから見つかった件数({orderedOldKeys.Count})が一致しません。シーンの選択漏れ・余分がないか確認してください。");
+        var unreferenced = table.Keys.Where(k => MessageJsonUtil.IsValidKey(k) && k.StartsWith(stageId) && !oldKeySet.Contains(k)).OrderBy(k => k).ToList();
+        if (unreferenced.Count > 0) {
+            result.warnings.Add($"JSON内のステージ{stageId}のうち、選択シーンから参照されていないキーが{unreferenced.Count}件あります。シーンの選択漏れか、不要になったメッセージがないか確認してください: " + string.Join(", ", unreferenced));
         }
 
         return result;
+    }
+
+    private static bool _Rewrite(UnityEngine.Object obj, Dictionary<string, string> mapping) {
+        var so = new SerializedObject(obj);
+        bool changed = false;
+        foreach (var p in _KeyProps(so)) {
+            if (mapping.TryGetValue(p.stringValue, out var nk)) { p.stringValue = nk; changed = true; }
+        }
+        if (changed) {
+            so.ApplyModifiedProperties();
+            EditorUtility.SetDirty(obj);
+        }
+        return changed;
     }
 
     /// <summary>ComputePreviewで作った案をJSON・シーン・Timelineへ実際に書き込む。</summary>
@@ -132,46 +174,22 @@ public static class MessageIdOrganizer {
         }
         MessageJsonUtil.SaveTable(newTable);
 
-        var consumedTimelines = new HashSet<PlayableAsset>();
-        foreach (var scenePath in scenePathsInOrder) {
-            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+        // Timelineは複数シーンから共有されうるため、選択シーンに限らずプロジェクト内の全Timelineを書き換える
+        foreach (var item in _AllTimelineAssets()) _Rewrite(item, mapping);
+        AssetDatabase.SaveAssets();
+
+        _ForEachScene(scenePathsInOrder, scene => {
             bool changed = false;
-            foreach (var trig in UnityEngine.Object.FindObjectsByType<MessageTrigger>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
-                var so = new SerializedObject(trig);
-                var arr = so.FindProperty("_messageDatas")?.FindPropertyRelative("messageDatas");
-                if (arr == null) continue;
-                for (int idx = 0; idx < arr.arraySize; idx++) {
-                    var keyProp = arr.GetArrayElementAtIndex(idx).FindPropertyRelative("key");
-                    if (mapping.TryGetValue(keyProp.stringValue, out var nk)) { keyProp.stringValue = nk; changed = true; }
+            foreach (var root in scene.GetRootGameObjects()) {
+                foreach (var mb in root.GetComponentsInChildren<MonoBehaviour>(true)) {
+                    if (mb != null && _Rewrite(mb, mapping)) changed = true;
                 }
-                so.ApplyModifiedProperties();
             }
-
-            foreach (var dir in UnityEngine.Object.FindObjectsByType<PlayableDirector>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
-                if (!(dir.playableAsset is TimelineAsset timeline) || consumedTimelines.Contains(dir.playableAsset)) continue;
-                bool tlChanged = false;
-                foreach (var track in timeline.GetOutputTracks()) {
-                    foreach (var clip in track.GetClips()) {
-                        if (!(clip.asset is MessagePlayableAsset mpa)) continue;
-                        var so2 = new SerializedObject(mpa);
-                        var arr2 = so2.FindProperty("messageDatas");
-                        for (int idx = 0; idx < arr2.arraySize; idx++) {
-                            var keyProp2 = arr2.GetArrayElementAtIndex(idx).FindPropertyRelative("key");
-                            if (mapping.TryGetValue(keyProp2.stringValue, out var nk2)) { keyProp2.stringValue = nk2; tlChanged = true; }
-                        }
-                        so2.ApplyModifiedProperties();
-                        EditorUtility.SetDirty(mpa);
-                    }
-                }
-                if (tlChanged) AssetDatabase.SaveAssets();
-                consumedTimelines.Add(dir.playableAsset);
-            }
-
             if (changed) {
                 EditorSceneManager.MarkSceneDirty(scene);
                 EditorSceneManager.SaveScene(scene);
             }
-        }
+        });
     }
 }
 
@@ -194,7 +212,8 @@ public class MessageIdOrganizerWindow : EditorWindow {
 
     private void OnGUI() {
         EditorGUILayout.HelpBox(
-            "チェックしたシーンを上から順に開き、各シーンのHierarchyをMessageTrigger/PlayableDirectorの出現順(深さ優先)で走査してIDを振り直します。\n" +
+            "チェックしたシーンを上から順に開き、各シーンのHierarchyを深さ優先で走査し、メッセージを持つコンポーネント・Timeline(クリップ/選択肢マーカーを時刻順)の出現順でIDを振り直します。\n" +
+            "他ステージのIDを流用している箇所は対象外です。同じIDを複数箇所で使っている場合は最初の出現位置で採番します。\n" +
             "対象シーン・順序は誤検出を避けるため必ず手動で選んでください(自動判定はしません)。",
             MessageType.Info);
 
