@@ -25,6 +25,8 @@ public class MessageDataDrawer : PropertyDrawer {
 
     private static Dictionary<string, string> _EntryOrNull(string key) {
         if (string.IsNullOrEmpty(key)) return null;
+        // JSON未反映の編集があればそちらを優先して表示する
+        if (MessageJsonUtil.Pending.TryGetValue(key, out var pending)) return pending;
         _GetTable().TryGetValue(key, out var entry);
         return entry;
     }
@@ -66,20 +68,18 @@ public class MessageDataDrawer : PropertyDrawer {
     // keyProp自体を渡すので、MessageData.keyに限らずMessageChoiceOption.labelKey等の単体string PropertyからでもID発行に使える
     public static string AssignNewKey(SerializedProperty keyProp) {
         var stageId = ContextStageId(keyProp.serializedObject.targetObject);
-        var table = MessageJsonUtil.LoadTable();
+        var table = MessageJsonUtil.LoadTableWithPending();
         var newKey = MessageJsonUtil.NewKeyForStage(table, stageId);
-        table[newKey] = new Dictionary<string, string> { { "ja", "" }, { "en", "" } };
-        MessageJsonUtil.SaveTable(table);
+        MessageJsonUtil.SetPending(newKey, "", "");
         keyProp.stringValue = newKey;
         keyProp.serializedObject.ApplyModifiedProperties();
         return newKey;
     }
 
+    // JSONへは即時反映せず、未反映の変更として保留する(「Lulu/Localization/JSONへ反映」で書き込む)
     public static void SaveText(string key, string ja, string en) {
         if (string.IsNullOrEmpty(key)) return;
-        var table = MessageJsonUtil.LoadTable();
-        table[key] = new Dictionary<string, string> { { "ja", ja ?? "" }, { "en", en ?? "" } };
-        MessageJsonUtil.SaveTable(table);
+        MessageJsonUtil.SetPending(key, ja, en);
     }
 
     // --- 高さ計算 ---
@@ -195,7 +195,8 @@ public class MessageDataDrawer : PropertyDrawer {
         float enH = Mathf.Max(EditorGUIUtility.singleLineHeight * 2, style.CalcHeight(new GUIContent(en), rect.width));
 
         float y = rect.y;
-        EditorGUI.LabelField(new Rect(rect.x, y, rect.width, EditorGUIUtility.singleLineHeight), "JA");
+        bool isPending = MessageJsonUtil.Pending.ContainsKey(key);
+        EditorGUI.LabelField(new Rect(rect.x, y, rect.width, EditorGUIUtility.singleLineHeight), isPending ? "JA  (JSON未反映)" : "JA");
         y += EditorGUIUtility.singleLineHeight;
         EditorGUI.BeginChangeCheck();
         var newJa = EditorGUI.TextArea(new Rect(rect.x, y, rect.width, jaH), ja, style);

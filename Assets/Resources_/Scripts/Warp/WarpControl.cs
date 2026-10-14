@@ -283,18 +283,26 @@ public class WarpControl : MonoBehaviour {
     /// コインワープ
     /// </summary>
     public IEnumerator CoinWarp() {
-        int count = 0;
-        int max_count = 100;
+        // 詰み防止: 届いたコインは取得時にコイン検知の対象外になるため、通常は同じコインが続けて選ばれることはない。
+        // 届かないコインへの「ワープ失敗→同じコインへ再ワープ」のループを、失敗するワープを出さずに止める
+        // (別のコインへ移っていく分には制限しない)
+        Transform last_coin = null;
 
-        while (count < max_count) {
+        while (true) {
             // ワープ先取得
-            var coin_pos = GetCoinWarpCheck();
-            if (!coin_pos.HasValue) break;
-            count++;
+            var coin = _GetCoinWarpTarget();
+            if (coin == null) break;
+
+            // 間にワープ禁止エリアがあって届かないコインには飛ばずに終える(手前で止まる中途半端なワープを出さない)
+            if (Physics2D.Linecast(transform.position, coin.position, LayerMask.GetMask("WarpProhibitedArea")).collider != null) break;
+
+            // 保険: 直前にワープしたコインがまた選ばれた(=届かず取得できなかった)場合は、再ワープせずに終える
+            if (coin == last_coin) break;
+            last_coin = coin;
 
             // ワープ先に移動
             yield return _ExecuteWarpCommon(
-                coin_pos.Value, 
+                coin.position, 
                 is_warp_camera:false, 
                 end_delay: _coinWarpInterval
                 );
@@ -305,18 +313,26 @@ public class WarpControl : MonoBehaviour {
     /// コインワープが出来るか確認
     /// </summary>
     public Vector3? GetCoinWarpCheck() {
+        var coin = _GetCoinWarpTarget();
+        return coin != null ? coin.position : (Vector3?)null;
+    }
+
+    /// <summary>
+    /// コインワープのワープ先となるコインを取得
+    /// </summary>
+    private Transform _GetCoinWarpTarget() {
         // 前方チェック
-        Vector3? coin_pos = _GetNearestCoin(_coinCheckSize, _forward, _coinCheckSize.x * 0.5f);
+        Transform coin = _GetNearestCoinTransform(_coinCheckSize, _forward, _coinCheckSize.x * 0.5f);
         // 後方チェック
-        if (!coin_pos.HasValue)
-            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, -_forward, _coinCheckSize.x * _otherCheckRate * 0.5f);
+        if (coin == null)
+            coin = _GetNearestCoinTransform(_coinCheckSize * _otherCheckRate, -_forward, _coinCheckSize.x * _otherCheckRate * 0.5f);
         // 上方チェック
-        if (!coin_pos.HasValue)
-            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.up, _coinCheckSize.y * _otherCheckRate * 0.5f);
+        if (coin == null)
+            coin = _GetNearestCoinTransform(_coinCheckSize * _otherCheckRate, Vector2.up, _coinCheckSize.y * _otherCheckRate * 0.5f);
         // 下方チェック
-        if (!coin_pos.HasValue)
-            coin_pos = _GetNearestCoin(_coinCheckSize * _otherCheckRate, Vector2.down, _coinCheckSize.y * _otherCheckRate * 0.5f);
-        return coin_pos;
+        if (coin == null)
+            coin = _GetNearestCoinTransform(_coinCheckSize * _otherCheckRate, Vector2.down, _coinCheckSize.y * _otherCheckRate * 0.5f);
+        return coin;
     }
 
     /// <summary>
@@ -342,26 +358,31 @@ public class WarpControl : MonoBehaviour {
     /// 一番近くのコインを取得
     /// </summary>
     private Vector3? _GetNearestCoin(Vector2 check_size, Vector2 direction, float distance) {
+        var coin = _GetNearestCoinTransform(check_size, direction, distance);
+        return coin != null ? coin.position : (Vector3?)null;
+    }
+
+    /// <summary>
+    /// 一番近くのコインを取得（同じコインかどうかを判別できるようTransformで返す）
+    /// </summary>
+    private Transform _GetNearestCoinTransform(Vector2 check_size, Vector2 direction, float distance) {
         Vector3 origin = transform.position;
         
         // コイン検知
         RaycastHit2D[] hits = Physics2D.BoxCastAll(origin, check_size, 0, direction, distance, _coinLayer);
 
-        if (hits.Length > 0) {
-            float min_dist = Mathf.Infinity;
-            Vector3 best_pos = origin;
+        float min_dist = Mathf.Infinity;
+        Transform best_coin = null;
 
-            // 検知したコインの中で一番近い位置を取得
-            foreach (var hit in hits) {
-                float dist = Vector3.Distance(origin, hit.point);
-                if (dist < min_dist) {
-                    min_dist = dist;
-                    best_pos = hit.collider.transform.position;
-                }
+        // 検知したコインの中で一番近いものを取得
+        foreach (var hit in hits) {
+            float dist = Vector3.Distance(origin, hit.point);
+            if (dist < min_dist) {
+                min_dist = dist;
+                best_coin = hit.collider.transform;
             }
-            return best_pos;
         }
-        return null;
+        return best_coin;
     }
 
     /// <summary>

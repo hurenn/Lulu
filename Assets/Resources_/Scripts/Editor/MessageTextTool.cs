@@ -12,9 +12,24 @@ using UnityEngine.Timeline;
 /// シーン/Timelineに新しいメッセージを追加した際のキー自動採番と、キー参照の整合性チェックを行う。
 /// </summary>
 public static class MessageTextTool {
+    [MenuItem("Lulu/Localization/JSONへ反映")]
+    public static void ApplyPendingEdits() {
+        var pending = MessageJsonUtil.Pending;
+        if (pending.Count == 0) { Debug.Log("JSONへ反映する変更はありません。"); return; }
+        var table = MessageJsonUtil.LoadTable();
+        foreach (var kv in pending) table[kv.Key] = kv.Value;
+        MessageJsonUtil.SaveTable(table);
+        Debug.Log($"JSONへ反映しました({pending.Count}件): {string.Join(", ", pending.Keys.OrderBy(k => k))}");
+        MessageJsonUtil.ClearPending();
+    }
+
+    [MenuItem("Lulu/Localization/JSONへ反映", true)]
+    private static bool _ValidateApplyPendingEdits() => MessageJsonUtil.HasPending;
+
     [MenuItem("Lulu/Localization/未設定キーへ自動採番")]
     public static void AssignMissingKeys() {
         if (EditorApplication.isPlaying) { Debug.LogError("Play Mode中は実行できません。"); return; }
+        if (MessageJsonUtil.HasPending) { Debug.LogError("JSONに未反映の変更があります。先に「Lulu/Localization/JSONへ反映」を実行してください。"); return; }
         for (int i = 0; i < SceneManager.sceneCount; i++) {
             if (SceneManager.GetSceneAt(i).isDirty) { Debug.LogError("未保存のシーンがあります。保存してから実行してください。"); return; }
         }

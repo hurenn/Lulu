@@ -35,6 +35,43 @@ public static class MessageJsonUtil {
         AssetDatabase.Refresh();
     }
 
+    // --- 未反映の変更 ---
+    // Inspectorでの本文編集・ID発行は即時JSONへ書かず、ここに保留して「Lulu/Localization/JSONへ反映」でまとめて書き込む。
+    // ドメインリロードやEditor再起動で消えないよう、Library配下のファイルにも保存しておく
+    public const string PendingPath = "Library/MessagePendingEdits.json";
+    private static Dictionary<string, Dictionary<string, string>> _pending;
+
+    public static Dictionary<string, Dictionary<string, string>> Pending {
+        get {
+            if (_pending == null) {
+                _pending = File.Exists(PendingPath)
+                    ? Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(File.ReadAllText(PendingPath))
+                    : null;
+                _pending ??= new Dictionary<string, Dictionary<string, string>>();
+            }
+            return _pending;
+        }
+    }
+
+    public static bool HasPending => Pending.Count > 0;
+
+    public static void SetPending(string key, string ja, string en) {
+        Pending[key] = new Dictionary<string, string> { { "ja", ja ?? "" }, { "en", en ?? "" } };
+        File.WriteAllText(PendingPath, Newtonsoft.Json.JsonConvert.SerializeObject(Pending, Newtonsoft.Json.Formatting.Indented), new System.Text.UTF8Encoding(false));
+    }
+
+    public static void ClearPending() {
+        _pending = new Dictionary<string, Dictionary<string, string>>();
+        if (File.Exists(PendingPath)) File.Delete(PendingPath);
+    }
+
+    // JSONに未反映の変更を重ねたテーブル(新規ID採番時、未反映のIDと衝突しないようにするため)
+    public static Dictionary<string, Dictionary<string, string>> LoadTableWithPending() {
+        var table = LoadTable();
+        foreach (var kv in Pending) table[kv.Key] = kv.Value;
+        return table;
+    }
+
     // 指定ステージの既存最大番号+1を返す(採番だけ行い、テーブルへの登録は呼び出し側で行う)
     public static int NextNumberForStage(Dictionary<string, Dictionary<string, string>> table, string stageId) {
         int max = 0;

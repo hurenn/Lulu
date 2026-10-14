@@ -109,6 +109,10 @@ public static class MessageIdOrganizer {
                 return result;
             }
         }
+        if (MessageJsonUtil.HasPending) {
+            result.warnings.Add("JSONに未反映の変更があります。先に「Lulu/Localization/JSONへ反映」を実行してください。");
+            return result;
+        }
         if (scenePathsInOrder.Count == 0) {
             result.warnings.Add("対象シーンが選択されていません。");
             return result;
