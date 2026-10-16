@@ -119,7 +119,7 @@ public class Enemy_ZelxFire : Enemy_Base, IActivatable {
 
         Vector3 spawnPos = _muzzle != null ? _muzzle.position : transform.position;
         var bullet = _GetBullet(spawnPos);
-        bullet.Fire(direction, _ReturnBullet);
+        bullet.Fire(direction, _ReturnBullet, this);
     }
 
     // プールから弾を取り出す(空なら新規生成)

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8932347957254375352}
   - component: {fileID: 3613943040952593680}
+  - component: {fileID: 5332786523141598048}
   m_Layer: 3
   m_Name: Wood
   m_TagString: Untagged
@@ -80,6 +81,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.5, y: 1.5}
   m_EdgeRadius: 0
+--- !u!114 &5332786523141598048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2545642171715925900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bbf6ede90ea56144813c1d35027d8d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _burningWoodPrefab: {fileID: 4575696239279131440, guid: a41411f4c2a0f524195c1f563d58ae79, type: 3}
 --- !u!1 &4071108160912769336
 GameObject:
   m_ObjectHideFlags: 0

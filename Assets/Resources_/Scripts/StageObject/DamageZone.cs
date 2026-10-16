@@ -72,6 +72,8 @@ public class DamageZone : MonoBehaviour {
     private System.Action<IDamageable> _hitCallback = default;
     // ヒットで消える時の処理(未設定なら_destroyObjectをDestroyする)
     private System.Action _hitDestroyCallback = default;
+    // ダメージを与えない相手(発射したキャラ自身など)
+    private IDamageable _ignoreTarget = null;
 
     private void Reset() {
         _hitEffectPrefab = Resources.Load<HitEffect>("Prefabs/Effects/HitEffect");
@@ -90,6 +92,13 @@ public class DamageZone : MonoBehaviour {
     /// </summary>
     public void SetHitDestroyCallback(System.Action callback) {
         _hitDestroyCallback = callback;
+    }
+
+    /// <summary>
+    /// ダメージを与えない相手を設定する（弾を発射したキャラ自身に当たらないようにする等）
+    /// </summary>
+    public void SetIgnoreTarget(IDamageable target) {
+        _ignoreTarget = target;
     }
 
     /// <summary>
@@ -162,7 +171,18 @@ public class DamageZone : MonoBehaviour {
         }
 
         IDamageable character = other.GetComponent<IDamageable>();
-        if (character == null) {
+        if (character == null || (_ignoreTarget != null && character == _ignoreTarget)) {
+            return;
+        }
+        // 相手側がこの攻撃を受け付けない場合(特定の攻撃だけ無効なオブジェクト等)
+        if (character is IDamageSourceFilter filter && filter.IsIgnoredDamageSource(this)) {
+            return;
+        }
+        // 相手側がこの攻撃を防いだ場合(シールド等)は、ダメージを与えずに消える
+        if (character is IDamageSourceBlocker blocker && blocker.IsBlockedDamageSource(this)) {
+            if (_isHitDestroy) {
+                _HitDestroy();
+            }
             return;
         }
         if ((!_ignoreInvincibility && character.isInvincible) || _hitCharacters.ContainsKey(character)) {
@@ -216,11 +236,16 @@ public class DamageZone : MonoBehaviour {
         // 光の能力で回避された場合は消えずにすり抜ける
         bool is_light_avoided = isAvoid && !damage_result;
         if (_isHitDestroy && !is_light_avoided) {
-            if (_hitDestroyCallback != null) {
-                _hitDestroyCallback.Invoke();
-            } else if (_destroyObject != null) {
-                Destroy(_destroyObject);
-            }
+            _HitDestroy();
+        }
+    }
+
+    // ヒットで消える
+    private void _HitDestroy() {
+        if (_hitDestroyCallback != null) {
+            _hitDestroyCallback.Invoke();
+        } else if (_destroyObject != null) {
+            Destroy(_destroyObject);
         }
     }
 

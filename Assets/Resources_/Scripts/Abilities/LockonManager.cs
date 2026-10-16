@@ -44,8 +44,13 @@ public class LockonManager : SceneSingleton<LockonManager>
     /// <summary>
     /// ターゲット設定
     /// </summary>
-    private void _SetTarget(Enemy_Base target) 
+    private void _SetTarget(Enemy_Base target)
     {
+        // ロックオンできない状態の敵は対象にしない(今のターゲットもそのまま)
+        if (target != null && !target.CanLockOn) {
+            return;
+        }
+
         // 既にターゲットがいる場合は解除
         ClearTarget();
 
@@ -71,6 +76,12 @@ public class LockonManager : SceneSingleton<LockonManager>
 
         // ターゲットが死んだらロックオン解除
         if (_currentTarget.isDead) {
+            ClearTarget();
+            return;
+        }
+
+        // ターゲットがロックオンできない状態になったら解除(ダウンから復帰したボス等)
+        if (!_currentTarget.CanLockOn) {
             ClearTarget();
             return;
         }

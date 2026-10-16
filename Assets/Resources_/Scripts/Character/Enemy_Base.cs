@@ -15,6 +15,8 @@ public class Enemy_Base : Character_Base
     // ロックオンマーカー
     [SerializeField] private Animator _lockonMarkerAnim;
     public bool isAutoLockOn = true;
+    // ロックオンできるかどうか(状態によってロックオンさせない敵がオーバーライドする)
+    public virtual bool CanLockOn => true;
 
     [SerializeField] private DamageZone _damageZone;
 

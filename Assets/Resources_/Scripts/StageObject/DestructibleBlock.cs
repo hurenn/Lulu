@@ -1,8 +1,9 @@
 using UnityEngine;
 
 // 攻撃で破壊できるブロック。プレイヤーは乗れるが、押して動かすことはできない
-public class DestructibleBlock : MonoBehaviour, IDamageable {
+public class DestructibleBlock : MonoBehaviour, IDamageable, IDamageSourceFilter {
     [SerializeField] private int _hp = 3; // 体力(UI表示はしない)
+    [SerializeField] private bool _isIgnoreFireBullet = false; // trueならFireBulletが当たらない(燃えている物など)
     [SerializeField] private Collider2D _col;
     [SerializeField] private Animator _anim;
     [SerializeField] private AudioClip _seWaterHit; // WaterBulletが当たった時の効果音
@@ -44,6 +45,10 @@ public class DestructibleBlock : MonoBehaviour, IDamageable {
         if (_seWaterHit != null) {
             AudioUtil.PlayClipAtPointUnclamped(_seWaterHit, transform.position, _seWaterHitVolume);
         }
+    }
+
+    public bool IsIgnoredDamageSource(DamageZone source) {
+        return _isIgnoreFireBullet && source.GetComponentInParent<FireBullet>() != null;
     }
 
     public bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false, bool ignore_invincibility = false) {
