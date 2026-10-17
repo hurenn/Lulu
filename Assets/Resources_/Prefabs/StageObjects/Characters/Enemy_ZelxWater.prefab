@@ -167,7 +167,7 @@ MonoBehaviour:
   _lockonMarkerAnim: {fileID: 8023326939181034486}
   isAutoLockOn: 1
   _damageZone: {fileID: 8508692810715132971}
-  _dieExplosion: {fileID: 0}
+  _dieExplosion: {fileID: 2517521421506470330, guid: 1e344d30bed35294c804f29dfda3bea1, type: 3}
   _hpGauge: {fileID: 7557330837326163135}
   _isOnRightSide: 1
   _edgeMargin: 0
@@ -176,23 +176,43 @@ MonoBehaviour:
   _driftSpeed: 1
   _driftRangeX: 0.5
   _driftRangeY: 2
+  _attackInterval: 5
+  _firstAttackDelay: 1
+  _barragesBeforeStraight: 2
+  _lobAttackHpRate: 0.6666667
+  _lobAttackChance: 0.5
   _bulletPrefab: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
-  _fireInterval: 1
-  _bulletCount: 5
-  _fanAngle: 90
-  _barrageCountBeforeCharge: 3
+  _missBulletCount: 10
+  _aimBulletCount: 3
+  _barrage1FireInterval: 0.06
+  _bulletSpeedRateRange: {x: 0.7, y: 1.3}
+  _missTurnRateRange: {x: 60, y: 120}
+  _missDistanceRange: {x: 2.5, y: 5}
+  _barrage1LifetimeRange: {x: 1, y: 2}
   _seShoot: {fileID: 8300000, guid: 03e79a30d21dbe94ba095cb8b681c1ef, type: 3}
   _chargeBulletPrefab: {fileID: 7504534381703554556, guid: 8207c655c95ef654bac3d5df98f89126, type: 3}
   _chargeTime: 3
   _chargeStartScale: 0.2
-  _afterChargeWait: 1.5
   _seCharge: {fileID: 8300000, guid: 5e7169369cd60ab489fc73012a2f089b, type: 3}
   _seChargeShoot: {fileID: 8300000, guid: 2dc0318b6873c1f4ab34a630563fcbd3, type: 3}
   _chargeEffectPrefab: {fileID: 8022744482904254077, guid: 53c4d442849b97542b91726eb032b5d2, type: 3}
   _chargeEffectRateRange: {x: 15, y: 90}
   _chargeShakeInterval: 0.2
   _chargeShakeRange: {x: 0.05, y: 0.4}
-  _chargeShootShake: 1
+  _lobFlightTime: 1.5
+  _lobGravity: 6
+  _lobExplodeViewport: {x: 0.15, y: 0.85}
+  _fanBulletCount: 20
+  _fanAngleRange: {x: -90, y: 0}
+  _fanFireInterval: 0.03
+  _lobShotSpeedRate: 1.5
+  _reflectBackCountsByPhase: 000000000100000003000000
+  _reflectBackHitEffectPrefab: {fileID: 7185826913144432842, guid: 56d7091366b6cf4478ab095e6f5eae72, type: 3}
+  _reflectBackHitEffectType: 3
+  _reflectBackHitEffectSize: 1.3
+  _seReflectBack: {fileID: 8300000, guid: 89842efe1c05881478fd78d5add66dda, type: 3}
+  _reflectBackHitStopTime: 0.4
+  _reflectBackHitStopWait: 0.05
   _phaseHpRates:
   - 0.6666667
   - 0.33333334
@@ -207,6 +227,11 @@ MonoBehaviour:
   _landShakeIntensity: 0.5
   _seLand: {fileID: 8300000, guid: ea553d9bc4e503540bbf47880bc679ec, type: 3}
   _waterShield: {fileID: 7206725201008045144}
+  _seFinish: {fileID: 8300000, guid: b3d4427b5b8e65f46b53c7da8ac10408, type: 3}
+  _audioBGM: {fileID: 0}
+  _bgmBattle: {fileID: 0}
+  _bgmFadeOutTime: 0.5
+  _battleStartDirector: {fileID: 0}
   _firstDownMessageObject: {fileID: 0}
   _specialChargeDelay: 2
 --- !u!212 &3436003584657088121 stripped

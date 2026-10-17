@@ -31,7 +31,43 @@ public class AutoDestroy : MonoBehaviour {
             yield return null;
         }
 
+        _HandOverPlayingSounds();
         Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// 鳴っている途中の効果音を別のオブジェクトへ引き継ぎ、本体が消えても最後まで鳴らす
+    /// (エフェクトより効果音の方が長い時に、途中で途切れないようにする)
+    /// </summary>
+    private void _HandOverPlayingSounds() {
+        foreach (var source in GetComponentsInChildren<AudioSource>()) {
+            if (!source.isPlaying || source.loop || source.clip == null) continue;
+
+            var go = new GameObject(source.clip.name + "(HandOver)");
+            go.transform.position = source.transform.position;
+            var copy = go.AddComponent<AudioSource>();
+            copy.clip = source.clip;
+            copy.outputAudioMixerGroup = source.outputAudioMixerGroup;
+            copy.volume = source.volume;
+            copy.pitch = source.pitch;
+            copy.panStereo = source.panStereo;
+            copy.spatialBlend = source.spatialBlend;
+            copy.priority = source.priority;
+            copy.dopplerLevel = source.dopplerLevel;
+            copy.spread = source.spread;
+            copy.rolloffMode = source.rolloffMode;
+            copy.minDistance = source.minDistance;
+            copy.maxDistance = source.maxDistance;
+            if (source.rolloffMode == AudioRolloffMode.Custom) {
+                copy.SetCustomCurve(AudioSourceCurveType.CustomRolloff, source.GetCustomCurve(AudioSourceCurveType.CustomRolloff));
+            }
+            copy.reverbZoneMix = source.reverbZoneMix;
+            copy.timeSamples = source.timeSamples; // 鳴っている途中の位置から続ける
+            copy.Play();
+
+            float remain = (source.clip.length - source.time) / Mathf.Max(0.01f, Mathf.Abs(source.pitch));
+            Destroy(go, remain + 0.1f);
+        }
     }
 
     private void OnDestroy() {

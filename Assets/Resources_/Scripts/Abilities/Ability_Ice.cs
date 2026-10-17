@@ -17,6 +17,7 @@ public class Ability_Ice : Ability_Base {
     private bool _isHoldExecuted = false;
     // 攻撃方向ロックフラグ
     private bool _isAttackDirectionLocked = false;
+    private bool _isEffectRight = true; // 攻撃エフェクトを出す向き(攻撃方向がロックされている間は更新しない)
 
     // ヒットストップ管理
     [SerializeField] private LocalTimePause _localTimeController;
@@ -176,7 +177,8 @@ public class Ability_Ice : Ability_Base {
         
         UpdatePartnerTransform();   // キャラクター位置を更新
 
-        var effect_obj = Instantiate(effect, transform.position, Quaternion.identity);  // エフェクト生成
+        var effect_obj = _SpawnAttackEffect(effect);  // エフェクト生成
+        if (effect_obj == null) yield break;
         var damage_zone = effect_obj.GetComponentInChildren<DamageZone>();
         damage_zone?.AddHitStopTarget(_localTimeController); // ヒットストップ対象に追加
 
@@ -207,7 +209,7 @@ public class Ability_Ice : Ability_Base {
             } else {
                 // 一定時間ごとに攻撃エフェクト発生
                 current_delay = 0f;
-                Instantiate(_slash1, transform.position, Quaternion.identity);  // エフェクト生成
+                _SpawnAttackEffect(_slash1);  // エフェクト生成
             }
             yield return null;
         }
@@ -295,11 +297,9 @@ public class Ability_Ice : Ability_Base {
         var is_right = target_pos.x > transform.position.x;
         _isRight = is_right;
 
-        // エフェクトの向きを調整
-        _AttackEffectSetup(_lockonSlash);
-
-        // エフェクト生成
-        Instantiate(_lockonSlash, transform.position, Quaternion.identity);
+        // エフェクトの向きを調整して生成
+        _UpdateEffectDirection();
+        _SpawnAttackEffect(_lockonSlash);
         // アニメーション再生
         _anim?.Play("Node_Attack2", 0, 0.0f);
 
@@ -309,25 +309,33 @@ public class Ability_Ice : Ability_Base {
 
     public override void UpdateParameter(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
         base.UpdateParameter(is_right, chara_transform, param, chara_param, warp_control, motor_states);
-        // 向きに応じて攻撃エフェクトの向きを調整
-        _AttackEffectSetup(_slash1);
-        _AttackEffectSetup(_slash2);
-        _AttackEffectSetup(_slash3);
+        // 向きに応じて攻撃エフェクトを出す向きを更新
+        _UpdateEffectDirection();
     }
 
     /// <summary>
-    /// 攻撃エフェクトの向きを調整
+    /// 攻撃エフェクトを出す向きを更新する(攻撃方向がロックされている間は前の向きのまま)
     /// </summary>
-    private void _AttackEffectSetup(GameObject effect) {
-        if (effect == null) {
-            Debug.Log($"{effect}が登録されていません");
-            return;
-        }
-        var scale = effect.transform.localScale;
+    private void _UpdateEffectDirection() {
         if (!_isAttackDirectionLocked) {
-            scale.x = _isRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+            _isEffectRight = _isRight;
         }
-        effect.transform.localScale = scale;
+    }
+
+    /// <summary>
+    /// 攻撃エフェクトを生成し、向きを合わせる
+    /// (プレハブ本体の向きを書き換えるとプレハブに差分が出るため、生成したものの向きを変える)
+    /// </summary>
+    private GameObject _SpawnAttackEffect(GameObject effect) {
+        if (effect == null) {
+            Debug.Log("攻撃エフェクトが登録されていません");
+            return null;
+        }
+        var effect_obj = Instantiate(effect, transform.position, Quaternion.identity);
+        var scale = effect_obj.transform.localScale;
+        scale.x = _isEffectRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+        effect_obj.transform.localScale = scale;
+        return effect_obj;
     }
 
     public override void OnWarp() {

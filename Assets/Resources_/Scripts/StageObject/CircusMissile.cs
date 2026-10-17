@@ -4,6 +4,7 @@ using UnityEngine;
 // ・弧を描く弾: 発射時に決めた一定の速さで曲がり続けて円弧を描く(目標は追わない)。曲がった角度の合計が上限に達したら直進する
 //   目標に当たる向きに進んでいる時は、目標の脇をかすめるように少しだけ向きをそらす
 //   それでも目標の周りの円(_avoidDistance)に入ったら、円の外周へ押し出して外周に沿う向きにする(目標の光の外側を回り込んでかすめる)
+//   発射直後は一度バラバラの方向へ散ってから、旋回速度に上限を付けて本来の弧の向きへ戻る(軌跡が交差しやすくなる)
 // ・ホーミング弾: 目標の方へゆるく曲がる。目標を追い越すか、曲がった角度の合計が上限に達したらそれ以上は曲がらない
 // 目標の間近をかすめた時に一度だけニアミスを通知し、画面を横切って画面外へ出たら消える
 public class CircusMissile : MonoBehaviour {
@@ -20,6 +21,9 @@ public class CircusMissile : MonoBehaviour {
     [SerializeField] private float _homingTurnRate = 35.0f;  // 目標の方へ曲がる速さの上限(度/秒)。弧が見える程度の弱いホーミング
     [SerializeField] private float _maxHomingAngle = 45.0f;  // 1発が曲がれる角度の合計の上限(度)
     [SerializeField] private float _maxArcAngle = 120.0f;    // 弧を描く弾が曲がれる角度の合計の上限(度)。ぐるぐる回り込まないようにする
+    [SerializeField] private Vector2 _scatterAngleRange = new Vector2(25f, 60f); // 発射直後に本来の向きから左右どちらかへ散らす角度の範囲(度)
+    [SerializeField] private float _scatterTime = 0.15f;       // 散った向きのまま進む時間
+    [SerializeField] private float _scatterReturnTurnRate = 240f; // 散った後、本来の弧の向きへ戻る旋回速度の上限(度/秒)
     [SerializeField] private float _avoidDistance = 2.0f;    // 弧を描く弾が目標から最低限離れて通る距離
     [SerializeField] private float _avoidTurnRate = 180.0f;  // 目標をよけるために向きをそらす速さの上限(度/秒)
     [SerializeField] private float _arcNearMissMargin = 0.5f; // 弧を描く弾は、目標の周りの円(_avoidDistance)からこの距離以内をかすめたらニアミス
@@ -36,6 +40,8 @@ public class CircusMissile : MonoBehaviour {
     private float _homingTurned;  // これまでに曲がった角度の合計
     private float _arcTurnRate;   // 弧を描く弾の曲がる速さ(度/秒。正で左回り)。0ならホーミング弾
     private float _arcTurned;     // 弧を描く弾がこれまでに曲がった角度の合計
+    private Vector2 _arcDirection; // 本来の弧の向き(散っている間も弧に沿って曲がり続ける)
+    private bool _isScattering;   // 発射直後に散っている/本来の向きへ戻っている途中
     private float _burstTime;     // この時間が経ったらその場で弾けて消える(負なら弾けずに画面外へ飛び去る)
     private Vector2 _targetVelocity;     // 目標の移動速度(ワープで飛び飛びに動くため、ならして求める)
     private Vector2 _lastTargetPosition;
@@ -85,6 +91,7 @@ public class CircusMissile : MonoBehaviour {
         _burstTime = burst_time;
         _arcTurnRate = arc_turn_rate;
         _arcTurned = 0f;
+        _arcDirection = direction.normalized;
         _targetVelocity = Vector2.zero;
         if (target != null) _lastTargetPosition = target.position;
         _onNearMiss = on_near_miss;
@@ -93,6 +100,12 @@ public class CircusMissile : MonoBehaviour {
         _isNearMissed = false;
         _hasEnteredView = false;
         _isHoming = Mathf.Approximately(arc_turn_rate, 0f);
+        // 弧を描く弾は、発射直後に一度バラバラの方向へ散らす
+        _isScattering = !_isHoming && _scatterTime > 0f;
+        if (_isScattering) {
+            float scatter = Random.Range(_scatterAngleRange.x, _scatterAngleRange.y) * (Random.value < 0.5f ? -1f : 1f);
+            _direction = (Quaternion.Euler(0f, 0f, scatter) * _direction).normalized;
+        }
         _homingTurned = 0f;
         _trail?.Clear();
         transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg);
@@ -153,17 +166,35 @@ public class CircusMissile : MonoBehaviour {
             Vector2 tangent = new Vector2(-normal.y, normal.x);
             if (Vector2.Dot(tangent, _direction) < 0f) tangent = -tangent;
             _direction = tangent;
+            _arcDirection = tangent;   // 弧の向きも外周に沿う向きにし、散っている途中でも戻らずにそのまま飛び去る
+            _isScattering = false;
             _arcTurned = _maxArcAngle; // 外周に沿ってからは曲がらずに飛び去る(目標の周りを回り続けないように)
             transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg);
         }
     }
 
     // 一定の速さで曲がり続けて円弧を描く(曲がれる角度を使い切ったら直進する)
+    // 発射直後に散っている間も本来の弧の向きは曲がり続け、散り終わったら旋回速度の上限付きでその向きへ戻る
     private void _UpdateArc(float dt) {
-        if (Mathf.Approximately(_arcTurnRate, 0f) || _arcTurned >= _maxArcAngle) return;
-        float step = Mathf.Min(Mathf.Abs(_arcTurnRate) * dt, _maxArcAngle - _arcTurned);
-        _arcTurned += step;
-        float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg + step * Mathf.Sign(_arcTurnRate);
+        if (Mathf.Approximately(_arcTurnRate, 0f)) return;
+        if (_arcTurned < _maxArcAngle) {
+            float step = Mathf.Min(Mathf.Abs(_arcTurnRate) * dt, _maxArcAngle - _arcTurned);
+            _arcTurned += step;
+            float arc_angle = Mathf.Atan2(_arcDirection.y, _arcDirection.x) * Mathf.Rad2Deg + step * Mathf.Sign(_arcTurnRate);
+            _arcDirection = new Vector2(Mathf.Cos(arc_angle * Mathf.Deg2Rad), Mathf.Sin(arc_angle * Mathf.Deg2Rad));
+        }
+
+        float angle;
+        if (_isScattering) {
+            // 散った向きのまま少し進み、その後本来の弧の向きへ旋回速度の上限付きで戻る
+            if (_timer < _scatterTime) return;
+            float current = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+            float target = Mathf.Atan2(_arcDirection.y, _arcDirection.x) * Mathf.Rad2Deg;
+            angle = Mathf.MoveTowardsAngle(current, target, _scatterReturnTurnRate * dt);
+            if (Mathf.Abs(Mathf.DeltaAngle(angle, target)) < 0.5f) _isScattering = false; // 戻りきったら弧に乗る
+        } else {
+            angle = Mathf.Atan2(_arcDirection.y, _arcDirection.x) * Mathf.Rad2Deg;
+        }
         _direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
@@ -193,6 +224,7 @@ public class CircusMissile : MonoBehaviour {
         float step = Mathf.Min(need, _avoidTurnRate * dt) * (cross >= 0f ? -1f : 1f);
         float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg + step;
         _direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+        if (!_isScattering) _arcDirection = _direction; // 弧に乗っている時は、そらした向きを弧の向きにも反映する
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
@@ -231,10 +263,11 @@ public class CircusMissile : MonoBehaviour {
 
     private void _Vanish() {
         // 煙が途中で消えないよう、トレイルだけ切り離して自然に消えるのを待つ
+        // (画面外のトレイルは更新されず自動破棄(autodestruct)が働かないため、表示時間が過ぎたら明示的に破棄する)
         if (_trail != null) {
             _trail.transform.SetParent(null, true);
-            _trail.autodestruct = true;
             _trail.emitting = false;
+            Destroy(_trail.gameObject, _trail.time + 0.1f);
         }
         Destroy(gameObject);
     }

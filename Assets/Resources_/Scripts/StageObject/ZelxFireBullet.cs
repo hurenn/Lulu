@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 炎のゼルクスが発射する弾。プールで再利用する
@@ -26,6 +27,20 @@ public class ZelxFireBullet : MonoBehaviour {
     [SerializeField] private ParticleSystem _fireEffectPrefab; // 発射した瞬間に出すエフェクト(未設定なら出さない)
     [SerializeField] private float _fireShake = 0f;            // 発射した瞬間の画面の揺れ(0なら揺らさない)
 
+    [Header("時間差ホーミング(弾幕)")]
+    // 撃たれた後は減速して空中に留まり、指定の時間が経つとプレイヤーへ向かって加速しながら飛ぶ
+    // (コインレールの弾と同じく旋回速度に上限を付け、プレイヤーを追い越したらそれ以上は追わずに飛び去る)
+    [SerializeField] private float _hoverDeceleration = 10f;   // ホーミングに切り替わるまでの減速度
+    [SerializeField] private float _hoverMinSpeed = 0.3f;      // 減速した後の速さ(ゆっくり漂う)
+    [SerializeField] private float _homingTurnRate = 150f;     // ホーミング中の旋回速度の上限(度/秒)
+    [SerializeField] private float _homingAcceleration = 20f;  // ホーミング中の加速度
+    [SerializeField] private float _homingMaxSpeed = 18f;      // ホーミング中の最高速度
+
+    [Header("弧を描いてかすめる弾(弾幕)")]
+    // 一定の速さで曲がり続けて円弧を描く。相手の周りの円に入ったら外周に沿ってそれ、相手には当たらない
+    [SerializeField] private float _maxArcAngle = 120f;   // 曲がれる角度の合計の上限(度)。ぐるぐる回り込まないようにする
+    [SerializeField] private float _avoidDistance = 2.0f; // 相手から最低限離れて通る距離
+
     [Header("跳ね返された時")]
     [SerializeField] private bool _isDestroyBulletsOnReflect = false; // trueなら跳ね返された後、触れた他の弾(弾幕)を破壊しながら進む
 
@@ -49,6 +64,19 @@ public class ZelxFireBullet : MonoBehaviour {
     [SerializeField] private float _reflectAcceleration = 0f;   // 跳ね返された後の加速度(0なら加速しない)
     [SerializeField] private float _reflectMaxSpeedRate = 3f;   // 跳ね返された後に加速する上限(元の速さの何倍まで)
     [SerializeField] private float _reflectHitStopWait = 0.05f; // 跳ね返した時のヒットストップが始まるまでの間(攻撃側のヒットストップの開始に合わせる)
+    [SerializeField] private float _reflectSpeedUpRate = 1.0f;  // 跳ね返る(跳ね返し返される)たびに速さに掛ける倍率(_reflectMaxSpeedRateまで)
+    [FormerlySerializedAs("_isReflectFlashZoom")]
+    [SerializeField] private bool _isReflectFlash = false;      // trueなら跳ね返る(跳ね返し返される)瞬間に弱いフラッシュをかける
+    [SerializeField] private Color _reflectFlashColor = new Color(1f, 1f, 1f, 0.35f); // フラッシュの色(アルファで強さ)
+    [SerializeField] private float _reflectFlashDuration = 0.15f;
+
+    [Header("爆発")]
+    [SerializeField] private GameObject _explosionPrefab;    // 爆発して消える時に出すエフェクト(寿命が尽きた時・_isExplodeOnHitの時)
+    [SerializeField] private float _explosionScale = 1.0f;   // 爆発エフェクトの大きさ
+    [SerializeField] private bool _isExplodeOnHit = false;   // trueなら敵・地形に当たった時と山なりの空中爆発で、弾ける代わりに爆発して消える(巨大な弾用)
+    [SerializeField] private float _reflectBackShake = 0.3f; // 撃ったキャラに跳ね返し返された時の画面の揺れ
+    [SerializeField] private AudioClip _seExplosion;         // 爆発して消える時の効果音(未設定なら鳴らさない)
+    [SerializeField] private float _seExplosionVolume = 1.0f;
 
     [Header("WaterBullet被弾時・弾けて消える時")]
     [SerializeField] private HitEffect _waterHitEffectPrefab;  // ダメージエフェクト
@@ -74,6 +102,25 @@ public class ZelxFireBullet : MonoBehaviour {
     private float _stopTimer = 0f;      // 前進を再開するまでの残り時間
     private bool _hasLeftTerrain;       // 一度地形から離れたか(撃った位置が地形に重なっていても、すぐには弾けないようにする)
     private Coroutine _fadeOutRoutine;  // 消えた後、軌跡が消えきるのを待っている
+    private IDamageable _owner;         // 撃ったキャラ(はじけ飛ぶ弾にも引き継ぐ)
+    private Transform _homingTarget;    // ホーミングで向かう相手
+    private bool _hasHoming;            // 時間差ホーミングをする弾か
+    private bool _isHomingActive;       // ホーミング中(待ち時間が終わった)
+    private float _homingDelayTimer;    // ホーミングになるまでの残り時間
+    private bool _isHomingApproaching;  // ホーミング中に一度相手へ近づき始めたか(追い越したらそれ以上は追わない)
+    private bool _isHomingDone;         // 相手を追い越してホーミングを終えた
+    private bool _isLob;                // 山なりに飛んでいる
+    private Vector2 _lobVelocity;
+    private float _lobGravity;
+    private float _lobExplodeTimer;     // 山なりの弾が空中で爆発するまでの残り時間
+    private Action<Vector2> _onLobExplode; // 山なりの弾が爆発した時に呼ぶ(爆発した位置を渡す)
+    private float _arcTurnRate;         // 弧を描く弾の曲がる速さ(度/秒。正で左回り)。0なら弧を描かない
+    private float _arcTurned;           // これまでに曲がった角度の合計
+    private Transform _avoidTarget;     // 弧を描く弾がよける相手
+    private float _lifeTimer;           // 寿命の残り時間(尽きたら爆発して消える)
+    private bool _hasLifetime;          // 寿命がある弾か(寿命がある間は地形に当たっても消えない)
+    private int _reflectBackCount;      // 撃ったキャラに跳ね返し返された回数
+    private bool _isExplodeOnImpact;    // 今回の発射では、地形・キャラに着弾したら爆発して消える
 
     /// <summary>
     /// Slashで跳ね返されたかどうか
@@ -84,17 +131,26 @@ public class ZelxFireBullet : MonoBehaviour {
         if (_graphic == null) _graphic = GetComponentInChildren<SpriteRenderer>(true);
         if (_trail == null) _trail = GetComponentInChildren<TrailRenderer>(true);
         // プレイヤーに当たったら消える(DamageZoneの_isHitDestroyで判定するため、光の能力で回避された時は消えない)
-        _damageZone?.SetHitDestroyCallback(_Release);
+        _damageZone?.SetHitDestroyCallback(_OnHitDestroy);
         // 破壊できる物を貫通する設定なら、それに当たっても消えない(ダメージは与える)
         _damageZone?.SetHitDestroyFilter(target => !(_isPassThroughDestructible && _IsDestructible(target)));
         _damageZone?.Setup(_OnHitCharacter);
+    }
+
+    // プレイヤー等に当たって消える時(着弾時に爆発する弾なら爆発する)
+    private void _OnHitDestroy() {
+        if (_isExplodeOnImpact) {
+            _Explode();
+        } else {
+            _Release();
+        }
     }
 
     // 当たった相手への追加処理(ダメージ処理の直前に呼ばれる)
     private void _OnHitCharacter(IDamageable character) {
         if (_isReflected && _isKnockdownOnReflectHit && character is IKnockdownTarget target) {
             target.Knockdown(_direction);
-            _Burst(); // 弾けて消える
+            _BurstOrExplode(1f); // 弾けて(爆発して)消える
         }
     }
 
@@ -107,6 +163,7 @@ public class ZelxFireBullet : MonoBehaviour {
     public void Fire(Vector2 direction, Action<ZelxFireBullet> on_release, IDamageable owner = null) {
         _direction = direction.normalized;
         _onRelease = on_release;
+        _owner = owner;
         _damageZone?.SetIgnoreTarget(owner);
         _ApplyFlip();
         // チャージ中から続けて発射する場合は、チャージ中に当たった相手にも再度当たるよう記録を消去する
@@ -123,6 +180,118 @@ public class ZelxFireBullet : MonoBehaviour {
         }
         if (_fireShake > 0f) CinemachineManager.Instance?.ShakeCamera(_fireShake, 0.25f);
     }
+
+    /// <summary>
+    /// 撃った後に減速して空中に留まり、delay秒後にtargetへ向かって加速しながら飛ぶホーミング弾にする(Fireの後に呼ぶ)
+    /// </summary>
+    public void StartDelayedHoming(Transform target, float delay) {
+        _homingTarget = target;
+        _homingDelayTimer = delay;
+        _hasHoming = true;
+        _isHomingActive = false;
+        _isHomingApproaching = false;
+        _isHomingDone = false;
+    }
+
+    /// <summary>
+    /// 山なりに撃つ。explode_time秒後に空中で大きく爆発して消え、on_explodeに爆発した位置を渡す
+    /// (爆発する前に地形に当たった場合も、そこで爆発する)
+    /// </summary>
+    /// <param name="velocity">初速</param>
+    /// <param name="gravity">重力加速度(下向きの大きさ)</param>
+    public void FireLob(Vector2 velocity, float gravity, Action<ZelxFireBullet> on_release, IDamageable owner, float explode_time, Action<Vector2> on_explode) {
+        Fire(velocity, on_release, owner);
+        _isLob = true;
+        _lobVelocity = velocity;
+        _lobGravity = gravity;
+        _lobExplodeTimer = explode_time;
+        _onLobExplode = on_explode;
+    }
+
+    /// <summary>
+    /// 弧を描いて相手の脇をかすめる弾として撃つ。一定の速さで曲がり続け、相手の周りの円に入ったら外周に沿ってそれる
+    /// </summary>
+    /// <param name="speed_rate">元の速さに対する初速の倍率</param>
+    /// <param name="turn_rate">曲がる速さ(度/秒。正で左回り)</param>
+    /// <param name="avoid_target">よける相手</param>
+    public void FireArc(Vector2 direction, float speed_rate, float turn_rate, Action<ZelxFireBullet> on_release, IDamageable owner, Transform avoid_target) {
+        Fire(direction, on_release, owner);
+        _currentSpeed = _speed * speed_rate;
+        _arcTurnRate = turn_rate;
+        _arcTurned = 0f;
+        _avoidTarget = avoid_target;
+    }
+
+    /// <summary>
+    /// 初速を変えて真っすぐ撃つ
+    /// </summary>
+    /// <param name="speed_rate">元の速さに対する初速の倍率</param>
+    public void FireStraight(Vector2 direction, float speed_rate, Action<ZelxFireBullet> on_release, IDamageable owner) {
+        Fire(direction, on_release, owner);
+        _currentSpeed = _speed * speed_rate;
+    }
+
+    /// <summary>
+    /// 寿命を付ける(Fireの後に呼ぶ)。寿命が尽きると爆発して消え、それまでは地形に当たっても消えない
+    /// </summary>
+    public void SetLifetime(float lifetime) {
+        _lifeTimer = lifetime;
+        _hasLifetime = true;
+    }
+
+    /// <summary>
+    /// 今回の発射では、地形・キャラに着弾したら弾ける代わりに爆発して消えるようにする(Fireの後に呼ぶ)
+    /// </summary>
+    public void SetExplodeOnImpact() {
+        _isExplodeOnImpact = true;
+    }
+
+    /// <summary>
+    /// 跳ね返された後に当たった相手を吹き飛ばす弾か(巨大な弾)
+    /// </summary>
+    public bool IsKnockdownOnReflectHit => _isKnockdownOnReflectHit;
+
+    /// <summary>
+    /// 撃ったキャラに跳ね返し返された回数
+    /// </summary>
+    public int ReflectBackCount => _reflectBackCount;
+
+    /// <summary>
+    /// 跳ね返されて向かってきた弾を、撃ったキャラが指定方向へ跳ね返し返す。再びプレイヤーに当たるようになる
+    /// (ヒットエフェクト・効果音は跳ね返したキャラ側で出す)
+    /// </summary>
+    /// <param name="hit_stop_time">跳ね返した時に弾を止める時間</param>
+    public void ReflectBack(Vector2 direction, float hit_stop_time) {
+        if (_isReleased || !_isReflected) return;
+        _reflectBackCount++;
+        _direction = direction.normalized;
+        _ApplyFlip();
+        _isReflected = false;
+        _lastSlash = null; // プレイヤーがまた跳ね返せるようにする
+        _SpeedUpByReflect();
+        _hitStopDelay = _reflectHitStopWait;
+        _hitStopTimer = hit_stop_time;
+        _damageZone?.SetIgnoreTarget(_owner);
+        _damageZone?.ResetHitCharacters();
+        if (_reflectBackShake > 0f) CinemachineManager.Instance?.ShakeCamera(_reflectBackShake, 0.2f);
+        _PlayReflectFlash();
+    }
+
+    // 跳ね返った瞬間に弱いフラッシュをかける
+    private void _PlayReflectFlash() {
+        if (!_isReflectFlash) return;
+        ScreenFlash.Instance?.Flash(_reflectFlashDuration, _reflectFlashColor);
+    }
+
+    // 跳ね返るたびに少し速くする
+    private void _SpeedUpByReflect() {
+        _currentSpeed = Mathf.Min(_currentSpeed * _reflectSpeedUpRate, _speed * _reflectMaxSpeedRate);
+    }
+
+    /// <summary>
+    /// 元の速さ(撃つ側が弧の軌道を計算するのに使う)
+    /// </summary>
+    public float BaseSpeed => _speed;
 
     /// <summary>
     /// 跳ね返された後に他の弾を破壊しながら進む弾か(この弾同士は破壊し合わない)
@@ -160,6 +329,17 @@ public class ZelxFireBullet : MonoBehaviour {
         _hitStopTimer = 0f;
         _hitStopDelay = 0f;
         _hasLeftTerrain = false;
+        _hasHoming = false;
+        _isHomingActive = false;
+        _isHomingApproaching = false;
+        _isHomingDone = false;
+        _isLob = false;
+        _onLobExplode = null;
+        _arcTurnRate = 0f;
+        _avoidTarget = null;
+        _hasLifetime = false;
+        _reflectBackCount = 0;
+        _isExplodeOnImpact = false;
         _damageZone?.ResetHitCharacters();
         _SetVisibleAndHittable(true);
     }
@@ -217,21 +397,111 @@ public class ZelxFireBullet : MonoBehaviour {
                 _isStopped = false;
                 transform.position = _stopPosition;
             }
+        } else if (_isLob) {
+            // 山なりに飛び、決まった時間で空中爆発する
+            _lobVelocity.y -= _lobGravity * Time.deltaTime;
+            transform.position += (Vector3)(_lobVelocity * Time.deltaTime);
+            if (_lobVelocity.sqrMagnitude > 0.0001f) _direction = _lobVelocity.normalized;
+            _lobExplodeTimer -= Time.deltaTime;
+            if (_lobExplodeTimer <= 0f) {
+                _ExplodeLob();
+                return;
+            }
         } else {
-            // 跳ね返された弾は加速していく
-            if (_isReflected && _reflectAcceleration > 0f) {
+            if (_hasHoming && !_isReflected) {
+                _UpdateDelayedHoming(Time.deltaTime);
+            } else if (!Mathf.Approximately(_arcTurnRate, 0f) && !_isReflected) {
+                _UpdateArc(Time.deltaTime);
+            } else if (_isReflected && _reflectAcceleration > 0f) {
+                // 跳ね返された弾は加速していく
                 _currentSpeed = Mathf.Min(_currentSpeed + _reflectAcceleration * Time.deltaTime, _speed * _reflectMaxSpeedRate);
             }
             transform.position += (Vector3)(_direction * _currentSpeed * Time.deltaTime);
+            if (!Mathf.Approximately(_arcTurnRate, 0f) && !_isReflected) _KeepOutOfAvoidCircle();
+        }
+        // 寿命が尽きたら爆発して消える
+        if (_hasLifetime && !_isStopped) {
+            _lifeTimer -= Time.deltaTime;
+            if (_lifeTimer <= 0f) {
+                _Explode();
+                return;
+            }
         }
         if (_CheckTerrainHit()) return;
         _DestroyTouchingBullets();
         _CheckOffScreen();
     }
 
+    // 時間差ホーミング: 待ち時間の間は減速して漂い、その後は旋回速度の上限付きで相手へ向かって加速する
+    // 相手へ近づいた後に追い越したら、それ以上は曲がらずに飛び去る
+    private void _UpdateDelayedHoming(float dt) {
+        if (!_isHomingActive) {
+            _currentSpeed = Mathf.MoveTowards(_currentSpeed, _hoverMinSpeed, _hoverDeceleration * dt);
+            _homingDelayTimer -= dt;
+            if (_homingDelayTimer <= 0f) _isHomingActive = true;
+            return;
+        }
+        _currentSpeed = Mathf.Min(_currentSpeed + _homingAcceleration * dt, _homingMaxSpeed);
+        if (_isHomingDone || _homingTarget == null) return;
+
+        Vector2 to_target = (Vector2)_homingTarget.position - (Vector2)transform.position;
+        float facing = Vector2.Dot(_direction, to_target);
+        if (facing > 0f) {
+            _isHomingApproaching = true;
+        } else if (_isHomingApproaching) {
+            _isHomingDone = true; // 追い越した
+            return;
+        }
+        float current = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+        float desired = Mathf.Atan2(to_target.y, to_target.x) * Mathf.Rad2Deg;
+        float next = Mathf.MoveTowardsAngle(current, desired, _homingTurnRate * dt);
+        _direction = new Vector2(Mathf.Cos(next * Mathf.Deg2Rad), Mathf.Sin(next * Mathf.Deg2Rad));
+        _ApplyFlip();
+    }
+
+    // 山なりの弾が爆発する(大きく弾けて消え、爆発した位置を知らせる)
+    private void _ExplodeLob() {
+        var on_explode = _onLobExplode;
+        _onLobExplode = null;
+        Vector2 position = transform.position;
+        if (_terrainBurstShake > 0f) CinemachineManager.Instance?.ShakeCamera(_terrainBurstShake, 0.2f);
+        _BurstOrExplode(_terrainBurstSizeRate);
+        on_explode?.Invoke(position);
+    }
+
+    // 一定の速さで曲がり続けて円弧を描く(曲がれる角度を使い切ったら直進する)
+    private void _UpdateArc(float dt) {
+        if (_arcTurned >= _maxArcAngle) return;
+        float step = Mathf.Min(Mathf.Abs(_arcTurnRate) * dt, _maxArcAngle - _arcTurned);
+        _arcTurned += step;
+        float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg + step * Mathf.Sign(_arcTurnRate);
+        _direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+        _ApplyFlip();
+    }
+
+    // 弧を描く弾: よける相手の周りの円に入ったら、円の外周へ押し出して外周に沿う向きにする(必ず相手から離れて通る)
+    private void _KeepOutOfAvoidCircle() {
+        if (_avoidTarget == null || _avoidDistance <= 0f) return;
+        Vector2 target_pos = _avoidTarget.position;
+        Vector2 from_target = (Vector2)transform.position - target_pos;
+        float distance = from_target.magnitude;
+        if (distance >= _avoidDistance || distance < 0.0001f) return;
+
+        Vector2 normal = from_target / distance;
+        transform.position = new Vector3(target_pos.x + normal.x * _avoidDistance, target_pos.y + normal.y * _avoidDistance, transform.position.z);
+        // 相手の方へ向かっている時だけ、今の進み方に近い側の外周の向きへ変え、その後は曲がらずに飛び去る
+        if (Vector2.Dot(_direction, normal) < 0f) {
+            Vector2 tangent = new Vector2(-normal.y, normal.x);
+            if (Vector2.Dot(tangent, _direction) < 0f) tangent = -tangent;
+            _direction = tangent;
+            _arcTurned = _maxArcAngle;
+            _ApplyFlip();
+        }
+    }
+
     // 地形に当たったら弾けて消える。破壊できる物を貫通する設定なら、それには反応しない
     private bool _CheckTerrainHit() {
-        if (!_isBurstOnTerrain || _isStopped) return false;
+        if (!_isBurstOnTerrain || _isStopped || _hasLifetime) return false;
         float radius = _GetBodyRadius();
         bool is_hit = false;
         foreach (var hit in Physics2D.OverlapCircleAll(transform.position, radius, _terrainLayer)) {
@@ -248,7 +518,12 @@ public class ZelxFireBullet : MonoBehaviour {
         if (!_hasLeftTerrain) return false;
 
         if (_terrainBurstShake > 0f) CinemachineManager.Instance?.ShakeCamera(_terrainBurstShake, 0.2f);
-        _Burst(_terrainBurstSizeRate);
+        // 山なりの弾が爆発する前に地形に当たった場合も、そこで爆発する
+        if (_isLob) {
+            _ExplodeLob();
+            return true;
+        }
+        _BurstOrExplode(_terrainBurstSizeRate);
         return true;
     }
 
@@ -332,6 +607,26 @@ public class ZelxFireBullet : MonoBehaviour {
         _Release();
     }
 
+    // _isExplodeOnHitなら爆発して、そうでなければ弾けて消える
+    private void _BurstOrExplode(float burst_size_rate) {
+        if ((_isExplodeOnHit || _isExplodeOnImpact) && _explosionPrefab != null) {
+            _Explode();
+        } else {
+            _Burst(burst_size_rate);
+        }
+    }
+
+    // 爆発エフェクトを出して消える
+    private void _Explode() {
+        if (_isReleased) return;
+        if (_explosionPrefab != null) {
+            var explosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            explosion.transform.localScale *= _explosionScale;
+        }
+        if (_seExplosion != null) AudioUtil.PlayClipAtPointUnclamped(_seExplosion, transform.position, _seExplosionVolume);
+        _Release();
+    }
+
     // Slashを受けた時、設定に応じて止まる・跳ね返る
     private void _OnSlashHit(SlashAttackInfo slash) {
         // チャージ中(発射前)は反応しない
@@ -395,10 +690,19 @@ public class ZelxFireBullet : MonoBehaviour {
         }
         _isStopped = false;
         _isReflected = true;
+        // 跳ね返されたら、山なり・ホーミング・弧をやめて真っすぐ飛ぶ(空中爆発もしない)
+        _isLob = false;
+        _onLobExplode = null;
+        _hasHoming = false;
+        _arcTurnRate = 0f;
+        _hasLifetime = false; // 跳ね返された後は寿命で消えず、地形に当たると消える
+        _currentSpeed = Mathf.Max(_currentSpeed, _speed);
+        _SpeedUpByReflect();
         _damageZone?.SetIgnoreTarget(player);
         _damageZone?.ResetHitCharacters();
 
         if (_seReflect != null) AudioUtil.PlayClipAtPointUnclamped(_seReflect, transform.position, _seSlashVolume);
+        _PlayReflectFlash();
     }
 
     private void _Release() {

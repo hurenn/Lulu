@@ -9,24 +9,44 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
-      propertyPath: _speed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _fireShake
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _seExplosion
+      value: 
+      objectReference: {fileID: 8300000, guid: 05b8322d83e84e745bb8794bd1112373, type: 3}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _slashReaction
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _explosionScale
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _isExplodeOnHit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _isReflectFlash
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _fireEffectPrefab
       value: 
       objectReference: {fileID: 7366704472185641795, guid: 840f36a687adf0449b32012bacd935d7, type: 3}
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _splitBulletPrefab
+      value: 
+      objectReference: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _terrainBurstShake
       value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _reflectSpeedUpRate
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _reflectAcceleration
@@ -126,7 +146,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6193884730253224318, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _damageToEnemy
-      value: 10
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 6193884730253224318, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _hitEffectType
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

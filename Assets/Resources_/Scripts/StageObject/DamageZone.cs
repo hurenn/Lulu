@@ -313,17 +313,17 @@ public class DamageZone : MonoBehaviour {
     }
 
     /// <summary>
-    /// 当たり判定を通さずに、当たった時と同じ演出(ヒットエフェクト・ヒットストップ・カメラシェイク)だけを出す
-    /// (氷の攻撃で敵の弾を跳ね返した時など、ダメージを与えない相手に当たった時に使う)
-    /// </summary>
-    /// <returns>ヒットストップの時間</returns>
-    /// <summary>
     /// 当たり判定を通さずに、ヒットエフェクトだけを出す(敵の弾を止めた時など)
     /// </summary>
     public void SpawnHitEffectAt(Vector3 position) {
         _SpawnHitEffect(position, _hitEffectType);
     }
 
+    /// <summary>
+    /// 当たり判定を通さずに、当たった時と同じ演出(ヒットエフェクト・ヒットストップ・カメラシェイク)だけを出す
+    /// (氷の攻撃で敵の弾を跳ね返した時など、ダメージを与えない相手に当たった時に使う)
+    /// </summary>
+    /// <returns>ヒットストップの時間</returns>
     public float PlayHitReaction(Vector3 position) {
         var hit_effect = _SpawnHitEffect(position, _hitEffectType);
         _HitStop(null, hit_effect != null ? hit_effect.GetComponent<LocalTimePause>() : null);

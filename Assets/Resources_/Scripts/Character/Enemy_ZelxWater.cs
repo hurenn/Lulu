@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 /// <summary>
 /// ボス「水のゼルクス」
 /// 最初は止まっていて、Timelineの合図(ActivateMarker)で行動を開始する
 /// 行動開始後は陣取る画面端(既定は右端)へ移動し、カメラに映るギリギリの画面端を維持して漂いながら、
-/// 向いている方向(右端なら左)へ扇状の小さな弾幕を数回撃つ→巨大な弾をチャージして一直線に撃つ を繰り返す
+/// 最後に弾を撃ってから一定時間ごとに攻撃する。弾幕を2回撃ったら、巨大な弾をチャージして1回真っすぐ撃つ(その弾が消えるまで次の行動をしない)
+/// 弾幕は、HPが2/3より多い間は弾幕1のみ、以下になると確率で弾幕2になる
+///   弾幕1: プレイヤーの脇をかすめる弧を描く弾と、プレイヤーを狙う弾を、順不同・初速ばらばらで撃つ
+///   弾幕2: 巨大な弾を山なりに撃ち、画面の左上で爆発させ、そこから真下～真右の扇状に高速の弾をまき散らす(着弾で爆発)
 /// 跳ね返された巨大な弾が当たると、吹き飛んで壁に叩きつけられ、地上に落ちてダウンする
 /// ダウンはHPが次の段階(2/3, 1/3)まで減ると強制解除され、再び画面端へ戻って行動する
 /// </summary>
-public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
+public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDamageSourceFilter {
     private enum eState {
         Waiting,     // Timelineの合図を待っている
         Acting,      // 画面端で漂いながら攻撃する
@@ -20,9 +24,10 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     }
 
     private enum eAttackState {
-        Barrage,     // 扇状の小さな弾幕を一定間隔で撃つ
-        Charging,    // 巨大な弾をチャージ中
-        AfterCharge, // 巨大な弾を撃った後の待機
+        Interval,    // 次の攻撃までの待機(最後に弾を撃ってから一定時間)
+        Barrage1,    // 弾幕1: かすめる弾と狙う弾を順不同で撃っている
+        Barrage2,    // 弾幕2: 山なりの巨大な弾が爆発し、扇状の弾を撃ち終えるのを待っている
+        Charging,    // 巨大な弾をチャージ中(チャージ後に真っすぐ撃つ)
     }
 
     [Header("位置")]
@@ -36,25 +41,52 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     [SerializeField] private float _driftRangeX = 0.5f;  // 画面端から内側へ漂う幅(画面外へははみ出さない)
     [SerializeField] private float _driftRangeY = 2.0f;  // 上下に漂う幅
 
-    [Header("扇状の弾幕(小)")]
-    [SerializeField] private ZelxFireBullet _bulletPrefab; // 発射する弾のプレハブ(プールで再利用する)
-    [SerializeField] private float _fireInterval = 1.0f;   // 弾幕の発射間隔
-    [SerializeField] private int _bulletCount = 5;         // 1回の弾幕で発射する弾数
-    [SerializeField] private float _fanAngle = 90f;        // 扇の開き角度(向いている方向を中心に上下へ振り分ける)
-    [SerializeField] private int _barrageCountBeforeCharge = 3; // 巨大な弾をチャージするまでに撃つ弾幕の回数
-    [SerializeField] private AudioClip _seShoot;           // 発射時の効果音
+    [Header("行動")]
+    [SerializeField] private float _attackInterval = 5.0f;   // 最後に弾を撃ってから次の攻撃を始めるまでの時間
+    [SerializeField] private float _firstAttackDelay = 1.0f; // 画面端に着いてから最初の攻撃を始めるまでの時間
+    [SerializeField] private int _barragesBeforeStraight = 2; // 弾幕をこの回数撃ったら、巨大な弾をチャージして真っすぐ撃つ(HPに関係なく)
+    [SerializeField] private float _lobAttackHpRate = 2f / 3f; // HPがこの割合以下になると、弾幕2を撃つことがある
+    [SerializeField, Range(0f, 1f)] private float _lobAttackChance = 0.5f; // HPが減った後に弾幕2を撃つ確率(撃たない時は弾幕1)
+
+    [Header("弾幕1: かすめる弾と狙う弾(小さな弾)")]
+    [SerializeField] private ZelxFireBullet _bulletPrefab;  // 発射する弾のプレハブ(プールで再利用する)
+    [SerializeField] private int _missBulletCount = 10;     // プレイヤーの脇をかすめる、弧を描く弾の数
+    [SerializeField] private int _aimBulletCount = 3;       // プレイヤーへ真っすぐ向かう弾の数
+    [SerializeField] private float _barrage1FireInterval = 0.06f; // 1発ずつ撃つ間隔
+    [SerializeField] private Vector2 _bulletSpeedRateRange = new Vector2(0.7f, 1.3f); // 初速の倍率の範囲(弾ごとにばらばら)
+    [SerializeField] private Vector2 _missTurnRateRange = new Vector2(60f, 120f);     // かすめる弾の曲がる速さの範囲(度/秒。向きは左右ランダム)
+    [SerializeField] private Vector2 _missDistanceRange = new Vector2(2.5f, 5.0f);    // かすめる弾が、プレイヤーからどれだけ横に外れた所を通るか
+    [SerializeField] private Vector2 _barrage1LifetimeRange = new Vector2(1.0f, 2.0f); // 弾の寿命の範囲(撃ってからこの時間で爆発して消える。地形では消えない)
+    [SerializeField] private AudioClip _seShoot;            // 発射時の効果音
 
     [Header("チャージ弾(巨大)")]
     [SerializeField] private ZelxFireBullet _chargeBulletPrefab; // チャージして撃つ巨大な弾のプレハブ(プールで再利用する)
     [SerializeField] private float _chargeTime = 3.0f;     // チャージ時間
     [SerializeField] private float _chargeStartScale = 0.2f; // チャージ開始時の弾の大きさ(プレハブの大きさに対する割合。チャージ完了で1になる)
-    [SerializeField] private float _afterChargeWait = 1.5f; // 巨大な弾を撃ってから弾幕を再開するまでの時間
     [SerializeField] private AudioClip _seCharge;          // チャージ開始時の効果音
     [SerializeField] private AudioClip _seChargeShoot;     // 巨大な弾の発射時の効果音
     [SerializeField] private ParticleSystem _chargeEffectPrefab; // チャージ中に弾へ光の粒が集まる演出
     [SerializeField] private Vector2 _chargeEffectRateRange = new Vector2(15f, 90f); // チャージ演出の粒の量(チャージ開始→完了)
     [SerializeField] private float _chargeShakeInterval = 0.2f; // チャージ中に画面を揺らす間隔
     [SerializeField] private Vector2 _chargeShakeRange = new Vector2(0.05f, 0.4f); // チャージ中の画面の揺れの強さ(チャージ開始→完了)
+
+    [Header("弾幕2: 山なりの巨大な弾→空中で爆発→扇状にまき散らす弾")]
+    [SerializeField] private float _lobFlightTime = 1.5f;  // 撃ってから爆発するまでの時間
+    [SerializeField] private float _lobGravity = 6.0f;     // 山なりの重力加速度(大きいほど高く上がる)
+    [SerializeField] private Vector2 _lobExplodeViewport = new Vector2(0.15f, 0.85f); // 爆発させる位置(画面内の位置。右端に陣取る時の値で、左端の時は左右反転する)
+    [SerializeField] private int _fanBulletCount = 20;        // 爆発地点から扇状にまき散らす弾の数
+    [SerializeField] private Vector2 _fanAngleRange = new Vector2(-90f, 0f); // 扇の向きの範囲(度。右端に陣取る時の値で、真下→真右。左端の時は左右反転する)
+    [SerializeField] private float _fanFireInterval = 0.03f;  // 1発ずつ撃つ間隔(順不同)
+    [SerializeField] private float _lobShotSpeedRate = 1.5f;  // 弾の速さの倍率(小さな弾の元の速さに対して)
+
+    [Header("巨大な弾の跳ね返し返し")]
+    [SerializeField] private int[] _reflectBackCountsByPhase = { 0, 1, 3 }; // HPの段階ごとに、跳ね返されてきた巨大な弾を跳ね返し返す回数(段階0: HP2/3超, 1: 2/3以下, 2: 1/3以下)
+    [SerializeField] private HitEffect _reflectBackHitEffectPrefab; // 跳ね返し返した時のヒットエフェクト
+    [SerializeField] private HitEffect.eType _reflectBackHitEffectType = HitEffect.eType.Ice;
+    [SerializeField] private float _reflectBackHitEffectSize = 1.3f;
+    [SerializeField] private AudioClip _seReflectBack;               // 跳ね返し返した時の効果音
+    [SerializeField] private float _reflectBackHitStopTime = 0.4f;   // 跳ね返し返した時のヒットストップの時間(ゼルクスと弾が止まる)
+    [SerializeField] private float _reflectBackHitStopWait = 0.05f;  // ヒットストップが始まるまでの間
 
     [Header("ダウン")]
     [SerializeField] private float[] _phaseHpRates = { 2f / 3f, 1f / 3f }; // HPがこの割合以下になるとダウンを強制解除し、次の段階へ移る
@@ -72,6 +104,14 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     [Header("シールド")]
     [SerializeField] private GameObject _waterShield;    // 通常時に表示し、ダウン中は非表示にする
 
+    [Header("撃破演出")]
+    [SerializeField] private AudioClip _seFinish;       // とどめを刺した時の効果音
+    [SerializeField] private float _dieExplosionScale = 1.5f; // 倒された時の爆発の大きさ(爆発のプレハブの大きさに対する倍率)
+    [SerializeField] private AudioSource _audioBGM;     // ステージのBGM(登場時に止めて行動開始時にボス戦の曲へ差し替える。撃破演出中は止め、演出後に音量を戻す)
+    [SerializeField] private AudioClip _bgmBattle;      // ボス戦の曲
+    [SerializeField] private float _bgmFadeOutTime = 0.5f; // 登場時にステージのBGMを消すまでの時間
+    [SerializeField] private PlayableDirector _battleStartDirector; // ボス戦開始のTimeline(再生が始まったらステージのBGMを消す。未設定なら初期化時に消す)
+
     [Header("初回ダウン")]
     [SerializeField] private GameObject _firstDownMessageObject; // 初めてダウンした時にActiveにするGameObject(メッセージ表示用)
     [SerializeField] private float _specialChargeDelay = 2.0f;   // 初めてダウンしてから必殺技ゲージを最大にするまでの時間
@@ -87,10 +127,16 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     private float _driftAnchorY;   // 漂う中心のY座標
     private float _currentY;
 
-    private eAttackState _attackState = eAttackState.Barrage;
+    private eAttackState _attackState = eAttackState.Interval;
     private float _attackTimer;
-    private int _barrageCount;
+    private readonly List<bool> _barrage1Queue = new List<bool>(); // 弾幕1でこれから撃つ弾(trueで狙う弾、falseでかすめる弾。順不同)
+    private int _barrageCountSinceStraight; // 最後に巨大な弾を真っすぐ撃ってから撃った弾幕の回数
+    private ZelxFireBullet _lobBullet;      // 弾幕2で山なりに撃った巨大な弾
+    private Coroutine _lobShotRoutine;          // 弾幕2で爆発地点から扇状に撃っている途中
     private ZelxFireBullet _chargingBullet; // チャージ中の巨大な弾
+    private ZelxFireBullet _firedGiantBullet; // 真っすぐ撃った巨大な弾(消えるまで次の行動をしない)
+    private float _hitStopTimer;   // 巨大な弾を跳ね返し返した時のヒットストップの残り時間(この間は動かない)
+    private float _hitStopDelay;   // ヒットストップが始まるまでの残り時間
     private Vector3 _chargeBulletScale;     // 巨大な弾のプレハブの大きさ
     private ParticleSystem _chargeEffect;   // チャージ演出(使い回す)
     private float _chargeShakeTimer;
@@ -103,6 +149,11 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     private float _fallSpeed;
     private bool _isSlowMotion = false;
     private bool _hasDownedBefore = false; // 初回ダウン判定用
+
+    // BGM
+    private float _currentBGMVolume = 0.7f;
+    private bool _startBGM = false;
+    private Coroutine _bgmFadeRoutine;
 
     private readonly Queue<ZelxFireBullet> _bulletPool = new Queue<ZelxFireBullet>();
     private readonly Queue<ZelxFireBullet> _chargeBulletPool = new Queue<ZelxFireBullet>();
@@ -117,6 +168,47 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         if (_chargeBulletPrefab != null) {
             _chargeBulletScale = _chargeBulletPrefab.transform.localScale;
         }
+        // 登場したらステージのBGMを消し、行動開始時にボス戦の曲を流す(Exと同じ流れ)
+        // ボスはステージ開始時から置かれているため、ボス戦開始のTimelineが再生されたら消す
+        _currentBGMVolume = _audioBGM != null ? _audioBGM.volume : 0.7f;
+        if (_battleStartDirector != null) {
+            _battleStartDirector.played += _OnBattleStartPlayed;
+        } else {
+            _StopStageBGM();
+        }
+    }
+
+    private void _OnBattleStartPlayed(PlayableDirector director) {
+        _StopStageBGM();
+    }
+
+    private void _StopStageBGM() {
+        if (_audioBGM == null || _startBGM || _bgmFadeRoutine != null) return;
+        _bgmFadeRoutine = StartCoroutine(_FadeOutStageBGM());
+    }
+
+    private IEnumerator _FadeOutStageBGM() {
+        float timer = 0f;
+        while (timer < _bgmFadeOutTime) {
+            timer += Time.deltaTime;
+            _audioBGM.volume = Mathf.Lerp(_currentBGMVolume, 0f, timer / _bgmFadeOutTime);
+            yield return null;
+        }
+        _audioBGM.enabled = false;
+        _bgmFadeRoutine = null;
+    }
+
+    private void _StartBattleBGM() {
+        if (_startBGM || _audioBGM == null) return;
+        _startBGM = true;
+        if (_bgmFadeRoutine != null) {
+            StopCoroutine(_bgmFadeRoutine);
+            _bgmFadeRoutine = null;
+        }
+        _audioBGM.enabled = true;
+        _audioBGM.volume = _currentBGMVolume;
+        if (_bgmBattle != null) _audioBGM.clip = _bgmBattle;
+        _audioBGM.Play();
     }
 
     // ダウン中だけロックオンできる
@@ -135,15 +227,14 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     private void _StartActing() {
         _state = eState.Acting;
         _SetWaterShieldVisible(true);
+        _StartBattleBGM();
 
         var cam = Camera.main;
         _entryOffsetX = cam != null ? transform.position.x - _GetEdgeX(cam) : 0f;
         _currentY = transform.position.y;
         _driftTimer = 0f;
 
-        _attackState = eAttackState.Barrage;
-        _attackTimer = _fireInterval;
-        _barrageCount = 0;
+        _ChangeAttackState(eAttackState.Interval, _firstAttackDelay);
     }
 
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false, bool ignore_invincibility = false) {
@@ -173,6 +264,44 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         // TODO: 弾幕の性質の変化は後程実装
     }
 
+    // HPが減るほど、跳ね返されてきた巨大な弾を何回か跳ね返し返す(跳ね返し返した時はヒットしない)
+    // プレイヤーがそれを決まった回数だけ跳ね返し続けると、ヒットする
+    public bool IsIgnoredDamageSource(DamageZone source) {
+        if (_state != eState.Acting || _isDead) return false;
+        var bullet = source.GetComponentInParent<ZelxFireBullet>();
+        if (bullet == null || !bullet.IsReflected || !bullet.IsKnockdownOnReflectHit) return false;
+        int max_count = _reflectBackCountsByPhase.Length > 0 ? _reflectBackCountsByPhase[Mathf.Min(_phase, _reflectBackCountsByPhase.Length - 1)] : 0;
+        if (bullet.ReflectBackCount >= max_count) return false;
+        bullet.ReflectBack(_FacingDirection, _reflectBackHitStopTime);
+        _PlayReflectBackReaction(bullet.transform.position);
+        return true;
+    }
+
+    // 跳ね返し返した時のヒットエフェクト・効果音・ヒットストップ
+    private void _PlayReflectBackReaction(Vector3 position) {
+        if (_reflectBackHitEffectPrefab != null) {
+            var effect = EffectPool.Instance.Spawn(_reflectBackHitEffectPrefab.gameObject, position);
+            if (effect != null) {
+                foreach (var hit_effect in effect.GetComponentsInChildren<HitEffect>()) {
+                    hit_effect.Setup(_reflectBackHitEffectType, _reflectBackHitEffectSize);
+                }
+                effect.GetComponent<LocalTimePause>()?.StartPause(_reflectBackHitStopTime);
+            }
+        }
+        if (_seReflectBack != null) _audioSource?.PlayOneShot(_seReflectBack);
+        _hitStopDelay = _reflectBackHitStopWait;
+        _hitStopTimer = _reflectBackHitStopTime;
+    }
+
+    // 巨大な弾と打ち合っている間(ゼルクスが初めて跳ね返し返してから弾が消えるまで)
+    private bool _IsExchangingGiantBullet() {
+        return _IsExchanging(_firedGiantBullet) || _IsExchanging(_lobBullet);
+    }
+
+    private static bool _IsExchanging(ZelxFireBullet bullet) {
+        return bullet != null && !bullet.IsReleased && bullet.ReflectBackCount > 0;
+    }
+
     // 跳ね返された巨大な弾が当たった時に呼ばれる(ダメージ処理の直前)
     public void Knockdown(Vector2 direction) {
         if (_state != eState.Acting) return;
@@ -198,6 +327,8 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
                         _StartKnockback();
                         break;
                     }
+                    // 巨大な弾を跳ね返し返した時のヒットストップ: 少し間を置いてから、決まった時間だけその場で止まる
+                    if (_UpdateHitStop(dt)) break;
                     var cam = Camera.main;
                     if (cam == null) break;
                     var position = _UpdateMove(cam, dt);
@@ -222,12 +353,32 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         }
     }
 
+    private void _ResetHitStop() {
+        _hitStopDelay = 0f;
+        _hitStopTimer = 0f;
+        if (_anim != null) _anim.speed = 1f;
+    }
+
+    // ヒットストップ中ならtrue(アニメーションも止める)
+    private bool _UpdateHitStop(float dt) {
+        if (_hitStopDelay > 0f) {
+            _hitStopDelay -= dt;
+            return false;
+        }
+        if (_hitStopTimer <= 0f) return false;
+        _hitStopTimer -= dt;
+        bool is_stopping = _hitStopTimer > 0f;
+        if (_anim != null) _anim.speed = is_stopping ? 0f : 1f;
+        return is_stopping;
+    }
+
     // 陣取る画面端を維持して漂う。移動後の位置を返す
     private Vector2 _UpdateMove(Camera cam, float dt) {
         _entryOffsetX = Mathf.MoveTowards(_entryOffsetX, 0f, _entrySpeed * dt);
 
         // 漂い始めの位置から途切れずに動き出すよう、どちらの軸もオフセット0から始まるサイン波で漂う
-        _driftTimer += dt;
+        // 巨大な弾と打ち合っている間は漂う動きを止め、その場で構える
+        if (!_IsExchangingGiantBullet()) _driftTimer += dt;
         float t = _driftTimer * _driftSpeed;
         float drift_x = (1f - Mathf.Cos(t)) * 0.5f * _driftRangeX * _InwardSign; // 0～_driftRangeXの範囲で画面の内側にだけ漂う
         float target_y = _driftAnchorY + Mathf.Sin(t * 1.3f) * _driftRangeY;
@@ -248,14 +399,36 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         _attackTimer -= dt;
 
         switch (_attackState) {
-            case eAttackState.Barrage:
+            case eAttackState.Interval:
                 if (_attackTimer > 0f) break;
-                _attackTimer += _fireInterval;
-                _FireBarrage(_GetMuzzlePosition(position));
-                _barrageCount++;
-                if (_barrageCount >= _barrageCountBeforeCharge && _chargeBulletPrefab != null) {
-                    _StartCharge(_GetMuzzlePosition(position));
+                // 真っすぐ撃った巨大な弾が消えるまで(跳ね返し合っている間も)次の行動をしない
+                if (_firedGiantBullet != null) {
+                    if (!_firedGiantBullet.IsReleased) break;
+                    _firedGiantBullet = null;
                 }
+                _StartNextAttack(_GetMuzzlePosition(position));
+                break;
+
+            case eAttackState.Barrage1:
+                if (_attackTimer > 0f) break;
+                if (_barrage1Queue.Count > 0) {
+                    bool is_aim = _barrage1Queue[_barrage1Queue.Count - 1];
+                    _barrage1Queue.RemoveAt(_barrage1Queue.Count - 1);
+                    _FireBarrage1Bullet(_GetMuzzlePosition(position), is_aim);
+                }
+                if (_barrage1Queue.Count == 0) {
+                    _ChangeAttackState(eAttackState.Interval, _attackInterval); // 最後に撃ってから一定時間待つ
+                } else {
+                    _attackTimer += _barrage1FireInterval;
+                }
+                break;
+
+            case eAttackState.Barrage2:
+                // 扇状に撃ち終えるまで待つ。爆発せずに消えた(跳ね返された等)場合もここで次へ進む
+                if (_lobShotRoutine != null) break;
+                if (_lobBullet != null && !_lobBullet.IsReleased) break;
+                _lobBullet = null;
+                _ChangeAttackState(eAttackState.Interval, _attackInterval); // 最後に撃ってから一定時間待つ
                 break;
 
             case eAttackState.Charging: {
@@ -263,7 +436,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
                     if (_chargingBullet == null || _chargingBullet.IsReleased) {
                         _chargingBullet = null;
                         _StopChargeEffect();
-                        _ChangeAttackState(eAttackState.AfterCharge, _afterChargeWait);
+                        _ChangeAttackState(eAttackState.Interval, _attackInterval);
                         break;
                     }
                     // 本体に付いて動きながら、徐々に大きくなる
@@ -275,18 +448,143 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
 
                     if (_seChargeShoot != null) _audioSource?.PlayOneShot(_seChargeShoot);
                     _chargingBullet.Fire(_FacingDirection, _returnChargeBullet, this);
+                    _firedGiantBullet = _chargingBullet;
                     _chargingBullet = null;
                     _StopChargeEffect(); // 撃った瞬間のエフェクトと画面の揺れは、弾側(ZelxFireBullet)で出す
-                    _ChangeAttackState(eAttackState.AfterCharge, _afterChargeWait);
+                    _ChangeAttackState(eAttackState.Interval, _attackInterval); // 最後に撃ってから一定時間待つ
                     break;
                 }
-
-            case eAttackState.AfterCharge:
-                if (_attackTimer > 0f) break;
-                _barrageCount = 0;
-                _ChangeAttackState(eAttackState.Barrage, _fireInterval);
-                break;
         }
+    }
+
+    // 次の攻撃を選ぶ。弾幕を決まった回数撃ったら、巨大な弾をチャージして真っすぐ撃つ
+    // 弾幕は、HPが一定以下になるまでは弾幕1だけ、それ以降は確率で弾幕2も撃つ
+    private void _StartNextAttack(Vector3 muzzle_position) {
+        if (_barrageCountSinceStraight >= _barragesBeforeStraight && _chargeBulletPrefab != null) {
+            _barrageCountSinceStraight = 0;
+            _StartCharge(muzzle_position);
+            return;
+        }
+        _barrageCountSinceStraight++;
+
+        bool is_hp_low = _charaParam.CurrentHP <= _charaParam.MaxHP * _lobAttackHpRate;
+        if (is_hp_low && _chargeBulletPrefab != null && Random.value < _lobAttackChance) {
+            _FireLobBarrage(muzzle_position);
+            return;
+        }
+        _StartBarrage1();
+    }
+
+    // 弾幕1を始める。かすめる弾と狙う弾を混ぜ、撃つ順番をばらばらにする
+    private void _StartBarrage1() {
+        _barrage1Queue.Clear();
+        for (int i = 0; i < _missBulletCount; i++) _barrage1Queue.Add(false);
+        for (int i = 0; i < _aimBulletCount; i++) _barrage1Queue.Add(true);
+        for (int i = _barrage1Queue.Count - 1; i > 0; i--) {
+            int j = Random.Range(0, i + 1);
+            (_barrage1Queue[i], _barrage1Queue[j]) = (_barrage1Queue[j], _barrage1Queue[i]);
+        }
+        _ChangeAttackState(eAttackState.Barrage1, 0f);
+    }
+
+    // 弾幕1の弾を1発撃つ。狙う弾はプレイヤーへ真っすぐ、かすめる弾は弧を描いてプレイヤーの脇を通る
+    private void _FireBarrage1Bullet(Vector3 spawn_pos, bool is_aim) {
+        if (_bulletPrefab == null) return;
+        if (_seShoot != null) _audioSource?.PlayOneShot(_seShoot);
+
+        var bullet = _GetBullet(_bulletPool, _bulletPrefab, spawn_pos);
+        float speed_rate = Random.Range(_bulletSpeedRateRange.x, _bulletSpeedRateRange.y);
+        float lifetime = Random.Range(_barrage1LifetimeRange.x, _barrage1LifetimeRange.y);
+        var target = PlayerCharacterManager.Current != null ? PlayerCharacterManager.Current.transform : null;
+        if (target == null) {
+            bullet.FireStraight(_FacingDirection, speed_rate, _returnBullet, this);
+            bullet.SetLifetime(lifetime);
+            return;
+        }
+
+        Vector2 origin = spawn_pos;
+        Vector2 to_target = (Vector2)target.position - origin;
+        if (is_aim) {
+            bullet.FireStraight(to_target, speed_rate, _returnBullet, this);
+            bullet.SetLifetime(lifetime);
+            return;
+        }
+
+        // プレイヤーから横へ外した点を、円弧がちょうど通るように撃ち出す向きを決める
+        // (円弧は、弦の向きから曲がる角度の合計の半分だけ手前に傾けて撃ち出すと、弦の端を通る)
+        Vector2 side = new Vector2(-to_target.y, to_target.x).normalized * (Random.value < 0.5f ? -1f : 1f);
+        Vector2 aim_pos = (Vector2)target.position + side * Random.Range(_missDistanceRange.x, _missDistanceRange.y);
+        float turn_rate = Random.Range(_missTurnRateRange.x, _missTurnRateRange.y) * (Random.value < 0.5f ? -1f : 1f);
+        Vector2 chord = aim_pos - origin;
+        float total_turn = _GetArcTotalTurn(chord.magnitude, bullet.BaseSpeed * speed_rate, Mathf.Abs(turn_rate));
+        float launch_angle = (Mathf.Atan2(chord.y, chord.x) * Mathf.Rad2Deg - total_turn * 0.5f * Mathf.Sign(turn_rate)) * Mathf.Deg2Rad;
+        bullet.FireArc(new Vector2(Mathf.Cos(launch_angle), Mathf.Sin(launch_angle)), speed_rate, turn_rate, _returnBullet, this, target);
+        bullet.SetLifetime(lifetime);
+    }
+
+    // 弦の長さ・弾の速さ・曲がる速さから、円弧を描いて弦の端に届くまでに曲がる角度の合計(度)を求める
+    private static float _GetArcTotalTurn(float chord_length, float speed, float turn_rate) {
+        if (speed <= 0f) return 0f;
+        float theta = turn_rate * chord_length / speed; // 最初は弦の長さで近似し、円弧の長さで求め直して収束させる
+        for (int iter = 0; iter < 4; iter++) {
+            float half_rad = Mathf.Clamp(theta, 1f, 170f) * 0.5f * Mathf.Deg2Rad;
+            float arc_length = chord_length * half_rad / Mathf.Sin(half_rad);
+            theta = turn_rate * arc_length / speed;
+        }
+        return Mathf.Min(theta, 170f);
+    }
+
+    // 弾幕2: 巨大な弾をチャージせずに、画面の左上へ山なりに撃つ。そこで爆発し、扇状に高速の弾をまき散らす
+    private void _FireLobBarrage(Vector3 spawn_pos) {
+        var cam = Camera.main;
+        if (cam == null) {
+            _ChangeAttackState(eAttackState.Interval, _attackInterval);
+            return;
+        }
+        if (_seChargeShoot != null) _audioSource?.PlayOneShot(_seChargeShoot);
+
+        var bullet = _GetBullet(_chargeBulletPool, _chargeBulletPrefab, spawn_pos);
+        bullet.transform.localScale = _chargeBulletScale;
+        float viewport_x = _isOnRightSide ? _lobExplodeViewport.x : 1f - _lobExplodeViewport.x;
+        Vector2 target = _ViewportToWorld(cam, viewport_x, _lobExplodeViewport.y);
+        // 決まった時間で爆発地点に届く初速を求める(重力は下向き)
+        float time = Mathf.Max(0.1f, _lobFlightTime);
+        Vector2 velocity = (target - (Vector2)spawn_pos) / time + Vector2.up * (0.5f * _lobGravity * time);
+        bullet.FireLob(velocity, _lobGravity, _returnChargeBullet, this, time, _OnLobExploded);
+        _lobBullet = bullet;
+        _ChangeAttackState(eAttackState.Barrage2, 0f);
+    }
+
+    // 山なりの巨大な弾が爆発したら、その位置から扇状に弾をまき散らす
+    private void _OnLobExploded(Vector2 position) {
+        if (this == null || _isDead) return;
+        if (_lobShotRoutine != null) StopCoroutine(_lobShotRoutine);
+        _lobShotRoutine = StartCoroutine(_FireFanCo(position));
+    }
+
+    // 真下から真右(左端に陣取る時は真左)までの扇状に並べた向きへ、順番をばらばらにして1発ずつ撃ち、ステージ全体にまき散らす
+    // 弾はプレイヤーを狙わず真っすぐ高速に飛び(ホーミングしない)、着弾したら爆発して消える
+    private IEnumerator _FireFanCo(Vector2 origin) {
+        var order = new List<int>();
+        for (int i = 0; i < _fanBulletCount; i++) order.Add(i);
+        for (int i = order.Count - 1; i > 0; i--) {
+            int j = Random.Range(0, i + 1);
+            (order[i], order[j]) = (order[j], order[i]);
+        }
+
+        foreach (int i in order) {
+            if (_bulletPrefab == null) break;
+            float t = _fanBulletCount > 1 ? (float)i / (_fanBulletCount - 1) : 0.5f;
+            float angle = Mathf.Lerp(_fanAngleRange.x, _fanAngleRange.y, t) * Mathf.Deg2Rad;
+            var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+            if (!_isOnRightSide) direction.x = -direction.x;
+            var bullet = _GetBullet(_bulletPool, _bulletPrefab, origin);
+            bullet.FireStraight(direction, _lobShotSpeedRate, _returnBullet, this);
+            bullet.SetExplodeOnImpact();
+            if (_seShoot != null) _audioSource?.PlayOneShot(_seShoot);
+            yield return new WaitForSeconds(_fanFireInterval);
+        }
+        _lobShotRoutine = null;
     }
 
     private void _ChangeAttackState(eAttackState state, float timer) {
@@ -297,6 +595,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     // 吹き飛び開始。一瞬ズームとスローモーションを掛ける
     private void _StartKnockback() {
         _CancelCharge();
+        _ResetHitStop();
         _state = eState.KnockedBack;
         _downPhase = _phase;
         _movePos = transform.position;
@@ -334,6 +633,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     private void OnDestroy() {
         // 使い回しているチャージ演出は本体と別に置いているため、一緒に消す
         if (_chargeEffect != null) Destroy(_chargeEffect.gameObject);
+        if (_battleStartDirector != null) _battleStartDirector.played -= _OnBattleStartPlayed;
     }
 
     // 壁に当たるまで横へ吹き飛ぶ
@@ -395,6 +695,87 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         if (_waterShield != null) _waterShield.SetActive(is_visible);
     }
 
+    /// <summary>
+    /// 撃破演出(炎・霧のゼルクスと同じ流れ)
+    /// とどめ→カメラが寄ってスロー・フラッシュ・BGM停止→時間を戻す→フラッシュ2回→爆発して消える→撃破演出の終了を通知(ステージクリア表示)
+    /// </summary>
+    protected override IEnumerator Die() {
+        // 撃破演出の途中で攻撃や吹き飛びの処理が残らないように止める
+        _CancelCharge();
+        _ResetHitStop();
+        if (_lobShotRoutine != null) {
+            StopCoroutine(_lobShotRoutine);
+            _lobShotRoutine = null;
+        }
+        _EndSlowMotion();
+        _SetWaterShieldVisible(false);
+        foreach (var damage_zone in GetComponentsInChildren<DamageZone>(true)) {
+            damage_zone.gameObject.SetActive(false);
+        }
+        // 画面に残っている弾は全て弾けて消す(撃破演出中にプレイヤーが被弾しないように)
+        foreach (var bullet in FindObjectsByType<ZelxFireBullet>(FindObjectsSortMode.None)) {
+            if (!bullet.IsReleased) bullet.BurstByBullet();
+        }
+
+        OnDied?.Invoke();
+
+        // 倒された時の効果音(_seDead)は被弾処理側で鳴っているので、ここではとどめの効果音だけ鳴らす
+        if (_seFinish != null) _audioSource?.PlayOneShot(_seFinish);
+
+        var cinemachine_manager = CinemachineManager.Instance;
+        var flash = ScreenFlash.Instance;
+
+        // カメラズーム
+        cinemachine_manager?.ZoomOnTarget(transform);
+        yield return new WaitForSeconds(0.05f);
+
+        // とどめの瞬間: スローとフラッシュ
+        Time.timeScale = 0.1f;
+        flash?.Flash();
+        if (_anim != null && _anim.HasState(0, Animator.StringToHash("Die"))) _anim.Play("Die");
+        yield return new WaitForSecondsRealtime(0.2f);
+
+        // BGM停止
+        if (_audioBGM != null) _audioBGM.volume = 0f;
+
+        yield return new WaitForSecondsRealtime(4.0f);
+
+        cinemachine_manager?.ReturnToPlayer();
+
+        // 徐々に時間を戻す
+        float time_scale = Time.timeScale;
+        while (time_scale < 1f) {
+            time_scale += Time.unscaledDeltaTime;
+            Time.timeScale = Mathf.Min(time_scale, 1f);
+            yield return null;
+        }
+
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        // 爆発
+        flash?.Flash();
+        yield return new WaitForSecondsRealtime(0.2f);
+        flash?.Flash();
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        if (_dieExplosion != null) {
+            var explosion = Instantiate(_dieExplosion, transform.position, Quaternion.identity);
+            explosion.transform.localScale *= _dieExplosionScale;
+        }
+        cinemachine_manager?.ShakeCamera(duration: 0.5f);
+        if (_sprite != null) _sprite.enabled = false;
+
+        yield return new WaitForSeconds(1.0f);
+
+        // 撃破演出の終了を通知する(StageEvent_BossBattleがステージクリア表示を出す)
+        OnDieEnded?.Invoke();
+
+        yield return new WaitForSeconds(5.0f);
+
+        // BGMの音量を戻す
+        if (_audioBGM != null) _audioBGM.volume = _currentBGMVolume;
+    }
+
     private IEnumerator _ChargeSpecialCo() {
         yield return new WaitForSeconds(_specialChargeDelay);
         foreach (var ability in FindObjectsByType<Ability_Base>(FindObjectsSortMode.None)) {
@@ -417,24 +798,6 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         var hit = Physics2D.BoxCast(_movePos + offset, size, 0f, direction, distance, layer);
         hit_distance = hit.collider != null ? hit.distance : 0f;
         return hit.collider != null;
-    }
-
-    // 発射位置から向いている方向へ扇状に弾幕を発射する
-    private void _FireBarrage(Vector3 spawn_pos) {
-        if (_bulletPrefab == null || _bulletCount <= 0) return;
-
-        if (_seShoot != null) _audioSource?.PlayOneShot(_seShoot);
-
-        for (int i = 0; i < _bulletCount; i++) {
-            // 向いている方向(右なら0度、左なら180度)を中心に、_fanAngleの範囲へ等間隔に並べる
-            float t = _bulletCount > 1 ? (float)i / (_bulletCount - 1) : 0.5f;
-            float center = _isOnRightSide ? 180f : 0f;
-            float angle = (center - _fanAngle * 0.5f + _fanAngle * t) * Mathf.Deg2Rad;
-            var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-
-            var bullet = _GetBullet(_bulletPool, _bulletPrefab, spawn_pos);
-            bullet.Fire(direction, _returnBullet, this);
-        }
     }
 
     // 巨大な弾のチャージを開始する
