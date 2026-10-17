@@ -300,6 +300,13 @@ public class WarpControl : MonoBehaviour {
             if (coin == last_coin) break;
             last_coin = coin;
 
+            // サーカス演出のレールに乗ったら、演出側でレールの最後まで渡り切る
+            var circus = CoinRailCircus.FindByCoin(coin);
+            if (circus != null) {
+                yield return circus.Play(this, coin);
+                continue;
+            }
+
             // ワープ先に移動
             yield return _ExecuteWarpCommon(
                 coin.position, 
@@ -307,6 +314,13 @@ public class WarpControl : MonoBehaviour {
                 end_delay: _coinWarpInterval
                 );
         }
+    }
+
+    /// <summary>
+    /// 指定地点へワープ(コインワープ演出用、カメラ追従のワープ扱いはしない)
+    /// </summary>
+    public IEnumerator WarpToPoint(Vector2 point, float end_delay) {
+        yield return _ExecuteWarpCommon(point, is_warp_camera: false, end_delay: end_delay);
     }
 
     /// <summary>

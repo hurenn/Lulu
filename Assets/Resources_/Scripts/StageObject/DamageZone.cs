@@ -72,6 +72,8 @@ public class DamageZone : MonoBehaviour {
     private System.Action<IDamageable> _hitCallback = default;
     // ヒットで消える時の処理(未設定なら_destroyObjectをDestroyする)
     private System.Action _hitDestroyCallback = default;
+    // ヒットで消えるかどうかを相手ごとに決める処理(未設定なら、どの相手に当たっても消える)
+    private System.Func<IDamageable, bool> _hitDestroyFilter = default;
     // ダメージを与えない相手(発射したキャラ自身など)
     private IDamageable _ignoreTarget = null;
 
@@ -92,6 +94,14 @@ public class DamageZone : MonoBehaviour {
     /// </summary>
     public void SetHitDestroyCallback(System.Action callback) {
         _hitDestroyCallback = callback;
+    }
+
+    /// <summary>
+    /// ヒットで消える時(_isHitDestroy)に、相手ごとに消えるかどうかを決める処理を設定する
+    /// (falseを返した相手には、ダメージを与えたうえで消えずに貫通する。破壊できる物を貫通する弾など)
+    /// </summary>
+    public void SetHitDestroyFilter(System.Func<IDamageable, bool> should_destroy) {
+        _hitDestroyFilter = should_destroy;
     }
 
     /// <summary>
@@ -235,7 +245,8 @@ public class DamageZone : MonoBehaviour {
 
         // 光の能力で回避された場合は消えずにすり抜ける
         bool is_light_avoided = isAvoid && !damage_result;
-        if (_isHitDestroy && !is_light_avoided) {
+        bool is_pass_through = _hitDestroyFilter != null && !_hitDestroyFilter(character);
+        if (_isHitDestroy && !is_light_avoided && !is_pass_through) {
             _HitDestroy();
         }
     }
@@ -299,6 +310,24 @@ public class DamageZone : MonoBehaviour {
         }
         _localTimePauses.Remove(hit_effect);
         _localTimePauses.Remove(hit_target);
+    }
+
+    /// <summary>
+    /// 当たり判定を通さずに、当たった時と同じ演出(ヒットエフェクト・ヒットストップ・カメラシェイク)だけを出す
+    /// (氷の攻撃で敵の弾を跳ね返した時など、ダメージを与えない相手に当たった時に使う)
+    /// </summary>
+    /// <returns>ヒットストップの時間</returns>
+    /// <summary>
+    /// 当たり判定を通さずに、ヒットエフェクトだけを出す(敵の弾を止めた時など)
+    /// </summary>
+    public void SpawnHitEffectAt(Vector3 position) {
+        _SpawnHitEffect(position, _hitEffectType);
+    }
+
+    public float PlayHitReaction(Vector3 position) {
+        var hit_effect = _SpawnHitEffect(position, _hitEffectType);
+        _HitStop(null, hit_effect != null ? hit_effect.GetComponent<LocalTimePause>() : null);
+        return _hitStopTime;
     }
 
     public void AddHitStopTarget(LocalTimePause target) {

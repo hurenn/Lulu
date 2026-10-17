@@ -101,7 +101,7 @@ public class Player_Character : Character_Base {
         // 自動発光設定は_UpdateWarpDash()より先に行う。
         // _UpdateWarpDash()内の壁接触チェックで同一フレーム中に_isWarpDashingがfalseに戻ることがあり、
         // 後から判定すると壁ダッシュへの切替が発光より先に確定してしまうため
-        _SetAutoLight(_isWarpDashing || _isWarpDelay);
+        _SetAutoLight(_isWarpDashing || _isWarpDelay || _isLightOnlyAppearance);
 
         _UpdateWarpDash();
         _UpdateSliding();
@@ -798,7 +798,8 @@ public class Player_Character : Character_Base {
     /// ワープ能力
     /// </summary>
     private void _Warp() {
-        if (_warpControl == null || _currentWarpCoolTime > 0 || _specialUsing) {
+        // コインレールを渡っている間は、新しいワープを始めない(演出のワープと競合するため)
+        if (_warpControl == null || _currentWarpCoolTime > 0 || _specialUsing || _isRailTraveling) {
             return;
         }
 
@@ -906,8 +907,10 @@ public class Player_Character : Character_Base {
         _currentWarpCoolTime = _param.warpCoolTime;
         // スライドジャンプリセット
         _SetSlidingJump(false);
-        // 重力を有効化
-        _isWarpDelay = false;
+        // 重力を有効化(コインレールを渡っている間は、コインの合間に落ちないよう無効のままにする)
+        if (!_isRailTraveling) {
+            _isWarpDelay = false;
+        }
     }
 
     /// <summary>
@@ -943,6 +946,40 @@ public class Player_Character : Character_Base {
         if (_player_charaParam != null) {
             _player_charaParam.SetPlusMaxHp(_playerParam.levelParameter.hpLevel);
             _player_charaParam.SetPlusMaxMp(_playerParam.levelParameter.mpLevel * _param.mpUpPerLevel);
+        }
+    }
+
+    // true: コインレールを渡っている(重力を無効のままにし、ワープ入力を受け付けない)
+    private bool _isRailTraveling = false;
+
+    /// <summary>
+    /// コインレールを渡る状態にする
+    /// 渡っている間は重力を無効のままにし、新しいワープを始めない。解除すると重力が戻る
+    /// </summary>
+    public void SetRailTravel(bool enable) {
+        _isRailTraveling = enable;
+        _isWarpDelay = enable;
+        if (enable) _rb.linearVelocity = Vector2.zero;
+    }
+
+    // true: 姿を消して発光(LightDome)だけを見せる(コインレールの演出中など)
+    private bool _isLightOnlyAppearance = false;
+
+    /// <summary>
+    /// 姿を消して発光(LightDome)だけを見せる状態にする
+    /// ワープの合間も発光を切らさず、姿は毎フレーム消し直す(アニメーション等で再表示されても見えないように)
+    /// </summary>
+    /// <returns>光の能力で発光できたか(未所持の時はfalse。発光の見た目は呼び出し側で用意する)</returns>
+    public bool SetLightOnlyAppearance(bool enable) {
+        _isLightOnlyAppearance = enable;
+        if (_sprite != null) _sprite.enabled = !enable;
+        _SetAutoLight(enable || _isWarpDashing || _isWarpDelay);
+        return _GetAbility<Ability_Light>() != null;
+    }
+
+    private void LateUpdate() {
+        if (_isLightOnlyAppearance && _sprite != null && _sprite.enabled) {
+            _sprite.enabled = false;
         }
     }
 

@@ -12,9 +12,29 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2909940453289921173, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 3205534299846880522, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
       propertyPath: m_Name
       value: Enemy_ZelxWater
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724397778818536815, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
+      propertyPath: m_Size.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3724397778818536815, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
+      propertyPath: m_Size.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5987628365422112790, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
+      propertyPath: m_Size.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5987628365422112790, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
+      propertyPath: m_Size.y
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 7544278565291112448, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
       propertyPath: _defaultMaxHP
@@ -149,6 +169,7 @@ MonoBehaviour:
   _damageZone: {fileID: 8508692810715132971}
   _dieExplosion: {fileID: 0}
   _hpGauge: {fileID: 7557330837326163135}
+  _isOnRightSide: 1
   _edgeMargin: 0
   _entrySpeed: 6
   _muzzle: {fileID: 0}
@@ -167,6 +188,11 @@ MonoBehaviour:
   _afterChargeWait: 1.5
   _seCharge: {fileID: 8300000, guid: 5e7169369cd60ab489fc73012a2f089b, type: 3}
   _seChargeShoot: {fileID: 8300000, guid: 2dc0318b6873c1f4ab34a630563fcbd3, type: 3}
+  _chargeEffectPrefab: {fileID: 8022744482904254077, guid: 53c4d442849b97542b91726eb032b5d2, type: 3}
+  _chargeEffectRateRange: {x: 15, y: 90}
+  _chargeShakeInterval: 0.2
+  _chargeShakeRange: {x: 0.05, y: 0.4}
+  _chargeShootShake: 1
   _phaseHpRates:
   - 0.6666667
   - 0.33333334
@@ -180,6 +206,7 @@ MonoBehaviour:
   _seWallHit: {fileID: 8300000, guid: 8d88c56678068424b9e0ab46aabef806, type: 3}
   _landShakeIntensity: 0.5
   _seLand: {fileID: 8300000, guid: ea553d9bc4e503540bbf47880bc679ec, type: 3}
+  _waterShield: {fileID: 7206725201008045144}
   _firstDownMessageObject: {fileID: 0}
   _specialChargeDelay: 2
 --- !u!212 &3436003584657088121 stripped
@@ -195,6 +222,11 @@ Rigidbody2D:
 --- !u!61 &5098519077003777765 stripped
 BoxCollider2D:
   m_CorrespondingSourceObject: {fileID: 4730260301361413263, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
+  m_PrefabInstance: {fileID: 532786745936947818}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7206725201008045144 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7162896986640418354, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
   m_PrefabInstance: {fileID: 532786745936947818}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &7506701679383505613 stripped

@@ -10,27 +10,71 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _speed
-      value: 8
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _fireShake
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _slashReaction
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _fireEffectPrefab
+      value: 
+      objectReference: {fileID: 7366704472185641795, guid: 840f36a687adf0449b32012bacd935d7, type: 3}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _terrainBurstShake
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _reflectAcceleration
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _terrainBurstSizeRate
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _isKnockdownOnReflectHit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _isDestroyBulletsOnReflect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _isPassThroughDestructible
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905720852153512293, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905720852153512293, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905720852153512293, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905720852153512293, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4481616688938045230, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4481616688938045230, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4481616688938045230, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4481616688938045230, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: m_LocalPosition.x

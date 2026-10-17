@@ -5,15 +5,15 @@ using UnityEngine;
 /// <summary>
 /// ボス「水のゼルクス」
 /// 最初は止まっていて、Timelineの合図(ActivateMarker)で行動を開始する
-/// 行動開始後は画面左端へ移動し、カメラに映るギリギリの左端を維持して漂いながら、
-/// 右方向へ扇状の小さな弾幕を数回撃つ→巨大な弾をチャージして右へ一直線に撃つ を繰り返す
+/// 行動開始後は陣取る画面端(既定は右端)へ移動し、カメラに映るギリギリの画面端を維持して漂いながら、
+/// 向いている方向(右端なら左)へ扇状の小さな弾幕を数回撃つ→巨大な弾をチャージして一直線に撃つ を繰り返す
 /// 跳ね返された巨大な弾が当たると、吹き飛んで壁に叩きつけられ、地上に落ちてダウンする
-/// ダウンはHPが次の段階(2/3, 1/3)まで減ると強制解除され、再び左端へ戻って行動する
+/// ダウンはHPが次の段階(2/3, 1/3)まで減ると強制解除され、再び画面端へ戻って行動する
 /// </summary>
 public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     private enum eState {
         Waiting,     // Timelineの合図を待っている
-        Acting,      // 左端で漂いながら攻撃する
+        Acting,      // 画面端で漂いながら攻撃する
         KnockedBack, // 吹き飛ばされて壁へ向かっている
         Falling,     // 壁に叩きつけられた後、地上へ落ちている
         Down,        // ダウン中(無防備で何もしない)
@@ -26,20 +26,21 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     }
 
     [Header("位置")]
-    [SerializeField] private float _edgeMargin = 0.0f;   // 画面左端からの余白(0で体がちょうど画面に収まる位置)
-    [SerializeField] private float _entrySpeed = 6.0f;   // 行動開始時・ダウンからの復帰時に、左端へ向かう速さ
+    [SerializeField] private bool _isOnRightSide = true;  // true: 画面右端に陣取り、左を向いて左へ撃つ / false: 画面左端に陣取り、右を向いて右へ撃つ
+    [SerializeField] private float _edgeMargin = 0.0f;   // 画面端からの余白(0で体がちょうど画面に収まる位置)
+    [SerializeField] private float _entrySpeed = 6.0f;   // 行動開始時・ダウンからの復帰時に、陣取る画面端へ向かう速さ
     [SerializeField] private Transform _muzzle;          // 弾の発射位置(未設定なら自身の位置)
 
     [Header("漂う")]
     [SerializeField] private float _driftSpeed = 1.0f;   // 漂う速さ
-    [SerializeField] private float _driftRangeX = 0.5f;  // 左端から内側へ漂う幅(画面外へははみ出さない)
+    [SerializeField] private float _driftRangeX = 0.5f;  // 画面端から内側へ漂う幅(画面外へははみ出さない)
     [SerializeField] private float _driftRangeY = 2.0f;  // 上下に漂う幅
 
     [Header("扇状の弾幕(小)")]
     [SerializeField] private ZelxFireBullet _bulletPrefab; // 発射する弾のプレハブ(プールで再利用する)
     [SerializeField] private float _fireInterval = 1.0f;   // 弾幕の発射間隔
     [SerializeField] private int _bulletCount = 5;         // 1回の弾幕で発射する弾数
-    [SerializeField] private float _fanAngle = 90f;        // 扇の開き角度(真右を中心に上下へ振り分ける)
+    [SerializeField] private float _fanAngle = 90f;        // 扇の開き角度(向いている方向を中心に上下へ振り分ける)
     [SerializeField] private int _barrageCountBeforeCharge = 3; // 巨大な弾をチャージするまでに撃つ弾幕の回数
     [SerializeField] private AudioClip _seShoot;           // 発射時の効果音
 
@@ -50,6 +51,10 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     [SerializeField] private float _afterChargeWait = 1.5f; // 巨大な弾を撃ってから弾幕を再開するまでの時間
     [SerializeField] private AudioClip _seCharge;          // チャージ開始時の効果音
     [SerializeField] private AudioClip _seChargeShoot;     // 巨大な弾の発射時の効果音
+    [SerializeField] private ParticleSystem _chargeEffectPrefab; // チャージ中に弾へ光の粒が集まる演出
+    [SerializeField] private Vector2 _chargeEffectRateRange = new Vector2(15f, 90f); // チャージ演出の粒の量(チャージ開始→完了)
+    [SerializeField] private float _chargeShakeInterval = 0.2f; // チャージ中に画面を揺らす間隔
+    [SerializeField] private Vector2 _chargeShakeRange = new Vector2(0.05f, 0.4f); // チャージ中の画面の揺れの強さ(チャージ開始→完了)
 
     [Header("ダウン")]
     [SerializeField] private float[] _phaseHpRates = { 2f / 3f, 1f / 3f }; // HPがこの割合以下になるとダウンを強制解除し、次の段階へ移る
@@ -64,6 +69,9 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     [SerializeField] private float _landShakeIntensity = 0.5f; // 地上に落ちた時の画面の揺れ
     [SerializeField] private AudioClip _seLand;             // 地上に落ちた時の効果音
 
+    [Header("シールド")]
+    [SerializeField] private GameObject _waterShield;    // 通常時に表示し、ダウン中は非表示にする
+
     [Header("初回ダウン")]
     [SerializeField] private GameObject _firstDownMessageObject; // 初めてダウンした時にActiveにするGameObject(メッセージ表示用)
     [SerializeField] private float _specialChargeDelay = 2.0f;   // 初めてダウンしてから必殺技ゲージを最大にするまでの時間
@@ -73,8 +81,8 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     private int _phase = 0;      // HPの段階(_phaseHpRatesを下回った数)
     private int _downPhase = 0;  // ダウンした時の段階(段階が進んだらダウンを解除する)
 
-    // 位置は「カメラ左端からのXオフセット」と「Y座標」で管理し、カメラが動いても左端を維持する
-    private float _entryOffsetX;   // 左端へ向かう途中の残りXオフセット(0で左端に到着)
+    // 位置は「陣取る画面端からのXオフセット」と「Y座標」で管理し、カメラが動いても画面端を維持する
+    private float _entryOffsetX;   // 画面端へ向かう途中の残りXオフセット(0で画面端に到着)
     private float _driftTimer;
     private float _driftAnchorY;   // 漂う中心のY座標
     private float _currentY;
@@ -84,6 +92,8 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     private int _barrageCount;
     private ZelxFireBullet _chargingBullet; // チャージ中の巨大な弾
     private Vector3 _chargeBulletScale;     // 巨大な弾のプレハブの大きさ
+    private ParticleSystem _chargeEffect;   // チャージ演出(使い回す)
+    private float _chargeShakeTimer;
 
     // 吹き飛び・落下
     private bool _isKnockdownRequested = false; // ダメージ処理の後に吹き飛ばすための予約
@@ -101,7 +111,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
 
     protected override void _Setup() {
         base._Setup();
-        _isRight = true; // 画面左端から右向きに撃つ
+        _isRight = !_isOnRightSide; // 画面右端からは左を向き、画面左端からは右を向いて撃つ
         _returnBullet = bullet => _ReturnBullet(_bulletPool, bullet);
         _returnChargeBullet = bullet => _ReturnBullet(_chargeBulletPool, bullet);
         if (_chargeBulletPrefab != null) {
@@ -121,12 +131,13 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         _StartActing();
     }
 
-    // 現在の位置から左端へ向かって移動し、漂いながら攻撃を始める
+    // 現在の位置から陣取る画面端へ向かって移動し、漂いながら攻撃を始める
     private void _StartActing() {
         _state = eState.Acting;
+        _SetWaterShieldVisible(true);
 
         var cam = Camera.main;
-        _entryOffsetX = cam != null ? transform.position.x - _GetLeftEdgeX(cam) : 0f;
+        _entryOffsetX = cam != null ? transform.position.x - _GetEdgeX(cam) : 0f;
         _currentY = transform.position.y;
         _driftTimer = 0f;
 
@@ -203,7 +214,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
                 break;
 
             case eState.Down:
-                // HPが次の段階まで減ったらダウンを強制解除し、左端へ戻る
+                // HPが次の段階まで減ったらダウンを強制解除し、陣取る画面端へ戻る
                 if (_phase > _downPhase) {
                     _StartActing();
                 }
@@ -211,26 +222,26 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         }
     }
 
-    // 画面左端を維持して漂う。移動後の位置を返す
+    // 陣取る画面端を維持して漂う。移動後の位置を返す
     private Vector2 _UpdateMove(Camera cam, float dt) {
         _entryOffsetX = Mathf.MoveTowards(_entryOffsetX, 0f, _entrySpeed * dt);
 
         // 漂い始めの位置から途切れずに動き出すよう、どちらの軸もオフセット0から始まるサイン波で漂う
         _driftTimer += dt;
         float t = _driftTimer * _driftSpeed;
-        float drift_x = (1f - Mathf.Cos(t)) * 0.5f * _driftRangeX; // 0～_driftRangeXの範囲で内側にだけ漂う
+        float drift_x = (1f - Mathf.Cos(t)) * 0.5f * _driftRangeX * _InwardSign; // 0～_driftRangeXの範囲で画面の内側にだけ漂う
         float target_y = _driftAnchorY + Mathf.Sin(t * 1.3f) * _driftRangeY;
         // 配置位置からの登場中・ダウンからの復帰中は、Y座標も漂う位置へ徐々に合わせる
         _currentY = Mathf.MoveTowards(_currentY, target_y, Mathf.Max(_entrySpeed, _driftSpeed * _driftRangeY * 2f) * dt);
         _currentY = _ClampYInView(cam, _currentY);
 
-        var position = new Vector2(_GetLeftEdgeX(cam) + _entryOffsetX + drift_x, _currentY);
+        var position = new Vector2(_GetEdgeX(cam) + _entryOffsetX + drift_x, _currentY);
         _rb.MovePosition(position);
         return position;
     }
 
     private void _UpdateAttack(float dt, Vector2 position) {
-        // 左端に着くまでは撃たない
+        // 画面端に着くまでは撃たない
         if (_entryOffsetX != 0f) {
             return;
         }
@@ -251,6 +262,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
                     // WaterBulletで消された場合はチャージを中断する
                     if (_chargingBullet == null || _chargingBullet.IsReleased) {
                         _chargingBullet = null;
+                        _StopChargeEffect();
                         _ChangeAttackState(eAttackState.AfterCharge, _afterChargeWait);
                         break;
                     }
@@ -258,11 +270,13 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
                     float rate = _chargeTime > 0f ? Mathf.Clamp01(1f - _attackTimer / _chargeTime) : 1f;
                     _chargingBullet.transform.position = _GetMuzzlePosition(position);
                     _chargingBullet.transform.localScale = _chargeBulletScale * Mathf.Lerp(_chargeStartScale, 1f, rate);
+                    _UpdateChargeEffect(_chargingBullet.transform.position, rate, dt);
                     if (_attackTimer > 0f) break;
 
                     if (_seChargeShoot != null) _audioSource?.PlayOneShot(_seChargeShoot);
-                    _chargingBullet.Fire(Vector2.right, _returnChargeBullet, this);
+                    _chargingBullet.Fire(_FacingDirection, _returnChargeBullet, this);
                     _chargingBullet = null;
+                    _StopChargeEffect(); // 撃った瞬間のエフェクトと画面の揺れは、弾側(ZelxFireBullet)で出す
                     _ChangeAttackState(eAttackState.AfterCharge, _afterChargeWait);
                     break;
                 }
@@ -317,6 +331,11 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         }
     }
 
+    private void OnDestroy() {
+        // 使い回しているチャージ演出は本体と別に置いているため、一緒に消す
+        if (_chargeEffect != null) Destroy(_chargeEffect.gameObject);
+    }
+
     // 壁に当たるまで横へ吹き飛ぶ
     private void _UpdateKnockback(float dt) {
         _knockbackTimer += dt;
@@ -362,6 +381,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
 
     private void _StartDown() {
         _state = eState.Down;
+        _SetWaterShieldVisible(false); // ダウン中は無防備なのでシールドを外す
 
         // 初めてダウンした時は、メッセージを表示し、少し後に必殺技ゲージを最大にする
         if (!_hasDownedBefore) {
@@ -369,6 +389,10 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
             if (_firstDownMessageObject != null) _firstDownMessageObject.SetActive(true);
             StartCoroutine(_ChargeSpecialCo());
         }
+    }
+
+    private void _SetWaterShieldVisible(bool is_visible) {
+        if (_waterShield != null) _waterShield.SetActive(is_visible);
     }
 
     private IEnumerator _ChargeSpecialCo() {
@@ -395,16 +419,17 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         return hit.collider != null;
     }
 
-    // 発射位置から右方向へ扇状に弾幕を発射する
+    // 発射位置から向いている方向へ扇状に弾幕を発射する
     private void _FireBarrage(Vector3 spawn_pos) {
         if (_bulletPrefab == null || _bulletCount <= 0) return;
 
         if (_seShoot != null) _audioSource?.PlayOneShot(_seShoot);
 
         for (int i = 0; i < _bulletCount; i++) {
-            // 真右(0度)を中心に、_fanAngleの範囲へ等間隔に並べる
+            // 向いている方向(右なら0度、左なら180度)を中心に、_fanAngleの範囲へ等間隔に並べる
             float t = _bulletCount > 1 ? (float)i / (_bulletCount - 1) : 0.5f;
-            float angle = (-_fanAngle * 0.5f + _fanAngle * t) * Mathf.Deg2Rad;
+            float center = _isOnRightSide ? 180f : 0f;
+            float angle = (center - _fanAngle * 0.5f + _fanAngle * t) * Mathf.Deg2Rad;
             var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
 
             var bullet = _GetBullet(_bulletPool, _bulletPrefab, spawn_pos);
@@ -420,10 +445,46 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         _chargingBullet.transform.localScale = _chargeBulletScale * _chargeStartScale;
         _chargingBullet.Hold(_returnChargeBullet, this);
         _ChangeAttackState(eAttackState.Charging, _chargeTime);
+        _StartChargeEffect(spawn_pos);
+    }
+
+    // チャージ演出を始める(光の粒が弾へ集まり始め、画面が小さく揺れ始める)
+    private void _StartChargeEffect(Vector3 position) {
+        _chargeShakeTimer = 0f;
+        if (_chargeEffectPrefab == null) return;
+        if (_chargeEffect == null) {
+            _chargeEffect = Instantiate(_chargeEffectPrefab, position, Quaternion.identity);
+        }
+        _chargeEffect.transform.position = position;
+        var emission = _chargeEffect.emission;
+        emission.rateOverTime = _chargeEffectRateRange.x;
+        _chargeEffect.Play();
+    }
+
+    // チャージが進むほど、集まる光の粒を増やし、画面の揺れを強くする
+    private void _UpdateChargeEffect(Vector3 position, float rate, float dt) {
+        if (_chargeEffect != null) {
+            _chargeEffect.transform.position = position;
+            var emission = _chargeEffect.emission;
+            emission.rateOverTime = Mathf.Lerp(_chargeEffectRateRange.x, _chargeEffectRateRange.y, rate);
+        }
+        _chargeShakeTimer -= dt;
+        if (_chargeShakeTimer <= 0f) {
+            _chargeShakeTimer = _chargeShakeInterval;
+            CinemachineManager.Instance?.ShakeCamera(Mathf.Lerp(_chargeShakeRange.x, _chargeShakeRange.y, rate), _chargeShakeInterval);
+        }
+    }
+
+    // チャージ演出を止める(新しい粒は出さず、出ている粒は自然に消える)
+    private void _StopChargeEffect() {
+        if (_chargeEffect != null) {
+            _chargeEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        }
     }
 
     // チャージ中の弾を発射せずに消す
     private void _CancelCharge() {
+        _StopChargeEffect();
         if (_chargingBullet == null) return;
         if (!_chargingBullet.IsReleased) {
             _chargingBullet.Release();
@@ -434,6 +495,8 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
     private Vector3 _GetMuzzlePosition(Vector2 body_position) {
         // MovePositionは物理更新時に反映されるため、移動先の位置から発射位置を求める
         var muzzle_offset = _muzzle != null ? _muzzle.position - transform.position : Vector3.zero;
+        // 発射位置は右向きを基準に置かれているため、左を向いている時は左右を反転する
+        if (_isOnRightSide) muzzle_offset.x = -muzzle_offset.x;
         return new Vector3(body_position.x, body_position.y, transform.position.z) + muzzle_offset;
     }
 
@@ -460,10 +523,19 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget {
         pool.Enqueue(bullet);
     }
 
-    // 体がちょうどカメラに収まる左端のX座標
-    private float _GetLeftEdgeX(Camera cam) {
-        return _ViewportToWorld(cam, 0f, 0.5f).x + GetCharacterSize().x * 0.5f + _edgeMargin;
+    // 体がちょうどカメラに収まる、陣取る側の画面端のX座標
+    private float _GetEdgeX(Camera cam) {
+        float half_width = GetCharacterSize().x * 0.5f + _edgeMargin;
+        return _isOnRightSide
+            ? _ViewportToWorld(cam, 1f, 0.5f).x - half_width
+            : _ViewportToWorld(cam, 0f, 0.5f).x + half_width;
     }
+
+    // 画面の内側へ向かう向き(右端に陣取っていれば左、左端なら右)
+    private float _InwardSign => _isOnRightSide ? -1f : 1f;
+
+    // 向いている方向(撃つ方向)
+    private Vector2 _FacingDirection => _isOnRightSide ? Vector2.left : Vector2.right;
 
     // 自身の奥行き(Z)におけるビューポート座標のワールド座標
     // (カメラは透視投影のため、orthographicSizeでは実際に映る範囲を求められない)

@@ -27,6 +27,14 @@ public class Coin_Object : StageObject_Base {
     [SerializeField] private GameObject _pickEffect;
 
     [SerializeField] private AudioClip _seCollectCoin; // コイン取得音
+    private float _seCollectVolume = 1.0f; // コイン取得音の音量の倍率(コインレールの演出などで下げる)
+
+    /// <summary>
+    /// コイン取得音の音量の倍率を設定する
+    /// </summary>
+    public void SetCollectSeVolume(float volume) {
+        _seCollectVolume = volume;
+    }
 
     private System.Action<Coin_Object> _releaseCallback = null; // コインプールに戻すためのコールバック
 
@@ -91,7 +99,7 @@ public class Coin_Object : StageObject_Base {
             player.RecoverMP(_MpRecoverAmount, true); // コイン取得でMPを回復
             player.AddExp(_coinValue);
             if (player.audioSource != null && _seCollectCoin != null) {
-                player.audioSource.PlayOneShot(_seCollectCoin);
+                player.audioSource.PlayOneShot(_seCollectCoin, _seCollectVolume);
             }
 
             if (_pickEffect != null) {
