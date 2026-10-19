@@ -344,6 +344,27 @@ MonoBehaviour:
   _bulletPrefab: {fileID: 7504534381703554556, guid: 8207c655c95ef654bac3d5df98f89126, type: 3}
   _moveSpeedY: 4
   _afterFireWait: 2
+  _chargeTime: 2
+  _chargeStartScale: 0.2
+  _seCharge: {fileID: 8300000, guid: 5e7169369cd60ab489fc73012a2f089b, type: 3}
+  _seChargeShoot: {fileID: 0}
+  _chargeEffectPrefab: {fileID: 0}
+  _chargeEffectRateRange: {x: 15, y: 90}
+  _chargeShakeInterval: 0.2
+  _chargeShakeRange: {x: 0.05, y: 0.4}
+  _barrageStartArea: {fileID: 0}
+  _barrageStartDelay: 1
+  _barrageForceArea: {fileID: 0}
+  _barragesBeforeCharge: 2
+  _smallBulletPrefab: {fileID: 0}
+  _missBulletCount: 10
+  _aimBulletCount: 3
+  _barrage1FireInterval: 0.06
+  _bulletSpeedRateRange: {x: 0.7, y: 1.3}
+  _missTurnRateRange: {x: 60, y: 120}
+  _missDistanceRange: {x: 2.5, y: 5}
+  _barrage1LifetimeRange: {x: 1, y: 2}
+  _seShoot: {fileID: 0}
 --- !u!50 &4119943007738410162 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 8561980972468236821, guid: 5c9762444cb325149867604f7c4225d0, type: 3}

@@ -23,6 +23,15 @@ public static class AudioUtil {
         Object.Destroy(go, playClip.length);
     }
 
+    /// <summary>
+    /// 自前のAudioSourceで鳴らす時用: gainが1を超えるなら増幅したクリップを、そうでなければ元のクリップを返す
+    /// (音量はMathf.Min(gain, 1)をAudioSource.volumeに設定する)
+    /// </summary>
+    public static AudioClip GetClipForGain(AudioClip clip, float gain) {
+        if (clip == null) return null;
+        return gain > 1f ? _GetAmplifiedClip(clip, gain) : clip;
+    }
+
     // 波形サンプルをgain倍して-1~1にクランプしたクリップを作る(音割れするが大きく聞こえる)
     private static AudioClip _GetAmplifiedClip(AudioClip source, float gain) {
         string key = source.GetInstanceID() + "_" + gain;

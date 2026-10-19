@@ -477,13 +477,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
 
     // 弾幕1を始める。かすめる弾と狙う弾を混ぜ、撃つ順番をばらばらにする
     private void _StartBarrage1() {
-        _barrage1Queue.Clear();
-        for (int i = 0; i < _missBulletCount; i++) _barrage1Queue.Add(false);
-        for (int i = 0; i < _aimBulletCount; i++) _barrage1Queue.Add(true);
-        for (int i = _barrage1Queue.Count - 1; i > 0; i--) {
-            int j = Random.Range(0, i + 1);
-            (_barrage1Queue[i], _barrage1Queue[j]) = (_barrage1Queue[j], _barrage1Queue[i]);
-        }
+        ZelxBarrage1.CreateQueue(_barrage1Queue, _missBulletCount, _aimBulletCount);
         _ChangeAttackState(eAttackState.Barrage1, 0f);
     }
 
@@ -493,45 +487,13 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
         if (_seShoot != null) _audioSource?.PlayOneShot(_seShoot);
 
         var bullet = _GetBullet(_bulletPool, _bulletPrefab, spawn_pos);
-        float speed_rate = Random.Range(_bulletSpeedRateRange.x, _bulletSpeedRateRange.y);
-        float lifetime = Random.Range(_barrage1LifetimeRange.x, _barrage1LifetimeRange.y);
-        var target = PlayerCharacterManager.Current != null ? PlayerCharacterManager.Current.transform : null;
-        if (target == null) {
-            bullet.FireStraight(_FacingDirection, speed_rate, _returnBullet, this);
-            bullet.SetLifetime(lifetime);
-            return;
-        }
-
-        Vector2 origin = spawn_pos;
-        Vector2 to_target = (Vector2)target.position - origin;
-        if (is_aim) {
-            bullet.FireStraight(to_target, speed_rate, _returnBullet, this);
-            bullet.SetLifetime(lifetime);
-            return;
-        }
-
-        // プレイヤーから横へ外した点を、円弧がちょうど通るように撃ち出す向きを決める
-        // (円弧は、弦の向きから曲がる角度の合計の半分だけ手前に傾けて撃ち出すと、弦の端を通る)
-        Vector2 side = new Vector2(-to_target.y, to_target.x).normalized * (Random.value < 0.5f ? -1f : 1f);
-        Vector2 aim_pos = (Vector2)target.position + side * Random.Range(_missDistanceRange.x, _missDistanceRange.y);
-        float turn_rate = Random.Range(_missTurnRateRange.x, _missTurnRateRange.y) * (Random.value < 0.5f ? -1f : 1f);
-        Vector2 chord = aim_pos - origin;
-        float total_turn = _GetArcTotalTurn(chord.magnitude, bullet.BaseSpeed * speed_rate, Mathf.Abs(turn_rate));
-        float launch_angle = (Mathf.Atan2(chord.y, chord.x) * Mathf.Rad2Deg - total_turn * 0.5f * Mathf.Sign(turn_rate)) * Mathf.Deg2Rad;
-        bullet.FireArc(new Vector2(Mathf.Cos(launch_angle), Mathf.Sin(launch_angle)), speed_rate, turn_rate, _returnBullet, this, target);
-        bullet.SetLifetime(lifetime);
-    }
-
-    // 弦の長さ・弾の速さ・曲がる速さから、円弧を描いて弦の端に届くまでに曲がる角度の合計(度)を求める
-    private static float _GetArcTotalTurn(float chord_length, float speed, float turn_rate) {
-        if (speed <= 0f) return 0f;
-        float theta = turn_rate * chord_length / speed; // 最初は弦の長さで近似し、円弧の長さで求め直して収束させる
-        for (int iter = 0; iter < 4; iter++) {
-            float half_rad = Mathf.Clamp(theta, 1f, 170f) * 0.5f * Mathf.Deg2Rad;
-            float arc_length = chord_length * half_rad / Mathf.Sin(half_rad);
-            theta = turn_rate * arc_length / speed;
-        }
-        return Mathf.Min(theta, 170f);
+        var settings = new ZelxBarrage1.Settings {
+            speedRateRange = _bulletSpeedRateRange,
+            missTurnRateRange = _missTurnRateRange,
+            missDistanceRange = _missDistanceRange,
+            lifetimeRange = _barrage1LifetimeRange,
+        };
+        ZelxBarrage1.Fire(bullet, spawn_pos, is_aim, _FacingDirection, settings, _returnBullet, this);
     }
 
     // 弾幕2: 巨大な弾をチャージせずに、画面の左上へ山なりに撃つ。そこで爆発し、扇状に高速の弾をまき散らす

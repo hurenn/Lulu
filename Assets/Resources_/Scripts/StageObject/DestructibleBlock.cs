@@ -8,6 +8,13 @@ public class DestructibleBlock : MonoBehaviour, IDamageable, IDamageSourceFilter
     [SerializeField] private Animator _anim;
     [SerializeField] private AudioClip _seWaterHit; // WaterBulletが当たった時の効果音
     [SerializeField] private float _seWaterHitVolume = 1f;
+    [SerializeField] private AudioClip _seBreak; // 破壊された時の効果音
+    [SerializeField] private float _seBreakVolume = 1f;
+    [SerializeField] private int _seBreakMaxCount = 2;        // 同時に鳴らす破壊音の上限(まとめて壊れた時に音が重なりすぎないようにする)
+    [SerializeField] private float _seBreakCountWindow = 0.15f; // この時間内に鳴らした破壊音を「同時」とみなす
+
+    // 最近鳴らした破壊音の時刻(全ブロックで共有)
+    private static readonly System.Collections.Generic.List<float> _seBreakPlayTimes = new System.Collections.Generic.List<float>();
 
     [Header("破壊時のドロップ(未設定なら何も出さない)")]
     [SerializeField] private int _dropCoinCount = 0; // ドロップするコイン数(合計価値。50を超える場合は価値5のコインにまとめて生成される)
@@ -69,6 +76,8 @@ public class DestructibleBlock : MonoBehaviour, IDamageable, IDamageSourceFilter
         // 当たり判定を即座に外す(アニメ再生中はすり抜けられるように)
         if (_col != null) _col.enabled = false;
 
+        _PlayBreakSE();
+
         _Drop();
 
         float delay = 0f;
@@ -79,6 +88,17 @@ public class DestructibleBlock : MonoBehaviour, IDamageable, IDamageSourceFilter
             delay = _anim.GetCurrentAnimatorStateInfo(0).length;
         }
         Destroy(gameObject, delay);
+    }
+
+    // 破壊音を鳴らす。まとめて壊れた時は、同時に鳴らす数を上限までに絞る
+    private void _PlayBreakSE() {
+        if (_seBreak == null) return;
+        float now = Time.time;
+        _seBreakPlayTimes.RemoveAll(time => now - time > _seBreakCountWindow || time > now); // 古い記録(シーンを読み直した時の記録も)を消す
+        if (_seBreakPlayTimes.Count >= _seBreakMaxCount) return;
+        _seBreakPlayTimes.Add(now);
+        // 自身はすぐ削除されるため、PlayClipAtPointで独立に再生する
+        AudioUtil.PlayClipAtPointUnclamped(_seBreak, transform.position, _seBreakVolume);
     }
 
     // 破壊時にコイン・アイテムをドロップする

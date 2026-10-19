@@ -29,6 +29,11 @@ public class CircusMissile : MonoBehaviour {
     [SerializeField] private float _arcNearMissMargin = 0.5f; // 弧を描く弾は、目標の周りの円(_avoidDistance)からこの距離以内をかすめたらニアミス
     [SerializeField] private GameObject _explosionPrefab;
     [SerializeField] private TrailRenderer _trail;
+    [SerializeField] private AudioClip _seLaunch;            // 生成(発射)時の効果音
+    [SerializeField] private float _seLaunchVolume = 1.0f;
+
+    // 発射音を鳴らす音源(全ての弾で共有し、新しい弾が出るたびに鳴っている音を止めて鳴らし直す)
+    private static AudioSource _seLaunchSource;
 
     private Transform _target;
     private System.Action<CircusMissile> _onNearMiss; // 目標の間近をかすめた時のコールバック
@@ -98,6 +103,7 @@ public class CircusMissile : MonoBehaviour {
         _direction = direction.normalized;
         _timer = 0f;
         _isNearMissed = false;
+        _PlayLaunchSE();
         _hasEnteredView = false;
         _isHoming = Mathf.Approximately(arc_turn_rate, 0f);
         // 弧を描く弾は、発射直後に一度バラバラの方向へ散らす
@@ -245,6 +251,22 @@ public class CircusMissile : MonoBehaviour {
         if (_homingTurned >= _maxHomingAngle) _isHoming = false;
         _direction = new Vector2(Mathf.Cos(next * Mathf.Deg2Rad), Mathf.Sin(next * Mathf.Deg2Rad));
         transform.rotation = Quaternion.Euler(0, 0, next);
+    }
+
+    // 発射音を鳴らす。既に鳴っている発射音は止めて、最初から鳴らし直す
+    private void _PlayLaunchSE() {
+        if (_seLaunch == null) return;
+        // 共有の音源はシーンを読み直すと消えるため、無ければ作り直す
+        if (_seLaunchSource == null) {
+            var go = new GameObject("CircusMissileLaunchSE");
+            _seLaunchSource = go.AddComponent<AudioSource>();
+            _seLaunchSource.playOnAwake = false;
+            _seLaunchSource.spatialBlend = 0f;
+        }
+        _seLaunchSource.Stop();
+        _seLaunchSource.clip = AudioUtil.GetClipForGain(_seLaunch, _seLaunchVolume);
+        _seLaunchSource.volume = Mathf.Min(_seLaunchVolume, 1f);
+        _seLaunchSource.Play();
     }
 
     /// <summary>
