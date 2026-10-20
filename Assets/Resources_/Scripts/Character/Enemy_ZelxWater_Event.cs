@@ -133,7 +133,7 @@ public class Enemy_ZelxWater_Event : Enemy_Base, IDamageSourceBlocker {
     // 通常時(WaterShieldあり)はFireBulletを防ぐ
     // DamageZoneはこの判定で防がれると、ロックオン(ヒットコールバック)・ヒットエフェクト・ダメージ処理を行わずに弾が消える
     public bool IsBlockedDamageSource(DamageZone source) {
-        return !_isStunned && source.GetComponentInParent<FireBullet>() != null;
+        return !_isStunned && source != null && source.GetComponentInParent<FireBullet>() != null;
     }
 
     public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false, bool ignore_invincibility = false) {

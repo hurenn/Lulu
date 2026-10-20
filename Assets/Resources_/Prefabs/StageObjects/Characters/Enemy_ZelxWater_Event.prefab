@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1960725399
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 2728456594518717478, guid: 2c7c5b185021c194f8841c3c89c3dad0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -352,9 +352,9 @@ MonoBehaviour:
   _chargeEffectRateRange: {x: 15, y: 90}
   _chargeShakeInterval: 0.2
   _chargeShakeRange: {x: 0.05, y: 0.4}
-  _barrageStartArea: {fileID: 0}
+  _barrageArea: {fileID: 0}
+  _chargeArea: {fileID: 0}
   _barrageStartDelay: 1
-  _barrageForceArea: {fileID: 0}
   _barragesBeforeCharge: 2
   _smallBulletPrefab: {fileID: 0}
   _missBulletCount: 10

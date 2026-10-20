@@ -51,6 +51,10 @@ public class ZelxFireBullet : MonoBehaviour {
     [SerializeField] private float _terrainBurstSizeRate = 1.0f; // 地形に当たって弾ける時のエフェクトの大きさの倍率
     [SerializeField] private float _terrainBurstShake = 0f;    // 地形に当たって弾ける時の画面の揺れ(0なら揺らさない)
 
+    [Header("画面外")]
+    [SerializeField] private bool _isReleaseOffScreen = true;  // falseなら画面外に出ても消えない(巨大な弾用)
+    [SerializeField] private float _offScreenSafetyMargin = 3.0f; // _isReleaseOffScreenがfalseの時、画面からこの距離(画面サイズ比)以上離れたら念のため消す
+
     [Header("Slash被弾時")]
     [SerializeField] private eSlashReaction _slashReaction = eSlashReaction.None;
     [SerializeField] private int _reflectComboStep = 3;        // StopThenReflectの時、この段数以上のSlashで跳ね返る
@@ -297,6 +301,23 @@ public class ZelxFireBullet : MonoBehaviour {
     /// 跳ね返された後に他の弾を破壊しながら進む弾か(この弾同士は破壊し合わない)
     /// </summary>
     public bool CanDestroyBullets => _isDestroyBulletsOnReflect;
+
+    /// <summary>
+    /// 指定のSlashを受けたことにする(当たり判定を通さずに、Slashが当たった時と同じく止まる・跳ね返る)
+    /// イベントで仲間が自動で跳ね返す時などに使う
+    /// </summary>
+    /// <param name="is_aim_at_owner">trueなら、跳ね返った時に撃ったキャラの方へ向けて飛ばす(確実に当てる)</param>
+    public void HitBySlash(SlashAttackInfo slash, bool is_aim_at_owner = false) {
+        if (_isReleased || slash == null) return;
+        _OnSlashHit(slash);
+        if (is_aim_at_owner && _isReflected && _owner is Component owner) {
+            Vector2 to_owner = (Vector2)owner.transform.position - (Vector2)transform.position;
+            if (to_owner.sqrMagnitude > 0.0001f) {
+                _direction = to_owner.normalized;
+                _ApplyFlip();
+            }
+        }
+    }
 
     /// <summary>
     /// 他の弾に破壊されて、弾けて消える
@@ -562,6 +583,12 @@ public class ZelxFireBullet : MonoBehaviour {
         if (cam == null) return;
 
         var viewport_pos = cam.WorldToViewportPoint(transform.position);
+        if (!_isReleaseOffScreen) {
+            // 画面外では消えないが、地形を抜けてどこまでも飛び続けないよう、極端に離れた時だけ消す
+            float m = _offScreenSafetyMargin;
+            if (viewport_pos.x < -m || viewport_pos.x > 1f + m || viewport_pos.y < -m || viewport_pos.y > 1f + m) _Release();
+            return;
+        }
         bool is_out_left = viewport_pos.x < 0f && _direction.x <= 0f;
         bool is_out_right = viewport_pos.x > 1f && _direction.x >= 0f;
         bool is_out_bottom = viewport_pos.y < 0f && _direction.y <= 0f;

@@ -74,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -782728787
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -2180701618497998299, guid: 28e0b978bdb6a614bae5f9d3604a0ad8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -362,6 +362,8 @@ MonoBehaviour:
   _isPassThroughDestructible: 0
   _terrainBurstSizeRate: 1
   _terrainBurstShake: 0
+  _isReleaseOffScreen: 1
+  _offScreenSafetyMargin: 3
   _slashReaction: 1
   _reflectComboStep: 3
   _seReflect: {fileID: 0}
@@ -374,10 +376,16 @@ MonoBehaviour:
   _reflectAcceleration: 25
   _reflectMaxSpeedRate: 3
   _reflectHitStopWait: 0.05
+  _reflectSpeedUpRate: 1
+  _isReflectFlash: 0
+  _reflectFlashColor: {r: 1, g: 1, b: 1, a: 0.35}
+  _reflectFlashDuration: 0.15
   _explosionPrefab: {fileID: 4668767017416938270, guid: 44399ae3d99b0844ca6be8b46aff46f2, type: 3}
   _explosionScale: 1
   _isExplodeOnHit: 0
   _reflectBackShake: 0.3
+  _seExplosion: {fileID: 0}
+  _seExplosionVolume: 1
   _waterHitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _waterHitEffectType: 1
   _waterHitEffectSize: 1

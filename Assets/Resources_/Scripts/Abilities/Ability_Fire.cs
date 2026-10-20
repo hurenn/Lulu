@@ -17,9 +17,21 @@ public class Ability_Fire : Ability_Base
     // 発射地点
     [SerializeField] private Transform _shotPoint;
 
-    // 必殺オブジェクト
+    // 必殺オブジェクト(演出専用。当たり判定は無効にして使う)
     [SerializeField] private GameObject _specialBulletObj;
     [SerializeField] private GameObject _specialExplosionObj;
+
+    [Header("必殺技の攻撃判定(カメラに映っている範囲全体)")]
+    [SerializeField] private int _specialHitCount = 25;   // 攻撃の回数(必殺技の間に均等に発生する)
+    [SerializeField] private int _specialHitDamage = 8;   // 1回の攻撃のダメージ
+    [SerializeField] private HitEffect _specialHitEffectPrefab; // 攻撃が当たった相手に出すヒットエフェクト
+    [SerializeField] private HitEffect.eType _specialHitEffectType = HitEffect.eType.Fire;
+    [SerializeField] private float _specialHitEffectSize = 1.6f;
+    [SerializeField] private float _specialHitShakeFirstIntensity = 0.5f;
+    [SerializeField] private float _specialHitShakeIntensity = 0.3f; // 攻撃が当たった時の画面の揺れ
+    [SerializeField] private float _specialHitShakeDuration = 0.1f;
+    [SerializeField] private AudioClip _seSpecialHit;              // 攻撃が当たった時の効果音(当たった相手の被弾音とは別に、必殺技側で鳴らす)
+    [SerializeField] private float _seSpecialHitVolume = 1.6f;     // 効果音の音量(1を超えると増幅して鳴らす)
 
     // 必殺技弾のオブジェクトプール
     private Queue<GameObject> _specialBulletPool = new Queue<GameObject>();
@@ -66,10 +78,27 @@ public class Ability_Fire : Ability_Base
         if (_specialBulletObj == null || _specialBulletPool.Count > 0) return;
 
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
-            GameObject bullet = Instantiate(_specialBulletObj);
+            GameObject bullet = _InstantiateVisualOnly(_specialBulletObj, Vector3.zero);
             bullet.SetActive(false);
             _specialBulletPool.Enqueue(bullet);
         }
+    }
+
+    /// <summary>
+    /// 必殺技の演出用に生成する(当たり判定を無効にする。攻撃は_DamageAllInViewで行う)
+    /// </summary>
+    private GameObject _InstantiateVisualOnly(GameObject prefab, Vector3 position) {
+        var obj = Instantiate(prefab, position, Quaternion.identity);
+        foreach (var damage_zone in obj.GetComponentsInChildren<DamageZone>(true)) {
+            if (damage_zone.gameObject != obj) {
+                damage_zone.gameObject.SetActive(false);
+            } else {
+                // ルートに付いている場合は、見た目を残して当たり判定だけ外す
+                foreach (var col in damage_zone.GetComponents<Collider2D>()) col.enabled = false;
+                damage_zone.enabled = false;
+            }
+        }
+        return obj;
     }
 
     /// <summary>
@@ -82,7 +111,7 @@ public class Ability_Fire : Ability_Base
             return bullet;
         } else {
             // プールが空の場合は新規作成
-            return Instantiate(_specialBulletObj);
+            return _InstantiateVisualOnly(_specialBulletObj, Vector3.zero);
         }
     }
 
@@ -92,8 +121,8 @@ public class Ability_Fire : Ability_Base
     private void _ReturnBulletToPool(GameObject bullet) {
         if (bullet == null) return;
         
-        // 着弾エフェクト再生
-        Instantiate(_specialExplosionObj, bullet.transform.position, Quaternion.identity);
+        // 着弾エフェクト再生(演出専用)
+        if (_specialExplosionObj != null) _InstantiateVisualOnly(_specialExplosionObj, bullet.transform.position);
         
         // カメラシェイク（微妙な揺れ）
         var cinemachineManager = CinemachineManager.Instance;
@@ -281,19 +310,85 @@ public class Ability_Fire : Ability_Base
         Vector3 spawnPosition = new Vector3(topLeft.x, spawnHeight, 0);
         bool isEndSpecialAnimCalled = false;
 
+        // 攻撃判定は、必殺技の間に均等な間隔で、カメラに映っている範囲全体へ発生させる
+        float hit_interval = _specialHitCount > 0 ? attack_duration / _specialHitCount : 0f;
+        int hit_done = 0;
+
         // 攻撃開始前の待機
         yield return new WaitForSeconds(0.5f);
         while (current_time < attack_duration) {
-            // 一定間隔で弾を発射
+            // 一定間隔で弾を発射(演出)
             if (current_time >= next_spawn_time) {
                 _SpawnSpecialBulletWithAngle(spawnPosition, bulletSpeed, screenWidth, screenHeight);
                 next_spawn_time += spawn_interval;
+            }
+            while (hit_done < _specialHitCount && current_time >= hit_done * hit_interval) {
+                _DamageAllInView(hit_done == 0);
+                hit_done++;
             }
 
             current_time += Time.deltaTime;
             yield return null;
         }
+        // 端数で残った分も必ず発生させる
+        while (hit_done < _specialHitCount) {
+            _DamageAllInView(hit_done == 0);
+            hit_done++;
+        }
         _onEndSpecialAttack?.Invoke();
+    }
+
+    /// <summary>
+    /// カメラに映っている範囲にいる、プレイヤー以外のダメージを受けるもの全てに1回分のダメージを与える
+    /// (カメラの広さが変わっても、映っている範囲全体が対象になる)
+    /// 当たったら画面を揺らす
+    /// </summary>
+    /// <param name="is_first_shake">trueなら当たらなくても画面を揺らす(最初の1回)</param>
+    private void _DamageAllInView(bool is_first_shake) {
+        var cam = Camera.main;
+        if (cam == null) return;
+
+        // 候補はZ=0の平面で映っている範囲を少し広げて集め、各相手の位置で実際に映っているかを確かめる
+        // (透視投影のカメラでは、奥行きによって映る範囲が変わるため)
+        float depth = -cam.transform.position.z;
+        Vector2 min = cam.ViewportToWorldPoint(new Vector3(-0.1f, -0.1f, depth));
+        Vector2 max = cam.ViewportToWorldPoint(new Vector3(1.1f, 1.1f, depth));
+        var hit_targets = new HashSet<IDamageable>();
+        bool is_hit = false;
+        int player_layer = LayerMask.NameToLayer("Player");
+        foreach (var col in Physics2D.OverlapAreaAll(min, max)) {
+            if (col.gameObject.layer == player_layer) continue;
+            var target = col.GetComponent<IDamageable>();
+            if (target == null || target is Player_Character || !hit_targets.Add(target)) continue;
+            // シールド等で防がれる相手には当たらない
+            if (target is IDamageSourceBlocker blocker && blocker.IsBlockedDamageSource(null)) continue;
+            var bounds = col.bounds;
+            var viewport = cam.WorldToViewportPoint(bounds.center);
+            if (viewport.z <= 0f || viewport.x < 0f || viewport.x > 1f || viewport.y < 0f || viewport.y > 1f) continue;
+
+            // 連続で当てるため、無敵時間は付けず、無敵中でも当てる
+            if (target.Damage(_specialHitDamage, Vector2.zero, 0f, 0f, false, true)) {
+                _SpawnSpecialHitEffect(bounds.center);
+                is_hit = true;
+            }
+        }
+        // 当たったら効果音を鳴らす(1回の攻撃で複数に当たっても1回だけ)
+        if (is_hit && _seSpecialHit != null) {
+            AudioUtil.PlayClipAtPointUnclamped(_seSpecialHit, cam.transform.position, _seSpecialHitVolume);
+        }
+        if ((is_hit || is_first_shake) && _specialHitShakeIntensity > 0f) {
+            float intensity = is_first_shake ? _specialHitShakeFirstIntensity : _specialHitShakeIntensity;
+            CinemachineManager.Instance?.ShakeCamera(intensity, _specialHitShakeDuration);
+        }
+    }
+
+    private void _SpawnSpecialHitEffect(Vector3 position) {
+        if (_specialHitEffectPrefab == null) return;
+        var effect = EffectPool.Instance.Spawn(_specialHitEffectPrefab.gameObject, position);
+        if (effect == null) return;
+        foreach (var hit_effect in effect.GetComponentsInChildren<HitEffect>()) {
+            hit_effect.Setup(_specialHitEffectType, _specialHitEffectSize);
+        }
     }
 
     /// <summary>

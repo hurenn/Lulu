@@ -14,7 +14,7 @@ using UnityEngine.Playables;
 /// 跳ね返された巨大な弾が当たると、吹き飛んで壁に叩きつけられ、地上に落ちてダウンする
 /// ダウンはHPが次の段階(2/3, 1/3)まで減ると強制解除され、再び画面端へ戻って行動する
 /// </summary>
-public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDamageSourceFilter {
+public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDamageSourceFilter, IDamageSourceBlocker {
     private enum eState {
         Waiting,     // Timelineの合図を待っている
         Acting,      // 画面端で漂いながら攻撃する
@@ -135,6 +135,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
     private Coroutine _lobShotRoutine;          // 弾幕2で爆発地点から扇状に撃っている途中
     private ZelxFireBullet _chargingBullet; // チャージ中の巨大な弾
     private ZelxFireBullet _firedGiantBullet; // 真っすぐ撃った巨大な弾(消えるまで次の行動をしない)
+    private bool _isAttackPaused = false;     // 攻撃を一時停止中(会話イベント中など)
     private float _hitStopTimer;   // 巨大な弾を跳ね返し返した時のヒットストップの残り時間(この間は動かない)
     private float _hitStopDelay;   // ヒットストップが始まるまでの残り時間
     private Vector3 _chargeBulletScale;     // 巨大な弾のプレハブの大きさ
@@ -261,7 +262,39 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
 
     // HPの段階が進んだ時の処理
     private void _OnPhaseChanged() {
-        // TODO: 弾幕の性質の変化は後程実装
+        OnPhaseChanged?.Invoke(_phase);
+    }
+
+    /// <summary>
+    /// HPの段階が進んだ時に呼ばれる(引数は進んだ後の段階。1: HP2/3以下, 2: HP1/3以下)
+    /// </summary>
+    public event System.Action<int> OnPhaseChanged;
+
+    /// <summary>
+    /// 巨大な弾をチャージして真っすぐ撃った時に呼ばれる(撃った弾を渡す)
+    /// </summary>
+    public event System.Action<ZelxFireBullet> OnGiantBulletFired;
+
+    /// <summary>
+    /// 攻撃を一時停止する(会話イベント中など)。止めた時は、チャージ中の弾と画面に残っている弾を消す
+    /// 止めている間も漂う動きは続け、再開すると一定時間後に次の攻撃を始める
+    /// </summary>
+    public void SetAttackPaused(bool is_paused) {
+        if (_isAttackPaused == is_paused) return;
+        _isAttackPaused = is_paused;
+        if (is_paused) {
+            _CancelCharge();
+            if (_lobShotRoutine != null) {
+                StopCoroutine(_lobShotRoutine);
+                _lobShotRoutine = null;
+            }
+            foreach (var bullet in FindObjectsByType<ZelxFireBullet>(FindObjectsSortMode.None)) {
+                if (!bullet.IsReleased) bullet.BurstByBullet();
+            }
+            _lobBullet = null;
+            _firedGiantBullet = null;
+        }
+        _ChangeAttackState(eAttackState.Interval, _attackInterval);
     }
 
     // HPが減るほど、跳ね返されてきた巨大な弾を何回か跳ね返し返す(跳ね返し返した時はヒットしない)
@@ -300,6 +333,14 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
 
     private static bool _IsExchanging(ZelxFireBullet bullet) {
         return bullet != null && !bullet.IsReleased && bullet.ReflectBackCount > 0;
+    }
+
+    // WaterShieldを張っている間は、跳ね返された弾以外の攻撃(炎・氷など)を全て防ぐ
+    public bool IsBlockedDamageSource(DamageZone source) {
+        if (_waterShield == null || !_waterShield.activeInHierarchy) return false;
+        if (source == null) return true; // DamageZoneを通さない攻撃(炎の必殺技など)も防ぐ
+        var bullet = source.GetComponentInParent<ZelxFireBullet>();
+        return bullet == null || !bullet.IsReflected;
     }
 
     // 跳ね返された巨大な弾が当たった時に呼ばれる(ダメージ処理の直前)
@@ -392,8 +433,8 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
     }
 
     private void _UpdateAttack(float dt, Vector2 position) {
-        // 画面端に着くまでは撃たない
-        if (_entryOffsetX != 0f) {
+        // 画面端に着くまでは撃たない。攻撃を一時停止している間も撃たない
+        if (_entryOffsetX != 0f || _isAttackPaused) {
             return;
         }
         _attackTimer -= dt;
@@ -449,6 +490,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
                     if (_seChargeShoot != null) _audioSource?.PlayOneShot(_seChargeShoot);
                     _chargingBullet.Fire(_FacingDirection, _returnChargeBullet, this);
                     _firedGiantBullet = _chargingBullet;
+                    OnGiantBulletFired?.Invoke(_firedGiantBullet);
                     _chargingBullet = null;
                     _StopChargeEffect(); // 撃った瞬間のエフェクトと画面の揺れは、弾側(ZelxFireBullet)で出す
                     _ChangeAttackState(eAttackState.Interval, _attackInterval); // 最後に撃ってから一定時間待つ

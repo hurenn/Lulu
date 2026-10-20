@@ -45,6 +45,10 @@ PrefabInstance:
       value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _isReleaseOffScreen
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _reflectSpeedUpRate
       value: 1.2
       objectReference: {fileID: 0}
@@ -55,6 +59,10 @@ PrefabInstance:
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _terrainBurstSizeRate
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
+      propertyPath: _offScreenSafetyMargin
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1768460564520094953, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: _isKnockdownOnReflectHit
@@ -86,15 +94,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4481616688938045230, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4481616688938045230, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4481616688938045230, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4481616688938045230, guid: fd42f8db06981ff48a4b246f6a270ace, type: 3}
       propertyPath: m_LocalPosition.x
