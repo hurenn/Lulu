@@ -156,6 +156,7 @@ public class CharacterParameter_Player : CharacterParameter {
                 DecreaseMP(_autoSlash);
                 break;
             case eAbilityType.Fire:
+            case eAbilityType.Water: // 水は炎と同じ消費量
                 DecreaseMP(_fireCost);
                 break;
             case eAbilityType.Light:
