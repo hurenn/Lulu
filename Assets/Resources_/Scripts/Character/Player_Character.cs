@@ -814,6 +814,11 @@ public class Player_Character : Character_Base {
                 return;
             }
 
+            if (AbilitySealArea.Contains(transform.position)) {
+                // 能力が使えないエリアの中では必ずワープ失敗(MPも消費しない)
+                return;
+            }
+
             // ワープ処理開始
             StartCoroutine(WarpStart());
         }
@@ -1017,6 +1022,10 @@ public class Player_Character : Character_Base {
     /// 氷自動攻撃実行
     /// </summary>
     private void _OnExecuteIceAutoAttack(Enemy_Base target_enemy) {
+        // 能力が使えないエリアの中では自動攻撃しない
+        if (AbilitySealArea.Contains(transform.position)) {
+            return;
+        }
         var ability = _GetAbility<Ability_Ice>();
         if (ability != null) {
 

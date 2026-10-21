@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 1651762342217575509}
   - component: {fileID: 4657529733097151998}
   - component: {fileID: 3302749445554606243}
+  - component: {fileID: 3160533621071313964}
   m_Layer: 0
   m_Name: LockonSlash
   m_TagString: Untagged
@@ -230,6 +231,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3160533621071313964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3568965013177453205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d442bd816e8b1d04b8dcd5e578d93f8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4472013383389708359
 GameObject:
   m_ObjectHideFlags: 0

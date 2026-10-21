@@ -31,6 +31,13 @@ public class AutoDestroy : MonoBehaviour {
             yield return null;
         }
 
+        DestroyNow();
+    }
+
+    /// <summary>
+    /// 寿命を待たずに今すぐ消す(鳴っている効果音は最後まで鳴らす)
+    /// </summary>
+    public void DestroyNow() {
         _HandOverPlayingSounds();
         Destroy(gameObject);
     }

@@ -30,7 +30,7 @@ public class Ability_Water : Ability_Base
     /// </summary>
     private eAbilityResult _TryShot() {
         // オーバーヒート中は使用不可
-        if (_cancelByOverheat) {
+        if (_cannotUse) {
             Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // 召喚エフェクト再生
             return eAbilityResult.None;
         }

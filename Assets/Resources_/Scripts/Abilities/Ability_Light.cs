@@ -16,6 +16,8 @@ public class Ability_Light : Ability_Base
     // 自動発光タイマー
     private bool _isAutoLight = false;
     private bool _isManualLight = false;
+    // ボタンを押したまま能力が使えないエリアに入り、発光を止めている(ボタンを押したままエリアを出たら発光を戻す)
+    private bool _isSuppressedBySeal = false;
 
     public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
         base.UpdateParameter(is_right, chara_pos, common_param, chara_param, warp_control, motor_states);
@@ -49,13 +51,13 @@ public class Ability_Light : Ability_Base
         if(_charaParam == null) {
             return;
         }
-        _isAutoLight = is_active && !_charaParam.isOverheat;
+        _isAutoLight = is_active && !_charaParam.isOverheat && !_isSealed;
         _charaParam.isAutoLightInvincible = _isAutoLight;
     }
 
     public override eAbilityResult ExecuteSimple() {
-        // オーバーヒート中は使用不可
-        if ((_charaParam.isOverheat && !_isAppearing) || _lightDomePrefab == null) {
+        // オーバーヒート中・能力が使えないエリアの中は使用不可
+        if ((_charaParam.isOverheat && !_isAppearing) || _isSealed || _lightDomePrefab == null) {
             UpdatePartnerTransform(); // 位置更新
             Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // 召喚エフェクト再生
             return eAbilityResult.None;
@@ -88,6 +90,17 @@ public class Ability_Light : Ability_Base
             return eAbilityResult.None;
         }
 
+        // 能力が使えないエリアの中では発光を止め、押したままエリアを出たら発光を戻す
+        if (_isSealed) {
+            ExecuteRelease();
+            _isSuppressedBySeal = true;
+            return eAbilityResult.None;
+        }
+        if (_isSuppressedBySeal) {
+            _isSuppressedBySeal = false;
+            _ResumeManualLight();
+        }
+
         // 必殺チャージ停止
         if (_isManualLight) {
             _StopSpecialCharge();
@@ -106,6 +119,7 @@ public class Ability_Light : Ability_Base
 
         // 手動発光解除
         _isManualLight = false;
+        _isSuppressedBySeal = false;
 
         // 帰還
         if (_isNotHide) {
@@ -116,6 +130,14 @@ public class Ability_Light : Ability_Base
         _charaParam.isLightInvincible = false;
 
         return eAbilityResult.None;
+    }
+
+    // ボタンを押したまま能力が使えないエリアを出た時、発光を戻す(MPは消費しない)
+    private void _ResumeManualLight() {
+        _anim?.Play("Pepe_Appear", 0, 0.0f);
+        UpdatePartnerTransform(); // 位置更新
+        _ResetReturnTimer();
+        _isManualLight = true;
     }
 
     // 自動発光回避

@@ -159,6 +159,8 @@ public class WarpControl : MonoBehaviour {
             // 少し手前で止める
             safe_point = hit.point - (safe_point - (Vector2)transform.position).normalized * 0.1f;
         }
+        // 能力が使えないエリアに入る場合は、エリアとの境界線で止める
+        AbilitySealArea.ClipPath(transform.position, ref safe_point);
 
         // ワープ前の共通処理
         if (_onPreWarpCommon != null) {
@@ -252,6 +254,8 @@ public class WarpControl : MonoBehaviour {
 
             safe_point = warp_checker.GetWarpDestination(origin, warp_checker.transform.position);
         }
+        // 能力が使えないエリアに入る場合は境界線で止まるので、その先の敵は攻撃しない
+        AbilitySealArea.ClipPath(origin, ref safe_point);
 
         // 現在地からワープ先までの間に敵がいるか確認
         RaycastHit2D[] hits = Physics2D.LinecastAll(origin, safe_point, LayerMask.GetMask("Enemy"));
@@ -333,6 +337,9 @@ public class WarpControl : MonoBehaviour {
             // 間にワープ禁止エリアがあって届かないコインには飛ばずに終える(手前で止まる中途半端なワープを出さない)
             if (Physics2D.Linecast(transform.position, coin.position, LayerMask.GetMask("WarpProhibitedArea")).collider != null) break;
 
+            // 能力が使えないエリアの中からはワープできない
+            if (AbilitySealArea.Contains(transform.position)) break;
+
             // 保険: 直前にワープしたコインがまた選ばれた(=届かず取得できなかった)場合は、再ワープせずに終える
             if (coin == last_coin) break;
             last_coin = coin;
@@ -344,12 +351,18 @@ public class WarpControl : MonoBehaviour {
                 continue;
             }
 
+            // 能力が使えないエリアの中のコインへは、境界線までワープして終える
+            Vector2 coin_point = coin.position;
+            bool is_sealed_path = AbilitySealArea.ClipPath(transform.position, ref coin_point);
+            if (is_sealed_path && Vector2.Distance(transform.position, coin_point) < 0.2f) break; // 既に境界線にいる
+
             // ワープ先に移動
             yield return _ExecuteWarpCommon(
-                coin.position, 
-                is_warp_camera:false, 
+                coin.position,
+                is_warp_camera:false,
                 end_delay: _coinWarpInterval
                 );
+            if (is_sealed_path) break;
         }
     }
 

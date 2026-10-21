@@ -145,7 +145,7 @@ public class Ability_Fire : Ability_Base
             // 既に死んでいる敵をリストから削除
             _enemiesInRange.RemoveAll(enemy => enemy == null || enemy.isDead);
             // 敵がリスト内にいれば攻撃
-            if (_enemiesInRange.Count > 0 && !_cancelByOverheat) {
+            if (_enemiesInRange.Count > 0 && !_cannotUse) {
                 _TryShot(true);
                 _currentAutoAttackInterval = _autoAttackInterval;
             }
@@ -174,7 +174,7 @@ public class Ability_Fire : Ability_Base
     /// <param name="is_auto">オート攻撃によるものか</param>
     private eAbilityResult _TryShot(bool is_auto) {
         // オーバーヒート中は使用不可
-        if (_cancelByOverheat) {
+        if (_cannotUse) {
             Instantiate(_warpAnimationPrefab, transform.position, Quaternion.identity); // 召喚エフェクト再生
             return eAbilityResult.None;
         }
@@ -365,6 +365,8 @@ public class Ability_Fire : Ability_Base
             var bounds = col.bounds;
             var viewport = cam.WorldToViewportPoint(bounds.center);
             if (viewport.z <= 0f || viewport.x < 0f || viewport.x > 1f || viewport.y < 0f || viewport.y > 1f) continue;
+            // 能力が使えないエリアの中にいる相手には当たらない
+            if (AbilitySealArea.Contains(bounds.center)) continue;
 
             // 連続で当てるため、無敵時間は付けず、無敵中でも当てる
             if (target.Damage(_specialHitDamage, Vector2.zero, 0f, 0f, false, true)) {
