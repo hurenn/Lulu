@@ -623,7 +623,7 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
     private void _EndSlowMotion() {
         if (!_isSlowMotion) return;
         _isSlowMotion = false;
-        Time.timeScale = 1f;
+        Pause_UI.SetTimeScale(1f); // ポーズ中はポーズを閉じた後に戻す
     }
 
     private void OnDisable() {

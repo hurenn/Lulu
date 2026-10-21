@@ -32,6 +32,19 @@ public class Pause_UI : MonoBehaviour {
     private float _originalTimeScale = 1f;
     private float _originalBgmVolume = 1f;
     private static AudioSource s_bgmSource = null; // キャッシュ用
+    private static Pause_UI s_openedInstance = null; // 開いているポーズUI
+
+    /// <summary>
+    /// 時間の流れを変更する。ポーズ中はポーズを閉じた後に戻す値として予約する
+    /// (ポーズ中に演出の終了などで時間の流れを戻すと、ポーズ中もゲームが進んでしまうため)
+    /// </summary>
+    public static void SetTimeScale(float scale) {
+        if (isOpen && s_openedInstance != null) {
+            s_openedInstance._originalTimeScale = scale;
+            return;
+        }
+        Time.timeScale = scale;
+    }
 
     private Coroutine _arrowScaleCoroutine; // 矢印拡縮コルーチン
     private Coroutine _panelFadeCoroutine; // パネルフェードコルーチン
@@ -85,6 +98,7 @@ public class Pause_UI : MonoBehaviour {
 
         var source = GetBgmSource();
         if (isOpen) {
+            s_openedInstance = this;
             _originalTimeScale = Time.timeScale;
             Time.timeScale = 0f;
             if (source != null) {
@@ -119,6 +133,7 @@ public class Pause_UI : MonoBehaviour {
                 }
             }
         } else {
+            s_openedInstance = null;
             Time.timeScale = _originalTimeScale;
             if (source != null) {
                 source.volume = _originalBgmVolume;
