@@ -11,6 +11,10 @@ public class LightHiddenObject : MonoBehaviour {
     [SerializeField] private Graphic _graphic; // UIのImage等はこちら
     [SerializeField] private Collider2D _collider;
     [SerializeField] private float _fadeDuration = 0.3f; // 消える/現れるアニメーションの時間(秒)
+    [SerializeField] private bool _isMisty = true;        // trueなら霧に覆われたような見た目にする(_rendererの材質を差し替える)
+    [SerializeField] private Material _mistMaterial;      // 霧の見た目の材質(未設定ならResources/Materials/LightHiddenMist)
+
+    private const string _DEFAULT_MIST_MATERIAL_PATH = "Materials/LightHiddenMist";
 
     private Tilemap _tilemap;
     private float _initialAlpha = 1f; // 元々設定されていた(消える前の)透明度
@@ -27,9 +31,57 @@ public class LightHiddenObject : MonoBehaviour {
 
     private void Awake() {
         if (_renderer != null) _tilemap = _renderer.GetComponent<Tilemap>();
+        if (_isMisty && _renderer != null) {
+            var mist = _mistMaterial != null ? _mistMaterial : Resources.Load<Material>(_DEFAULT_MIST_MATERIAL_PATH);
+            if (mist != null) {
+                _renderer.sharedMaterial = mist;
+                if (_tilemap != null) _ApplyTileMask();
+            }
+        }
         _initialAlpha = _GetCurrentAlpha();
         _currentAlpha = _initialAlpha;
         _fadeStartAlpha = _initialAlpha;
+    }
+
+    private Texture2D _tileMask;
+
+    private void OnDestroy() {
+        if (_tileMask != null) Destroy(_tileMask);
+    }
+
+    // 霧の輪郭をぼかすため、タイルの有無を1マス=1テクセルのマスクにしてシェーダーへ渡す
+    // (タイルは絵の端まで不透明で、シェーダーだけでは外周が分からないため)
+    private void _ApplyTileMask() {
+        _tilemap.CompressBounds();
+        var bounds = _tilemap.cellBounds;
+        if (bounds.size.x <= 0 || bounds.size.y <= 0) return;
+
+        // 外周の外側にも空のマスを1つずつ足す(外周で値がちょうど0.5になるように)
+        int width = bounds.size.x + 2;
+        int height = bounds.size.y + 2;
+        _tileMask = new Texture2D(width, height, TextureFormat.Alpha8, false) {
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Clamp,
+            name = name + "_TileMask",
+        };
+        var pixels = new Color32[width * height];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                var cell = new Vector3Int(bounds.xMin + x - 1, bounds.yMin + y - 1, 0);
+                pixels[y * width + x] = new Color32(0, 0, 0, (byte)(_tilemap.HasTile(cell) ? 255 : 0));
+            }
+        }
+        _tileMask.SetPixels32(pixels);
+        _tileMask.Apply(false, true);
+
+        Vector2 min = _tilemap.CellToWorld(new Vector3Int(bounds.xMin - 1, bounds.yMin - 1, 0));
+        Vector2 max = _tilemap.CellToWorld(new Vector3Int(bounds.xMax + 1, bounds.yMax + 1, 0));
+        var block = new MaterialPropertyBlock();
+        _renderer.GetPropertyBlock(block);
+        block.SetTexture("_MaskTex", _tileMask);
+        block.SetVector("_MaskRect", new Vector4(min.x, min.y, max.x - min.x, max.y - min.y));
+        block.SetFloat("_UseMask", 1f);
+        _renderer.SetPropertyBlock(block);
     }
 
     private float _GetCurrentAlpha() {
