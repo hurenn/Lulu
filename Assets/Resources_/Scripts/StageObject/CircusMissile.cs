@@ -40,6 +40,7 @@ public class CircusMissile : MonoBehaviour {
     private Vector2 _direction;
     private float _timer;
     private bool _isNearMissed;
+    private bool _isVanished;     // 消滅済みか(Destroyはフレーム末まで遅れるため、同じフレームに二重に爆発しないようにする)
     private bool _hasEnteredView; // 一度画面に入ったか(画面外から撃たれるため、入る前は消さない)
     private bool _isHoming;       // 目標の方へ曲がっている(目標を追い越すか、曲がれる角度を使い切ったら止める)
     private float _homingTurned;  // これまでに曲がった角度の合計
@@ -277,6 +278,7 @@ public class CircusMissile : MonoBehaviour {
     }
 
     private void _Explode() {
+        if (_isVanished) return;
         if (_explosionPrefab != null) {
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
         }
@@ -284,6 +286,8 @@ public class CircusMissile : MonoBehaviour {
     }
 
     private void _Vanish() {
+        if (_isVanished) return;
+        _isVanished = true;
         // 煙が途中で消えないよう、トレイルだけ切り離して自然に消えるのを待つ
         // (画面外のトレイルは更新されず自動破棄(autodestruct)が働かないため、表示時間が過ぎたら明示的に破棄する)
         if (_trail != null) {
