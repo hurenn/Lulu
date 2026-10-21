@@ -8,6 +8,7 @@ public class AutoDestroy : MonoBehaviour {
 
     // 消滅時のコールバック
     private System.Action _destroyedCallback = null;
+    private bool _isDestroying = false; // Destroyはフレーム末まで遅れるため、同じフレームに二重に呼ばれても効果音を重ねて引き継がないようにする
     public void SetCallback(System.Action callback) {
         _destroyedCallback = callback;
     }
@@ -38,6 +39,8 @@ public class AutoDestroy : MonoBehaviour {
     /// 寿命を待たずに今すぐ消す(鳴っている効果音は最後まで鳴らす)
     /// </summary>
     public void DestroyNow() {
+        if (_isDestroying) return;
+        _isDestroying = true;
         _HandOverPlayingSounds();
         Destroy(gameObject);
     }
