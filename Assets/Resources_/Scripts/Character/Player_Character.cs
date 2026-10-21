@@ -954,8 +954,11 @@ public class Player_Character : Character_Base {
         }
     }
 
-    // true: コインレールを渡っている(重力を無効のままにし、ワープ入力を受け付けない)
+    // true: コインレールを渡っている(重力を無効のままにし、ワープ入力を受け付けない。無敵になる)
     private bool _isRailTraveling = false;
+
+    // レール中は無敵(IsEventInvincibleは操作入力の状態で毎フレーム上書きされるため、レールの状態で判定する)
+    public override bool isInvincible => base.isInvincible || _isRailTraveling;
 
     /// <summary>
     /// コインレールを渡る状態にする
