@@ -55,6 +55,13 @@ public class WarpControl : MonoBehaviour {
         }
     }
 
+    // ワープの瞬間、ワープ前の位置に残す残像
+    [Header("残像")]
+    [SerializeField] private SpriteRenderer _afterImageSource;   // 残像にする見た目(未設定なら残像を出さない)
+    [SerializeField] private float _afterImageDuration = 0.2f;   // 残像が消えるまでの時間
+    [SerializeField] private Color _afterImageColor = new Color(1f, 1f, 1f, 0.6f); // 残像の色(アルファは出始めの濃さ。消えるまでに薄くなる)
+    [SerializeField] private Material _afterImageMaterial;       // 残像の材質(WarpAfterImageRainbowで虹色に光らせる。未設定なら本体と同じ材質)
+
     // ワープ先調整前の最大距離地点エフェクト（成功・失敗に関わらず表示）
     [SerializeField] protected GameObject _warpMaxDistanceEffectPrefab;
     public void PlayWarpMaxDistanceEffect(Vector3 pos) {
@@ -163,6 +170,7 @@ public class WarpControl : MonoBehaviour {
         if (_audioSource != null && _seWarp != null) {
             _audioSource.PlayOneShot(_seWarp);
         }
+        _SpawnAfterImage();
         transform.position = safe_point;
 
         // ワープ集中線エフェクト再生
@@ -187,6 +195,35 @@ public class WarpControl : MonoBehaviour {
 
         if (_onWarpEndCommon != null)
             _onWarpEndCommon();
+    }
+
+    // 今の見た目をその場に複製し、_afterImageDurationかけて薄くしながら消す
+    private void _SpawnAfterImage() {
+        if (_afterImageSource == null || _afterImageSource.sprite == null || _afterImageDuration <= 0f) return;
+
+        var src = _afterImageSource;
+        var image = new GameObject("WarpAfterImage").AddComponent<SpriteRenderer>();
+        image.transform.SetPositionAndRotation(src.transform.position, src.transform.rotation);
+        image.transform.localScale = src.transform.lossyScale;
+        image.sprite = src.sprite;
+        image.flipX = src.flipX;
+        image.flipY = src.flipY;
+        image.sharedMaterial = _afterImageMaterial != null ? _afterImageMaterial : src.sharedMaterial;
+        image.sortingLayerID = src.sortingLayerID;
+        image.sortingOrder = src.sortingOrder - 1; // 本体より後ろに表示する
+        var color = src.color * _afterImageColor;
+        image.color = color;
+        StartCoroutine(_FadeAfterImage(image, color));
+        Destroy(image.gameObject, _afterImageDuration); // コルーチンが止まっても残り続けないようにする
+    }
+
+    private IEnumerator _FadeAfterImage(SpriteRenderer image, Color color) {
+        float alpha = color.a;
+        for (float t = 0f; t < _afterImageDuration && image != null; t += Time.deltaTime) {
+            color.a = alpha * (1f - t / _afterImageDuration);
+            image.color = color;
+            yield return null;
+        }
     }
 
     /// <summary>
