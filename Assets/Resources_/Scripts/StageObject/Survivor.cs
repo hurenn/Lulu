@@ -15,17 +15,25 @@ public class Survivor : StageObject_Base {
     protected virtual bool _ShowsRescueMessage => true;
 
     // リトライ時に救出済みか判定するためのID（同名のSurvivorが並ぶため、名前ではなく兄弟順のパスで識別する）
+    // プレイ中に前の兄弟がDestroyされると兄弟順がずれるため、読み込み直後（Awake）の値を保持して使う
+    private string _survivorId = null;
     public string SurvivorId {
         get {
-            string id = transform.GetSiblingIndex().ToString();
-            for (var parent = transform.parent; parent != null; parent = parent.parent) {
-                id = parent.GetSiblingIndex() + "/" + id;
-            }
-            return id;
+            if (_survivorId == null) _survivorId = _CalcSurvivorId();
+            return _survivorId;
         }
     }
 
+    private string _CalcSurvivorId() {
+        string id = transform.GetSiblingIndex().ToString();
+        for (var parent = transform.parent; parent != null; parent = parent.parent) {
+            id = parent.GetSiblingIndex() + "/" + id;
+        }
+        return id;
+    }
+
     private void Awake() {
+        _survivorId = _CalcSurvivorId();
         if (_mission == null) _mission = FindAnyObjectByType<RescueMission>();
     }
 
