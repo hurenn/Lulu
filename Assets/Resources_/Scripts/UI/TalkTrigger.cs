@@ -27,6 +27,7 @@ public class TalkTrigger : MonoBehaviour {
     private bool _wasUpHeld = false;
     private bool _isWaitingForMessageEnd = false;
     private bool _isWaitingForTimeline = false;
+    private bool _isBlockedBySubQuest = false; // サブクエスト中のため会話を始められない状態
     private Coroutine _signalFadeCoroutine;
     private int _currentSetIndex = -1; // まだ何も再生していない状態
     private TalkMessageSet _activeSet; // 現在再生中のセット(完了時にflagTargetを参照するため保持)
@@ -60,7 +61,7 @@ public class TalkTrigger : MonoBehaviour {
         if (_messageViewer == null) _messageViewer = FindAnyObjectByType<MessageViewer>();
         _playerController = PlayerCharacterManager.Controller;
 
-        if (!_isWaitingForMessageEnd && !_isWaitingForTimeline) _ShowSignal();
+        if (!_isWaitingForMessageEnd && !_isWaitingForTimeline && !SubQuest_Balloon.IsAnyRunning) _ShowSignal();
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
@@ -80,7 +81,7 @@ public class TalkTrigger : MonoBehaviour {
                 _isWaitingForMessageEnd = false;
                 CinemachineManager.Instance?.ReturnToPlayer(); // 直接メッセージ用のズームを戻す
                 _AdvanceFlagTargets();
-                if (_isPlayerInside) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
+                if (_isPlayerInside && !SubQuest_Balloon.IsAnyRunning) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
             }
             return;
         }
@@ -92,6 +93,19 @@ public class TalkTrigger : MonoBehaviour {
         bool isUpHeld = _playerController.Input.move.y > 0.5f;
         bool isUpPressed = isUpHeld && !_wasUpHeld;
         _wasUpHeld = isUpHeld;
+
+        // サブクエスト中は会話を始めない(会話中に時間切れになり、会話が打ち切られるのを防ぐ)
+        if (SubQuest_Balloon.IsAnyRunning) {
+            if (!_isBlockedBySubQuest) {
+                _isBlockedBySubQuest = true;
+                _HideSignal();
+            }
+            return;
+        }
+        if (_isBlockedBySubQuest) {
+            _isBlockedBySubQuest = false;
+            _ShowSignal(); // サブクエストが終わったら合図を出し直す
+        }
 
         if (!isUpPressed) return;
 
@@ -152,7 +166,7 @@ public class TalkTrigger : MonoBehaviour {
         _playerController.isEnabledCharacterInput = true;
         _isWaitingForTimeline = false;
         _AdvanceFlagTargets();
-        if (_isPlayerInside) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
+        if (_isPlayerInside && !SubQuest_Balloon.IsAnyRunning) _ShowSignal(); // 判定内に留まっていれば合図を出し直す
     }
 
     // 現在のセットに設定された全てのaddFlagTargetsのフラグを進める

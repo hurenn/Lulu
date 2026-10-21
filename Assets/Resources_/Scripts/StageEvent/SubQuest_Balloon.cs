@@ -29,6 +29,10 @@ public class SubQuest_Balloon : MonoBehaviour {
     public bool IsRunning => _isRunning;
     public bool IsCleared => _isCleared;
 
+    // 実行中のサブクエストがあるか(会話イベントと時間切れが重ならないよう、実行中は会話を始めさせない)
+    private static SubQuest_Balloon s_running = null;
+    public static bool IsAnyRunning => s_running != null && s_running._isRunning;
+
     private void Awake() {
         if (_messageListScript == null) _messageListScript = FindAnyObjectByType<MessageList>();
         if (_messageViewer == null) _messageViewer = FindAnyObjectByType<MessageViewer>();
@@ -45,6 +49,7 @@ public class SubQuest_Balloon : MonoBehaviour {
         _isRunning = true;
         _isCleared = false;
         _remainingTime = _timeLimit;
+        s_running = this;
 
         if (_timerText != null) {
             _timerText.gameObject.SetActive(true);
