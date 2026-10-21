@@ -146,6 +146,11 @@ public class Enemy_ZelxFire : Enemy_Base, IActivatable {
     }
 
     protected override IEnumerator Die() {
+        // 画面に残っている弾は全て弾けて消す(撃破演出中にプレイヤーが被弾しないように)
+        foreach (var bullet in FindObjectsByType<ZelxFireBullet>(FindObjectsSortMode.None)) {
+            if (!bullet.IsReleased) bullet.BurstByBullet();
+        }
+
         OnDied?.Invoke();
 
         if (_seFinish != null) {
