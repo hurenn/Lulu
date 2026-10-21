@@ -20,6 +20,13 @@ public class FalledReturnArea : StageObject_Base {
             player.transform.position = _returnPoint.position;
         } else {
             Debug.LogWarning("FalledReturnArea: No return point is set.");
+            return;
+        }
+
+        // ワープで戻ったことが分かるように、ワープSEを鳴らす
+        var warp_control = player.GetComponentInChildren<WarpControl>();
+        if (warp_control != null) {
+            warp_control.PlayWarpSE();
         }
     }
 }

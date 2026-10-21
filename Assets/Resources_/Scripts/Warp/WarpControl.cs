@@ -152,6 +152,15 @@ public class WarpControl : MonoBehaviour {
     }
 
     /// <summary>
+    /// ワープSE再生(落下からの復帰など、ワープ処理を通さずに移動した時にも使う)
+    /// </summary>
+    public void PlayWarpSE() {
+        if (_audioSource != null && _seWarp != null) {
+            _audioSource.PlayOneShot(_seWarp);
+        }
+    }
+
+    /// <summary>
     /// 共通ワープ処理
     /// </summary>
     /// <param name="safe_point">ワープ先</param>
@@ -177,9 +186,7 @@ public class WarpControl : MonoBehaviour {
         }
 
         // ワープSE再生
-        if (_audioSource != null && _seWarp != null) {
-            _audioSource.PlayOneShot(_seWarp);
-        }
+        PlayWarpSE();
         _SpawnAfterImage();
         transform.position = safe_point;
         _PlayWarpFlash();
