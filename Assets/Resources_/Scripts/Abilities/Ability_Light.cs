@@ -91,14 +91,21 @@ public class Ability_Light : Ability_Base
         }
 
         // 能力が使えないエリアの中では発光を止め、押したままエリアを出たら発光を戻す
+        // (エリア内で押し始めた場合は発光していないので、エリアを出ても戻さない)
         if (_isSealed) {
+            bool was_lighting = _isManualLight || _isSuppressedBySeal;
             ExecuteRelease();
-            _isSuppressedBySeal = true;
+            _isSuppressedBySeal = was_lighting;
             return eAbilityResult.None;
         }
         if (_isSuppressedBySeal) {
             _isSuppressedBySeal = false;
             _ResumeManualLight();
+        }
+
+        // 発光していない時(エリア内で押し始めた等)は無敵にしない
+        if (!_isManualLight) {
+            return eAbilityResult.None;
         }
 
         // 必殺チャージ停止
