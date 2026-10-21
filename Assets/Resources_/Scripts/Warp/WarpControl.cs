@@ -62,6 +62,14 @@ public class WarpControl : MonoBehaviour {
     [SerializeField] private Color _afterImageColor = new Color(1f, 1f, 1f, 0.6f); // 残像の色(アルファは出始めの濃さ。消えるまでに薄くなる)
     [SerializeField] private Material _afterImageMaterial;       // 残像の材質(WarpAfterImageRainbowで虹色に光らせる。未設定なら本体と同じ材質)
 
+    // ワープの直後、ワープ先で見た目を一瞬光らせる(_afterImageSourceの見た目に、同じ形の光を重ねる)
+    [Header("ワープ直後の発光")]
+    [SerializeField] private Material _warpFlashMaterial;        // 光の材質(SpriteColorFlashで加算合成する。未設定なら光らせない)
+    [SerializeField] private Color _warpFlashColor = new Color(0.2f, 0.75f, 1f, 0.35f); // 光の色(アルファは光り始めの強さ)
+    [SerializeField] private float _warpFlashDuration = 0.18f;   // 光が消えるまでの時間
+    private SpriteRenderer _warpFlash;
+    private Coroutine _warpFlashRoutine;
+
     // ワープ先調整前の最大距離地点エフェクト（成功・失敗に関わらず表示）
     [SerializeField] protected GameObject _warpMaxDistanceEffectPrefab;
     public void PlayWarpMaxDistanceEffect(Vector3 pos) {
@@ -174,6 +182,7 @@ public class WarpControl : MonoBehaviour {
         }
         _SpawnAfterImage();
         transform.position = safe_point;
+        _PlayWarpFlash();
 
         // ワープ集中線エフェクト再生
         PlayWarpFocusEffect();
@@ -217,6 +226,62 @@ public class WarpControl : MonoBehaviour {
         image.color = color;
         StartCoroutine(_FadeAfterImage(image, color));
         Destroy(image.gameObject, _afterImageDuration); // コルーチンが止まっても残り続けないようにする
+    }
+
+    // ワープ先で見た目を一瞬光らせる(連続ワープでは最初から光り直す)
+    private void _PlayWarpFlash() {
+        if (_warpFlashMaterial == null || _afterImageSource == null || _warpFlashDuration <= 0f) return;
+        if (_warpFlash == null) {
+            _warpFlash = new GameObject("WarpFlash").AddComponent<SpriteRenderer>();
+            _warpFlash.transform.SetParent(_afterImageSource.transform, false);
+            _warpFlash.sharedMaterial = _warpFlashMaterial;
+        }
+        if (_warpFlashRoutine != null) StopCoroutine(_warpFlashRoutine);
+        _warpFlashRoutine = StartCoroutine(_WarpFlashRoutine());
+    }
+
+    private IEnumerator _WarpFlashRoutine() {
+        var src = _afterImageSource;
+        _warpFlash.enabled = true;
+        _warpFlash.sortingLayerID = src.sortingLayerID;
+        _warpFlash.sortingOrder = src.sortingOrder + 1; // 本体の手前に重ねる
+        var color = _warpFlashColor;
+        // ワープ先に出た直後はワープのアニメーション(姿がほぼ見えない)なので、姿が戻るまでは薄めずに待つ
+        var anim = src.GetComponent<Animator>();
+        for (float wait = 0f; wait < _WARP_FLASH_MAX_WAIT && anim != null && _IsWarpAnimation(anim); wait += Time.deltaTime) {
+            _UpdateWarpFlash(src, _warpFlashColor);
+            yield return null;
+        }
+        for (float t = 0f; t < _warpFlashDuration; t += Time.deltaTime) {
+            color.a = _warpFlashColor.a * (1f - t / _warpFlashDuration);
+            _UpdateWarpFlash(src, color);
+            yield return null;
+        }
+        _warpFlash.enabled = false;
+        _warpFlashRoutine = null;
+    }
+
+    private const float _WARP_FLASH_MAX_WAIT = 0.3f; // 姿が戻るのを待つ時間の上限
+
+    private static bool _IsWarpAnimation(Animator anim) {
+        var state = anim.GetCurrentAnimatorStateInfo(0);
+        return state.IsName("Warp_Enter") || state.IsName("Warp_Exit");
+    }
+
+    // 本体のアニメーションに合わせて、同じ絵を重ねる
+    private void _UpdateWarpFlash(SpriteRenderer src, Color color) {
+        _warpFlash.sprite = src.sprite;
+        _warpFlash.flipX = src.flipX;
+        _warpFlash.flipY = src.flipY;
+        color.a *= src.color.a;
+        _warpFlash.color = color;
+        _warpFlash.enabled = src.enabled; // 姿を消している時(コインレールの演出など)は光らせない
+    }
+
+    private void OnDisable() {
+        // 途中で止まっても光ったまま残らないようにする
+        if (_warpFlash != null) _warpFlash.enabled = false;
+        _warpFlashRoutine = null;
     }
 
     private IEnumerator _FadeAfterImage(SpriteRenderer image, Color color) {
