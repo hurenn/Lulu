@@ -367,6 +367,8 @@ public class Ability_Fire : Ability_Base
             if (viewport.z <= 0f || viewport.x < 0f || viewport.x > 1f || viewport.y < 0f || viewport.y > 1f) continue;
             // 能力が使えないエリアの中にいる相手には当たらない
             if (AbilitySealArea.Contains(bounds.center)) continue;
+            // 演出中などのイベント無敵の相手には当たらない(被弾無敵は下で貫通させる)
+            if (target is Character_Base character && character.IsEventInvincible) continue;
 
             // 連続で当てるため、無敵時間は付けず、無敵中でも当てる
             if (target.Damage(_specialHitDamage, Vector2.zero, 0f, 0f, false, true)) {
