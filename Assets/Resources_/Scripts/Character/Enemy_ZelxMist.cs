@@ -306,7 +306,7 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
         Time.timeScale = 0.1f;
         flash?.Flash();
         _anim.Play("Die");
-        yield return new WaitForSecondsRealtime(0.2f);
+        yield return Pause_UI.WaitForUnpausedSeconds(0.2f);
         //flash?.Flash(3.0f);
 
         // BGM停止
@@ -314,27 +314,22 @@ public class Enemy_ZelxMist : Enemy_Base, IActivatable {
             _audioBGM.volume = 0f;
         }
 
-        yield return new WaitForSecondsRealtime(4.0f);
+        yield return Pause_UI.WaitForUnpausedSeconds(4.0f);
 
         cinemachineManager.ReturnToPlayer();
 
         // 徐々に時間を戻す
-        float timeScale = Time.timeScale;
-        while (timeScale < 1f) {
-            timeScale += Time.unscaledDeltaTime;
-            Time.timeScale = Mathf.Min(timeScale, 1f);
-            yield return null;
-        }
+        yield return Pause_UI.RestoreTimeScaleGradually();
 
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return Pause_UI.WaitForUnpausedSeconds(0.5f);
 
         // === 4. 爆発 ===
         if (_dieExplosion != null) {
             // 爆発エフェクト生成
             flash?.Flash();
-            yield return new WaitForSecondsRealtime(0.2f);
+            yield return Pause_UI.WaitForUnpausedSeconds(0.2f);
             flash?.Flash();
-            yield return new WaitForSecondsRealtime(0.5f);
+            yield return Pause_UI.WaitForUnpausedSeconds(0.5f);
 
             Instantiate(_dieExplosion, transform.position, Quaternion.identity);
             cinemachineManager.ShakeCamera(duration: 0.5f);

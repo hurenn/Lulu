@@ -737,30 +737,25 @@ public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDama
         Time.timeScale = 0.1f;
         flash?.Flash();
         if (_anim != null && _anim.HasState(0, Animator.StringToHash("Die"))) _anim.Play("Die");
-        yield return new WaitForSecondsRealtime(0.2f);
+        yield return Pause_UI.WaitForUnpausedSeconds(0.2f);
 
         // BGM停止
         if (_audioBGM != null) _audioBGM.volume = 0f;
 
-        yield return new WaitForSecondsRealtime(4.0f);
+        yield return Pause_UI.WaitForUnpausedSeconds(4.0f);
 
         cinemachine_manager?.ReturnToPlayer();
 
         // 徐々に時間を戻す
-        float time_scale = Time.timeScale;
-        while (time_scale < 1f) {
-            time_scale += Time.unscaledDeltaTime;
-            Time.timeScale = Mathf.Min(time_scale, 1f);
-            yield return null;
-        }
+        yield return Pause_UI.RestoreTimeScaleGradually();
 
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return Pause_UI.WaitForUnpausedSeconds(0.5f);
 
         // 爆発
         flash?.Flash();
-        yield return new WaitForSecondsRealtime(0.2f);
+        yield return Pause_UI.WaitForUnpausedSeconds(0.2f);
         flash?.Flash();
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return Pause_UI.WaitForUnpausedSeconds(0.5f);
 
         if (_dieExplosion != null) {
             var explosion = Instantiate(_dieExplosion, transform.position, Quaternion.identity);

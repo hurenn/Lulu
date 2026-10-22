@@ -46,6 +46,33 @@ public class Pause_UI : MonoBehaviour {
         Time.timeScale = scale;
     }
 
+    /// <summary>
+    /// ポーズ中は進まない実時間の待機(スロー演出中など、timeScaleに影響されずに待ちたい時に使う)
+    /// </summary>
+    public static IEnumerator WaitForUnpausedSeconds(float seconds) {
+        float elapsed = 0f;
+        while (elapsed < seconds) {
+            if (!isOpen) elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    /// <summary>
+    /// 時間の流れを徐々に通常速度(1)へ戻す。ポーズ中は戻すのを止める
+    /// </summary>
+    public static IEnumerator RestoreTimeScaleGradually() {
+        // ポーズ中はtimeScaleが0になっているため、閉じて元の値に戻ってから読む
+        while (isOpen) yield return null;
+        float time_scale = Time.timeScale;
+        while (time_scale < 1f) {
+            if (!isOpen) {
+                time_scale += Time.unscaledDeltaTime;
+                Time.timeScale = Mathf.Min(time_scale, 1f);
+            }
+            yield return null;
+        }
+    }
+
     private Coroutine _arrowScaleCoroutine; // 矢印拡縮コルーチン
     private Coroutine _panelFadeCoroutine; // パネルフェードコルーチン
     private Coroutine _subPanelMoveCoroutine; // サブパネル移動コルーチン
