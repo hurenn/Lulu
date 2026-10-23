@@ -365,8 +365,6 @@ public class Ability_Fire : Ability_Base
             var bounds = col.bounds;
             var viewport = cam.WorldToViewportPoint(bounds.center);
             if (viewport.z <= 0f || viewport.x < 0f || viewport.x > 1f || viewport.y < 0f || viewport.y > 1f) continue;
-            // 能力が使えないエリアの中にいる相手には当たらない
-            if (AbilitySealArea.Contains(bounds.center)) continue;
             // 演出中などのイベント無敵の相手には当たらない(被弾無敵は下で貫通させる)
             if (target is Character_Base character && character.IsEventInvincible) continue;
 

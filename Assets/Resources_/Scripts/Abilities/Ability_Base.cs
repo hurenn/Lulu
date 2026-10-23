@@ -98,8 +98,8 @@ public class Ability_Base : MonoBehaviour {
     // オーバーヒートによるキャンセル
     protected bool _cancelByOverheat => _charaParam == null || (_charaParam.isOverheat && !_isAppearing);
 
-    // 能力が使えないエリア(AbilitySealArea)の中にいる
-    protected bool _isSealed => _playerTransform != null && AbilitySealArea.Contains(_playerTransform.position);
+    // 能力使用不可エリア(AbilitySealArea)の中にいる(ワープ以外の能力は、MPが残っていても使えない)
+    protected bool _isSealed => _charaParam != null && _charaParam.isInSealArea;
 
     // オーバーヒート・能力が使えないエリアによって使用不可
     protected bool _cannotUse => _cancelByOverheat || _isSealed;

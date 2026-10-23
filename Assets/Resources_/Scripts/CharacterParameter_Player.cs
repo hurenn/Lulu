@@ -50,6 +50,15 @@ public class CharacterParameter_Player : CharacterParameter {
 
     // オーバーヒート中かどうか
     public bool isOverheat { get; set; }
+
+    // 能力使用不可エリア(AbilitySealArea)の中にいるか
+    // エリアの中ではMPを急激に吸い取られ、0になってもオーバーヒートしない。MPは回復しない(強制回復・レベルアップを除く)
+    public bool isInSealArea { get; set; }
+    private const float _sealDrainTime = 0.1f; // レベル1の最大MPを吸い取りきるまでの時間
+    private float _sealDrainRate => _defaultMaxMP / _sealDrainTime;
+    // エリアの中でMPが0になり、ワープが使えない状態か(吸い取られている途中でMPが残っていれば、まだワープできる)
+    // ワープ以外の能力は、エリアの中ではMPに関係なく使えない(isInSealArea)
+    public bool isMpSealed => isInSealArea && _currentMP <= 0f;
     // MP回復不可タイマー
     private float _currentUnRecoverableTime_MP = 0.0f;
     public void SetUnRecoverTime_MP(float time) {
@@ -71,6 +80,11 @@ public class CharacterParameter_Player : CharacterParameter {
 
         // オーバーヒートタイマーの更新
         _UpdateOverheatTimer();
+        // 能力使用不可エリアの中ではMPを吸い取る(オーバーヒート中は吸い取らず、回復を進める)
+        if (isInSealArea && !isOverheat && _currentMP > 0f) {
+            _currentMP = Mathf.Max(0f, _currentMP - _sealDrainRate * Time.deltaTime);
+            _UpdateMPUI();
+        }
         // MP回復不可タイマーの更新
         if (_currentUnRecoverableTime_MP > 0) {
             _currentUnRecoverableTime_MP -= Time.deltaTime;
@@ -127,6 +141,7 @@ public class CharacterParameter_Player : CharacterParameter {
                 // オーバーヒート解除
                 isOverheat = false;
                 _currentMP = _maxMP;
+                _EmptyMpIfInSealArea();
             }
             _UpdateMPUI();
         }
@@ -179,9 +194,9 @@ public class CharacterParameter_Player : CharacterParameter {
 
         _currentMP -= amount;
         if (_currentMP < 0) {
-            // オーバーヒート処理
+            // オーバーヒート処理(能力使用不可エリアの中ではオーバーヒートしない)
             _currentMP = 0;
-            isOverheat = true;
+            if (!isInSealArea) isOverheat = true;
         }
 
         // MPゲージの更新
@@ -194,7 +209,7 @@ public class CharacterParameter_Player : CharacterParameter {
     /// <param name="amount">回復値</param>
     /// <param name="force">強制回復フラグ</param>
     public bool RecoverMP(float amount, bool force = false) {
-        if (!force && (isOverheat || _currentUnRecoverableTime_MP > 0)) {
+        if (!force && (isOverheat || isInSealArea || _currentUnRecoverableTime_MP > 0)) {
             // 回復不可判定
             return false;
         }
@@ -213,7 +228,16 @@ public class CharacterParameter_Player : CharacterParameter {
     public void OnRecoverOverheat() {
         isOverheat = false;
         _currentMP = _maxMP;
+        _EmptyMpIfInSealArea();
         _UpdateMPUI();
+    }
+
+    // オーバーヒートから回復した瞬間に能力使用不可エリアの中にいたら、ゲージを減らす動きなしで即座にMPを0にする
+    private void _EmptyMpIfInSealArea() {
+        if (!isInSealArea) return;
+        _currentMP = 0f;
+        _viewMP = 0f;
+        _currentWaitViewMpGauge = 0f; // ゲージの表示待ちで0の反映が遅れないようにする
     }
     public void AddMaxMP(float amount) {
         _maxMP += amount;
@@ -230,7 +254,9 @@ public class CharacterParameter_Player : CharacterParameter {
 
         // 表示用MPの更新
         if (_viewMP != _currentMP) {
-            _viewMP = Mathf.MoveTowards(_viewMP, _currentMP, 600.0f * Time.unscaledDeltaTime);
+            // (能力使用不可エリアで吸い取られている時は、ゲージも吸い取りに遅れずに減らす)
+            float view_speed = isInSealArea ? Mathf.Max(600.0f, _sealDrainRate * 1.5f) : 600.0f;
+            _viewMP = Mathf.MoveTowards(_viewMP, _currentMP, view_speed * Time.unscaledDeltaTime);
             if (_viewMP < _maxMP) {
                 _isViewMpFilled = false;
             }

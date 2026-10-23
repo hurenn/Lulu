@@ -98,6 +98,9 @@ public class Player_Character : Character_Base {
     protected override void _UpdateSpecials() {
         base._UpdateSpecials();
 
+        // 能力使用不可エリアの判定(着地時のMP回復や能力の判定より先に行う)
+        _UpdateSealArea();
+
         // 自動発光設定は_UpdateWarpDash()より先に行う。
         // _UpdateWarpDash()内の壁接触チェックで同一フレーム中に_isWarpDashingがfalseに戻ることがあり、
         // 後から判定すると壁ダッシュへの切替が発光より先に確定してしまうため
@@ -418,6 +421,7 @@ public class Player_Character : Character_Base {
             input.abilityB.pressed = false;
         }
         _inputData = input;
+        _UpdateSealArea(); // 能力を使う前に、能力使用不可エリアの判定を最新にする
         for (int i = 0; i < _abilities.Length; i++) {
             eAbilitySlot slot = (eAbilitySlot)i;
             var button = input.GetAbilityButton(slot);
@@ -814,8 +818,8 @@ public class Player_Character : Character_Base {
                 return;
             }
 
-            if (AbilitySealArea.Contains(transform.position)) {
-                // 能力が使えないエリアの中では必ずワープ失敗(MPも消費しない)
+            if (_IsWarpSealed()) {
+                // 能力使用不可エリアの中でMPが0の時はワープ失敗
                 return;
             }
 
@@ -1022,11 +1026,27 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
+    /// 能力使用不可エリアの中にいるかをMPの管理側へ伝える(エリアの中ではMPを吸い取られる)
+    /// </summary>
+    private void _UpdateSealArea() {
+        if (_player_charaParam != null) {
+            _player_charaParam.isInSealArea = AbilitySealArea.Contains(transform.position);
+        }
+    }
+
+    // 能力使用不可エリアの中でMPが0になり、ワープが使えない状態か(ワープ以外の能力はエリアの中では常に使えない)
+    private bool _IsWarpSealed() {
+        _UpdateSealArea();
+        return _player_charaParam != null && _player_charaParam.isMpSealed;
+    }
+
+    /// <summary>
     /// 氷自動攻撃実行
     /// </summary>
     private void _OnExecuteIceAutoAttack(Enemy_Base target_enemy) {
-        // 能力が使えないエリアの中では自動攻撃しない
-        if (AbilitySealArea.Contains(transform.position)) {
+        // 能力使用不可エリアの中では自動攻撃しない(ワープ以外の能力は、MPが残っていても使えない)
+        _UpdateSealArea();
+        if (_player_charaParam != null && _player_charaParam.isInSealArea) {
             return;
         }
         var ability = _GetAbility<Ability_Ice>();

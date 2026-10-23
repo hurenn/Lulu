@@ -409,9 +409,6 @@ public class WarpControl : MonoBehaviour {
             // 間にワープ禁止エリアがあって届かないコインには飛ばずに終える(手前で止まる中途半端なワープを出さない)
             if (Physics2D.Linecast(transform.position, coin.position, LayerMask.GetMask("WarpProhibitedArea")).collider != null) break;
 
-            // 能力が使えないエリアの中からはワープできない
-            if (AbilitySealArea.Contains(transform.position)) break;
-
             // 保険: 直前にワープしたコインがまた選ばれた(=届かず取得できなかった)場合は、再ワープせずに終える
             if (coin == last_coin) break;
             last_coin = coin;

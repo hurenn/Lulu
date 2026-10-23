@@ -1,10 +1,12 @@
 using UnityEngine;
 
 /// <summary>
-/// 能力が使えないエリア
-/// ・エリア内ではワープも含め、全ての能力が発動失敗する(光の能力の効果も消える)
+/// 能力使用不可エリア
+/// ・エリアに入った瞬間から、ワープ以外の能力は発動失敗する(光の能力の効果も消える)
+/// ・エリア内ではMPを急激に吸い取られ(CharacterParameter_Player.isInSealArea)、0になるとワープも発動失敗する
+///   0になってもオーバーヒートはせず、エリアの外で通常通りMPが回復する
 /// ・外からエリア内へのワープは、エリアとの境界線で止まる
-/// ・能力の攻撃(AbilitySealTargetを付けた物)はエリアに触れると消える
+/// ・AbilitySealTargetを付けた物はエリアに触れると消える(現在は付けている攻撃は無い)
 /// 判定はAbilitySealAreaレイヤーのコライダー(トリガー)で行う。物理的には何とも衝突しない
 /// </summary>
 [ExecuteAlways] // エディタ上で動かした時も見た目の範囲を更新する
@@ -37,6 +39,8 @@ public class AbilitySealArea : MonoBehaviour {
     /// </summary>
     /// <returns>経路がエリアに入ったか</returns>
     public static bool ClipPath(Vector2 from, ref Vector2 to) {
+        // エリアの中から(MPが残っている間)のワープは止めない
+        if (Contains(from)) return false;
         var hit = Physics2D.Linecast(from, to, LayerMask);
         if (hit.collider == null) return false;
         to = hit.point - (to - from).normalized * _BOUNDARY_OFFSET;
