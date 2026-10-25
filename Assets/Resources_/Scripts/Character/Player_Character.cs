@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +16,8 @@ public class Player_Character : Character_Base {
     [SerializeField] private WarpControl _warpControl;
     // ワープエフェクト
     [SerializeField] private GameObject _warpEffectPrefab;
+    // 被弾演出(Feel)
+    [SerializeField] private MMF_Player _damageFeedback;
     // ワープのクールタイム計測
     private float _currentWarpCoolTime = 0;
     // ワープダッシュ時間計測
@@ -607,6 +610,9 @@ public class Player_Character : Character_Base {
         bool isDamaged = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
         if (isDamaged) {
             ScreenFlash.Instance?.Flash(0.4f, new Color(1f, 0f, 0f, 0.2f));
+            if (_damageFeedback != null) {
+                _damageFeedback.PlayFeedbacks();
+            }
         }
         return isDamaged;
     }

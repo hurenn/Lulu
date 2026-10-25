@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 public class HP_Heart : MonoBehaviour {
@@ -11,11 +12,20 @@ public class HP_Heart : MonoBehaviour {
     // 出現エフェクト
     [SerializeField] private GameObject _effectPrefab;
 
+    // ハートが割れた時の演出(Feel)
+    [SerializeField] private MMF_Player _breakFeedback;
+    // 初回の表示設定かどうか(生成直後の状態合わせでは割れる演出を出さない)
+    private bool _isFillInitialized = false;
+
     /// <summary>
     /// ハートを満タンにする
     /// </summary>
     public void SetFill(bool is_fill) {
         if (_hpFill != null) {
+            // 満タンから空になった時だけ割れる演出を再生
+            if (_isFillInitialized && !is_fill && _hpFill.activeSelf && _breakFeedback != null) {
+                _breakFeedback.PlayFeedbacks();
+            }
             _hpFill.SetActive(is_fill);
             // HP回復アニメーション再生
             if (_hpBreakHeart != null && is_fill && _hpBreakHeart.activeSelf) {
@@ -23,6 +33,7 @@ public class HP_Heart : MonoBehaviour {
             }
         }
         if (_hpBreakHeart != null) { _hpBreakHeart.SetActive(!is_fill); }
+        _isFillInitialized = true;
     }
 
     /// <summary>

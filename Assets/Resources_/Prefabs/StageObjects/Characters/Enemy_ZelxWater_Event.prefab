@@ -329,6 +329,9 @@ MonoBehaviour:
   isAutoLockOn: 1
   _damageZone: {fileID: 8174074826902986305}
   _dieExplosion: {fileID: 0}
+  _hitFeedback: {fileID: 9051881408340185142}
+  _hitFlash: {fileID: 3519860331453266822}
+  _dieFeedback: {fileID: 0}
   _hpGauge: {fileID: 8036074180215949013}
   _edgeMargin: 0
   _edgeSmoothTime: 0.3
@@ -365,6 +368,17 @@ MonoBehaviour:
   _missDistanceRange: {x: 2.5, y: 5}
   _barrage1LifetimeRange: {x: 1, y: 2}
   _seShoot: {fileID: 0}
+--- !u!114 &3519860331453266822 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9162485824582319393, guid: 5c9762444cb325149867604f7c4225d0, type: 3}
+  m_PrefabInstance: {fileID: 5764253491204015783}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e751398e5f7fb5d4f961f6e955277093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &4119943007738410162 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 8561980972468236821, guid: 5c9762444cb325149867604f7c4225d0, type: 3}
@@ -429,6 +443,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4429642295956062840, guid: 5c9762444cb325149867604f7c4225d0, type: 3}
   m_PrefabInstance: {fileID: 5764253491204015783}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9051881408340185142 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3629901489168782993, guid: 5c9762444cb325149867604f7c4225d0, type: 3}
+  m_PrefabInstance: {fileID: 5764253491204015783}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &9175227432463841211 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 3506697441106227484, guid: 5c9762444cb325149867604f7c4225d0, type: 3}

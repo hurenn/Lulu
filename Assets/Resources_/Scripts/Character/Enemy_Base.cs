@@ -1,4 +1,5 @@
 using System.Collections;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,12 @@ public class Enemy_Base : Character_Base
     [SerializeField] private DamageZone _damageZone;
 
     [SerializeField] protected GameObject _dieExplosion = null;
+    // 被弾演出(Feel)
+    [SerializeField] private MMF_Player _hitFeedback;
+    // 被弾時に見た目へ重ねる光(見た目のオブジェクトはVariantごとに違うため、実行時に_spriteの子へ移す)
+    [SerializeField] private SpriteFlashOverlay _hitFlash;
+    // 撃破演出(Feel)。爆発と同時に再生する(独自の撃破処理を持つボスはEnemy_Base.Dieを通らないため鳴らない)
+    [SerializeField] private MMF_Player _dieFeedback;
     public System.Action OnDowned = null;
     public System.Action OnSeriously = null;
     public System.Action OnHalfHP = null; // HPが半分を切った時(ダウン演出を伴わないボス用)
@@ -39,6 +46,9 @@ public class Enemy_Base : Character_Base
         base._Setup();
         if (_lockonMarkerAnim != null) {
             _lockonMarkerAnim.gameObject.SetActive(false);
+        }
+        if (_hitFlash != null) {
+            _hitFlash.Attach(_sprite);
         }
         if (_hpGauge != null && _charaParam != null) {
             _charaParam.OnHPChanged += _UpdateHPGauge;
@@ -76,6 +86,15 @@ public class Enemy_Base : Character_Base
         _hideGaugeCoroutine = null;
     }
 
+    public override bool Damage(int damage, Vector2 blow_power_right, float invincible_time, float damage_reaction_time, bool is_trap_damage = false, bool ignore_invincibility = false) {
+        bool result = base.Damage(damage, blow_power_right, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
+        // ダメージ0(演出中でダメージを無効化している等)の時は、効いたように見せない
+        if (result && damage > 0 && _hitFeedback != null) {
+            _hitFeedback.PlayFeedbacks();
+        }
+        return result;
+    }
+
     protected override IEnumerator Die() {
         yield return base.Die();
         // ダメージゾーン無効化
@@ -105,6 +124,9 @@ public class Enemy_Base : Character_Base
         if (_dieExplosion != null) {
             // 爆発エフェクト生成
             Instantiate(_dieExplosion, transform.position, Quaternion.identity);
+        }
+        if (_dieFeedback != null) {
+            _dieFeedback.PlayFeedbacks();
         }
         Destroy(gameObject);
     }

@@ -192,6 +192,9 @@ MonoBehaviour:
   isAutoLockOn: 1
   _damageZone: {fileID: 8508692810715132971}
   _dieExplosion: {fileID: 2517521421506470330, guid: 1e344d30bed35294c804f29dfda3bea1, type: 3}
+  _hitFeedback: {fileID: 8861510212030298716}
+  _hitFlash: {fileID: 4016604944229011948}
+  _dieFeedback: {fileID: 0}
   _hpGauge: {fileID: 7557330837326163135}
   _isOnRightSide: 1
   _edgeMargin: 0
@@ -264,6 +267,17 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 2939713347226956819, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
   m_PrefabInstance: {fileID: 532786745936947818}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4016604944229011948 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3519860331453266822, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
+  m_PrefabInstance: {fileID: 532786745936947818}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e751398e5f7fb5d4f961f6e955277093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &4487886432400154328 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 4119943007738410162, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
@@ -333,3 +347,14 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 9175227432463841211, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
   m_PrefabInstance: {fileID: 532786745936947818}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8861510212030298716 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9051881408340185142, guid: 1f3c5d35e15ab0049b86f8fc5059d861, type: 3}
+  m_PrefabInstance: {fileID: 532786745936947818}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
