@@ -37,6 +37,15 @@ public class WarpControl : MonoBehaviour {
     // ワープ共通処理
     System.Action _onPreWarpCommon = null;
     System.Action _onWarpEndCommon = null;
+    // コインワープでワープ先に着いた瞬間
+    System.Action _onCoinWarpArrived = null;
+
+    /// <summary>
+    /// コインワープでワープ先に着いた瞬間に呼ぶ処理を設定する
+    /// </summary>
+    public void SetCoinWarpArrivedCallback(System.Action callback) {
+        _onCoinWarpArrived = callback;
+    }
 
     // 最後にワープした方向
     public eWarpDirection lastWarpDir { get; private set; } = eWarpDirection.Right;
@@ -165,9 +174,10 @@ public class WarpControl : MonoBehaviour {
     /// </summary>
     /// <param name="safe_point">ワープ先</param>
     private IEnumerator _ExecuteWarpCommon(
-        Vector2 safe_point, 
+        Vector2 safe_point,
         bool is_warp_camera = true,
-        float end_delay = 0.0f
+        float end_delay = 0.0f,
+        bool is_coin_warp = false
         ) {
 
         // safe_pointとの間に"WarpProhibitedArea"がある場合は手前で止める
@@ -190,6 +200,8 @@ public class WarpControl : MonoBehaviour {
         _SpawnAfterImage();
         transform.position = safe_point;
         _PlayWarpFlash();
+        // コインワープでワープ先に着いた(氷の能力の自動攻撃などに使う)
+        if (is_coin_warp) _onCoinWarpArrived?.Invoke();
 
         // ワープ集中線エフェクト再生
         PlayWarpFocusEffect();
@@ -347,7 +359,7 @@ public class WarpControl : MonoBehaviour {
         // コインワープチェック（指定方向）
         var coin_in_dir = GetCoinInWarpDirection(direction);
         if (coin_in_dir.HasValue) {
-            yield return _ExecuteWarpCommon(coin_in_dir.Value, is_warp_camera: false, end_delay: _coinWarpInterval);
+            yield return _ExecuteWarpCommon(coin_in_dir.Value, is_warp_camera: false, end_delay: _coinWarpInterval, is_coin_warp: true);
             yield return CoinWarp();
             yield break;
         }
@@ -429,7 +441,8 @@ public class WarpControl : MonoBehaviour {
             yield return _ExecuteWarpCommon(
                 coin.position,
                 is_warp_camera:false,
-                end_delay: _coinWarpInterval
+                end_delay: _coinWarpInterval,
+                is_coin_warp: true
                 );
             if (is_sealed_path) break;
         }

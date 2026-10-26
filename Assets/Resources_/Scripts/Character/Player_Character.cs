@@ -79,6 +79,7 @@ public class Player_Character : Character_Base {
         base._Setup();
         if (_warpControl != null) {
             _warpControl.Setup(_OnPreWarpCommon, _OnWarpEndCommon);
+            _warpControl.SetCoinWarpArrivedCallback(_OnCoinWarpArrived);
         }
         _playerParam = PlayerParameter.Instance;
         ApplyPlayerParameter();
@@ -1029,6 +1030,54 @@ public class Player_Character : Character_Base {
         if (ability != null) {
             ability.AutoAvoid();
         }
+    }
+
+    [Header("コインワープ中の氷の自動攻撃")]
+    [SerializeField] private float _coinWarpIceAttackRadius = 3.0f;    // ワープ先のコインからこの距離内にいる敵を攻撃する
+    [SerializeField] private float _coinWarpIceAttackInterval = 0.2f;  // 連続したコインワープで攻撃する最短の間隔(秒)
+    private float _lastCoinWarpIceAttackTime = -999f;
+
+    /// <summary>
+    /// コインワープでワープ先に着いた瞬間の処理
+    /// 氷の能力を持っていて、近くに敵がいたら、ワープの動きは変えずに仲間の自動攻撃だけを出す
+    /// </summary>
+    private void _OnCoinWarpArrived() {
+        var ability = _GetAbility<Ability_Ice>();
+        if (ability == null || _player_charaParam == null || _player_charaParam.isOverheat) return;
+        // 能力使用不可エリアの中では自動攻撃しない
+        _UpdateSealArea();
+        if (_player_charaParam.isInSealArea) return;
+        if (Time.time - _lastCoinWarpIceAttackTime < _coinWarpIceAttackInterval) return;
+
+        var target = _FindNearestEnemy(transform.position, _coinWarpIceAttackRadius);
+        if (target == null) return;
+
+        // 仲間は敵を挟んでルルと反対側に出す(その側に出られなければ、ルル側に出す)
+        bool is_target_right = target.transform.position.x >= transform.position.x;
+        var far_side = is_target_right ? WarpControl.eWarpDirection.Right : WarpControl.eWarpDirection.Left;
+        var near_side = is_target_right ? WarpControl.eWarpDirection.Left : WarpControl.eWarpDirection.Right;
+        var attack_warp_target = target.GetWarpChecker(far_side, true);
+        if (attack_warp_target == null) attack_warp_target = target.GetWarpChecker(near_side, true);
+        if (attack_warp_target == null) return;
+
+        _lastCoinWarpIceAttackTime = Time.time;
+        ability.ExecuteAutoAttack(attack_warp_target, target.transform.position);
+    }
+
+    // 指定した位置から一番近い、生きている敵を探す
+    private static Enemy_Base _FindNearestEnemy(Vector2 center, float radius) {
+        Enemy_Base nearest = null;
+        float nearest_dist = float.MaxValue;
+        foreach (var col in Physics2D.OverlapCircleAll(center, radius, LayerMask.GetMask("Enemy"))) {
+            var enemy = col.GetComponentInParent<Enemy_Base>();
+            if (enemy == null || enemy.isDead) continue;
+            float dist = ((Vector2)enemy.transform.position - center).sqrMagnitude;
+            if (dist < nearest_dist) {
+                nearest_dist = dist;
+                nearest = enemy;
+            }
+        }
+        return nearest;
     }
 
     /// <summary>
