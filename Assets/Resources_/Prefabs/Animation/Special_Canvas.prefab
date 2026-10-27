@@ -963,7 +963,7 @@ PlayableDirector:
   m_GameObject: {fileID: 3593012443632309422}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: fec68c7dfda478e42bc6ba7d9181e249, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: 156d836e251bca248af70e059e3203a0, type: 2}
   m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 2
@@ -981,6 +981,16 @@ PlayableDirector:
     value: {fileID: 7850782228621391602}
   - key: {fileID: 7716009189007194176, guid: fec68c7dfda478e42bc6ba7d9181e249, type: 2}
     value: {fileID: 1127265834516572581}
+  - key: {fileID: -8405722594309939970, guid: 156d836e251bca248af70e059e3203a0, type: 2}
+    value: {fileID: 2928348704985558379}
+  - key: {fileID: 8733151107415170297, guid: 156d836e251bca248af70e059e3203a0, type: 2}
+    value: {fileID: 5984827328925166646}
+  - key: {fileID: 2725771732246271225, guid: 156d836e251bca248af70e059e3203a0, type: 2}
+    value: {fileID: 3637294497844801142}
+  - key: {fileID: -2350095268862076278, guid: 156d836e251bca248af70e059e3203a0, type: 2}
+    value: {fileID: 1434604066197385836}
+  - key: {fileID: 6820297036084592266, guid: fec68c7dfda478e42bc6ba7d9181e249, type: 2}
+    value: {fileID: 1434604066197385836}
   m_ExposedReferences:
     m_References: []
 --- !u!1 &3658494844665409486
@@ -1573,6 +1583,7 @@ GameObject:
   - component: {fileID: 3588813943777663007}
   - component: {fileID: 2275200021926745125}
   - component: {fileID: 5391466513189284255}
+  - component: {fileID: 1434604066197385836}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -1637,6 +1648,28 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!95 &1434604066197385836
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7458088719037148639}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8147349192523250463
 GameObject:
   m_ObjectHideFlags: 0

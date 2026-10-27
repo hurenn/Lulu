@@ -43,6 +43,8 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     protected PlayableDirector _specialTimelineDirector = null;
     [SerializeField] private PlayableDirector _specialTimelinePrefab = null;
+    // 再生する必殺技演出(未設定ならプレハブに設定されているものを再生する。カットインのプレハブを能力の間で共有するため)
+    [SerializeField] private PlayableAsset _specialTimelineAsset = null;
     protected bool _isSpecialUsing = false;
 
     /// <summary>
@@ -131,6 +133,9 @@ public class Ability_Base : MonoBehaviour {
         if (_specialTimelinePrefab) {
             var obj = Instantiate(_specialTimelinePrefab.gameObject);
             _specialTimelineDirector = obj.GetComponent<PlayableDirector>();
+            if (_specialTimelineAsset != null) {
+                _specialTimelineDirector.playableAsset = _specialTimelineAsset;
+            }
             _specialTimelineDirector.stopped += _OnSpecialCutInFinished;
             
             // TimelineがTime.timeScaleの影響を受けないように設定
@@ -340,7 +345,7 @@ public class Ability_Base : MonoBehaviour {
         }
     }
 
-    private Pause_UI GetPauseUI()
+    protected Pause_UI GetPauseUI()
     {
         if (_pauseUIInstance == null)
         {

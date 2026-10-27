@@ -444,7 +444,7 @@ public class Player_Character : Character_Base {
     public void SetAbilitySlot(eAbilityType ability_type, eAbilitySlot ability_slot, bool is_effect = true) {
         // Water差し替え中のFireはWaterの能力として生成する（スロット管理上はFireとして扱う）
         var ability = AbilityFactory.CreateAbility(_GetInstanceType(ability_type), ability_slot,
-            (special_anim) => PlayAnim(special_anim),
+            (special_anim) => { _isSpecialPosing = true; PlayAnim(special_anim); },
             () => _AbilityResult(eAbilityResult.SpecialEnd, _inputData.move), is_effect);
 
         // スロットにセット
@@ -526,7 +526,12 @@ public class Player_Character : Character_Base {
             case eAbilityResult.SpecialEnd:
                 // 操作可能にする
                 _specialUsing = false;
-                _SetEndSpecialTrigger();
+                // 必殺技のポーズを取っている時だけ終了トリガーを立てる
+                // (ポーズを取らない必殺技で立てたままにすると、次の必殺技のポーズがすぐ終わってしまう)
+                if (_isSpecialPosing) {
+                    _isSpecialPosing = false;
+                    _SetEndSpecialTrigger();
+                }
                 break;
             case eAbilityResult.Jump:
                 // ジャンプボタンフラグを立てる
@@ -984,6 +989,38 @@ public class Player_Character : Character_Base {
     // true: 姿を消して発光(LightDome)だけを見せる(コインレールの演出中など)
     private bool _isLightOnlyAppearance = false;
 
+    // 必殺技のポーズ(Special_Marlica等)を取っているか
+    private bool _isSpecialPosing = false;
+    // 必殺技の演出で姿を消しているか
+    private bool _isSpecialHidden = false;
+
+    /// <summary>
+    /// 必殺技の演出で姿を消す(必殺技中は操作できず、重力も無いため、その場に留まる)
+    /// </summary>
+    public void SetSpecialHidden() {
+        _isSpecialHidden = true;
+        _rb.linearVelocity = Vector2.zero;
+        if (_sprite != null) _sprite.enabled = false;
+    }
+
+    /// <summary>
+    /// 必殺技の演出で消していた姿を、指定した位置にワープエフェクトと一緒に表示する
+    /// </summary>
+    public void AppearFromSpecial(Vector2 position, bool is_right) {
+        _isSpecialHidden = false;
+        transform.position = position;
+        _rb.position = position;
+        _rb.linearVelocity = Vector2.zero;
+        _isRight = is_right;
+        if (_sprite != null) {
+            _sprite.enabled = !_isLightOnlyAppearance;
+            _sprite.flipX = _isRight;
+        }
+        if (_warpEffectPrefab != null) {
+            Instantiate(_warpEffectPrefab, transform.position, Quaternion.identity);
+        }
+    }
+
     /// <summary>
     /// 姿を消して発光(LightDome)だけを見せる状態にする
     /// ワープの合間も発光を切らさず、姿は毎フレーム消し直す(アニメーション等で再表示されても見えないように)
@@ -997,7 +1034,7 @@ public class Player_Character : Character_Base {
     }
 
     private void LateUpdate() {
-        if (_isLightOnlyAppearance && _sprite != null && _sprite.enabled) {
+        if ((_isLightOnlyAppearance || _isSpecialHidden) && _sprite != null && _sprite.enabled) {
             _sprite.enabled = false;
         }
     }

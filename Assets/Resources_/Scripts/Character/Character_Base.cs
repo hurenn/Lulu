@@ -122,6 +122,16 @@ public class Character_Base : MonoBehaviour, IDamageable {
     protected bool _isDead = false;
     public bool isDead => _isDead;
 
+    // 現在のHP
+    public int currentHP => _charaParam != null ? _charaParam.CurrentHP : 0;
+
+    /// <summary>
+    /// HPの下限を設定する(必殺技の演出中など、演出が終わるまで倒れないようにする)。0で下限なし
+    /// </summary>
+    public void SetMinHP(int min_hp) {
+        if (_charaParam != null) _charaParam.minHP = min_hp;
+    }
+
     // ジャンプエフェクト
     [SerializeField]
     protected GameObject _jumpEffect = null;

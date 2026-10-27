@@ -38,6 +38,9 @@ public class CharacterParameter : MonoBehaviour {
     public System.Action<int> OnHPChanged;
     public System.Action<int> OnMaxHPChanged;
 
+    // HPの下限(必殺技の演出中など、演出が終わるまで倒れないようにする)。0なら下限なし
+    public int minHP { get; set; } = 0;
+
     // 無敵時間
     protected float _currentInvincibilityTimer = 0;
     public float currentInvincibilityTimer { set => _currentInvincibilityTimer = value; }
@@ -79,7 +82,8 @@ public class CharacterParameter : MonoBehaviour {
     /// ダメージ発生
     /// </summary>
     public void ExecuteDamage(int damage, float invincibility_time, ref bool is_die) {
-        CurrentHP -= damage;
+        // 下限より少なくはしない(既に下限を下回っている時は、それ以上減らさない)
+        CurrentHP = Mathf.Max(CurrentHP - damage, Mathf.Min(minHP, CurrentHP));
         _currentInvincibilityTimer = invincibility_time;
 
         is_die = CurrentHP <= 0;

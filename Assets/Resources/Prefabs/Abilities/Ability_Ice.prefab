@@ -47,7 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isGround: 1
   _specialChargeTime: 60
-  _specialTimelinePrefab: {fileID: 0}
+  _specialTimelinePrefab: {fileID: 4311468691193044393, guid: e59a36299ddf5d349b6591221e4202bc, type: 3}
+  _specialTimelineAsset: {fileID: 11400000, guid: 156d836e251bca248af70e059e3203a0, type: 2}
   _returnTime: 0.7
   _localPosition: {x: -0.4, y: -0.3, z: 1}
   _rend: {fileID: 2913760439177407100}
@@ -58,6 +59,27 @@ MonoBehaviour:
   _slash2: {fileID: 3568965013177453205, guid: 4b72e1cb41d4c294fb83b45a2d17c16f, type: 3}
   _slash3: {fileID: 3568965013177453205, guid: 09088dd8cbcea0c41bce9975dc2537cd, type: 3}
   _lockonSlash: {fileID: 3568965013177453205, guid: 65b8a166ce83b3d45bcf7f20a15c30a4, type: 3}
+  _specialFirstAttackPrefab: {fileID: 7444988537484354709, guid: 0bc53f9119a06ef4fb96c6a201b478fc, type: 3}
+  _specialFirstAttackSpeed: 30
+  _specialFirstAttackTime: 0.5
+  _specialFirstAttackDamage: 2
+  _specialAttackPrefab: {fileID: 7444988537484354709, guid: 8b9379f73fe107646906dcb0a3e53cee, type: 3}
+  _specialAttackDuration: 3
+  _specialAttackHitCount: 30
+  _specialAttackDamage: 2
+  _specialAttackIntervalRate: 0.1
+  _specialAttackOverlapTime: 1.5
+  _specialAttackDistance: 9
+  _specialAttackDashTime: 0.12
+  _specialAttackAngleRange: 35
+  _specialAttackHitStopTime: 0.04
+  _specialFinishChargeTime: 2
+  _specialFinishDistance: 10
+  _specialFinishDashTime: 0.15
+  _specialFinishDamage: 30
+  _specialFinishChargeColor: {r: 0.55, g: 0.85, b: 1, a: 1}
+  _specialFinishImage: {fileID: -2686280360948332380, guid: 499cab694ddacbc44abd3aaf9aca53e2, type: 3}
+  _specialFinishImageTime: 2
 --- !u!1 &7168331570189894412
 GameObject:
   m_ObjectHideFlags: 0
