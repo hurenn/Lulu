@@ -64,6 +64,7 @@ MonoBehaviour:
   _specialFirstAttackTime: 0.2
   _specialFirstAttackDamage: 2
   _specialFirstAttackHitStopTime: 0.5
+  _specialFirstAttackPassTime: 0.1
   _specialFirstAttackWait: 0.5
   _specialMissRemainCharge: 0.5
   _specialAttackPrefab: {fileID: 7444988537484354709, guid: 8b9379f73fe107646906dcb0a3e53cee, type: 3}
@@ -87,7 +88,7 @@ MonoBehaviour:
   _specialFinishDashTime: 0.15
   _specialFinishDamage: 30
   _specialFinishChargeColor: {r: 0.55, g: 0.85, b: 1, a: 1}
-  _specialFinishImage: {fileID: -2686280360948332380, guid: 499cab694ddacbc44abd3aaf9aca53e2, type: 3}
+  _specialFinishImage: {fileID: 3601875134914777632, guid: 871284184c80e784c802012f824156b3, type: 3}
   _specialFinishImageTime: 1
   _specialFinishImageFadeTime: 0.1
   _specialFinishChargeShake: 0.08
@@ -102,9 +103,8 @@ MonoBehaviour:
   _seSpecialHit: {fileID: 8300000, guid: 89842efe1c05881478fd78d5add66dda, type: 3}
   _seSpecialHitVolume: 0.5
   _seSpecialFinishHit:
-  - {fileID: 8300000, guid: 89842efe1c05881478fd78d5add66dda, type: 3}
   - {fileID: 8300000, guid: 37cc3b82c04beff4bb972851be2c8f02, type: 3}
-  _seSpecialFinishHitVolume: 1
+  _seSpecialFinishHitVolume: 2
   _seSpecialCharge: {fileID: 8300000, guid: 5e7169369cd60ab489fc73012a2f089b, type: 3}
   _seSpecialChargeVolume: 1
   _specialBgmVolumeRate: 0.2

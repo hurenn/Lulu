@@ -275,6 +275,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4888931818201723815, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
       propertyPath: _damageToEnemy
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4888931818201723815, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
+      propertyPath: _hitEffectSize
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4888931818201723815, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
@@ -285,6 +289,10 @@ PrefabInstance:
       propertyPath: _damageToPlayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4888931818201723815, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
+      propertyPath: _hitEffectPrefab
+      value: 
+      objectReference: {fileID: 7185826913144432842, guid: 56d7091366b6cf4478ab095e6f5eae72, type: 3}
     - target: {fileID: 6886096812899489612, guid: 026a4abc981033c4b96628cc26f541f0, type: 3}
       propertyPath: m_Name
       value: DamageZone

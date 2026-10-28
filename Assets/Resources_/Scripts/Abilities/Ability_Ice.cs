@@ -37,7 +37,8 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private float _specialFirstAttackTime = 0.5f;   // 飛んでいる時間(この間に敵に当たらなければ失敗)
     [SerializeField] private int _specialFirstAttackDamage = 2;
     [SerializeField] private float _specialFirstAttackHitStopTime = 0.3f; // 当たった時に演出を止める時間
-    [SerializeField] private float _specialFirstAttackWait = 0.5f;  // ヒットストップが終わってから連続攻撃を始めるまでの時間(この間、最初の一撃は敵を通過して飛び続ける)
+    [SerializeField] private float _specialFirstAttackPassTime = 0.1f;   // ヒットストップの後、敵を通り抜けてから消えるまでの時間
+    [SerializeField] private float _specialFirstAttackWait = 0.5f;  // ヒットストップが終わってから連続攻撃を始めるまでの時間
     [SerializeField] private float _specialMissRemainCharge = 0.5f; // 敵に当たらず失敗した時に残す必殺技ゲージの割合
 
     [Header("必殺技:連続攻撃(プレイヤーと同じ姿のため、序盤は同時に1体しか出さない)")]
@@ -451,6 +452,8 @@ public class Ability_Ice : Ability_Base {
 
     // 必殺技の間は時間を止め(敵やギミックを止める)、必殺技の演出だけを実時間で動かす。ポーズ中・ヒットストップ中は進めない
     private float _SpecialDeltaTime => Pause_UI.IsOpen || Time.unscaledTime < _specialHitStopEndTime ? 0f : Time.unscaledDeltaTime;
+    // カメラのズームはヒットストップ中も進める(当たった瞬間からズームし始めるため)
+    private float _SpecialZoomDeltaTime => Pause_UI.IsOpen ? 0f : Time.unscaledDeltaTime;
 
     protected override void _UseSpecial() {
         base._UseSpecial();
@@ -538,7 +541,7 @@ public class Ability_Ice : Ability_Base {
 
     private void _UpdateSpecialZoom() {
         if (_specialZoomCenter == null || _specialCameraFocus == null) return;
-        _specialZoomHeight = Mathf.Lerp(_specialZoomHeight, _specialZoomTargetHeight, 1f - Mathf.Exp(-_specialZoomSpeed * _SpecialDeltaTime));
+        _specialZoomHeight = Mathf.Lerp(_specialZoomHeight, _specialZoomTargetHeight, 1f - Mathf.Exp(-_specialZoomSpeed * _SpecialZoomDeltaTime));
         _specialCameraFocus.position = _specialZoomCenter();
         CinemachineManager.Instance?.ZoomOnTarget(_specialCameraFocus, _specialZoomHeight);
     }
@@ -665,7 +668,7 @@ public class Ability_Ice : Ability_Base {
         Vector2 last_center = _GetTargetCenter(target);
         // 終了後にプレイヤーが現れる位置(必殺技を始めた時点で、プレイヤーから遠い方のワープチェッカーの位置)
         Vector2? appear_point = _GetFarWarpPoint(target, _playerTransform != null ? (Vector2)_playerTransform.position : last_center);
-        // 必殺技攻撃中は対象の敵をズームする
+        // 最初の一撃が当たった瞬間から、対象の敵をズームする(ヒットストップ中もズームは進める)
         _SetSpecialZoom(_TargetZoomCenter(target), _specialRushZoomHeight);
         // 最後の一撃は、プレイヤーがいた側から突撃する
         bool is_from_left = _playerTransform == null || _playerTransform.position.x <= last_center.x;
@@ -734,7 +737,7 @@ public class Ability_Ice : Ability_Base {
 
     /// <summary>
     /// 最初の一撃: プレイヤーから正面へ飛ばし、最初に当たった敵を返す(当たらなければnull)
-    /// 当たった時はヒットストップをかけ、その後は敵を通過して連続攻撃が始まるまで飛び続ける
+    /// 当たった時はヒットストップをかけ、ヒットストップが終わったら少し通り抜けてから、ワープエフェクトを出しながら消す
     /// </summary>
     private IEnumerator _SpecialFirstAttack(System.Action<Enemy_Base> on_hit) {
         if (_specialFirstAttackPrefab == null || _playerTransform == null) yield break;
@@ -787,7 +790,7 @@ public class Ability_Ice : Ability_Base {
             _SpecialDamage(hit, _specialFirstAttackDamage, zone);
             CinemachineManager.Instance?.ShakeCamera(0.3f, 0.1f);
             _specialHitStopEndTime = Mathf.Max(_specialHitStopEndTime, Time.unscaledTime + _specialFirstAttackHitStopTime);
-            StartCoroutine(_SpecialFirstAttackPass(obj, velocity, _specialFirstAttackWait));
+            StartCoroutine(_PassFirstAttackAfterHitStop(obj, velocity));
             on_hit(hit);
             yield break;
         }
@@ -797,11 +800,12 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
-    /// 当たった最初の一撃を、敵を通過させて指定時間飛ばしてから消す(ヒットストップ中は止まる)
+    /// 当たった最初の一撃を、ヒットストップの後に少し通り抜けさせてから、ワープエフェクトを出しながら消す
+    /// (ヒットストップ中は_SpecialDeltaTimeが0のため、その場に止まる)
     /// </summary>
-    private IEnumerator _SpecialFirstAttackPass(GameObject obj, Vector3 velocity, float duration) {
+    private IEnumerator _PassFirstAttackAfterHitStop(GameObject obj, Vector3 velocity) {
         float time = 0f;
-        while (time < duration && obj != null) {
+        while (obj != null && time < _specialFirstAttackPassTime) {
             float delta = _SpecialDeltaTime;
             obj.transform.position += velocity * delta;
             time += delta;
