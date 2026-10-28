@@ -39,6 +39,29 @@ public class WarpTrail : MonoBehaviour {
     private readonly List<Vector2> _uvs = new List<Vector2>();
     private readonly List<int> _triangles = new List<int>();
 
+    // 時間を止めている間も消えていくように、実時間で動かすか(ポーズ中は止まる)
+    private bool _useUnscaledTime = false;
+    private float _unscaledClock = 0f;
+
+    /// <summary>
+    /// 軌跡の寿命を実時間で数えるか(必殺技で時間を止めている間など)。切り替えると軌跡を消す
+    /// </summary>
+    public bool useUnscaledTime {
+        get => _useUnscaledTime;
+        set {
+            if (_useUnscaledTime == value) return;
+            _useUnscaledTime = value;
+            Clear();
+            if (_sparkle != null) {
+                var main = _sparkle.main;
+                main.useUnscaledTime = value;
+            }
+        }
+    }
+
+    // 軌跡が消えるまでの時間
+    public float lifetime => _lifetime;
+
     private void Awake() {
         // 軌跡のメッシュはワールド座標で作るので、ルルに付いて動かない別のオブジェクトに描く
         _meshObject = new GameObject(name + "_Mesh");
@@ -78,6 +101,10 @@ public class WarpTrail : MonoBehaviour {
 
     private void LateUpdate() {
         float now = Time.time;
+        if (_useUnscaledTime) {
+            if (!Pause_UI.IsOpen) _unscaledClock += Time.unscaledDeltaTime;
+            now = _unscaledClock;
+        }
         var pos = transform.position;
 
         // 動いた分の点を足す(大きく動いた時は間を補い、キラキラも経路に沿って出す)

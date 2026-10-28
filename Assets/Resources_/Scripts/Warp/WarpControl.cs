@@ -229,22 +229,20 @@ public class WarpControl : MonoBehaviour {
 
     // 今の見た目をその場に複製し、_afterImageDurationかけて薄くしながら消す
     private void _SpawnAfterImage() {
-        if (_afterImageSource == null || _afterImageSource.sprite == null || _afterImageDuration <= 0f) return;
+        AfterImage.Spawn(_afterImageSource, _afterImageColor, _afterImageMaterial, _afterImageDuration);
+    }
 
-        var src = _afterImageSource;
-        var image = new GameObject("WarpAfterImage").AddComponent<SpriteRenderer>();
-        image.transform.SetPositionAndRotation(src.transform.position, src.transform.rotation);
-        image.transform.localScale = src.transform.lossyScale;
-        image.sprite = src.sprite;
-        image.flipX = src.flipX;
-        image.flipY = src.flipY;
-        image.sharedMaterial = _afterImageMaterial != null ? _afterImageMaterial : src.sharedMaterial;
-        image.sortingLayerID = src.sortingLayerID;
-        image.sortingOrder = src.sortingOrder - 1; // 本体より後ろに表示する
-        var color = src.color * _afterImageColor;
-        image.color = color;
-        StartCoroutine(_FadeAfterImage(image, color));
-        Destroy(image.gameObject, _afterImageDuration); // コルーチンが止まっても残り続けないようにする
+    /// <summary>
+    /// ワープの残像と同じ色・材質で、指定した見た目の残像を出す(必殺技の演出など)
+    /// </summary>
+    /// <param name="src">残像にする見た目(nullならルルの見た目)</param>
+    /// <param name="alpha_rate">濃さの倍率</param>
+    /// <param name="duration_rate">消えるまでの時間の倍率</param>
+    /// <param name="use_unscaled_time">時間を止めている間も消えていくようにするか</param>
+    public void SpawnAfterImage(SpriteRenderer src = null, float alpha_rate = 1f, float duration_rate = 1f, bool use_unscaled_time = false) {
+        var color = _afterImageColor;
+        color.a *= alpha_rate;
+        AfterImage.Spawn(src != null ? src : _afterImageSource, color, _afterImageMaterial, _afterImageDuration * duration_rate, use_unscaled_time);
     }
 
     // ワープ先で見た目を一瞬光らせる(連続ワープでは最初から光り直す)
@@ -301,15 +299,6 @@ public class WarpControl : MonoBehaviour {
         // 途中で止まっても光ったまま残らないようにする
         if (_warpFlash != null) _warpFlash.enabled = false;
         _warpFlashRoutine = null;
-    }
-
-    private IEnumerator _FadeAfterImage(SpriteRenderer image, Color color) {
-        float alpha = color.a;
-        for (float t = 0f; t < _afterImageDuration && image != null; t += Time.deltaTime) {
-            color.a = alpha * (1f - t / _afterImageDuration);
-            image.color = color;
-            yield return null;
-        }
     }
 
     /// <summary>

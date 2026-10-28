@@ -58,6 +58,9 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private float _specialAttackHitStopTime = 0.05f;    // ヒットした時に演出を止める時間
     [SerializeField] private float _specialAttackHitShake = 0.15f;       // ヒットした時のカメラの揺れ
     [SerializeField] private float _specialAttackHitShakeTime = 0.08f;
+    [SerializeField] private int _specialAttackGhostCount = 3;           // 通過中に置いていく薄い残像の数
+    [SerializeField] private float _specialAttackGhostAlpha = 0.5f;      // 通過中の残像の濃さ(ワープの残像の濃さに掛ける)
+    [SerializeField] private float _specialAttackGhostTime = 0.5f;       // 通過中の残像が消えるまでの時間(ワープの残像の時間に掛ける)
 
     [Header("必殺技:最後の一撃")]
     [SerializeField] private float _specialFinishChargeTime = 2.0f;    // 力を溜める時間
@@ -663,6 +666,7 @@ public class Ability_Ice : Ability_Base {
         var player = _playerTransform != null ? _playerTransform.GetComponent<Player_Character>() : null;
         if (player != null) {
             _SpawnWarpEffect(player.transform.position);
+            _warpControl?.SpawnAfterImage(null, 1f, 1f, true);
             player.SetSpecialHidden();
         }
         Vector2 last_center = _GetTargetCenter(target);
@@ -891,14 +895,23 @@ public class Ability_Ice : Ability_Base {
         var zone = obj.GetComponentInChildren<DamageZone>(true);
         _DisableDamageZone(obj);
         _SetFacing(obj.transform, dir);
+        _RunTrailUnscaled(obj);
+        var graphic = _GetGraphic(obj);
         _SpawnWarpEffect(start);
+        _SpawnSpecialAfterImage(graphic);
 
         bool is_hit = false;
+        int ghost = 0;
         float time = 0f;
         while (time < dash_time) {
             time += _SpecialDeltaTime;
             float rate = Mathf.Clamp01(time / dash_time);
             obj.transform.position = Vector2.Lerp(start, end, rate);
+            // 通過中は薄い残像を等間隔に置いていく
+            if (ghost < _specialAttackGhostCount && rate >= (ghost + 1f) / (_specialAttackGhostCount + 1f)) {
+                ghost++;
+                _SpawnSpecialAfterImage(graphic, _specialAttackGhostAlpha, _specialAttackGhostTime);
+            }
             if (!is_hit && rate >= hit_rate) {
                 is_hit = true;
                 if (_SpecialDamage(target, _specialAttackDamage, zone)) {
@@ -912,7 +925,8 @@ public class Ability_Ice : Ability_Base {
         }
 
         _SpawnWarpEffect(end);
-        _DestroySpecialObject(obj);
+        _SpawnSpecialAfterImage(graphic);
+        StartCoroutine(_DestroyAfterTrail(obj));
         on_end?.Invoke();
     }
 
@@ -931,6 +945,7 @@ public class Ability_Ice : Ability_Base {
         var zone = obj.GetComponentInChildren<DamageZone>(true);
         _DisableDamageZone(obj);
         _SetFacing(obj.transform, dir);
+        _RunTrailUnscaled(obj);
         _SpawnWarpEffect(start);
 
         // 敵と突撃する姿の両方が映るようにズームする
@@ -966,9 +981,10 @@ public class Ability_Ice : Ability_Base {
         foreach (var rend in renderers) rend.color = Color.white;
         _StopSpecialChargeSe();
 
-        // 突撃
+        // 突撃(溜めていた位置に残像を残す)
         if (_IsValidTarget(target)) center = _GetTargetCenter(target);
         start = obj.transform.position;
+        _SpawnSpecialAfterImage(_GetGraphic(obj));
         Vector2 end = center + dir * _specialFinishDistance;
         time = 0f;
         while (time < _specialFinishDashTime) {
@@ -1134,6 +1150,41 @@ public class Ability_Ice : Ability_Base {
         if (target == null) return Vector2.zero;
         var col = target.GetComponent<Collider2D>();
         return col != null && col.enabled ? (Vector2)col.bounds.center : (Vector2)target.transform.position;
+    }
+
+    // 必殺技の演出で出す残像(ワープの残像と同じ色・材質。時間を止めている間も消えていく)
+    private void _SpawnSpecialAfterImage(SpriteRenderer src, float alpha_rate = 1f, float duration_rate = 1f) {
+        if (src == null || _warpControl == null) return;
+        _warpControl.SpawnAfterImage(src, alpha_rate, duration_rate, true);
+    }
+
+    // 残像にする見た目(絵が設定されている最初のSpriteRenderer)
+    private static SpriteRenderer _GetGraphic(GameObject obj) {
+        foreach (var renderer in obj.GetComponentsInChildren<SpriteRenderer>()) {
+            if (renderer.sprite != null) return renderer;
+        }
+        return null;
+    }
+
+    // 移動の軌跡を、時間を止めている間も消えていくようにする
+    private static void _RunTrailUnscaled(GameObject obj) {
+        foreach (var trail in obj.GetComponentsInChildren<WarpTrail>(true)) trail.useUnscaledTime = true;
+    }
+
+    /// <summary>
+    /// 姿を消し、移動の軌跡が消えきってから破棄する(軌跡が途中で途切れないようにする)
+    /// </summary>
+    private IEnumerator _DestroyAfterTrail(GameObject obj) {
+        float wait = 0f;
+        foreach (var trail in obj.GetComponentsInChildren<WarpTrail>(true)) wait = Mathf.Max(wait, trail.lifetime);
+        foreach (var renderer in obj.GetComponentsInChildren<SpriteRenderer>()) renderer.enabled = false;
+        foreach (var light in obj.GetComponentsInChildren<Light2D>()) light.enabled = false;
+        float time = 0f;
+        while (time < wait && obj != null) {
+            if (!Pause_UI.IsOpen) time += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        _DestroySpecialObject(obj);
     }
 
     private void _SpawnWarpEffect(Vector3 position) {
