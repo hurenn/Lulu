@@ -1004,6 +1004,16 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
+    /// 横向きのワープをした後と同じ慣性移動を始める(必殺技の終了後など)
+    /// </summary>
+    public void StartWarpDash(bool is_right) {
+        _isRight = is_right;
+        if (_sprite != null) _sprite.flipX = _isRight;
+        _warpDashDirection = is_right ? _param.warpDashRight : _param.warpDashLeft;
+        _ExecuteWarpDash();
+    }
+
+    /// <summary>
     /// 必殺技の演出で消していた姿を、指定した位置にワープエフェクトと一緒に表示する
     /// </summary>
     public void AppearFromSpecial(Vector2 position, bool is_right) {

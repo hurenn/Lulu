@@ -9,6 +9,9 @@ public class AutoDestroy : MonoBehaviour {
     // 消滅時のコールバック
     private System.Action _destroyedCallback = null;
     private bool _isDestroying = false; // Destroyはフレーム末まで遅れるため、同じフレームに二重に呼ばれても効果音を重ねて引き継がないようにする
+    // 時間が止まっていても(timeScaleに関係なく)寿命を進めるか(時間を止める必殺技の演出で出すエフェクト用)
+    public bool useUnscaledTime { get; set; } = false;
+
     public void SetCallback(System.Action callback) {
         _destroyedCallback = callback;
     }
@@ -28,7 +31,7 @@ public class AutoDestroy : MonoBehaviour {
         }
 
         while(current_time < _lifetime + add_time) {
-            current_time += Time.deltaTime;
+            current_time += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
             yield return null;
         }
 

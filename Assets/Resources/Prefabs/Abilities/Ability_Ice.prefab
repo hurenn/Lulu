@@ -60,26 +60,55 @@ MonoBehaviour:
   _slash3: {fileID: 3568965013177453205, guid: 09088dd8cbcea0c41bce9975dc2537cd, type: 3}
   _lockonSlash: {fileID: 3568965013177453205, guid: 65b8a166ce83b3d45bcf7f20a15c30a4, type: 3}
   _specialFirstAttackPrefab: {fileID: 7444988537484354709, guid: 0bc53f9119a06ef4fb96c6a201b478fc, type: 3}
-  _specialFirstAttackSpeed: 30
-  _specialFirstAttackTime: 0.5
+  _specialFirstAttackSpeed: 80
+  _specialFirstAttackTime: 0.2
   _specialFirstAttackDamage: 2
+  _specialFirstAttackHitStopTime: 0.5
+  _specialFirstAttackWait: 0.5
+  _specialMissRemainCharge: 0.5
   _specialAttackPrefab: {fileID: 7444988537484354709, guid: 8b9379f73fe107646906dcb0a3e53cee, type: 3}
-  _specialAttackDuration: 3
+  _specialAttackDuration: 2
   _specialAttackHitCount: 30
   _specialAttackDamage: 2
   _specialAttackIntervalRate: 0.1
-  _specialAttackOverlapTime: 1.5
+  _specialAttackOverlapTime: 0.5
   _specialAttackDistance: 9
   _specialAttackDashTime: 0.12
-  _specialAttackAngleRange: 35
-  _specialAttackHitStopTime: 0.04
+  _specialAttackAngleRange: 60
+  _specialAttackMinAngleChange: 40
+  _specialAttackDistanceRandom: 0.35
+  _specialAttackDashTimeRandom: 0.3
+  _specialAttackPassOffset: 0.8
+  _specialAttackHitStopTime: 0.08
+  _specialAttackHitShake: 0.15
+  _specialAttackHitShakeTime: 0.08
   _specialFinishChargeTime: 2
   _specialFinishDistance: 10
   _specialFinishDashTime: 0.15
   _specialFinishDamage: 30
   _specialFinishChargeColor: {r: 0.55, g: 0.85, b: 1, a: 1}
   _specialFinishImage: {fileID: -2686280360948332380, guid: 499cab694ddacbc44abd3aaf9aca53e2, type: 3}
-  _specialFinishImageTime: 2
+  _specialFinishImageTime: 1
+  _specialFinishImageFadeTime: 0.1
+  _specialFinishChargeShake: 0.08
+  _specialFinishHitShake: 1.5
+  _specialFinishImageShake: 40
+  _specialFinishHitShakeTime: 0.4
+  _specialCutInZoomHeight: 7
+  _specialRushZoomHeight: 10
+  _specialFinishZoomMinHeight: 8
+  _specialFinishZoomMargin: 6
+  _specialZoomSpeed: 8
+  _seSpecialHit: {fileID: 8300000, guid: 89842efe1c05881478fd78d5add66dda, type: 3}
+  _seSpecialHitVolume: 0.5
+  _seSpecialFinishHit:
+  - {fileID: 8300000, guid: 89842efe1c05881478fd78d5add66dda, type: 3}
+  - {fileID: 8300000, guid: 37cc3b82c04beff4bb972851be2c8f02, type: 3}
+  _seSpecialFinishHitVolume: 1
+  _seSpecialCharge: {fileID: 8300000, guid: 5e7169369cd60ab489fc73012a2f089b, type: 3}
+  _seSpecialChargeVolume: 1
+  _specialBgmVolumeRate: 0.2
+  _specialEndInvincibleTime: 3
 --- !u!1 &7168331570189894412
 GameObject:
   m_ObjectHideFlags: 0

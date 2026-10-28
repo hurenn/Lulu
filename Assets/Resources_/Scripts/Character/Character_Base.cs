@@ -42,6 +42,7 @@ public class Character_Base : MonoBehaviour, IDamageable {
 
     // キャラクター状態フラグ
     [SerializeField] protected bool _isRight = true; // 右向きかどうか
+    public bool isRight => _isRight;
     protected bool _isWalking;
     protected bool _isDashing;
     protected bool _isWarpDelay;

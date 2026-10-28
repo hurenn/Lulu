@@ -315,8 +315,9 @@ public class DamageZone : MonoBehaviour {
     /// <summary>
     /// 当たり判定を通さずに、ヒットエフェクトだけを出す(敵の弾を止めた時など)
     /// </summary>
-    public void SpawnHitEffectAt(Vector3 position) {
-        _SpawnHitEffect(position, _hitEffectType);
+    /// <returns>出したヒットエフェクト(出せなかった時はnull)</returns>
+    public GameObject SpawnHitEffectAt(Vector3 position) {
+        return _SpawnHitEffect(position, _hitEffectType);
     }
 
     /// <summary>

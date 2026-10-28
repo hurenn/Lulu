@@ -141,7 +141,7 @@ public class Ability_Fire : Ability_Base
         UpdatePartnerTransform();
 
         // リスト内に敵がいれば自動攻撃
-        if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0 && !_isSpecialUsing) {
+        if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0 && !isAnySpecialUsing) {
             // 既に死んでいる敵をリストから削除
             _enemiesInRange.RemoveAll(enemy => enemy == null || enemy.isDead);
             // 敵がリスト内にいれば攻撃

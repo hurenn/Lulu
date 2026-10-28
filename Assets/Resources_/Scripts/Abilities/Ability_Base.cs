@@ -46,6 +46,8 @@ public class Ability_Base : MonoBehaviour {
     // 再生する必殺技演出(未設定ならプレハブに設定されているものを再生する。カットインのプレハブを能力の間で共有するため)
     [SerializeField] private PlayableAsset _specialTimelineAsset = null;
     protected bool _isSpecialUsing = false;
+    // いずれかの能力の必殺技の演出中か(他の能力の自動攻撃などを止める)
+    public static bool isAnySpecialUsing { get; protected set; } = false;
 
     /// <summary>
     /// 必殺技チャージ停止時間
@@ -59,6 +61,7 @@ public class Ability_Base : MonoBehaviour {
         _onEndSpecialAttack = callback;
         _onEndSpecialAttack += () => {
             _isSpecialUsing = false;
+            isAnySpecialUsing = false;
         };
     }
 
@@ -296,6 +299,7 @@ public class Ability_Base : MonoBehaviour {
         if (pauseUI != null) pauseUI.canOpen = false;
         Time.timeScale = 0.1f;
         _isSpecialUsing = true;
+        isAnySpecialUsing = true;
         _isSpecialCutInViewing = true;
         _specialTimelineDirector.time = 0;
         _specialTimelineDirector.Evaluate();

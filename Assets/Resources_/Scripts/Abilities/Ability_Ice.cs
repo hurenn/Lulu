@@ -36,6 +36,9 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private float _specialFirstAttackSpeed = 30.0f;
     [SerializeField] private float _specialFirstAttackTime = 0.5f;   // 飛んでいる時間(この間に敵に当たらなければ失敗)
     [SerializeField] private int _specialFirstAttackDamage = 2;
+    [SerializeField] private float _specialFirstAttackHitStopTime = 0.3f; // 当たった時に演出を止める時間
+    [SerializeField] private float _specialFirstAttackWait = 0.5f;  // ヒットストップが終わってから連続攻撃を始めるまでの時間(この間、最初の一撃は敵を通過して飛び続ける)
+    [SerializeField] private float _specialMissRemainCharge = 0.5f; // 敵に当たらず失敗した時に残す必殺技ゲージの割合
 
     [Header("必殺技:連続攻撃(プレイヤーと同じ姿のため、序盤は同時に1体しか出さない)")]
     [SerializeField] private GameObject _specialAttackPrefab;
@@ -46,8 +49,14 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private float _specialAttackOverlapTime = 1.5f;   // この時間を超えたら、同時に2体以上表示してよい
     [SerializeField] private float _specialAttackDistance = 9.0f;      // 敵の中心から出現位置までの距離(反対側の同じ距離まで通過する)
     [SerializeField] private float _specialAttackDashTime = 0.12f;     // 出現位置から反対側まで通過する時間
-    [SerializeField] private float _specialAttackAngleRange = 35.0f;   // 通過する向きの、水平からの角度のばらつき
-    [SerializeField] private float _specialAttackHitStopTime = 0.04f;  // 敵のヒットストップ
+    [SerializeField] private float _specialAttackAngleRange = 60.0f;   // 通過する向きの、水平からの角度のばらつき
+    [SerializeField] private float _specialAttackMinAngleChange = 40.0f; // 直前の攻撃と、通過する向きを最低これだけ変える
+    [SerializeField] private float _specialAttackDistanceRandom = 0.35f; // 出現位置・消える位置までの距離のばらつき(割合)
+    [SerializeField] private float _specialAttackDashTimeRandom = 0.3f;  // 通過する時間のばらつき(割合)
+    [SerializeField] private float _specialAttackPassOffset = 0.8f;      // 通過する位置を、敵の中心からずらす最大の距離
+    [SerializeField] private float _specialAttackHitStopTime = 0.05f;    // ヒットした時に演出を止める時間
+    [SerializeField] private float _specialAttackHitShake = 0.15f;       // ヒットした時のカメラの揺れ
+    [SerializeField] private float _specialAttackHitShakeTime = 0.08f;
 
     [Header("必殺技:最後の一撃")]
     [SerializeField] private float _specialFinishChargeTime = 2.0f;    // 力を溜める時間
@@ -57,11 +66,54 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private Color _specialFinishChargeColor = new Color(0.55f, 0.85f, 1.0f, 1.0f);
     [SerializeField] private Sprite _specialFinishImage;               // 最後の一撃が当たった瞬間に表示する一枚絵
     [SerializeField] private float _specialFinishImageTime = 2.0f;
+    [SerializeField] private float _specialFinishImageFadeTime = 0.1f;   // 一枚絵の表示・非表示の拡縮フェードの時間
+    [SerializeField] private float _specialFinishChargeShake = 0.08f;   // 力を溜めている間のカメラの揺れ(小さく揺らし続ける)
+    [SerializeField] private float _specialFinishHitShake = 1.5f;       // 最後の一撃が当たった時のカメラの揺れ
+    [SerializeField] private float _specialFinishImageShake = 40.0f;    // 最後の一撃が当たった時の一枚絵の揺れ(画面の高さ1080の時のピクセル数)
+    [SerializeField] private float _specialFinishHitShakeTime = 0.4f;
+
+    [Header("必殺技:カメラ(映す範囲の高さ。ワールド座標の長さ)")]
+    [SerializeField] private float _specialCutInZoomHeight = 7.0f;      // カットイン中、プレイヤーを映す
+    [SerializeField] private float _specialRushZoomHeight = 10.0f;      // 連続攻撃中、対象の敵を映す
+    [SerializeField] private float _specialFinishZoomMinHeight = 8.0f;  // 最後の一撃中、敵と突撃する姿の両方を映す(最小の高さ)
+    [SerializeField] private float _specialFinishZoomMargin = 6.0f;     // 敵と突撃する姿の間の長さに足す余白
+    [SerializeField] private float _specialZoomSpeed = 8.0f;            // 映す範囲を変える速さ
+
+    [Header("必殺技:効果音")]
+    [SerializeField] private AudioClip _seSpecialHit;                  // 連続攻撃のヒット音
+    [SerializeField] private float _seSpecialHitVolume = 1.0f;
+    [SerializeField] private AudioClip[] _seSpecialFinishHit;          // 最後の一撃のヒット音(同時に鳴らす)
+    [SerializeField] private float _seSpecialFinishHitVolume = 1.0f;
+    [SerializeField] private AudioClip _seSpecialCharge;               // 最後の一撃の溜め中に鳴らす音
+    [SerializeField] private float _seSpecialChargeVolume = 1.0f;
+
+    [Header("必殺技:BGM(連続攻撃中に徐々に小さくし、操作できるようになったら元に戻す)")]
+    [SerializeField] private float _specialBgmVolumeRate = 0.2f;       // 小さくした時の音量(元の音量に掛ける)
+
+    [Header("必殺技:終了後")]
+    [SerializeField] private float _specialEndInvincibleTime = 3.0f;   // 終了後にプレイヤーを無敵にする時間
 
     // 必殺技の演出中に作ったもの(能力が途中で破棄された時に片付ける)
     private Enemy_Base _specialTarget = null;
     private GameObject _specialFinishImageObj = null;
     private bool _isSpecialTimeStopped = false;
+    // 時間を止めている間も動かすため、実時間で動くように変えたもの(終わったら元に戻す)
+    private readonly System.Collections.Generic.Dictionary<Animator, AnimatorUpdateMode> _unscaledAnimators = new System.Collections.Generic.Dictionary<Animator, AnimatorUpdateMode>();
+    private readonly System.Collections.Generic.List<ParticleSystem> _unscaledParticles = new System.Collections.Generic.List<ParticleSystem>();
+    private bool _cameraIgnoreTimeScale = false;
+    // 必殺技のカメラ(映す中心を毎フレーム取得し、映す範囲の高さを少しずつ目標に近づける)
+    private System.Func<Vector2> _specialZoomCenter = null;
+    private Transform _specialCameraFocus = null;
+    private float _specialZoomHeight = 0f;
+    private float _specialZoomTargetHeight = 0f;
+    // BGMの音量(必殺技の終了時に元に戻す)
+    private AudioSource _specialBgm = null;
+    private float _specialBgmVolume = 0f;
+    // 溜め中に鳴らしている音
+    private AudioSource _specialChargeSe = null;
+    private bool _impulseIgnoreTimeScale = false;
+    // ヒットストップが終わる時刻(実時間)
+    private float _specialHitStopEndTime = 0f;
     private readonly System.Collections.Generic.List<GameObject> _specialObjects = new System.Collections.Generic.List<GameObject>();
 
     protected override void _Update() {
@@ -76,6 +128,8 @@ public class Ability_Ice : Ability_Base {
         if (_currentComboCoolTime > 0f) {
             _currentComboCoolTime -= Time.deltaTime;
         }
+        // 必殺技のカメラ
+        _UpdateSpecialZoom();
     }
 
     public override eAbilityResult ExecuteSimple() {
@@ -395,9 +449,192 @@ public class Ability_Ice : Ability_Base {
 
     #region 必殺技
 
+    // 必殺技の間は時間を止め(敵やギミックを止める)、必殺技の演出だけを実時間で動かす。ポーズ中・ヒットストップ中は進めない
+    private float _SpecialDeltaTime => Pause_UI.IsOpen || Time.unscaledTime < _specialHitStopEndTime ? 0f : Time.unscaledDeltaTime;
+
+    protected override void _UseSpecial() {
+        base._UseSpecial();
+        if (!_isSpecialUsing) return;
+        // カットインの間から時間を止める
+        _StopWorld();
+        // カットイン中はプレイヤーをズームする
+        var player_transform = _playerTransform;
+        _SetSpecialZoom(() => player_transform != null ? (Vector2)player_transform.position : Vector2.zero, _specialCutInZoomHeight);
+        // 出ている仲間は、時間が止まっていてもすぐに帰す
+        if (_isAppearing) {
+            _ResetReturnTimer(0f);
+            _RunUnscaled(gameObject);
+            _anim?.Play("ToHide");
+        }
+    }
+
     protected override void _OnSpecialCutInFinished(PlayableDirector obj) {
-        base._OnSpecialCutInFinished(obj);
+        base._OnSpecialCutInFinished(obj); // ここで時間の流れが戻されるため、止め直す
+        Pause_UI.SetTimeScale(0f);
         StartCoroutine(_SpecialAttack());
+    }
+
+    /// <summary>
+    /// 時間を止める(カメラの揺れは止めずに動かす)
+    /// </summary>
+    private void _StopWorld() {
+        if (!_isSpecialTimeStopped) {
+            _isSpecialTimeStopped = true;
+            var brain = _GetCameraBrain();
+            if (brain != null) {
+                _cameraIgnoreTimeScale = brain.IgnoreTimeScale;
+                brain.IgnoreTimeScale = true;
+            }
+            var impulse = Unity.Cinemachine.CinemachineImpulseManager.Instance;
+            _impulseIgnoreTimeScale = impulse.IgnoreTimeScale;
+            impulse.IgnoreTimeScale = true;
+        }
+        Pause_UI.SetTimeScale(0f);
+    }
+
+    /// <summary>
+    /// 止めた時間を戻し、実時間で動くように変えたものを元に戻す
+    /// </summary>
+    private void _ResumeWorld() {
+        if (!_isSpecialTimeStopped) return;
+        _isSpecialTimeStopped = false;
+        Pause_UI.SetTimeScale(1f);
+        var brain = _GetCameraBrain();
+        if (brain != null) brain.IgnoreTimeScale = _cameraIgnoreTimeScale;
+        Unity.Cinemachine.CinemachineImpulseManager.Instance.IgnoreTimeScale = _impulseIgnoreTimeScale;
+        foreach (var pair in _unscaledAnimators) {
+            if (pair.Key != null) pair.Key.updateMode = pair.Value;
+        }
+        _unscaledAnimators.Clear();
+        foreach (var particle in _unscaledParticles) {
+            if (particle == null) continue;
+            var main = particle.main;
+            main.useUnscaledTime = false;
+        }
+        _unscaledParticles.Clear();
+    }
+
+    private static Unity.Cinemachine.CinemachineBrain _GetCameraBrain() {
+        var cam = Camera.main;
+        return cam != null ? cam.GetComponent<Unity.Cinemachine.CinemachineBrain>() : null;
+    }
+
+    /// <summary>
+    /// 必殺技のカメラで映す中心と、映す範囲の高さを設定する(高さは少しずつ変わる)
+    /// </summary>
+    private void _SetSpecialZoom(System.Func<Vector2> center, float height) {
+        if (_specialCameraFocus == null) {
+            var focus = new GameObject("IceSpecialCameraFocus");
+            _specialObjects.Add(focus);
+            _specialCameraFocus = focus.transform;
+        }
+        // ズームしていない状態からは、今映っている範囲から少しずつ変える
+        if (_specialZoomCenter == null) _specialZoomHeight = _GetCurrentViewHeight();
+        _specialZoomCenter = center;
+        _specialZoomTargetHeight = height;
+        _specialCameraFocus.position = center();
+        CinemachineManager.Instance?.ZoomOnTarget(_specialCameraFocus, _specialZoomHeight);
+    }
+
+    private void _UpdateSpecialZoom() {
+        if (_specialZoomCenter == null || _specialCameraFocus == null) return;
+        _specialZoomHeight = Mathf.Lerp(_specialZoomHeight, _specialZoomTargetHeight, 1f - Mathf.Exp(-_specialZoomSpeed * _SpecialDeltaTime));
+        _specialCameraFocus.position = _specialZoomCenter();
+        CinemachineManager.Instance?.ZoomOnTarget(_specialCameraFocus, _specialZoomHeight);
+    }
+
+    private void _EndSpecialZoom() {
+        if (_specialZoomCenter == null) return;
+        _specialZoomCenter = null;
+        CinemachineManager.Instance?.ReturnToPlayer();
+    }
+
+    // 今カメラに映っている範囲の高さ(Z=0の平面上)
+    private static float _GetCurrentViewHeight() {
+        var cam = Camera.main;
+        if (cam == null) return 10f;
+        if (cam.orthographic) return cam.orthographicSize * 2f;
+        return 2f * Mathf.Abs(cam.transform.position.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+    }
+
+    // 対象の敵の中心を映す
+    private System.Func<Vector2> _TargetZoomCenter(Enemy_Base target) {
+        Vector2 last = _GetTargetCenter(target);
+        return () => {
+            if (_IsValidTarget(target)) last = _GetTargetCenter(target);
+            return last;
+        };
+    }
+
+    /// <summary>
+    /// BGMを徐々に小さくする(ポーズ中はポーズ画面がBGMの音量を変えるため、触らない)
+    /// </summary>
+    private IEnumerator _FadeSpecialBgm(float duration) {
+        var bgm_obj = GameObject.Find("BGM");
+        var bgm = bgm_obj != null ? bgm_obj.GetComponent<AudioSource>() : null;
+        if (bgm == null) yield break;
+        _specialBgm = bgm;
+        _specialBgmVolume = bgm.volume;
+        float target_volume = _specialBgmVolume * _specialBgmVolumeRate;
+        float time = 0f;
+        while (time < duration && _specialBgm == bgm) {
+            time += _SpecialDeltaTime;
+            if (!Pause_UI.IsOpen && bgm != null) {
+                bgm.volume = Mathf.Lerp(_specialBgmVolume, target_volume, Mathf.Clamp01(time / Mathf.Max(duration, 0.001f)));
+            }
+            yield return null;
+        }
+    }
+
+    // BGMの音量を元に戻す
+    private void _RestoreSpecialBgm() {
+        if (_specialBgm == null) return;
+        _specialBgm.volume = _specialBgmVolume;
+        _specialBgm = null;
+    }
+
+    private void _PlaySpecialChargeSe() {
+        if (_seSpecialCharge == null) return;
+        var obj = new GameObject("IceSpecialChargeSe");
+        _specialObjects.Add(obj);
+        _specialChargeSe = obj.AddComponent<AudioSource>();
+        _specialChargeSe.clip = AudioUtil.GetClipForGain(_seSpecialCharge, _seSpecialChargeVolume);
+        _specialChargeSe.volume = Mathf.Min(_seSpecialChargeVolume, 1f);
+        _specialChargeSe.spatialBlend = 0f;
+        _specialChargeSe.Play();
+    }
+
+    // 溜めの音を止める(溜めより長い音の時は、突撃する時に止める)
+    private void _StopSpecialChargeSe() {
+        if (_specialChargeSe == null) return;
+        _DestroySpecialObject(_specialChargeSe.gameObject);
+        _specialChargeSe = null;
+    }
+
+    private static void _PlaySpecialSe(AudioClip clip, float volume) {
+        if (clip == null) return;
+        var cam = Camera.main;
+        AudioUtil.PlayClipAtPointUnclamped(clip, cam != null ? cam.transform.position : Vector3.zero, volume);
+    }
+
+    /// <summary>
+    /// 時間を止めている間も動くように、アニメーション・パーティクル・自動削除を実時間で動かす
+    /// </summary>
+    private void _RunUnscaled(GameObject obj) {
+        if (obj == null) return;
+        foreach (var animator in obj.GetComponentsInChildren<Animator>(true)) {
+            if (!_unscaledAnimators.ContainsKey(animator)) _unscaledAnimators.Add(animator, animator.updateMode);
+            animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
+        foreach (var particle in obj.GetComponentsInChildren<ParticleSystem>(true)) {
+            var main = particle.main;
+            if (main.useUnscaledTime) continue;
+            main.useUnscaledTime = true;
+            _unscaledParticles.Add(particle);
+        }
+        foreach (var auto_destroy in obj.GetComponentsInChildren<AutoDestroy>(true)) {
+            auto_destroy.useUnscaledTime = true;
+        }
     }
 
     /// <summary>
@@ -407,9 +644,13 @@ public class Ability_Ice : Ability_Base {
     /// </summary>
     private IEnumerator _SpecialAttack() {
         Enemy_Base target = null;
+        // 最初の一撃が飛んでいる間は、通常のカメラに戻す
+        _EndSpecialZoom();
         yield return _SpecialFirstAttack(hit => target = hit);
         if (target == null) {
-            // 敵に当たらなければ失敗してそのまま終了
+            // 敵に当たらなければ失敗してそのまま終了(ゲージは半分だけ消費する)
+            ForceCharge(_specialMissRemainCharge);
+            _ResumeWorld();
             _onEndSpecialAttack?.Invoke();
             yield break;
         }
@@ -422,29 +663,45 @@ public class Ability_Ice : Ability_Base {
             player.SetSpecialHidden();
         }
         Vector2 last_center = _GetTargetCenter(target);
+        // 終了後にプレイヤーが現れる位置(必殺技を始めた時点で、プレイヤーから遠い方のワープチェッカーの位置)
+        Vector2? appear_point = _GetFarWarpPoint(target, _playerTransform != null ? (Vector2)_playerTransform.position : last_center);
+        // 必殺技攻撃中は対象の敵をズームする
+        _SetSpecialZoom(_TargetZoomCenter(target), _specialRushZoomHeight);
         // 最後の一撃は、プレイヤーがいた側から突撃する
         bool is_from_left = _playerTransform == null || _playerTransform.position.x <= last_center.x;
 
+        // 最初のヒットから連続攻撃が始まるまで待つ(ヒットストップ中は進まない)
+        float wait = 0f;
+        while (wait < _specialFirstAttackWait) {
+            wait += _SpecialDeltaTime;
+            yield return null;
+        }
+
+        // 連続攻撃の間に、BGMを徐々に小さくする
+        StartCoroutine(_FadeSpecialBgm(_specialAttackDuration));
         yield return _SpecialRushAttack(target);
 
-        bool is_dash_right = is_from_left;
         if (_IsValidTarget(target)) {
             yield return _SpecialFinishAttack(target, is_from_left);
             last_center = _GetTargetCenter(target);
         }
 
-        // 突撃した先(敵の向こう側)のワープチェッカーの位置にプレイヤーを表示
-        if (player != null) {
-            Vector2 appear_pos = last_center;
-            if (_IsValidTarget(target)) {
-                var side = is_dash_right ? WarpControl.eWarpDirection.Right : WarpControl.eWarpDirection.Left;
-                var checker = target.GetWarpChecker(side, true);
-                var point = checker != null ? checker.GetWarpPoint() : null;
-                if (point.HasValue) appear_pos = point.Value;
-            }
-            player.AppearFromSpecial(appear_pos, appear_pos.x < last_center.x);
-        }
+        // 時間とカメラを戻してから、必殺技を始めた時点で遠い方だったワープチェッカーの位置にプレイヤーを表示
+        _EndSpecialZoom();
+        _ResumeWorld();
+        Vector2 appear_pos = appear_point ?? last_center;
+        // 敵から離れる向き(敵と同じ位置に現れた時は、敵がいた側の反対へ)
+        bool is_away_right = !Mathf.Approximately(appear_pos.x, last_center.x) ? appear_pos.x > last_center.x : !is_from_left;
+        if (player != null) player.AppearFromSpecial(appear_pos, !is_away_right);
         _onEndSpecialAttack?.Invoke();
+        // 操作できるようになったので、BGMの音量を元に戻す
+        _RestoreSpecialBgm();
+        if (player != null) {
+            // 敵から離れる向きへ、ワープ後と同じ慣性移動をする(操作できる状態に戻ってから動かす)
+            player.StartWarpDash(is_away_right);
+            // しばらく無敵にする
+            if (player.PlayerCharaParam != null) player.PlayerCharaParam.currentInvincibilityTimer = _specialEndInvincibleTime;
+        }
 
         // 最後の一撃でHPが1だった時は、演出が終わってから倒す
         _specialTarget = null;
@@ -457,12 +714,34 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
+    /// 敵の左右のワープチェッカーのうち、指定した位置から遠い方のワープ先を返す(どちらも無ければnull)
+    /// </summary>
+    private static Vector2? _GetFarWarpPoint(Enemy_Base target, Vector2 from) {
+        Vector2? far_point = null;
+        float far_distance = -1f;
+        foreach (var side in new[] { WarpControl.eWarpDirection.Left, WarpControl.eWarpDirection.Right }) {
+            var checker = target.GetWarpChecker(side);
+            var point = checker != null ? checker.GetWarpPoint() : null;
+            if (!point.HasValue) continue;
+            float distance = (point.Value - from).sqrMagnitude;
+            if (distance > far_distance) {
+                far_distance = distance;
+                far_point = point;
+            }
+        }
+        return far_point;
+    }
+
+    /// <summary>
     /// 最初の一撃: プレイヤーから正面へ飛ばし、最初に当たった敵を返す(当たらなければnull)
+    /// 当たった時はヒットストップをかけ、その後は敵を通過して連続攻撃が始まるまで飛び続ける
     /// </summary>
     private IEnumerator _SpecialFirstAttack(System.Action<Enemy_Base> on_hit) {
         if (_specialFirstAttackPrefab == null || _playerTransform == null) yield break;
 
-        bool is_right = _isRight;
+        // 能力側の向きはFixedUpdateで更新されるため、時間を止めている間はプレイヤー本体の向きを使う
+        var owner = _playerTransform.GetComponent<Character_Base>();
+        bool is_right = owner != null ? owner.isRight : _isRight;
         var obj = Instantiate(_specialFirstAttackPrefab, _playerTransform.position, Quaternion.identity);
         _specialObjects.Add(obj);
         _SetFacing(obj.transform, is_right ? Vector2.right : Vector2.left);
@@ -484,7 +763,7 @@ public class Ability_Ice : Ability_Base {
         Enemy_Base hit = null;
         float time = 0f;
         while (time < _specialFirstAttackTime && hit == null) {
-            obj.transform.position += velocity * Time.deltaTime;
+            obj.transform.position += velocity * _SpecialDeltaTime;
             Vector2 center = obj.transform.TransformPoint(local_center);
             float nearest = float.MaxValue;
             foreach (var col in Physics2D.OverlapBoxAll(center, hit_size, 0f, enemy_mask)) {
@@ -498,7 +777,7 @@ public class Ability_Ice : Ability_Base {
                     hit = enemy;
                 }
             }
-            time += Time.deltaTime;
+            time += _SpecialDeltaTime;
             yield return null;
         }
 
@@ -507,10 +786,30 @@ public class Ability_Ice : Ability_Base {
             hit.SetMinHP(1);
             _SpecialDamage(hit, _specialFirstAttackDamage, zone);
             CinemachineManager.Instance?.ShakeCamera(0.3f, 0.1f);
+            _specialHitStopEndTime = Mathf.Max(_specialHitStopEndTime, Time.unscaledTime + _specialFirstAttackHitStopTime);
+            StartCoroutine(_SpecialFirstAttackPass(obj, velocity, _specialFirstAttackWait));
+            on_hit(hit);
+            yield break;
         }
         _SpawnWarpEffect(obj.transform.position);
         _DestroySpecialObject(obj);
-        on_hit(hit);
+        on_hit(null);
+    }
+
+    /// <summary>
+    /// 当たった最初の一撃を、敵を通過させて指定時間飛ばしてから消す(ヒットストップ中は止まる)
+    /// </summary>
+    private IEnumerator _SpecialFirstAttackPass(GameObject obj, Vector3 velocity, float duration) {
+        float time = 0f;
+        while (time < duration && obj != null) {
+            float delta = _SpecialDeltaTime;
+            obj.transform.position += velocity * delta;
+            time += delta;
+            yield return null;
+        }
+        if (obj == null) yield break;
+        _SpawnWarpEffect(obj.transform.position);
+        _DestroySpecialObject(obj);
     }
 
     /// <summary>
@@ -531,23 +830,27 @@ public class Ability_Ice : Ability_Base {
         float time = 0f;
         float next_spawn_time = 0f;
         float interval = first_interval;
-        bool is_from_left = Random.value < 0.5f;
+        Vector2 last_dir = Vector2.zero;
         while (spawned < count && _IsValidTarget(target)) {
             // 序盤はプレイヤーと同じ姿が2体以上見えないように、前の攻撃が消えるまで待つ
             bool can_overlap = time > _specialAttackOverlapTime;
             if (time >= next_spawn_time && (can_overlap || alive == 0)) {
-                // 左右から交互に、角度をばらつかせて通過させる
-                float angle = Random.Range(-_specialAttackAngleRange, _specialAttackAngleRange) * Mathf.Deg2Rad;
-                var dir = new Vector2(Mathf.Cos(angle) * (is_from_left ? 1f : -1f), Mathf.Sin(angle));
-                is_from_left = !is_from_left;
+                // 向き・距離・速さ・通過する位置をばらつかせて、あちこちから通過させる
+                var dir = _RandomRushDirection(last_dir);
+                last_dir = dir;
+                float start_distance = _specialAttackDistance * Random.Range(1f - _specialAttackDistanceRandom, 1f + _specialAttackDistanceRandom);
+                float end_distance = _specialAttackDistance * Random.Range(1f - _specialAttackDistanceRandom, 1f + _specialAttackDistanceRandom);
+                float dash_time = _specialAttackDashTime * Random.Range(1f - _specialAttackDashTimeRandom, 1f + _specialAttackDashTimeRandom);
+                Vector2 pass_offset = new Vector2(-dir.y, dir.x) * Random.Range(-_specialAttackPassOffset, _specialAttackPassOffset);
 
                 alive++;
-                StartCoroutine(_SpecialDash(target, dir, _specialAttackDistance, _specialAttackDashTime, () => alive--));
+                StartCoroutine(_SpecialDash(target, dir, start_distance, end_distance, pass_offset, dash_time, () => alive--));
                 spawned++;
+                // 後半ほど間隔を短くする
                 next_spawn_time = Mathf.Max(next_spawn_time, time) + interval;
                 interval *= ratio;
             }
-            time += Time.deltaTime;
+            time += _SpecialDeltaTime;
             yield return null;
         }
         // 最後の攻撃が通過し終わるまで待つ
@@ -555,12 +858,29 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
-    /// 敵の中心を通過する攻撃を1回行う(ワープエフェクトと同時に出現し、通過した瞬間にダメージを与え、ワープエフェクトを出しながら消える)
+    /// 連続攻撃の通過する向きを決める(左右どちらからも、水平から_specialAttackAngleRangeまで傾けて、直前の向きとは十分に変える)
     /// </summary>
-    private IEnumerator _SpecialDash(Enemy_Base target, Vector2 dir, float distance, float dash_time, System.Action on_end) {
-        Vector2 center = _GetTargetCenter(target);
-        Vector2 start = center - dir * distance;
-        Vector2 end = center + dir * distance;
+    private Vector2 _RandomRushDirection(Vector2 last_dir) {
+        Vector2 dir = Vector2.right;
+        for (int i = 0; i < 10; i++) {
+            float angle = Random.Range(-_specialAttackAngleRange, _specialAttackAngleRange) * Mathf.Deg2Rad;
+            dir = new Vector2(Mathf.Cos(angle) * (Random.value < 0.5f ? 1f : -1f), Mathf.Sin(angle));
+            if (last_dir == Vector2.zero || Vector2.Angle(dir, last_dir) >= _specialAttackMinAngleChange) break;
+        }
+        return dir;
+    }
+
+    /// <summary>
+    /// 敵の近くを通過する攻撃を1回行う(ワープエフェクトと同時に出現し、通過した瞬間にダメージを与え、ワープエフェクトを出しながら消える)
+    /// </summary>
+    /// <param name="start_distance">通過する位置から出現位置までの距離</param>
+    /// <param name="end_distance">通過する位置から消える位置までの距離</param>
+    /// <param name="pass_offset">通過する位置の、敵の中心からのずれ</param>
+    private IEnumerator _SpecialDash(Enemy_Base target, Vector2 dir, float start_distance, float end_distance, Vector2 pass_offset, float dash_time, System.Action on_end) {
+        Vector2 pass_point = _GetTargetCenter(target) + pass_offset;
+        Vector2 start = pass_point - dir * start_distance;
+        Vector2 end = pass_point + dir * end_distance;
+        float hit_rate = start_distance / Mathf.Max(start_distance + end_distance, 0.001f); // 敵の所を通過する瞬間
 
         var obj = Instantiate(_specialAttackPrefab, start, Quaternion.identity);
         _specialObjects.Add(obj);
@@ -572,12 +892,17 @@ public class Ability_Ice : Ability_Base {
         bool is_hit = false;
         float time = 0f;
         while (time < dash_time) {
-            time += Time.deltaTime;
+            time += _SpecialDeltaTime;
             float rate = Mathf.Clamp01(time / dash_time);
             obj.transform.position = Vector2.Lerp(start, end, rate);
-            if (!is_hit && rate >= 0.5f) {
+            if (!is_hit && rate >= hit_rate) {
                 is_hit = true;
-                _SpecialDamage(target, _specialAttackDamage, zone);
+                if (_SpecialDamage(target, _specialAttackDamage, zone)) {
+                    _PlaySpecialSe(_seSpecialHit, _seSpecialHitVolume);
+                    // ヒットストップ(演出だけを止める。カメラの揺れは止めない)
+                    _specialHitStopEndTime = Mathf.Max(_specialHitStopEndTime, Time.unscaledTime + _specialAttackHitStopTime);
+                    CinemachineManager.Instance?.ShakeCamera(_specialAttackHitShake, _specialAttackHitShakeTime);
+                }
             }
             yield return null;
         }
@@ -604,29 +929,38 @@ public class Ability_Ice : Ability_Base {
         _SetFacing(obj.transform, dir);
         _SpawnWarpEffect(start);
 
+        // 敵と突撃する姿の両方が映るようにズームする
+        var attacker = obj.transform;
+        var target_center = _TargetZoomCenter(target);
+        System.Func<Vector2> finish_center = () => attacker != null ? ((Vector2)attacker.position + target_center()) * 0.5f : target_center();
+        _SetSpecialZoom(finish_center, _GetFinishZoomHeight(attacker, target_center()));
+
         var renderers = obj.GetComponentsInChildren<SpriteRenderer>();
         var lights = obj.GetComponentsInChildren<Light2D>();
         var light_intensities = new float[lights.Length];
         for (int i = 0; i < lights.Length; i++) light_intensities[i] = lights[i].intensity;
 
         // 力を溜める(震えながら色が明滅し、光が強くなっていく)
+        _PlaySpecialChargeSe();
         float time = 0f;
         float next_shake_time = 0f;
         while (time < _specialFinishChargeTime) {
-            time += Time.deltaTime;
+            time += _SpecialDeltaTime;
             float rate = Mathf.Clamp01(time / _specialFinishChargeTime);
             obj.transform.position = start + Random.insideUnitCircle * Mathf.Lerp(0.02f, 0.2f, rate);
             float pulse = 0.5f + 0.5f * Mathf.Sin(time * Mathf.Lerp(8f, 40f, rate));
             var color = Color.Lerp(Color.white, _specialFinishChargeColor, pulse * rate);
             foreach (var rend in renderers) rend.color = color;
             for (int i = 0; i < lights.Length; i++) lights[i].intensity = light_intensities[i] * Mathf.Lerp(1f, 3f, rate);
+            // 力を溜めている間はカメラを小さく揺らし続ける
             if (time >= next_shake_time) {
-                CinemachineManager.Instance?.ShakeCamera(Mathf.Lerp(0.03f, 0.2f, rate), 0.1f);
-                next_shake_time = time + 0.2f;
+                CinemachineManager.Instance?.ShakeCamera(_specialFinishChargeShake, 0.15f);
+                next_shake_time = time + 0.15f;
             }
             yield return null;
         }
         foreach (var rend in renderers) rend.color = Color.white;
+        _StopSpecialChargeSe();
 
         // 突撃
         if (_IsValidTarget(target)) center = _GetTargetCenter(target);
@@ -634,16 +968,20 @@ public class Ability_Ice : Ability_Base {
         Vector2 end = center + dir * _specialFinishDistance;
         time = 0f;
         while (time < _specialFinishDashTime) {
-            time += Time.deltaTime;
+            time += _SpecialDeltaTime;
             float rate = Mathf.Clamp01(time / _specialFinishDashTime);
             obj.transform.position = Vector2.Lerp(start, end, rate);
+            _specialZoomTargetHeight = _GetFinishZoomHeight(attacker, target_center());
             if (rate >= 0.5f) break; // 敵の中心に届いた瞬間に当たる
             yield return null;
         }
 
         // 攻撃がヒットする瞬間に一枚絵を表示する(表示している間は時間を止める)
         _SpecialDamage(target, _specialFinishDamage, zone);
-        CinemachineManager.Instance?.ShakeCamera(1.0f, 0.3f);
+        if (_seSpecialFinishHit != null) {
+            foreach (var se in _seSpecialFinishHit) _PlaySpecialSe(se, _seSpecialFinishHitVolume);
+        }
+        CinemachineManager.Instance?.ShakeCamera(_specialFinishHitShake, _specialFinishHitShakeTime);
         ScreenFlash.Instance?.Flash(0.2f, Color.white);
         yield return _ShowSpecialFinishImage();
 
@@ -651,34 +989,46 @@ public class Ability_Ice : Ability_Base {
         _DestroySpecialObject(obj);
     }
 
+    // 敵と突撃する姿の両方が映る高さ
+    private float _GetFinishZoomHeight(Transform attacker, Vector2 target_center) {
+        if (attacker == null) return _specialFinishZoomMinHeight;
+        var cam = Camera.main;
+        float aspect = cam != null ? cam.aspect : 16f / 9f;
+        Vector2 diff = (Vector2)attacker.position - target_center;
+        return Mathf.Max(_specialFinishZoomMinHeight,
+            (Mathf.Abs(diff.x) + _specialFinishZoomMargin) / aspect,
+            Mathf.Abs(diff.y) + _specialFinishZoomMargin);
+    }
+
     /// <summary>
-    /// 一枚絵を表示する(表示している間は時間を止め、ポーズも開けないようにする)
+    /// 一枚絵を表示する(表示している間はポーズを開けないようにする)
     /// </summary>
     private IEnumerator _ShowSpecialFinishImage() {
         if (_specialFinishImage == null || _specialFinishImageTime <= 0f) yield break;
 
         var pause_ui = GetPauseUI();
         if (pause_ui != null) pause_ui.canOpen = false;
-        _isSpecialTimeStopped = true;
-        Pause_UI.SetTimeScale(0f);
 
         _specialFinishImageObj = _CreateSpecialFinishImage(out var group, out var image_rect);
-        const float fade_in = 0.1f;
-        const float fade_out = 0.25f;
+        var shake_rect = (RectTransform)group.transform;
+        float fade = Mathf.Max(_specialFinishImageFadeTime, 0.001f);
         float time = 0f;
         while (time < _specialFinishImageTime) {
-            time += Time.unscaledDeltaTime;
-            group.alpha = Mathf.Min(Mathf.Clamp01(time / fade_in), Mathf.Clamp01((_specialFinishImageTime - time) / fade_out));
-            // 表示した瞬間に少し大きく出て、元の大きさに戻る
-            float pop = 1f - Mathf.Clamp01(time / 0.2f);
-            image_rect.localScale = Vector3.one * (1f + 0.15f * pop * pop);
+            time += _SpecialDeltaTime;
+            float fade_in = Mathf.Clamp01(time / fade);
+            float fade_out = Mathf.Clamp01((_specialFinishImageTime - time) / fade);
+            group.alpha = Mathf.Min(fade_in, fade_out);
+            // 表示する時は大きい所から縮み、消える時は広がりながら消える
+            float scale = 1f + 0.2f * (1f - fade_in) + 0.2f * (1f - fade_out);
+            image_rect.localScale = Vector3.one * scale;
+            // 当たった瞬間は一枚絵ごと大きく揺らす(だんだん小さくなる)
+            float shake = 1f - Mathf.Clamp01(time / Mathf.Max(_specialFinishHitShakeTime, 0.001f));
+            shake_rect.anchoredPosition = Random.insideUnitCircle * _specialFinishImageShake * shake;
             yield return null;
         }
         Destroy(_specialFinishImageObj);
         _specialFinishImageObj = null;
 
-        _isSpecialTimeStopped = false;
-        Pause_UI.SetTimeScale(1f);
         if (pause_ui != null) pause_ui.canOpen = true;
     }
 
@@ -694,19 +1044,27 @@ public class Ability_Ice : Ability_Base {
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920f, 1080f);
         scaler.matchWidthOrHeight = 1f;
-        group = root.GetComponent<CanvasGroup>();
+        // 一枚絵と背景をまとめて揺らすための入れ物(Canvas自体は動かせないため)
+        var shake_root = new GameObject("ShakeRoot", typeof(RectTransform), typeof(CanvasGroup));
+        shake_root.transform.SetParent(root.transform, false);
+        var shake_rect = shake_root.GetComponent<RectTransform>();
+        _Stretch(shake_rect);
+        // 揺らした時に画面の端が見えないように、少し大きくしておく
+        shake_rect.offsetMin = new Vector2(-_specialFinishImageShake, -_specialFinishImageShake);
+        shake_rect.offsetMax = new Vector2(_specialFinishImageShake, _specialFinishImageShake);
+        group = shake_root.GetComponent<CanvasGroup>();
         group.alpha = 0f;
         group.blocksRaycasts = false;
 
         var background = new GameObject("Background", typeof(RectTransform), typeof(Image));
-        background.transform.SetParent(root.transform, false);
+        background.transform.SetParent(shake_root.transform, false);
         _Stretch(background.GetComponent<RectTransform>());
         var background_image = background.GetComponent<Image>();
         background_image.color = new Color(0.05f, 0.12f, 0.25f, 0.55f);
         background_image.raycastTarget = false;
 
         var picture = new GameObject("Image", typeof(RectTransform), typeof(Image));
-        picture.transform.SetParent(root.transform, false);
+        picture.transform.SetParent(shake_root.transform, false);
         image_rect = picture.GetComponent<RectTransform>();
         _Stretch(image_rect);
         var image = picture.GetComponent<Image>();
@@ -726,13 +1084,12 @@ public class Ability_Ice : Ability_Base {
     /// <summary>
     /// 必殺技のダメージを与える(被弾無敵に関係なく当て、吹き飛ばさない)
     /// </summary>
-    private void _SpecialDamage(Enemy_Base target, int damage, DamageZone zone) {
-        if (!_IsValidTarget(target)) return;
-        if (!target.Damage(damage, Vector2.zero, 0f, 0f, false, true)) return;
+    private bool _SpecialDamage(Enemy_Base target, int damage, DamageZone zone) {
+        if (!_IsValidTarget(target)) return false;
+        if (!target.Damage(damage, Vector2.zero, 0f, 0f, false, true)) return false;
         var center = _GetTargetCenter(target);
-        if (zone != null) zone.PlayHitReaction(center);
-        var time_pause = target.GetComponent<LocalTimePause>();
-        if (time_pause != null && _specialAttackHitStopTime > 0f) time_pause.StartPause(_specialAttackHitStopTime);
+        if (zone != null) _RunUnscaled(zone.SpawnHitEffectAt(center));
+        return true;
     }
 
     /// <summary>
@@ -776,7 +1133,7 @@ public class Ability_Ice : Ability_Base {
     }
 
     private void _SpawnWarpEffect(Vector3 position) {
-        if (_warpAnimationPrefab != null) Instantiate(_warpAnimationPrefab, position, Quaternion.identity);
+        if (_warpAnimationPrefab != null) _RunUnscaled(Instantiate(_warpAnimationPrefab, position, Quaternion.identity));
     }
 
     private void _DestroySpecialObject(GameObject obj) {
@@ -787,15 +1144,18 @@ public class Ability_Ice : Ability_Base {
     // 必殺技の途中で能力が破棄された時に、止めた時間や敵のHPの下限を元に戻す
     private void OnDestroy() {
         if (_isSpecialTimeStopped) {
-            Pause_UI.SetTimeScale(1f);
+            _ResumeWorld();
             var pause_ui = GetPauseUI();
             if (pause_ui != null) pause_ui.canOpen = true;
         }
         if (_specialFinishImageObj != null) Destroy(_specialFinishImageObj);
+        _EndSpecialZoom();
+        _RestoreSpecialBgm();
         foreach (var obj in _specialObjects) {
             if (obj != null) Destroy(obj);
         }
         if (_specialTarget != null) _specialTarget.SetMinHP(0);
+        if (_isSpecialUsing) isAnySpecialUsing = false;
     }
 
     #endregion
