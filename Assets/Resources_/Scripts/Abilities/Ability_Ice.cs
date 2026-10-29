@@ -31,71 +31,137 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private GameObject _lockonSlash;
     private IEnumerator _separateRoutine = null;
 
-    [Header("必殺技:最初の一撃(正面へ飛ばし、敵に当たったら連続攻撃へ移る)")]
+    [Header("■ 必殺技:最初の一撃(正面へ飛ばし、敵に当たったら連続攻撃へ移る)")]
+    [Tooltip("正面へ飛ばす攻撃のプレハブ")]
     [SerializeField] private GameObject _specialFirstAttackPrefab;
+    [Tooltip("飛ぶ速さ")]
     [SerializeField] private float _specialFirstAttackSpeed = 30.0f;
-    [SerializeField] private float _specialFirstAttackTime = 0.5f;   // 飛んでいる時間(この間に敵に当たらなければ失敗)
+    [Tooltip("飛んでいる時間(秒)。この間に敵に当たらなければ失敗")]
+    [SerializeField] private float _specialFirstAttackTime = 0.5f;
+    [Tooltip("当たった時のダメージ")]
     [SerializeField] private int _specialFirstAttackDamage = 2;
-    [SerializeField] private float _specialFirstAttackHitStopTime = 0.3f; // 当たった時に演出を止める時間
-    [SerializeField] private float _specialFirstAttackPassTime = 0.1f;   // ヒットストップの後、敵を通り抜けてから消えるまでの時間
-    [SerializeField] private float _specialFirstAttackWait = 0.5f;  // ヒットストップが終わってから連続攻撃を始めるまでの時間
-    [SerializeField] private float _specialMissRemainCharge = 0.5f; // 敵に当たらず失敗した時に残す必殺技ゲージの割合
 
-    [Header("必殺技:連続攻撃(プレイヤーと同じ姿のため、序盤は同時に1体しか出さない)")]
+    [Header("最初の一撃:当たった後")]
+    [Tooltip("当たった時に演出を止める時間(秒)")]
+    [SerializeField] private float _specialFirstAttackHitStopTime = 0.3f;
+    [Tooltip("ヒットストップの後、敵を通り抜けてから消えるまでの時間(秒)")]
+    [SerializeField] private float _specialFirstAttackPassTime = 0.1f;
+    [Tooltip("ヒットストップが終わってから連続攻撃を始めるまでの時間(秒)")]
+    [SerializeField] private float _specialFirstAttackWait = 0.5f;
+
+    [Header("最初の一撃:外れた時")]
+    [Tooltip("敵に当たらず失敗した時に残す必殺技ゲージの割合(0〜1)")]
+    [SerializeField] private float _specialMissRemainCharge = 0.5f;
+
+    [Header("■ 必殺技:連続攻撃(敵の周囲から、敵を通過する攻撃を出し続ける)")]
+    [Tooltip("敵を通過する攻撃のプレハブ(プレイヤーと同じ姿のため、序盤は同時に1体しか出さない)")]
     [SerializeField] private GameObject _specialAttackPrefab;
-    [SerializeField] private float _specialAttackDuration = 3.0f;      // 連続攻撃を生成し続ける時間
-    [SerializeField] private int _specialAttackHitCount = 30;          // 連続攻撃でダメージを与える回数
+    [Tooltip("攻撃を出し続ける時間(秒)")]
+    [SerializeField] private float _specialAttackDuration = 3.0f;
+    [Tooltip("ダメージを与える回数(出す攻撃の数)")]
+    [SerializeField] private int _specialAttackHitCount = 30;
+    [Tooltip("1回のダメージ")]
     [SerializeField] private int _specialAttackDamage = 2;
-    [SerializeField] private float _specialAttackIntervalRate = 0.1f;  // 最後の生成間隔÷最初の生成間隔(小さいほど後半の生成が速くなる)
-    [SerializeField] private float _specialAttackOverlapTime = 1.5f;   // この時間を超えたら、同時に2体以上表示してよい
-    [SerializeField] private float _specialAttackDistance = 9.0f;      // 敵の中心から出現位置までの距離(反対側の同じ距離まで通過する)
-    [SerializeField] private float _specialAttackDashTime = 0.12f;     // 出現位置から反対側まで通過する時間
-    [SerializeField] private float _specialAttackAngleRange = 60.0f;   // 通過する向きの、水平からの角度のばらつき
-    [SerializeField] private float _specialAttackMinAngleChange = 40.0f; // 直前の攻撃と、通過する向きを最低これだけ変える
-    [SerializeField] private float _specialAttackDistanceRandom = 0.35f; // 出現位置・消える位置までの距離のばらつき(割合)
-    [SerializeField] private float _specialAttackDashTimeRandom = 0.3f;  // 通過する時間のばらつき(割合)
-    [SerializeField] private float _specialAttackPassOffset = 0.8f;      // 通過する位置を、敵の中心からずらす最大の距離
-    [SerializeField] private float _specialAttackHitStopTime = 0.05f;    // ヒットした時に演出を止める時間
-    [SerializeField] private float _specialAttackHitShake = 0.15f;       // ヒットした時のカメラの揺れ
-    [SerializeField] private float _specialAttackHitShakeTime = 0.08f;
-    [SerializeField] private int _specialAttackGhostCount = 3;           // 通過中に置いていく薄い残像の数
-    [SerializeField] private float _specialAttackGhostAlpha = 0.5f;      // 通過中の残像の濃さ(ワープの残像の濃さに掛ける)
-    [SerializeField] private float _specialAttackGhostTime = 0.5f;       // 通過中の残像が消えるまでの時間(ワープの残像の時間に掛ける)
 
-    [Header("必殺技:最後の一撃")]
-    [SerializeField] private float _specialFinishChargeTime = 2.0f;    // 力を溜める時間
-    [SerializeField] private float _specialFinishDistance = 10.0f;     // 敵の中心から力を溜める位置までの距離
-    [SerializeField] private float _specialFinishDashTime = 0.15f;
+    [Header("連続攻撃:出す間隔")]
+    [Tooltip("最後の間隔÷最初の間隔。小さいほど後半が速くなる")]
+    [SerializeField] private float _specialAttackIntervalRate = 0.1f;
+    [Tooltip("連続攻撃を始めてからこの時間(秒)を過ぎたら、同時に2体以上出してよい")]
+    [SerializeField] private float _specialAttackOverlapTime = 1.5f;
+
+    [Header("連続攻撃:通過の動き")]
+    [Tooltip("敵の中心から出現位置までの距離(反対側の同じ距離まで通過する)")]
+    [SerializeField] private float _specialAttackDistance = 9.0f;
+    [Tooltip("出現位置から反対側まで通過する時間(秒)")]
+    [SerializeField] private float _specialAttackDashTime = 0.12f;
+    [Tooltip("通過する向きの、水平からの角度のばらつき(度)")]
+    [SerializeField] private float _specialAttackAngleRange = 60.0f;
+    [Tooltip("直前の攻撃と、通過する向きを最低これだけ変える(度)")]
+    [SerializeField] private float _specialAttackMinAngleChange = 40.0f;
+    [Tooltip("出現位置・消える位置までの距離のばらつき(割合)")]
+    [SerializeField] private float _specialAttackDistanceRandom = 0.35f;
+    [Tooltip("通過する時間のばらつき(割合)")]
+    [SerializeField] private float _specialAttackDashTimeRandom = 0.3f;
+    [Tooltip("通過する位置を、敵の中心からずらす最大の距離")]
+    [SerializeField] private float _specialAttackPassOffset = 0.8f;
+
+    [Header("連続攻撃:ヒットした時")]
+    [Tooltip("演出を止める時間(秒)")]
+    [SerializeField] private float _specialAttackHitStopTime = 0.05f;
+    [Tooltip("カメラの揺れの強さ")]
+    [SerializeField] private float _specialAttackHitShake = 0.15f;
+    [Tooltip("カメラの揺れの時間(秒)")]
+    [SerializeField] private float _specialAttackHitShakeTime = 0.08f;
+
+    [Header("連続攻撃:通過中の残像")]
+    [Tooltip("通過中に置いていく薄い残像の数")]
+    [SerializeField] private int _specialAttackGhostCount = 3;
+    [Tooltip("残像の濃さ(ワープの残像の濃さに掛ける)")]
+    [SerializeField] private float _specialAttackGhostAlpha = 0.5f;
+    [Tooltip("残像が消えるまでの時間(ワープの残像の時間に掛ける)")]
+    [SerializeField] private float _specialAttackGhostTime = 0.5f;
+
+    [Header("■ 必殺技:最後の一撃(力を溜めてから突撃し、当たった瞬間に一枚絵を表示する)")]
+    [Tooltip("当たった時のダメージ")]
     [SerializeField] private int _specialFinishDamage = 30;
+
+    [Header("最後の一撃:力を溜める")]
+    [Tooltip("力を溜める時間(秒)")]
+    [SerializeField] private float _specialFinishChargeTime = 2.0f;
+    [Tooltip("敵の中心から、力を溜める位置までの距離")]
+    [SerializeField] private float _specialFinishDistance = 10.0f;
+    [Tooltip("溜めている間に明滅する色")]
     [SerializeField] private Color _specialFinishChargeColor = new Color(0.55f, 0.85f, 1.0f, 1.0f);
-    [SerializeField] private Sprite _specialFinishImage;               // 最後の一撃が当たった瞬間に表示する一枚絵
-    [SerializeField] private float _specialFinishImageTime = 2.0f;
-    [SerializeField] private float _specialFinishImageFadeTime = 0.1f;   // 一枚絵の表示・非表示の拡縮フェードの時間
-    [SerializeField] private float _specialFinishChargeShake = 0.08f;   // 力を溜めている間のカメラの揺れ(小さく揺らし続ける)
-    [SerializeField] private float _specialFinishHitShake = 1.5f;       // 最後の一撃が当たった時のカメラの揺れ
-    [SerializeField] private float _specialFinishImageShake = 40.0f;    // 最後の一撃が当たった時の一枚絵の揺れ(画面の高さ1080の時のピクセル数)
+    [Tooltip("溜めている間、小さく揺らし続けるカメラの揺れの強さ")]
+    [SerializeField] private float _specialFinishChargeShake = 0.08f;
+
+    [Header("最後の一撃:突撃して当たった時")]
+    [Tooltip("溜めた位置から、敵の反対側の同じ距離まで突き抜ける時間(秒)。半分の時点で当たる")]
+    [SerializeField] private float _specialFinishDashTime = 0.15f;
+    [Tooltip("カメラの揺れの強さ")]
+    [SerializeField] private float _specialFinishHitShake = 1.5f;
+    [Tooltip("カメラと一枚絵の揺れが収まるまでの時間(秒)")]
     [SerializeField] private float _specialFinishHitShakeTime = 0.4f;
 
-    [Header("必殺技:カメラ(映す範囲の高さ。ワールド座標の長さ)")]
-    [SerializeField] private float _specialCutInZoomHeight = 7.0f;      // カットイン中、プレイヤーを映す
-    [SerializeField] private float _specialRushZoomHeight = 10.0f;      // 連続攻撃中、対象の敵を映す
-    [SerializeField] private float _specialFinishZoomMinHeight = 8.0f;  // 最後の一撃中、敵と突撃する姿の両方を映す(最小の高さ)
-    [SerializeField] private float _specialFinishZoomMargin = 6.0f;     // 敵と突撃する姿の間の長さに足す余白
-    [SerializeField] private float _specialZoomSpeed = 8.0f;            // 映す範囲を変える速さ
+    [Header("最後の一撃:一枚絵")]
+    [Tooltip("当たった瞬間に表示する一枚絵")]
+    [SerializeField] private Sprite _specialFinishImage;
+    [Tooltip("表示する時間(秒)")]
+    [SerializeField] private float _specialFinishImageTime = 2.0f;
+    [Tooltip("表示・非表示の拡縮フェードの時間(秒)")]
+    [SerializeField] private float _specialFinishImageFadeTime = 0.1f;
+    [Tooltip("当たった瞬間の一枚絵の揺れ(画面の高さ1080の時のピクセル数)")]
+    [SerializeField] private float _specialFinishImageShake = 40.0f;
 
-    [Header("必殺技:効果音")]
-    [SerializeField] private AudioClip _seSpecialHit;                  // 連続攻撃のヒット音
+    [Header("■ 必殺技:カメラ(映す範囲の高さ。ワールド座標の長さ)")]
+    [Tooltip("カットイン中、プレイヤーを映す高さ")]
+    [SerializeField] private float _specialCutInZoomHeight = 7.0f;
+    [Tooltip("連続攻撃中、対象の敵を映す高さ")]
+    [SerializeField] private float _specialRushZoomHeight = 10.0f;
+    [Tooltip("最後の一撃中、敵と突撃する姿の両方を映す高さの最小値")]
+    [SerializeField] private float _specialFinishZoomMinHeight = 8.0f;
+    [Tooltip("最後の一撃中、敵と突撃する姿の間の長さに足す余白")]
+    [SerializeField] private float _specialFinishZoomMargin = 6.0f;
+    [Tooltip("映す範囲を変える速さ")]
+    [SerializeField] private float _specialZoomSpeed = 8.0f;
+
+    [Header("■ 必殺技:効果音")]
+    [Tooltip("連続攻撃のヒット音")]
+    [SerializeField] private AudioClip _seSpecialHit;
+    [Tooltip("連続攻撃のヒット音の音量")]
     [SerializeField] private float _seSpecialHitVolume = 1.0f;
-    [SerializeField] private AudioClip[] _seSpecialFinishHit;          // 最後の一撃のヒット音(同時に鳴らす)
+    [Tooltip("最後の一撃のヒット音(全て同時に鳴らす)")]
+    [SerializeField] private AudioClip[] _seSpecialFinishHit;
+    [Tooltip("最後の一撃のヒット音の音量")]
     [SerializeField] private float _seSpecialFinishHitVolume = 1.0f;
-    [SerializeField] private AudioClip _seSpecialCharge;               // 最後の一撃の溜め中に鳴らす音
+    [Tooltip("最後の一撃で力を溜めている間に鳴らす音")]
+    [SerializeField] private AudioClip _seSpecialCharge;
+    [Tooltip("力を溜めている間に鳴らす音の音量")]
     [SerializeField] private float _seSpecialChargeVolume = 1.0f;
 
-    [Header("必殺技:BGM(連続攻撃中に徐々に小さくし、操作できるようになったら元に戻す)")]
-    [SerializeField] private float _specialBgmVolumeRate = 0.2f;       // 小さくした時の音量(元の音量に掛ける)
-
-    [Header("必殺技:終了後")]
-    [SerializeField] private float _specialEndInvincibleTime = 3.0f;   // 終了後にプレイヤーを無敵にする時間
+    [Header("■ 必殺技:終了後")]
+    [Tooltip("終了後にプレイヤーを無敵にする時間(秒)")]
+    [SerializeField] private float _specialEndInvincibleTime = 3.0f;
 
     // 必殺技の演出中に作ったもの(能力が途中で破棄された時に片付ける)
     private Enemy_Base _specialTarget = null;
@@ -110,9 +176,6 @@ public class Ability_Ice : Ability_Base {
     private Transform _specialCameraFocus = null;
     private float _specialZoomHeight = 0f;
     private float _specialZoomTargetHeight = 0f;
-    // BGMの音量(必殺技の終了時に元に戻す)
-    private AudioSource _specialBgm = null;
-    private float _specialBgmVolume = 0f;
     // 溜め中に鳴らしている音
     private AudioSource _specialChargeSe = null;
     private bool _impulseIgnoreTimeScale = false;
@@ -572,33 +635,6 @@ public class Ability_Ice : Ability_Base {
         };
     }
 
-    /// <summary>
-    /// BGMを徐々に小さくする(ポーズ中はポーズ画面がBGMの音量を変えるため、触らない)
-    /// </summary>
-    private IEnumerator _FadeSpecialBgm(float duration) {
-        var bgm_obj = GameObject.Find("BGM");
-        var bgm = bgm_obj != null ? bgm_obj.GetComponent<AudioSource>() : null;
-        if (bgm == null) yield break;
-        _specialBgm = bgm;
-        _specialBgmVolume = bgm.volume;
-        float target_volume = _specialBgmVolume * _specialBgmVolumeRate;
-        float time = 0f;
-        while (time < duration && _specialBgm == bgm) {
-            time += _SpecialDeltaTime;
-            if (!Pause_UI.IsOpen && bgm != null) {
-                bgm.volume = Mathf.Lerp(_specialBgmVolume, target_volume, Mathf.Clamp01(time / Mathf.Max(duration, 0.001f)));
-            }
-            yield return null;
-        }
-    }
-
-    // BGMの音量を元に戻す
-    private void _RestoreSpecialBgm() {
-        if (_specialBgm == null) return;
-        _specialBgm.volume = _specialBgmVolume;
-        _specialBgm = null;
-    }
-
     private void _PlaySpecialChargeSe() {
         if (_seSpecialCharge == null) return;
         var obj = new GameObject("IceSpecialChargeSe");
@@ -684,8 +720,6 @@ public class Ability_Ice : Ability_Base {
             yield return null;
         }
 
-        // 連続攻撃の間に、BGMを徐々に小さくする
-        StartCoroutine(_FadeSpecialBgm(_specialAttackDuration));
         yield return _SpecialRushAttack(target);
 
         if (_IsValidTarget(target)) {
@@ -701,8 +735,6 @@ public class Ability_Ice : Ability_Base {
         bool is_away_right = !Mathf.Approximately(appear_pos.x, last_center.x) ? appear_pos.x > last_center.x : !is_from_left;
         if (player != null) player.AppearFromSpecial(appear_pos, !is_away_right);
         _onEndSpecialAttack?.Invoke();
-        // 操作できるようになったので、BGMの音量を元に戻す
-        _RestoreSpecialBgm();
         if (player != null) {
             // 敵から離れる向きへ、ワープ後と同じ慣性移動をする(操作できる状態に戻ってから動かす)
             player.StartWarpDash(is_away_right);
@@ -1205,7 +1237,6 @@ public class Ability_Ice : Ability_Base {
         }
         if (_specialFinishImageObj != null) Destroy(_specialFinishImageObj);
         _EndSpecialZoom();
-        _RestoreSpecialBgm();
         foreach (var obj in _specialObjects) {
             if (obj != null) Destroy(obj);
         }
