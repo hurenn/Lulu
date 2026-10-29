@@ -18,6 +18,8 @@ public class Enemy_Base : Character_Base
     public bool isAutoLockOn = true;
     // ロックオンできるかどうか(状態によってロックオンさせない敵がオーバーライドする)
     public virtual bool CanLockOn => true;
+    // ボス、またはボスが生み出した敵か(氷の必殺技ゲージが多く溜まる)
+    public virtual bool IsBossSide => false;
 
     [SerializeField] private DamageZone _damageZone;
 

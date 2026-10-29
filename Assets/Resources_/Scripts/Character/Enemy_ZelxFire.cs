@@ -8,6 +8,8 @@ using UnityEngine;
 /// HPが半分を切ると、扇状の弾を左から順に1発ずつ連射し続けるようになる
 /// </summary>
 public class Enemy_ZelxFire : Enemy_Base, IActivatable {
+    public override bool IsBossSide => true; // ボス(氷の必殺技ゲージが多く溜まる)
+
     [SerializeField] private AudioClip _seFinish;
     [SerializeField] private AudioSource _audioBGM;
     private float _currentBGMVolume = 0.7f;

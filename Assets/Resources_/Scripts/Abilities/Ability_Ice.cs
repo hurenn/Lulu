@@ -31,19 +31,27 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private GameObject _lockonSlash;
     private IEnumerator _separateRoutine = null;
 
+    [Header("■ 必殺技:ゲージ(時間では溜まらず、氷の攻撃を敵に当てると溜まる)")]
+    [Tooltip("攻撃を1回当てた時に溜まる量(ゲージ全体に対する割合。0.02なら50回で満タン)")]
+    [SerializeField] private float _specialChargePerHit = 0.02f;
+    [Tooltip("連続攻撃の3段目を当てた・敵を倒した・ボスやボスが生み出した敵に当てた時、溜まる量に掛ける倍率(重なった時は重なった数だけ加算する)")]
+    [SerializeField] private float _specialChargeBonusRate = 3.0f;
+
     [Header("■ 必殺技:最初の一撃(正面へ飛ばし、敵に当たったら連続攻撃へ移る)")]
     [Tooltip("正面へ飛ばす攻撃のプレハブ")]
     [SerializeField] private GameObject _specialFirstAttackPrefab;
     [Tooltip("飛ぶ速さ")]
     [SerializeField] private float _specialFirstAttackSpeed = 30.0f;
-    [Tooltip("飛んでいる時間(秒)。この間に敵に当たらなければ失敗")]
+    [Tooltip("飛んでいる時間(秒)。この間に倒れずに残る敵に当たらなければ失敗")]
     [SerializeField] private float _specialFirstAttackTime = 0.5f;
-    [Tooltip("当たった時のダメージ")]
+    [Tooltip("当たった時のダメージ(この一撃で倒れた敵は通り抜け、次の敵を狙う)")]
     [SerializeField] private int _specialFirstAttackDamage = 2;
 
     [Header("最初の一撃:当たった後")]
     [Tooltip("当たった時に演出を止める時間(秒)")]
     [SerializeField] private float _specialFirstAttackHitStopTime = 0.3f;
+    [Tooltip("当たった敵が倒れて通り抜ける時に、演出を止める時間(秒)")]
+    [SerializeField] private float _specialFirstAttackKillHitStopTime = 0.15f;
     [Tooltip("ヒットストップの後、敵を通り抜けてから消えるまでの時間(秒)")]
     [SerializeField] private float _specialFirstAttackPassTime = 0.1f;
     [Tooltip("ヒットストップが終わってから連続攻撃を始めるまでの時間(秒)")]
@@ -146,6 +154,10 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private float _specialZoomSpeed = 8.0f;
 
     [Header("■ 必殺技:効果音")]
+    [Tooltip("最初の一撃のヒット音(倒して通り抜けた時も鳴らす)")]
+    [SerializeField] private AudioClip _seSpecialFirstHit;
+    [Tooltip("最初の一撃のヒット音の音量")]
+    [SerializeField] private float _seSpecialFirstHitVolume = 1.0f;
     [Tooltip("連続攻撃のヒット音")]
     [SerializeField] private AudioClip _seSpecialHit;
     [Tooltip("連続攻撃のヒット音の音量")]
@@ -498,8 +510,29 @@ public class Ability_Ice : Ability_Base {
         var scale = effect_obj.transform.localScale;
         scale.x = _isEffectRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
         effect_obj.transform.localScale = scale;
+        // 敵に当てたら必殺技ゲージを溜める(連続攻撃の3段目は多く溜まる)
+        bool is_bonus = effect == _slash3;
+        foreach (var damage_zone in effect_obj.GetComponentsInChildren<DamageZone>(true)) {
+            damage_zone.SetDamagedCallback(character => _ChargeByHit(character, is_bonus));
+        }
         return effect_obj;
     }
+
+    /// <summary>
+    /// 攻撃を敵に当てた時に必殺技ゲージを溜める
+    /// (3段目・倒した・ボスやボスが生み出した敵に当てた時は、倍率を掛けて多く溜める)
+    /// </summary>
+    private void _ChargeByHit(IDamageable character, bool is_bonus) {
+        if (_isSpecialUsing) return;
+        var enemy = character as Enemy_Base;
+        if (enemy == null) return;
+        // 条件が重なった時は、重なった数だけ加算する(3つ重なれば通常の3倍×3)
+        int bonus_count = (is_bonus ? 1 : 0) + (enemy.isDead ? 1 : 0) + (enemy.IsBossSide ? 1 : 0);
+        AddSpecialCharge(_specialChargePerHit * (bonus_count > 0 ? _specialChargeBonusRate * bonus_count : 1f));
+    }
+
+    // 必殺技ゲージは時間では溜まらない(攻撃を当てた時に溜める)
+    protected override bool _isTimeCharge => false;
 
     public override void OnWarp() {
         // 即座に帰還
@@ -690,7 +723,7 @@ public class Ability_Ice : Ability_Base {
         _EndSpecialZoom();
         yield return _SpecialFirstAttack(hit => target = hit);
         if (target == null) {
-            // 敵に当たらなければ失敗してそのまま終了(ゲージは半分だけ消費する)
+            // 敵に当たらない・当たった敵が全て倒れた時は、失敗してそのまま終了(ゲージは半分だけ消費する)
             ForceCharge(_specialMissRemainCharge);
             _ResumeWorld();
             _onEndSpecialAttack?.Invoke();
@@ -772,7 +805,8 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
-    /// 最初の一撃: プレイヤーから正面へ飛ばし、最初に当たった敵を返す(当たらなければnull)
+    /// 最初の一撃: プレイヤーから正面へ飛ばし、当たっても倒れなかった最初の敵を返す(いなければnull)
+    /// 当たって倒れた敵は通り抜けて次の敵を狙う(通り抜けた敵には全てダメージを与える)
     /// 当たった時はヒットストップをかけ、ヒットストップが終わったら少し通り抜けてから、ワープエフェクトを出しながら消す
     /// </summary>
     private IEnumerator _SpecialFirstAttack(System.Action<Enemy_Base> on_hit) {
@@ -800,20 +834,35 @@ public class Ability_Ice : Ability_Base {
         int enemy_mask = LayerMask.GetMask("Enemy");
         Vector3 velocity = (is_right ? Vector3.right : Vector3.left) * _specialFirstAttackSpeed;
         Enemy_Base hit = null;
+        // ダメージを与えた敵(同じ敵に二度当てない)
+        var damaged = new System.Collections.Generic.HashSet<Enemy_Base>();
+        var touching = new System.Collections.Generic.List<Enemy_Base>();
         float time = 0f;
         while (time < _specialFirstAttackTime && hit == null) {
             obj.transform.position += velocity * _SpecialDeltaTime;
             Vector2 center = obj.transform.TransformPoint(local_center);
-            float nearest = float.MaxValue;
+            touching.Clear();
             foreach (var col in Physics2D.OverlapBoxAll(center, hit_size, 0f, enemy_mask)) {
                 var enemy = col.GetComponentInParent<Enemy_Base>();
-                if (!_IsValidTarget(enemy) || enemy.IsEventInvincible) continue;
+                if (!_IsValidTarget(enemy) || enemy.IsEventInvincible || damaged.Contains(enemy) || touching.Contains(enemy)) continue;
                 // シールド等で防がれる相手には当たらない
                 if (enemy is IDamageSourceBlocker blocker && blocker.IsBlockedDamageSource(null)) continue;
-                float distance = Mathf.Abs(enemy.transform.position.x - _playerTransform.position.x);
-                if (distance < nearest) {
-                    nearest = distance;
+                touching.Add(enemy);
+            }
+            // プレイヤーに近い敵から順にダメージを与え、倒れた敵は通り抜けて、倒れずに残った敵を必殺技の対象にする
+            var from_x = _playerTransform.position.x;
+            touching.Sort((a, b) => Mathf.Abs(a.transform.position.x - from_x).CompareTo(Mathf.Abs(b.transform.position.x - from_x)));
+            foreach (var enemy in touching) {
+                damaged.Add(enemy);
+                _SpecialDamage(enemy, _specialFirstAttackDamage, zone);
+                _PlaySpecialSe(_seSpecialFirstHit, _seSpecialFirstHitVolume);
+                CinemachineManager.Instance?.ShakeCamera(0.3f, 0.1f);
+                // 倒した時もヒットストップをかける(ヒットストップ中は進まないため、その場に止まってから通り抜ける)
+                float hit_stop = _IsValidTarget(enemy) ? _specialFirstAttackHitStopTime : _specialFirstAttackKillHitStopTime;
+                _specialHitStopEndTime = Mathf.Max(_specialHitStopEndTime, Time.unscaledTime + hit_stop);
+                if (_IsValidTarget(enemy)) {
                     hit = enemy;
+                    break;
                 }
             }
             time += _SpecialDeltaTime;
@@ -821,11 +870,8 @@ public class Ability_Ice : Ability_Base {
         }
 
         if (hit != null) {
-            // 演出が終わるまで倒れないようにしてからダメージを与える
+            // 演出が終わるまで倒れないようにする
             hit.SetMinHP(1);
-            _SpecialDamage(hit, _specialFirstAttackDamage, zone);
-            CinemachineManager.Instance?.ShakeCamera(0.3f, 0.1f);
-            _specialHitStopEndTime = Mathf.Max(_specialHitStopEndTime, Time.unscaledTime + _specialFirstAttackHitStopTime);
             StartCoroutine(_PassFirstAttackAfterHitStop(obj, velocity));
             on_hit(hit);
             yield break;

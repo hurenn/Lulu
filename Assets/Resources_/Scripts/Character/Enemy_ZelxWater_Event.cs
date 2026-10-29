@@ -13,6 +13,8 @@ using UnityEngine;
 /// 通常時はWaterShieldでFireBulletを無効化し、スタン中のみWaterShieldを外してFireBulletが当たるようになる
 /// </summary>
 public class Enemy_ZelxWater_Event : Enemy_Base, IDamageSourceBlocker {
+    public override bool IsBossSide => true; // ボス(氷の必殺技ゲージが多く溜まる)
+
     private enum eState {
         Drifting,   // 左端で漂う
         MovingToFirePoint, // 発射地点と同じY座標を目指す

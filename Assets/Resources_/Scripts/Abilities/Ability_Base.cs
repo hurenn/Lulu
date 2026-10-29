@@ -54,6 +54,8 @@ public class Ability_Base : MonoBehaviour {
     /// </summary>
     private float _specialChargeStopTime = 1.0f;
     private float _currentSpecialChargeStopTime = 0f;
+    // 時間経過で必殺技ゲージを溜めるか(溜めない能力は、攻撃を当てた時などにAddSpecialChargeで溜める)
+    protected virtual bool _isTimeCharge => true;
 
     // 必殺技終了コールバック
     protected System.Action _onEndSpecialAttack = null;
@@ -202,7 +204,7 @@ public class Ability_Base : MonoBehaviour {
         if (_currentSpecialChargeStopTime > 0f) {
             // チャージ停止中
             _currentSpecialChargeStopTime -= Time.deltaTime;
-        } else {
+        } else if (_isTimeCharge) {
             // 必殺技チャージ
             if (_currentSpecialChargeTime < _specialChargeTime) {
                 _currentSpecialChargeTime += Time.deltaTime;

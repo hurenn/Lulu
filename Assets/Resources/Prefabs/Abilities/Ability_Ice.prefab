@@ -62,7 +62,7 @@ MonoBehaviour:
   _specialFirstAttackPrefab: {fileID: 7444988537484354709, guid: 0bc53f9119a06ef4fb96c6a201b478fc, type: 3}
   _specialFirstAttackSpeed: 80
   _specialFirstAttackTime: 0.2
-  _specialFirstAttackDamage: 10
+  _specialFirstAttackDamage: 30
   _specialFirstAttackHitStopTime: 0.5
   _specialFirstAttackPassTime: 0.1
   _specialFirstAttackWait: 0.5
@@ -86,23 +86,25 @@ MonoBehaviour:
   _specialAttackGhostCount: 3
   _specialAttackGhostAlpha: 0.5
   _specialAttackGhostTime: 0.5
+  _specialFinishDamage: 70
   _specialFinishChargeTime: 2
   _specialFinishDistance: 10
-  _specialFinishDashTime: 0.15
-  _specialFinishDamage: 90
   _specialFinishChargeColor: {r: 0.55, g: 0.85, b: 1, a: 1}
+  _specialFinishChargeShake: 0.08
+  _specialFinishDashTime: 0.15
+  _specialFinishHitShake: 1.5
+  _specialFinishHitShakeTime: 0.4
   _specialFinishImage: {fileID: 3601875134914777632, guid: 871284184c80e784c802012f824156b3, type: 3}
   _specialFinishImageTime: 1
   _specialFinishImageFadeTime: 0.1
-  _specialFinishChargeShake: 0.08
-  _specialFinishHitShake: 1.5
   _specialFinishImageShake: 40
-  _specialFinishHitShakeTime: 0.4
   _specialCutInZoomHeight: 7
   _specialRushZoomHeight: 10
   _specialFinishZoomMinHeight: 8
   _specialFinishZoomMargin: 6
   _specialZoomSpeed: 8
+  _seSpecialFirstHit: {fileID: 8300000, guid: 89842efe1c05881478fd78d5add66dda, type: 3}
+  _seSpecialFirstHitVolume: 1
   _seSpecialHit: {fileID: 8300000, guid: 89842efe1c05881478fd78d5add66dda, type: 3}
   _seSpecialHitVolume: 0.5
   _seSpecialFinishHit:
@@ -110,7 +112,6 @@ MonoBehaviour:
   _seSpecialFinishHitVolume: 2
   _seSpecialCharge: {fileID: 8300000, guid: 5e7169369cd60ab489fc73012a2f089b, type: 3}
   _seSpecialChargeVolume: 1
-  _specialBgmVolumeRate: 0.2
   _specialEndInvincibleTime: 3
 --- !u!1 &7168331570189894412
 GameObject:

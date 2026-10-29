@@ -2,6 +2,8 @@ using UnityEngine;
 
 // Zelxが生成するミスト。プレイヤーに向かって弧を描きながら徐々に近づく
 public class SylxMist : Enemy_Base {
+    public override bool IsBossSide => true; // ボスが生み出した敵(氷の必殺技ゲージが多く溜まる)
+
     [Header("追尾AIパラメータ")]
     [SerializeField] private float _approachSpeed = 2.0f;  // プレイヤーに近づく速さ
     [SerializeField] private float _arcAngle = 45f;         // 初動でつける弧の角度(度)

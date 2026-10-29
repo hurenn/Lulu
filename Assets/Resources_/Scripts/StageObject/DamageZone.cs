@@ -70,6 +70,8 @@ public class DamageZone : MonoBehaviour {
 
     // ヒット時のコールバック
     private System.Action<IDamageable> _hitCallback = default;
+    // ダメージを与えた後のコールバック(相手が倒れたかを確認できる)
+    private System.Action<IDamageable> _damagedCallback = default;
     // ヒットで消える時の処理(未設定なら_destroyObjectをDestroyする)
     private System.Action _hitDestroyCallback = default;
     // ヒットで消えるかどうかを相手ごとに決める処理(未設定なら、どの相手に当たっても消える)
@@ -87,6 +89,13 @@ public class DamageZone : MonoBehaviour {
     /// <param name="callback">ヒット時のコールバック設定</param>
     public void Setup(System.Action<IDamageable> callback) {
         _hitCallback = callback;
+    }
+
+    /// <summary>
+    /// ダメージを与えた後に呼ぶ処理を設定する(ダメージを与えられなかった時は呼ばない)
+    /// </summary>
+    public void SetDamagedCallback(System.Action<IDamageable> callback) {
+        _damagedCallback = callback;
     }
 
     /// <summary>
@@ -228,6 +237,8 @@ public class DamageZone : MonoBehaviour {
             if (_enableSelfDamage && _selfCharacter != null && _damageToSelf > 0) {
                 _ApplySelfDamage(other.transform.position);
             }
+
+            _damagedCallback?.Invoke(character);
         }
                 
         // プレイヤーヒット状態に応じたイベント発生

@@ -15,6 +15,8 @@ using UnityEngine.Playables;
 /// ダウンはHPが次の段階(2/3, 1/3)まで減ると強制解除され、再び画面端へ戻って行動する
 /// </summary>
 public class Enemy_ZelxWater : Enemy_Base, IActivatable, IKnockdownTarget, IDamageSourceFilter, IDamageSourceBlocker {
+    public override bool IsBossSide => true; // ボス(氷の必殺技ゲージが多く溜まる)
+
     private enum eState {
         Waiting,     // Timelineの合図を待っている
         Acting,      // 画面端で漂いながら攻撃する

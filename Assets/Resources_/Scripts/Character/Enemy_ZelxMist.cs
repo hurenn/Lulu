@@ -5,6 +5,8 @@ using UnityEngine;
 /// ボス「霧のゼルクス」
 /// </summary>
 public class Enemy_ZelxMist : Enemy_Base, IActivatable {
+    public override bool IsBossSide => true; // ボス(氷の必殺技ゲージが多く溜まる)
+
     private enum eZelxAction {
         None,
         Move,
