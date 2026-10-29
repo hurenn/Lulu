@@ -62,7 +62,7 @@ MonoBehaviour:
   _specialFirstAttackPrefab: {fileID: 7444988537484354709, guid: 0bc53f9119a06ef4fb96c6a201b478fc, type: 3}
   _specialFirstAttackSpeed: 80
   _specialFirstAttackTime: 0.2
-  _specialFirstAttackDamage: 2
+  _specialFirstAttackDamage: 10
   _specialFirstAttackHitStopTime: 0.5
   _specialFirstAttackPassTime: 0.1
   _specialFirstAttackWait: 0.5
@@ -70,7 +70,7 @@ MonoBehaviour:
   _specialAttackPrefab: {fileID: 7444988537484354709, guid: 8b9379f73fe107646906dcb0a3e53cee, type: 3}
   _specialAttackDuration: 2
   _specialAttackHitCount: 30
-  _specialAttackDamage: 2
+  _specialAttackDamage: 10
   _specialAttackIntervalRate: 0.1
   _specialAttackOverlapTime: 0.5
   _specialAttackDistance: 9
@@ -83,10 +83,13 @@ MonoBehaviour:
   _specialAttackHitStopTime: 0.08
   _specialAttackHitShake: 0.15
   _specialAttackHitShakeTime: 0.08
+  _specialAttackGhostCount: 3
+  _specialAttackGhostAlpha: 0.5
+  _specialAttackGhostTime: 0.5
   _specialFinishChargeTime: 2
   _specialFinishDistance: 10
   _specialFinishDashTime: 0.15
-  _specialFinishDamage: 30
+  _specialFinishDamage: 90
   _specialFinishChargeColor: {r: 0.55, g: 0.85, b: 1, a: 1}
   _specialFinishImage: {fileID: 3601875134914777632, guid: 871284184c80e784c802012f824156b3, type: 3}
   _specialFinishImageTime: 1
