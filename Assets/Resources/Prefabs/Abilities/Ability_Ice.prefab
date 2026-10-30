@@ -59,11 +59,14 @@ MonoBehaviour:
   _slash2: {fileID: 3568965013177453205, guid: 4b72e1cb41d4c294fb83b45a2d17c16f, type: 3}
   _slash3: {fileID: 3568965013177453205, guid: 09088dd8cbcea0c41bce9975dc2537cd, type: 3}
   _lockonSlash: {fileID: 3568965013177453205, guid: 65b8a166ce83b3d45bcf7f20a15c30a4, type: 3}
+  _specialChargePerHit: 0.02
+  _specialChargeBonusRate: 3
   _specialFirstAttackPrefab: {fileID: 7444988537484354709, guid: 0bc53f9119a06ef4fb96c6a201b478fc, type: 3}
   _specialFirstAttackSpeed: 80
   _specialFirstAttackTime: 0.2
   _specialFirstAttackDamage: 30
   _specialFirstAttackHitStopTime: 0.5
+  _specialFirstAttackKillHitStopTime: 0.15
   _specialFirstAttackPassTime: 0.1
   _specialFirstAttackWait: 0.5
   _specialMissRemainCharge: 0.5
@@ -71,7 +74,7 @@ MonoBehaviour:
   _specialAttackDuration: 2
   _specialAttackHitCount: 30
   _specialAttackDamage: 10
-  _specialAttackIntervalRate: 0.1
+  _specialAttackIntervalRate: 0.05
   _specialAttackOverlapTime: 0.5
   _specialAttackDistance: 9
   _specialAttackDashTime: 0.12
@@ -112,6 +115,8 @@ MonoBehaviour:
   _seSpecialFinishHitVolume: 2
   _seSpecialCharge: {fileID: 8300000, guid: 5e7169369cd60ab489fc73012a2f089b, type: 3}
   _seSpecialChargeVolume: 1
+  _specialHitStopMoveTime: 0.002
+  _specialBgmVolumeRate: 0.2
   _specialEndInvincibleTime: 3
 --- !u!1 &7168331570189894412
 GameObject:

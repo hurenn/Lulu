@@ -171,6 +171,14 @@ public class Ability_Ice : Ability_Base {
     [Tooltip("力を溜めている間に鳴らす音の音量")]
     [SerializeField] private float _seSpecialChargeVolume = 1.0f;
 
+    [Header("■ 必殺技:ヒットストップ")]
+    [Tooltip("ヒットストップ中も完全には止めず、ヒットストップの間にこの時間(秒)だけ演出を進める")]
+    [SerializeField] private float _specialHitStopMoveTime = 0.01f;
+
+    [Header("■ 必殺技:BGM(連続攻撃中に徐々に小さくし、最後の一撃のダメージが入る直前に元に戻す)")]
+    [Tooltip("小さくした時の音量(元の音量に掛ける)")]
+    [SerializeField] private float _specialBgmVolumeRate = 0.2f;
+
     [Header("■ 必殺技:終了後")]
     [Tooltip("終了後にプレイヤーを無敵にする時間(秒)")]
     [SerializeField] private float _specialEndInvincibleTime = 3.0f;
@@ -191,8 +199,12 @@ public class Ability_Ice : Ability_Base {
     // 溜め中に鳴らしている音
     private AudioSource _specialChargeSe = null;
     private bool _impulseIgnoreTimeScale = false;
-    // ヒットストップが終わる時刻(実時間)
+    // ヒットストップが始まった時刻・終わる時刻(実時間)
+    private float _specialHitStopStartTime = 0f;
     private float _specialHitStopEndTime = 0f;
+    // BGMの音量(最後の一撃のダメージが入る直前に元に戻す)
+    private AudioSource _specialBgm = null;
+    private float _specialBgmVolume = 0f;
     private readonly System.Collections.Generic.List<GameObject> _specialObjects = new System.Collections.Generic.List<GameObject>();
 
     protected override void _Update() {
@@ -549,8 +561,53 @@ public class Ability_Ice : Ability_Base {
 
     #region 必殺技
 
-    // 必殺技の間は時間を止め(敵やギミックを止める)、必殺技の演出だけを実時間で動かす。ポーズ中・ヒットストップ中は進めない
-    private float _SpecialDeltaTime => Pause_UI.IsOpen || Time.unscaledTime < _specialHitStopEndTime ? 0f : Time.unscaledDeltaTime;
+    // 必殺技の間は時間を止め(敵やギミックを止める)、必殺技の演出だけを実時間で動かす。ポーズ中は進めない
+    // ヒットストップ中は完全には止めず、ヒットストップの間に合計_specialHitStopMoveTimeだけ進むように遅くする
+    private float _SpecialDeltaTime {
+        get {
+            if (Pause_UI.IsOpen) return 0f;
+            if (Time.unscaledTime < _specialHitStopEndTime) {
+                float duration = Mathf.Max(_specialHitStopEndTime - _specialHitStopStartTime, 0.001f);
+                return Time.unscaledDeltaTime * Mathf.Clamp01(_specialHitStopMoveTime / duration);
+            }
+            return Time.unscaledDeltaTime;
+        }
+    }
+
+    /// <summary>
+    /// ヒットストップをかける(かかっている途中なら、終わる時刻を延ばす)
+    /// </summary>
+    private void _StartSpecialHitStop(float time) {
+        if (Time.unscaledTime >= _specialHitStopEndTime) _specialHitStopStartTime = Time.unscaledTime;
+        _specialHitStopEndTime = Mathf.Max(_specialHitStopEndTime, Time.unscaledTime + time);
+    }
+
+    /// <summary>
+    /// BGMを徐々に小さくする(ポーズ中はポーズ画面がBGMの音量を変えるため、触らない)
+    /// </summary>
+    private IEnumerator _FadeSpecialBgm(float duration) {
+        var bgm_obj = GameObject.Find("BGM");
+        var bgm = bgm_obj != null ? bgm_obj.GetComponent<AudioSource>() : null;
+        if (bgm == null) yield break;
+        _specialBgm = bgm;
+        _specialBgmVolume = bgm.volume;
+        float target_volume = _specialBgmVolume * _specialBgmVolumeRate;
+        float time = 0f;
+        while (time < duration && _specialBgm == bgm) {
+            time += _SpecialDeltaTime;
+            if (!Pause_UI.IsOpen && bgm != null) {
+                bgm.volume = Mathf.Lerp(_specialBgmVolume, target_volume, Mathf.Clamp01(time / Mathf.Max(duration, 0.001f)));
+            }
+            yield return null;
+        }
+    }
+
+    // BGMの音量を元に戻す
+    private void _RestoreSpecialBgm() {
+        if (_specialBgm == null) return;
+        _specialBgm.volume = _specialBgmVolume;
+        _specialBgm = null;
+    }
     // カメラのズームはヒットストップ中も進める(当たった瞬間からズームし始めるため)
     private float _SpecialZoomDeltaTime => Pause_UI.IsOpen ? 0f : Time.unscaledDeltaTime;
 
@@ -753,10 +810,13 @@ public class Ability_Ice : Ability_Base {
             yield return null;
         }
 
+        // 連続攻撃の間に、BGMを徐々に小さくする
+        StartCoroutine(_FadeSpecialBgm(_specialAttackDuration));
         yield return _SpecialRushAttack(target);
 
+        bool is_finish_hit = false;
         if (_IsValidTarget(target)) {
-            yield return _SpecialFinishAttack(target, is_from_left);
+            yield return _SpecialFinishAttack(target, is_from_left, is_hit => is_finish_hit = is_hit);
             last_center = _GetTargetCenter(target);
         }
 
@@ -775,12 +835,18 @@ public class Ability_Ice : Ability_Base {
             if (player.PlayerCharaParam != null) player.PlayerCharaParam.currentInvincibilityTimer = _specialEndInvincibleTime;
         }
 
-        // 最後の一撃でHPが1だった時は、演出が終わってから倒す
+        // 必殺技の演出が全て終わったので、BGMの音量を戻してから最後の一撃のダメージを与える
+        // (最後の一撃が無かった時も、HPが1で残っていれば倒す)
+        _RestoreSpecialBgm();
         _specialTarget = null;
         if (target != null) {
             target.SetMinHP(0);
-            if (!target.isDead && target.currentHP == 1) {
-                target.Damage(1, Vector2.zero, 0f, 0f, false, true);
+            if (!target.isDead) {
+                if (is_finish_hit) {
+                    target.Damage(_specialFinishDamage, Vector2.zero, 0f, 0f, false, true);
+                } else if (target.currentHP == 1) {
+                    target.Damage(1, Vector2.zero, 0f, 0f, false, true);
+                }
             }
         }
     }
@@ -859,7 +925,7 @@ public class Ability_Ice : Ability_Base {
                 CinemachineManager.Instance?.ShakeCamera(0.3f, 0.1f);
                 // 倒した時もヒットストップをかける(ヒットストップ中は進まないため、その場に止まってから通り抜ける)
                 float hit_stop = _IsValidTarget(enemy) ? _specialFirstAttackHitStopTime : _specialFirstAttackKillHitStopTime;
-                _specialHitStopEndTime = Mathf.Max(_specialHitStopEndTime, Time.unscaledTime + hit_stop);
+                _StartSpecialHitStop(hit_stop);
                 if (_IsValidTarget(enemy)) {
                     hit = enemy;
                     break;
@@ -995,7 +1061,7 @@ public class Ability_Ice : Ability_Base {
                 if (_SpecialDamage(target, _specialAttackDamage, zone)) {
                     _PlaySpecialSe(_seSpecialHit, _seSpecialHitVolume);
                     // ヒットストップ(演出だけを止める。カメラの揺れは止めない)
-                    _specialHitStopEndTime = Mathf.Max(_specialHitStopEndTime, Time.unscaledTime + _specialAttackHitStopTime);
+                    _StartSpecialHitStop(_specialAttackHitStopTime);
                     CinemachineManager.Instance?.ShakeCamera(_specialAttackHitShake, _specialAttackHitShakeTime);
                 }
             }
@@ -1009,10 +1075,11 @@ public class Ability_Ice : Ability_Base {
     }
 
     /// <summary>
-    /// 最後の一撃: 力を溜めてから突撃し、当たった瞬間に一枚絵を表示する
+    /// 最後の一撃: 力を溜めてから突撃し、当たった瞬間に一枚絵を表示する(ダメージは与えず、当たったかをon_hitで返す)
     /// </summary>
-    private IEnumerator _SpecialFinishAttack(Enemy_Base target, bool is_from_left) {
+    private IEnumerator _SpecialFinishAttack(Enemy_Base target, bool is_from_left, System.Action<bool> on_hit) {
         if (_specialAttackPrefab == null) yield break;
+        bool is_hit = false;
 
         Vector2 dir = is_from_left ? Vector2.right : Vector2.left;
         Vector2 center = _GetTargetCenter(target);
@@ -1075,7 +1142,11 @@ public class Ability_Ice : Ability_Base {
         }
 
         // 攻撃がヒットする瞬間に一枚絵を表示する(表示している間は時間を止める)
-        _SpecialDamage(target, _specialFinishDamage, zone);
+        // ダメージは必殺技の演出が全て終わってから与えるため、ここではヒットエフェクトだけ出す
+        if (_IsValidTarget(target)) {
+            is_hit = true;
+            if (zone != null) _RunUnscaled(zone.SpawnHitEffectAt(_GetTargetCenter(target)));
+        }
         if (_seSpecialFinishHit != null) {
             foreach (var se in _seSpecialFinishHit) _PlaySpecialSe(se, _seSpecialFinishHitVolume);
         }
@@ -1085,6 +1156,7 @@ public class Ability_Ice : Ability_Base {
 
         _SpawnWarpEffect(obj.transform.position);
         _DestroySpecialObject(obj);
+        on_hit?.Invoke(is_hit);
     }
 
     // 敵と突撃する姿の両方が映る高さ
@@ -1283,6 +1355,7 @@ public class Ability_Ice : Ability_Base {
         }
         if (_specialFinishImageObj != null) Destroy(_specialFinishImageObj);
         _EndSpecialZoom();
+        _RestoreSpecialBgm();
         foreach (var obj in _specialObjects) {
             if (obj != null) Destroy(obj);
         }
