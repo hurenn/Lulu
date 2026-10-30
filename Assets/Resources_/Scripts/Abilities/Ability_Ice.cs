@@ -34,7 +34,7 @@ public class Ability_Ice : Ability_Base {
     [Header("■ 必殺技:ゲージ(時間では溜まらず、氷の攻撃を敵に当てると溜まる)")]
     [Tooltip("攻撃を1回当てた時に溜まる量(ゲージ全体に対する割合。0.02なら50回で満タン)")]
     [SerializeField] private float _specialChargePerHit = 0.02f;
-    [Tooltip("連続攻撃の3段目を当てた・敵を倒した・ボスやボスが生み出した敵に当てた時、溜まる量に掛ける倍率(重なった時は重なった数だけ加算する)")]
+    [Tooltip("敵を倒した・ボスやボスが生み出した敵に当てた時、溜まる量に掛ける倍率(重なった時は重なった数だけ加算する)")]
     [SerializeField] private float _specialChargeBonusRate = 3.0f;
 
     [Header("■ 必殺技:最初の一撃(正面へ飛ばし、敵に当たったら連続攻撃へ移る)")]
@@ -522,24 +522,23 @@ public class Ability_Ice : Ability_Base {
         var scale = effect_obj.transform.localScale;
         scale.x = _isEffectRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
         effect_obj.transform.localScale = scale;
-        // 敵に当てたら必殺技ゲージを溜める(連続攻撃の3段目は多く溜まる)
-        bool is_bonus = effect == _slash3;
+        // 敵に当てたら必殺技ゲージを溜める
         foreach (var damage_zone in effect_obj.GetComponentsInChildren<DamageZone>(true)) {
-            damage_zone.SetDamagedCallback(character => _ChargeByHit(character, is_bonus));
+            damage_zone.SetDamagedCallback(_ChargeByHit);
         }
         return effect_obj;
     }
 
     /// <summary>
     /// 攻撃を敵に当てた時に必殺技ゲージを溜める
-    /// (3段目・倒した・ボスやボスが生み出した敵に当てた時は、倍率を掛けて多く溜める)
+    /// (倒した・ボスやボスが生み出した敵に当てた時は、倍率を掛けて多く溜める)
     /// </summary>
-    private void _ChargeByHit(IDamageable character, bool is_bonus) {
+    private void _ChargeByHit(IDamageable character) {
         if (_isSpecialUsing) return;
         var enemy = character as Enemy_Base;
         if (enemy == null) return;
-        // 条件が重なった時は、重なった数だけ加算する(3つ重なれば通常の3倍×3)
-        int bonus_count = (is_bonus ? 1 : 0) + (enemy.isDead ? 1 : 0) + (enemy.IsBossSide ? 1 : 0);
+        // 条件が重なった時は、重なった数だけ加算する(2つ重なれば通常の3倍×2)
+        int bonus_count = (enemy.isDead ? 1 : 0) + (enemy.IsBossSide ? 1 : 0);
         AddSpecialCharge(_specialChargePerHit * (bonus_count > 0 ? _specialChargeBonusRate * bonus_count : 1f));
     }
 

@@ -15,11 +15,16 @@ public class FireBullet : AutoDestroy
     public bool IsRight { set { _isRight = value; } }
 
     private void Awake() {
-        _damageZone.Setup((character) => {
-            // 当たった敵をロックオン
-            Enemy_Base enemy = character as Enemy_Base;
-            LockonManager.SetTargetStatic(enemy);
+        // 当たった敵をロックオン(シールド等で防がれた時も、相手が許していればロックオンする)
+        _damageZone.Setup(_Lockon);
+        _damageZone.SetBlockedCallback(character => {
+            if (character is IDamageSourceBlocker blocker && blocker.IsLockonOnBlocked) _Lockon(character);
         });
+    }
+
+    private static void _Lockon(IDamageable character) {
+        Enemy_Base enemy = character as Enemy_Base;
+        LockonManager.SetTargetStatic(enemy);
     }
 
     private void FixedUpdate() {

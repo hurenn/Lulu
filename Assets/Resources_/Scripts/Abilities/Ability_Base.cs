@@ -34,9 +34,15 @@ public class Ability_Base : MonoBehaviour {
     private float _specialChargeTime = 60.0f;
     private float _currentSpecialChargeTime = 0.0f;
     /// <summary>
-    /// 必殺技チャージ完了確認
+    /// 必殺技チャージ完了から使えるようになるまでの時間
     /// </summary>
-    protected bool _isSpecialCharged => _currentSpecialChargeTime >= _specialChargeTime;
+    [SerializeField]
+    private float _specialReadyDelay = 1.5f;
+    private float _currentSpecialReadyTime = 0.0f;
+    /// <summary>
+    /// 必殺技チャージ完了確認(チャージ完了から一定時間経つまでは使えない)
+    /// </summary>
+    protected bool _isSpecialCharged => _currentSpecialChargeTime >= _specialChargeTime && _currentSpecialReadyTime >= _specialReadyDelay;
 
     /// <summary>
     /// 必殺技演出タイムライン
@@ -212,6 +218,12 @@ public class Ability_Base : MonoBehaviour {
                     _currentSpecialChargeTime = _specialChargeTime;
                 }
             }
+        }
+        // チャージ完了からの経過時間
+        if (_currentSpecialChargeTime >= _specialChargeTime) {
+            _currentSpecialReadyTime += Time.deltaTime;
+        } else {
+            _currentSpecialReadyTime = 0f;
         }
         // 現在のチャージ量を通知
         if (_onChargeSpecial != null) {

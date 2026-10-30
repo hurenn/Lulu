@@ -72,6 +72,8 @@ public class DamageZone : MonoBehaviour {
     private System.Action<IDamageable> _hitCallback = default;
     // ダメージを与えた後のコールバック(相手が倒れたかを確認できる)
     private System.Action<IDamageable> _damagedCallback = default;
+    // 相手に防がれた(IDamageSourceBlocker)時のコールバック
+    private System.Action<IDamageable> _blockedCallback = default;
     // ヒットで消える時の処理(未設定なら_destroyObjectをDestroyする)
     private System.Action _hitDestroyCallback = default;
     // ヒットで消えるかどうかを相手ごとに決める処理(未設定なら、どの相手に当たっても消える)
@@ -96,6 +98,13 @@ public class DamageZone : MonoBehaviour {
     /// </summary>
     public void SetDamagedCallback(System.Action<IDamageable> callback) {
         _damagedCallback = callback;
+    }
+
+    /// <summary>
+    /// 相手にシールド等で防がれた時(IDamageSourceBlocker)に呼ぶ処理を設定する(防がれてもロックオンする弾など)
+    /// </summary>
+    public void SetBlockedCallback(System.Action<IDamageable> callback) {
+        _blockedCallback = callback;
     }
 
     /// <summary>
@@ -199,6 +208,18 @@ public class DamageZone : MonoBehaviour {
         }
         // 相手側がこの攻撃を防いだ場合(シールド等)は、ダメージを与えずに消える
         if (character is IDamageSourceBlocker blocker && blocker.IsBlockedDamageSource(this)) {
+            if (!_hitCharacters.ContainsKey(character)) {
+                _blockedCallback?.Invoke(character);
+            }
+            // 弾いたように見せる相手には、ヒットストップをかけて弾いた演出を出させる(同じ相手には一定時間出さない)
+            if (character is IDamageSourceDeflector deflector && !_hitCharacters.ContainsKey(character)) {
+                _hitCharacters.Add(character, _isOnceHit ? -1 : _hitInterval);
+                if (!_isOnceHit) {
+                    _activeCooldownCount++;
+                }
+                _HitStop(other.GetComponent<LocalTimePause>(), null, false);
+                deflector.OnDeflected(this, other.ClosestPoint(transform.position));
+            }
             if (_isHitDestroy) {
                 _HitDestroy();
             }
@@ -307,7 +328,7 @@ public class DamageZone : MonoBehaviour {
         return effect != null ? effect.gameObject : null;
     }
 
-    private void _HitStop(LocalTimePause hit_target, LocalTimePause hit_effect) {
+    private void _HitStop(LocalTimePause hit_target, LocalTimePause hit_effect, bool is_shake = true) {
         if (hit_effect) _localTimePauses.Add(hit_effect);
         if (hit_target) _localTimePauses.Add(hit_target);
         // ヒットストップ実行
@@ -315,7 +336,7 @@ public class DamageZone : MonoBehaviour {
             pause?.StartPause(_hitStopTime);
         }
         // カメラシェイク
-        if (_hitCameraShakeIntensity > 0) {
+        if (is_shake && _hitCameraShakeIntensity > 0) {
             var cinemachineManager = CinemachineManager.Instance;
             cinemachineManager.ShakeCamera(_hitCameraShakeIntensity, 0.05f);
         }
