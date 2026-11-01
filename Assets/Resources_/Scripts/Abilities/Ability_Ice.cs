@@ -223,6 +223,11 @@ public class Ability_Ice : Ability_Base {
         _UpdateSpecialZoom();
     }
 
+    // 必殺技の最初の一撃が届く距離
+    public float SpecialRange => _specialFirstAttackSpeed * _specialFirstAttackTime;
+    // 必殺技を撃てる状態か(ゲージが溜まっていて、能力が使えて、他の必殺技の演出中でない)
+    public bool CanUseSpecial => !_cannotUse && _isSpecialCharged && !isAnySpecialUsing;
+
     public override eAbilityResult ExecuteSimple() {
         // オーバーヒート中は使用不可
         if (_cannotUse) {
@@ -1359,7 +1364,10 @@ public class Ability_Ice : Ability_Base {
             if (obj != null) Destroy(obj);
         }
         if (_specialTarget != null) _specialTarget.SetMinHP(0);
-        if (_isSpecialUsing) isAnySpecialUsing = false;
+        if (_isSpecialUsing) {
+            isAnySpecialUsing = false;
+            specialUsingAbility = null;
+        }
     }
 
     #endregion

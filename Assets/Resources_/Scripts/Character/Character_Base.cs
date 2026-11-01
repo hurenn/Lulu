@@ -46,6 +46,8 @@ public class Character_Base : MonoBehaviour, IDamageable {
     protected bool _isWalking;
     protected bool _isDashing;
     protected bool _isWarpDelay;
+    // ワープする直前の、一瞬止まっている間か
+    public bool isWarpDelay => _isWarpDelay;
     protected bool _isWarpDashing;
     protected bool _isWarpChecking;
     protected bool _isSliding;      // スライディング中かどうか

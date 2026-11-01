@@ -54,6 +54,8 @@ public class Ability_Base : MonoBehaviour {
     protected bool _isSpecialUsing = false;
     // いずれかの能力の必殺技の演出中か(他の能力の自動攻撃などを止める)
     public static bool isAnySpecialUsing { get; protected set; } = false;
+    // 必殺技の演出中の能力(演出中でなければnull。どの能力の必殺技かを見分けるため)
+    public static Ability_Base specialUsingAbility { get; protected set; } = null;
 
     /// <summary>
     /// 必殺技チャージ停止時間
@@ -70,6 +72,7 @@ public class Ability_Base : MonoBehaviour {
         _onEndSpecialAttack += () => {
             _isSpecialUsing = false;
             isAnySpecialUsing = false;
+            specialUsingAbility = null;
         };
     }
 
@@ -314,6 +317,7 @@ public class Ability_Base : MonoBehaviour {
         Time.timeScale = 0.1f;
         _isSpecialUsing = true;
         isAnySpecialUsing = true;
+        specialUsingAbility = this;
         _isSpecialCutInViewing = true;
         _specialTimelineDirector.time = 0;
         _specialTimelineDirector.Evaluate();

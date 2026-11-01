@@ -144,6 +144,14 @@ public class SylxDark : Enemy_Base {
         _UpdateFacing();
     }
 
+    /// <summary>
+    /// 倒されずに消える(闇のゼルクスの演出で、出ているSylxDarkを片付ける時など)
+    /// </summary>
+    public void Vanish() {
+        if (_isDead) return;
+        _Vanish();
+    }
+
     // 倒されずに消える(コインは出さない)
     private void _Vanish() {
         if (_isVanished) return;

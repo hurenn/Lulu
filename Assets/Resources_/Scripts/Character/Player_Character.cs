@@ -22,6 +22,8 @@ public class Player_Character : Character_Base {
     private float _currentWarpCoolTime = 0;
     // ワープダッシュ時間計測
     private float _currentWarpDashTime = 0;
+    // ワープダッシュ(ワープ後の慣性移動)の時間制限と減衰を無くす(イベント用。逆向きの入力などで勢いが無くなるまで、同じ速さで動き続ける)
+    public bool isWarpDashUnlimited { get; set; } = false;
     // ワープダッシュの方向
     private Vector2 _warpDashDirection = Vector2.zero;
     // スライディング時間計測
@@ -187,8 +189,8 @@ public class Player_Character : Character_Base {
             return;
         }
 
-        // ワープダッシュの最大時間を超えた場合は終了（下方向ワープは時間終了なし）
-        if (!_isDownwardWarpDash && _currentWarpDashTime > _param.maxWarpDashTime) {
+        // ワープダッシュの最大時間を超えた場合は終了（下方向ワープ・時間制限を無くしている時は時間終了なし）
+        if (!_isDownwardWarpDash && !isWarpDashUnlimited && _currentWarpDashTime > _param.maxWarpDashTime) {
             _SetWarpDashing(false);
             return;
         }
@@ -219,12 +221,18 @@ public class Player_Character : Character_Base {
         // ワープダッシュ移動
         var dash_velocity = _warpDashDirection;
         _rb.linearVelocity = dash_velocity;
-        // ワープダッシュ力を減衰させる（下方向ワープは減衰なし）
-        if (!_isDownwardWarpDash) {
+        // ワープダッシュ力を減衰させる（下方向ワープ・時間制限を無くしている時は減衰なし）
+        if (!_isDownwardWarpDash && !isWarpDashUnlimited) {
             _warpDashDirection *= _param.warpDashDamping;
             if (_warpDashDirection.magnitude < 0.2f) {
                 _warpDashDirection = Vector2.zero;
             }
+        }
+        // 時間制限を無くしている時は、逆向きの入力などで勢いが無くなったら終了する(ワープダッシュ中は重力が無いため、浮いたままにならないように)
+        if (isWarpDashUnlimited && _warpDashDirection.magnitude < 0.2f) {
+            _warpDashDirection = Vector2.zero;
+            _SetWarpDashing(false);
+            return;
         }
 
         // 地面に接触しているかチェック
@@ -1011,6 +1019,38 @@ public class Player_Character : Character_Base {
         if (_sprite != null) _sprite.flipX = _isRight;
         _warpDashDirection = is_right ? _param.warpDashRight : _param.warpDashLeft;
         _ExecuteWarpDash();
+    }
+
+    /// <summary>
+    /// 入力が無くても、氷の必殺技を撃たせる(イベント用)。ワープの慣性やスライディング中は必殺技が出ないため、止めてから撃つ
+    /// </summary>
+    /// <returns>撃てたか</returns>
+    public bool ForceIceSpecial(bool is_right) {
+        var ability = _GetAbility<Ability_Ice>();
+        if (ability == null || !ability.CanUseSpecial || _specialUsing) return false;
+        _SetWarpDashing(false);
+        _SetSliding(false);
+        _motorStates.isWarpDashing = false;
+        _motorStates.isSliding = false;
+        _warpDashDirection = Vector2.zero;
+        _isRight = is_right;
+        if (_sprite != null) _sprite.flipX = _isRight;
+        var result = ability.ExecuteSimple();
+        _AbilityResult(result, Vector2.zero);
+        return result == eAbilityResult.IceSpecial;
+    }
+
+    /// <summary>
+    /// イベントで、指定した位置へワープさせる(ワープの音・残像・エフェクトを出し、着いたらワープ後と同じ慣性移動を始める)
+    /// </summary>
+    public void EventWarp(Vector2 position, bool is_right) {
+        if (_warpEffectPrefab != null) Instantiate(_warpEffectPrefab, transform.position, Quaternion.identity);
+        if (_warpControl != null) {
+            _warpControl.SpawnAfterImage();
+            _warpControl.PlayWarpSE();
+        }
+        AppearFromSpecial(position, is_right);
+        StartWarpDash(is_right);
     }
 
     /// <summary>

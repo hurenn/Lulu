@@ -41,6 +41,23 @@ public class CinemachineManager : SceneSingleton<CinemachineManager> {
     /// 毎フレーム呼んで、映す範囲を少しずつ変えることもできる。ReturnToPlayerで元の設定に戻る
     /// </summary>
     public void ZoomOnTarget(Transform target, float view_height) {
+        ZoomOnTarget(target, view_height, Vector3.zero);
+    }
+
+    /// <summary>
+    /// ズームカメラを指定した視野角(度)にした時に映る範囲の高さ(ワールド座標の長さ)
+    /// </summary>
+    public float FovToViewHeight(float fov) {
+        var composer = _ZoomComposer;
+        float distance = composer != null ? composer.CameraDistance : Mathf.Abs(_zoomCam.transform.position.z);
+        return 2f * distance * Mathf.Tan(fov * 0.5f * Mathf.Deg2Rad);
+    }
+
+    /// <summary>
+    /// 指定した高さの範囲が画面に映るように、targetからtarget_offsetだけずらした位置を画面の中心に映す
+    /// (target_offsetを右にずらすと、targetは画面の左寄りに映る)
+    /// </summary>
+    public void ZoomOnTarget(Transform target, float view_height, Vector3 target_offset) {
         _SaveZoomDefault();
         var lens = _zoomCam.Lens;
         var cam = Camera.main;
@@ -53,7 +70,7 @@ public class CinemachineManager : SceneSingleton<CinemachineManager> {
         }
         _zoomCam.Lens = lens;
         var zoom_composer = _ZoomComposer;
-        if (zoom_composer != null) zoom_composer.TargetOffset = Vector3.zero;
+        if (zoom_composer != null) zoom_composer.TargetOffset = target_offset;
         _zoomCam.Follow = target;
         _zoomCam.Priority = 20;
     }

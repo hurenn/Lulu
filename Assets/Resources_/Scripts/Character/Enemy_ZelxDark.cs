@@ -10,6 +10,8 @@ using UnityEngine;
 ///          それとは別に、能力使用不可エリアを一定間隔で展開し直す(最初は1つ目のエリアに決まっている)
 /// 第三形態: HPが1/3を切ると移る。第一形態でいた位置に戻り、画面全体を能力使用不可エリアで覆う
 ///          行動は、2点の間を移動する(追尾しない)SylxDarkを生み出すことだけになる
+/// 第四形態: HPが一定値(50)を切ると、HPをその値に戻して移る。ダウンして地面に落ち、エリアを全て閉じてから、右の画面外へ逃げ出す
+///          プレイヤーがワープで追いかけた後は、MP無限モードのプレイヤーから画面の右側へ逃げ続ける。氷の必殺技でしか倒れない
 /// </summary>
 public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, IDamageSourceDeflector {
     public override bool IsBossSide => true; // ボス(氷の必殺技ゲージが多く溜まる)
@@ -19,6 +21,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         Down,   // ダウン(落ちて着地し、HPが半分になったら上がる)
         Second, // 第二形態
         Third,  // 第三形態
+        Fourth, // 第四形態(ダウンしてイベントの後、画面外へ逃げ続ける)
     }
 
     private enum eAction {
@@ -146,6 +149,71 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     private Coroutine _sealAreaRoutine = null;
     private Coroutine _thirdPhaseRoutine = null;
     private bool _isThirdPhaseStarting = false; // 第三形態へ移ってから、エリアの展開が始まるまで(ダメージを受けない)
+
+    [Header("■ 第四形態(HPが一定値を切ったら移る。ダウンした後に画面の右の外へ逃げ出し、追いかけっこになる。氷の必殺技でしか倒れない)")]
+    [Tooltip("第四形態へ移るHP。これを切ったら、HPをこの値に戻して移る")]
+    [SerializeField] private int _fourthPhaseHP = 50;
+    [Tooltip("着地して能力使用不可エリアを閉じてから、浮き上がるまでの時間(秒)")]
+    [SerializeField] private float _escapeWait = 2.0f;
+    [Tooltip("逃げる前に浮き上がる高さ")]
+    [SerializeField] private float _escapeFloatHeight = 1.5f;
+    [Tooltip("浮き上がる時間(秒)")]
+    [SerializeField] private float _escapeFloatTime = 0.6f;
+    [Tooltip("右の画面外へ飛んでいく速さの増え方")]
+    [SerializeField] private float _escapeAcceleration = 60.0f;
+    [Tooltip("右の画面外へ飛んでいく速さの最大値")]
+    [SerializeField] private float _escapeMaxSpeed = 40.0f;
+    [Tooltip("画面外へ飛んでいってから、プレイヤーがワープで追いかけるまでの時間(秒)")]
+    [SerializeField] private float _chaseWarpWait = 1.0f;
+    [Tooltip("プレイヤーがワープする先の、壁(または画面の右端)からさらに右への距離")]
+    [SerializeField] private float _chaseWarpOverDistance = 3.0f;
+    [Tooltip("画面外へ飛び出してから、もう1回右へワープするまでの時間(秒)")]
+    [SerializeField] private float _chaseSecondWarpWait = 0.5f;
+    [Tooltip("画面外へ飛び出した後の、もう1回の右へのワープの距離")]
+    [SerializeField] private float _chaseSecondWarpDistance = 6.0f;
+    [Tooltip("もう1回右へワープしてから、カメラがプレイヤーに切り替わって操作できるようになるまでの時間(秒)")]
+    [SerializeField] private float _chaseCameraWait = 1.0f;
+    [Tooltip("追いかけっこ中のカメラの視野角(Lens)の最大値(度)。これより離れると、ゼルクスは画面の外に出る")]
+    [SerializeField] private float _chaseMaxFov = 65.0f;
+    [Tooltip("追いかけっこ中にカメラに映す範囲の高さの最小値(近づいた時に寄りすぎないようにする)")]
+    [SerializeField] private float _chaseMinViewHeight = 10.0f;
+    [Tooltip("追いかけっこ中に、プレイヤーとゼルクスを映す位置の、画面の左右の端からの余白")]
+    [SerializeField] private float _chaseScreenMargin = 3.0f;
+    [Tooltip("追いかけっこ中に、カメラが寄る・離れる速さ")]
+    [SerializeField] private float _chaseCameraSharpness = 3.0f;
+    [Tooltip("プレイヤーが右へワープするたびに縮まる距離")]
+    [SerializeField] private float _chaseApproachPerWarp = 3.0f;
+    [Tooltip("氷の必殺技が届く距離に対してこの割合まで近づいたら、自動で氷の必殺技を撃たせる")]
+    [SerializeField] private float _autoSpecialRangeRate = 0.5f;
+    [Tooltip("一番近づいた時の、プレイヤーからの距離")]
+    [SerializeField] private float _chaseMinDistance = 4.0f;
+    [Tooltip("プレイヤーが右以外へ動いた時に、画面の外へ逃げる速さ")]
+    [SerializeField] private float _chaseHideSpeed = 20.0f;
+    [Tooltip("プレイヤーが右へ動いているとみなす、右向きの速さ(落ちながら右へ進んでいる時も、右斜めとして数える)")]
+    [SerializeField] private float _chaseMoveThreshold = 1.0f;
+    [Tooltip("距離が変わった時に、位置を合わせる速さ")]
+    [SerializeField] private float _chaseFollowSharpness = 6.0f;
+    [Tooltip("上下に漂う幅")]
+    [SerializeField] private float _chaseFloatWidth = 0.5f;
+    [Tooltip("上下に漂う1回の時間(秒)")]
+    [SerializeField] private float _chaseFloatTime = 2.0f;
+    [Tooltip("飛び出した後の重力が無いプレイヤーの、上下の動きを止める速さ(ワープの勢いが残らないようにする)")]
+    [SerializeField] private float _chasePlayerFloatDamping = 10.0f;
+
+    private Coroutine _fourthPhaseRoutine = null;
+    private bool _isChasing = false;          // 追いかけっこ中(第四形態のイベントの後)
+    private bool _isIceSpecialHit = false;    // 第四形態で氷の必殺技を受けた(最後の一撃で倒れられるようにする)
+    private Player_Character _chasePlayer;
+    private Rigidbody2D _chasePlayerRb;
+    private float _chaseDistance;             // 追いかけっこ中の、プレイヤーからの右への距離(目標)
+    private float _chaseShownDistance;        // 実際の距離(目標へ少しずつ合わせる)
+    private WarpControl _chaseWarpControl;    // プレイヤーのワープを知るため
+    private Ability_Ice _chaseIce;            // 近づいた時に自動で必殺技を撃たせる氷の能力
+    private int _playerWarpCount = 0;         // 前回の更新からの間に、プレイヤーがワープした回数
+    private int _playerRightWarpCount = 0;    // そのうち、右へワープした回数
+    private Transform _chaseFocus;            // 追いかけっこ中にカメラで映す中心
+    private float _chaseViewHalfWidth;        // 追いかけっこ中にカメラに映す範囲の、横幅の半分
+    private bool _isPlayerFalling = false;    // 飛び出した後のプレイヤーに、重力を戻した
     private Vector3 _finalSealAreaBaseScale = Vector3.one; // 第三形態のエリアの、展開する前のScale(倒された時に戻す)
     private Vector2 _homePosition; // 第一形態でいた位置(ダウンから復帰する時に戻り、第二形態の初期位置になる)
     private int _tackleIndex = -1;  // 今いる体当たりの突っ込む先(-1: 初期位置にいる)
@@ -181,6 +249,13 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             return;
         }
 
+        // 氷の必殺技が終わったら、最後の一撃で倒れられる状態を終える(最後の一撃は、必殺技の終わりと同じフレームで当たる)
+        if (_isIceSpecialHit && !Ability_Base.isAnySpecialUsing) _isIceSpecialHit = false;
+        if (_isChasing) {
+            _UpdateChase();
+            return;
+        }
+
         if (!_isActive) return;
         if (_phase == ePhase.First) {
             _UpdateGenerate();
@@ -208,6 +283,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             _isSpecialHit = true;
             return base.Damage(0, Vector2.zero, 0f, 0f, is_trap_damage, true);
         }
+        if (_phase == ePhase.Fourth) return _DamageFourth(damage, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
         // 第三形態へ移ってから、エリアの展開が始まるまではダメージを受けない
         if (_isThirdPhaseStarting) return false;
         if (_phase == ePhase.Down) {
@@ -218,14 +294,32 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             _CheckHalfHP();
             return result;
         }
+        // 第四形態へ移る前に倒れないよう、HPは1より減らない
+        damage = Mathf.Clamp(damage, 0, Mathf.Max(0, _charaParam.CurrentHP - 1));
         // 移動するボスのため、被弾時の吹き飛びは無効にする
         bool second_result = base.Damage(damage, Vector2.zero, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
         _CheckHalfHP();
-        // 第二形態でHPが一定の割合を切ったら、第三形態へ移る
-        if (_phase == ePhase.Second && !_isDead && _charaParam.CurrentHP < _charaParam.MaxHP * _thirdPhaseHPRate) {
+        if (_isDead) return second_result;
+        if (_charaParam.CurrentHP < _fourthPhaseHP) {
+            // HPが一定値を切ったら、第四形態へ移る
+            _StartFourthPhase();
+        } else if (_phase == ePhase.Second && _charaParam.CurrentHP < _charaParam.MaxHP * _thirdPhaseHPRate) {
+            // 第二形態でHPが一定の割合を切ったら、第三形態へ移る
             _StartThirdPhase();
         }
         return second_result;
+    }
+
+    // 第四形態のダメージ: 追いかけっこが始まるまでは当たるがダメージは受けない。追いかけっこ中は、氷の必殺技でしか倒れない(それ以外ではHPが1より減らない)
+    private bool _DamageFourth(int damage, float invincible_time, float damage_reaction_time, bool is_trap_damage, bool ignore_invincibility) {
+        // 追いかけっこが始まるまでは、当たったように見せるが、ダメージは受けない
+        if (!_isChasing) return base.Damage(0, Vector2.zero, 0f, 0f, is_trap_damage, ignore_invincibility);
+        bool is_ice_special = Ability_Base.isAnySpecialUsing && Ability_Base.specialUsingAbility is Ability_Ice;
+        if (is_ice_special) _isIceSpecialHit = true;
+        // 氷の必殺技の最後の一撃は、必殺技が終わった直後に当たる
+        bool can_kill = is_ice_special || (_isIceSpecialHit && !Ability_Base.isAnySpecialUsing);
+        if (!can_kill) damage = Mathf.Clamp(damage, 0, Mathf.Max(0, _charaParam.CurrentHP - 1));
+        return base.Damage(damage, Vector2.zero, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
     }
 
     // HPが半分まで減ったら、一度だけOnHalfHPを呼ぶ(ダウンから時間切れで復帰した時は、第二形態で半分まで減った時に呼ぶ)
@@ -266,14 +360,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
 
     // 真下に落ちて着地し、HPが半分になるか一定時間経つまで待ってから真上に上がり、第二形態へ移る
     private IEnumerator _DownRoutine() {
-        // 落ちる
-        float land_y = _GetGroundY(transform.position) ?? transform.position.y;
-        float speed = 0f;
-        while (transform.position.y > land_y) {
-            yield return new WaitForFixedUpdate();
-            speed = Mathf.Min(speed + _fallGravity * Time.deltaTime, _fallMaxSpeed);
-            _MoveTo(new Vector2(transform.position.x, Mathf.Max(land_y, transform.position.y - speed * Time.deltaTime)));
-        }
+        yield return _FallToGround();
         _PlayImpact();
 
         // HPが半分まで削られるか、一定時間経つのを待つ
@@ -293,6 +380,17 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         _phase = ePhase.Second;
         _sealAreaRoutine = StartCoroutine(_SealAreaRoutine());
         _actionRoutine = StartCoroutine(_SecondPhaseRoutine());
+    }
+
+    // 真下の地面まで、だんだん速くなりながら落ちる
+    private IEnumerator _FallToGround() {
+        float land_y = _GetGroundY(transform.position) ?? transform.position.y;
+        float speed = 0f;
+        while (transform.position.y > land_y) {
+            yield return new WaitForFixedUpdate();
+            speed = Mathf.Min(speed + _fallGravity * Time.deltaTime, _fallMaxSpeed);
+            _MoveTo(new Vector2(transform.position.x, Mathf.Max(land_y, transform.position.y - speed * Time.deltaTime)));
+        }
     }
 
     /// <summary>
@@ -351,6 +449,13 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     private void _PlayImpact() {
         CinemachineManager.Instance?.ShakeCamera(_impactShakeIntensity, _impactShakeDuration);
         if (_seExplosion != null) _audioSource?.PlayOneShot(_seExplosion);
+    }
+
+    // 画面の端や外で起きた衝撃: カメラを揺らし、離れていても小さくならないよう、カメラの位置で音を鳴らす
+    private void _PlayImpactAtCamera() {
+        CinemachineManager.Instance?.ShakeCamera(_impactShakeIntensity, _impactShakeDuration);
+        var cam = Camera.main;
+        if (_seExplosion != null && cam != null) AudioUtil.PlayClipAtPointUnclamped(_seExplosion, cam.transform.position, 1f);
     }
 
     private void _MoveTo(Vector2 position) {
@@ -586,6 +691,245 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
 
     #endregion
 
+    #region 第四形態
+
+    // それまでの行動を全て止めて、HPを戻し、第四形態へ移る
+    private void _StartFourthPhase() {
+        _phase = ePhase.Fourth;
+        _isThirdPhaseStarting = false;
+        foreach (var routine in new[] { _actionRoutine, _sealAreaRoutine, _thirdPhaseRoutine }) {
+            if (routine != null) StopCoroutine(routine);
+        }
+        _actionRoutine = null;
+        _sealAreaRoutine = null;
+        _thirdPhaseRoutine = null;
+        _tackleIndex = -1;
+
+        int lack = _fourthPhaseHP - _charaParam.CurrentHP;
+        if (lack > 0) _charaParam.RecoverHP(lack);
+
+        // 出ているSylxDarkを片付ける
+        foreach (var sylx in FindObjectsByType<SylxDark>(FindObjectsSortMode.None)) sylx.Vanish();
+
+        _fourthPhaseRoutine = StartCoroutine(_FourthPhaseRoutine());
+    }
+
+    /// <summary>
+    /// 第四形態のイベント: 真下に落ちて着地し、能力使用不可エリアを閉じる
+    /// 少し待ってから浮き上がり、右の画面外へ飛んでいく(壁を突き抜けた瞬間にカメラを揺らす)
+    /// 少し後にプレイヤーが画面外へワープして追いかけ、追いかけっこが始まる
+    /// </summary>
+    private IEnumerator _FourthPhaseRoutine() {
+        // イベントの間はプレイヤーを操作できなくする。MP無限モードにし、氷の必殺技をすぐ使えるようにする
+        _chasePlayer = PlayerCharacterManager.Current as Player_Character;
+        if (_chasePlayer != null) {
+            _chasePlayerRb = _chasePlayer.GetComponent<Rigidbody2D>();
+            _chasePlayer.PlayerCharaParam?.SetInfiniteMP(true);
+        }
+        foreach (var ice in FindObjectsByType<Ability_Ice>(FindObjectsSortMode.None)) ice.ForceCharge();
+        var controller = PlayerCharacterManager.Controller;
+        if (controller != null) controller.isEnabledCharacterInput = false;
+
+        yield return _FallToGround();
+        _PlayImpact();
+        yield return _ChangeAllSealAreas(_finalSealAreaBaseScale, _sealAreaOpenTime, false);
+
+        // 少し待ってから浮き上がる
+        yield return new WaitForSeconds(_escapeWait);
+        Vector2 start = transform.position;
+        Vector2 float_to = start + Vector2.up * _escapeFloatHeight;
+        float time = 0f;
+        while (time < _escapeFloatTime) {
+            yield return new WaitForFixedUpdate();
+            time += Time.deltaTime;
+            _MoveTo(Vector2.Lerp(start, float_to, Mathf.SmoothStep(0f, 1f, time / Mathf.Max(_escapeFloatTime, 0.001f))));
+        }
+
+        // 右の画面外へ飛んでいく(だんだん速くなる)。壁を突き抜けた瞬間にカメラを揺らす
+        float width = _col != null ? _col.bounds.size.x : 2f;
+        var wall = Physics2D.Raycast(transform.position, Vector2.right, 200f, _wallLayer);
+        float? wall_x = wall.collider != null ? wall.point.x : (float?)null;
+        float end_x = Mathf.Max(wall_x ?? transform.position.x, _GetCameraRightX()) + width * 2f;
+        float speed = 0f;
+        while (transform.position.x < end_x) {
+            yield return new WaitForFixedUpdate();
+            speed = Mathf.Min(speed + _escapeAcceleration * Time.deltaTime, _escapeMaxSpeed);
+            float before_x = transform.position.x;
+            _MoveTo(new Vector2(transform.position.x + speed * Time.deltaTime, transform.position.y));
+            float front_x = transform.position.x + width * 0.5f;
+            if (wall_x.HasValue && front_x >= wall_x.Value && before_x + width * 0.5f < wall_x.Value) {
+                _PlayImpactAtCamera();
+            }
+        }
+
+        // 少し後に、プレイヤーが右の画面外へ1回でワープして追いかける(同時にカメラを揺らす)
+        yield return new WaitForSeconds(_chaseWarpWait);
+        if (_chasePlayer != null) {
+            // 空中を追いかけるため重力を無くし、ワープの慣性移動の時間制限と減衰を無くす(追いかけっこが終わるまで)
+            _chasePlayer.enableGravity = false;
+            _chasePlayer.isWarpDashUnlimited = true;
+            Vector2 player_position = _chasePlayer.transform.position;
+            float player_width = _chasePlayer.GetCharacterSize().x;
+            float warp_x = Mathf.Max((wall_x ?? player_position.x) + player_width, _GetCameraRightX()) + _chaseWarpOverDistance;
+            _chasePlayer.EventWarp(new Vector2(warp_x, player_position.y), true);
+        }
+        _PlayImpactAtCamera();
+
+        // 少し後に、もう1回右へワープする
+        yield return new WaitForSeconds(_chaseSecondWarpWait);
+        if (_chasePlayer != null) {
+            Vector2 from = _chasePlayer.transform.position;
+            _chasePlayer.EventWarp(from + Vector2.right * _chaseSecondWarpDistance, true);
+        }
+
+        // 少し待ってから、ワープの慣性で動き続けるプレイヤーにカメラを切り替え、操作できるようにする
+        yield return new WaitForSeconds(_chaseCameraWait);
+        _StartChase();
+        if (controller != null) controller.isEnabledCharacterInput = true;
+    }
+
+    // 今カメラに映っている範囲の右端(Z=0の平面上)
+    private float _GetCameraRightX() {
+        var cam = Camera.main;
+        if (cam == null) return transform.position.x;
+        float depth = -cam.transform.position.z;
+        return cam.ViewportToWorldPoint(new Vector3(1f, 0.5f, depth)).x;
+    }
+
+    // 追いかけっこを始める: カメラの範囲を一番大きく広げてプレイヤーを左端に映し、自分は画面の右の外から右端へ漂ってくる
+    private void _StartChase() {
+        if (_chasePlayer == null) return;
+        _isChasing = true;
+        _isPlayerFalling = false;
+        if (_chaseFocus == null) _chaseFocus = new GameObject("ZelxDarkChaseCameraFocus").transform;
+
+        Vector2 player_position = _chasePlayer.transform.position;
+        _chaseDistance = Mathf.Max(_chaseMinDistance, _GetChaseMaxHalfWidth() * 2f - _chaseScreenMargin * 2f);
+        _chaseShownDistance = _GetChaseMaxDistance();
+        _chaseViewHalfWidth = _GetChaseMaxHalfWidth();
+        _playerWarpCount = 0;
+        _playerRightWarpCount = 0;
+        _chaseWarpControl = _chasePlayer.GetComponentInChildren<WarpControl>(true);
+        if (_chaseWarpControl != null) _chaseWarpControl.onWarped += _OnPlayerWarped;
+        _UpdateChaseCamera(player_position, true);
+    }
+
+    // プレイヤーがワープした瞬間に数える(右へのワープは、距離を縮める)
+    private void _OnPlayerWarped(Vector2 from, Vector2 to) {
+        _playerWarpCount++;
+        if (to.x - from.x > 0.1f) _playerRightWarpCount++;
+        // プレイヤーと一緒に瞬間移動してブレないよう、今いる位置から少しずつ新しい距離へ合わせる
+        _chaseShownDistance -= to.x - from.x;
+    }
+
+    /// <summary>
+    /// 追いかけっこ中の動き
+    /// ・プレイヤーが右(右斜め)へ動いている間は、距離を保つ
+    /// ・プレイヤーが右へワープすると、少しだけ距離が縮む
+    /// ・それ以外の時は、すぐに画面の右の外へ隠れる(離れるのは、カメラを一番広げた時の画面の右端から、自分1体分の所まで)
+    /// ・飛び出した後のプレイヤーは重力が無いが、ワープするか左へ動いたら、重力を戻して落ちるようにする
+    /// </summary>
+    private void _UpdateChase() {
+        if (_chasePlayer == null) return;
+        float delta = Time.deltaTime;
+        Vector2 player_position = _chasePlayer.transform.position;
+        Vector2 player_velocity = _chasePlayerRb != null ? _chasePlayerRb.linearVelocity : Vector2.zero;
+        bool is_warping = _chasePlayer._motorStates.isWarpDashing;
+        // 前回からの間にワープしたか(ワープの慣性が続いている間に、続けてワープした時も数える)
+        int warp_count = _playerWarpCount;
+        int right_warp_count = _playerRightWarpCount;
+        _playerWarpCount = 0;
+        _playerRightWarpCount = 0;
+
+        // 飛び出した後、ワープするか左へ動いたら、重力を戻して落ちるようにする
+        if (!_isPlayerFalling && (warp_count > 0 || !_chasePlayer.isRight || player_velocity.x <= -_chaseMoveThreshold)) {
+            _isPlayerFalling = true;
+            _chasePlayer.enableGravity = true;
+        }
+        // 重力が無い間は、ワープの勢い以外では上下に流れていかないようにする
+        if (!_isPlayerFalling && _chasePlayerRb != null && !is_warping) {
+            player_velocity.y = Mathf.MoveTowards(player_velocity.y, 0f, _chasePlayerFloatDamping * delta);
+            _chasePlayerRb.linearVelocity = player_velocity;
+        }
+
+        float max_distance = _GetChaseMaxDistance();
+        // 右・右斜め(落ちながら右へ進んでいる時も含む)へ動いているか
+        bool is_moving_right = player_velocity.x >= _chaseMoveThreshold;
+        if (right_warp_count > 0) {
+            _chaseDistance = Mathf.Max(_chaseMinDistance, _chaseDistance - _chaseApproachPerWarp * right_warp_count);
+        } else if (!is_moving_right && !_chasePlayer.isWarpDelay) {
+            // ワープする直前の一瞬止まっている間は、止まったとみなさない
+            _chaseDistance = Mathf.MoveTowards(_chaseDistance, max_distance, _chaseHideSpeed * delta);
+        }
+        _chaseDistance = Mathf.Min(_chaseDistance, max_distance);
+        _chaseShownDistance = Mathf.Lerp(_chaseShownDistance, _chaseDistance, 1f - Mathf.Exp(-_chaseFollowSharpness * delta));
+
+        float float_y = Mathf.Sin(Time.time / Mathf.Max(_chaseFloatTime, 0.01f) * Mathf.PI * 2f) * _chaseFloatWidth;
+        float y = Mathf.Lerp(transform.position.y, player_position.y + float_y, 1f - Mathf.Exp(-_chaseFollowSharpness * delta));
+        _MoveTo(new Vector2(player_position.x + _chaseShownDistance, y));
+        _UpdateChaseCamera(player_position, false);
+
+        // 氷の必殺技が届く距離の一定割合まで近づいたら、自動で氷の必殺技を撃たせる
+        if (_chaseIce == null) _chaseIce = FindAnyObjectByType<Ability_Ice>();
+        float distance = transform.position.x - player_position.x;
+        // (ワープの直前に止まっている間は、撃った後にワープしてしまうため撃たない)
+        if (_chaseIce != null && _chaseIce.CanUseSpecial && !_chasePlayer.isWarpDelay && distance > 0f && distance <= _chaseIce.SpecialRange * _autoSpecialRangeRate) {
+            _chasePlayer.ForceIceSpecial(true);
+        }
+    }
+
+    /// <summary>
+    /// 追いかけっこ中のカメラ: プレイヤーを画面の左端、自分を右端に映すように、寄ったり離れたりする
+    /// (視野角の最大値より離れた時は、プレイヤーを左端に映したまま、自分は画面の外に出る)
+    /// </summary>
+    private void _UpdateChaseCamera(Vector2 player_position, bool is_immediate) {
+        if (_chaseFocus == null) return;
+        float aspect = _GetCameraAspect();
+        float min_half_width = _chaseMinViewHeight * 0.5f * aspect;
+        float target_half_width = Mathf.Clamp((_chaseShownDistance + _chaseScreenMargin * 2f) * 0.5f, min_half_width, _GetChaseMaxHalfWidth());
+        _chaseViewHalfWidth = is_immediate ? target_half_width
+            : Mathf.Lerp(_chaseViewHalfWidth, target_half_width, 1f - Mathf.Exp(-_chaseCameraSharpness * Time.deltaTime));
+        _chaseFocus.position = new Vector3(player_position.x - _chaseScreenMargin + _chaseViewHalfWidth, player_position.y, 0f);
+        CinemachineManager.Instance?.ZoomOnTarget(_chaseFocus, _chaseViewHalfWidth * 2f / aspect);
+    }
+
+    private static float _GetCameraAspect() {
+        var cam = Camera.main;
+        return cam != null ? cam.aspect : 16f / 9f;
+    }
+
+    // カメラを一番広げた時(視野角の最大値)に映る範囲の、横幅の半分
+    private float _GetChaseMaxHalfWidth() {
+        float height = CinemachineManager.Instance != null ? CinemachineManager.Instance.FovToViewHeight(_chaseMaxFov) : 30f;
+        return height * 0.5f * _GetCameraAspect();
+    }
+
+    // プレイヤーから一番離れる距離(カメラを一番広げた時の画面の右端から、自分1体分外側)
+    private float _GetChaseMaxDistance() {
+        float width = _col != null ? _col.bounds.size.x : 2f;
+        return _GetChaseMaxHalfWidth() * 2f - _chaseScreenMargin + width;
+    }
+
+    // 倒された時などに、追いかけっこのためにプレイヤーへ変えたものを戻す
+    private void _EndChase() {
+        _isChasing = false;
+        if (_chaseWarpControl != null) {
+            _chaseWarpControl.onWarped -= _OnPlayerWarped;
+            _chaseWarpControl = null;
+        }
+        if (_chaseFocus != null) {
+            Destroy(_chaseFocus.gameObject);
+            _chaseFocus = null;
+        }
+        if (_chasePlayer != null) {
+            _chasePlayer.enableGravity = true;
+            _chasePlayer.isWarpDashUnlimited = false;
+            _chasePlayer.PlayerCharaParam?.SetInfiniteMP(false);
+        }
+    }
+
+    #endregion
+
     #region SylxDarkを生み出す
 
     // 第一形態: 一定間隔でSylxDarkを生み出す
@@ -635,7 +979,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
 
     private IEnumerator _GeneratePathDelayed(Vector2 start, Vector2 end, float delay) {
         yield return new WaitForSeconds(delay);
-        if (_isDead) yield break;
+        if (_isDead || _phase == ePhase.Fourth) yield break;
         _SpawnPath(start, end);
     }
 
@@ -675,6 +1019,11 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             StopCoroutine(_thirdPhaseRoutine);
             _thirdPhaseRoutine = null;
         }
+        if (_fourthPhaseRoutine != null) {
+            StopCoroutine(_fourthPhaseRoutine);
+            _fourthPhaseRoutine = null;
+        }
+        _EndChase();
         if (_darkShield != null) _darkShield.SetActive(false);
         // 展開していたエリアを全て畳む(倒された演出中は時間が遅くなるため、実時間で畳む)
         StartCoroutine(_ChangeAllSealAreas(_finalSealAreaBaseScale, _sealAreaOpenTime, true));

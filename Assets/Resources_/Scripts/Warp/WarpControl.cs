@@ -35,6 +35,8 @@ public class WarpControl : MonoBehaviour {
     private float _currentAvoidEffectInterval = 0.1f;
 
     // ワープ共通処理
+    // ワープした瞬間に呼ばれる(ワープ前の位置, ワープ先の位置)。ボスがプレイヤーのワープに反応する時などに使う
+    public event System.Action<Vector2, Vector2> onWarped;
     System.Action _onPreWarpCommon = null;
     System.Action _onWarpEndCommon = null;
     // コインワープでワープ先に着いた瞬間
@@ -198,7 +200,9 @@ public class WarpControl : MonoBehaviour {
         // ワープSE再生
         PlayWarpSE();
         _SpawnAfterImage();
+        Vector2 warp_from = transform.position;
         transform.position = safe_point;
+        onWarped?.Invoke(warp_from, safe_point);
         _PlayWarpFlash();
         // コインワープでワープ先に着いた(氷の能力の自動攻撃などに使う)
         if (is_coin_warp) _onCoinWarpArrived?.Invoke();
