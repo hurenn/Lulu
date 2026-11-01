@@ -183,6 +183,12 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     [SerializeField] private float _chaseCameraSharpness = 3.0f;
     [Tooltip("プレイヤーが右へワープするたびに縮まる距離")]
     [SerializeField] private float _chaseApproachPerWarp = 3.0f;
+    [Tooltip("追いかけっこ中に、SylxDarkを生み出す間隔(秒)")]
+    [SerializeField] private float _chaseGenerateInterval = 1.0f;
+    [Tooltip("追いかけっこ中に、1回に生み出すSylxDarkの数")]
+    [SerializeField] private int _chaseGenerateCount = 2;
+    [Tooltip("追いかけっこ中のSylxDarkが向かう高さの、プレイヤーの高さからの上下の範囲(この範囲でランダムに決める)")]
+    [SerializeField] private float _chaseGenerateYOffset = 2.0f;
     [Tooltip("氷の必殺技が届く距離に対してこの割合まで近づいたら、自動で氷の必殺技を撃たせる")]
     [SerializeField] private float _autoSpecialRangeRate = 0.5f;
     [Tooltip("一番近づいた時の、プレイヤーからの距離")]
@@ -209,6 +215,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     private float _chaseShownDistance;        // 実際の距離(目標へ少しずつ合わせる)
     private WarpControl _chaseWarpControl;    // プレイヤーのワープを知るため
     private Ability_Ice _chaseIce;            // 近づいた時に自動で必殺技を撃たせる氷の能力
+    private float _chaseGenerateTimer = 0f;   // 追いかけっこ中に、次にSylxDarkを生み出すまでの時間
     private int _playerWarpCount = 0;         // 前回の更新からの間に、プレイヤーがワープした回数
     private int _playerRightWarpCount = 0;    // そのうち、右へワープした回数
     private Transform _chaseFocus;            // 追いかけっこ中にカメラで映す中心
@@ -218,6 +225,11 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     private Vector2 _homePosition; // 第一形態でいた位置(ダウンから復帰する時に戻り、第二形態の初期位置になる)
     private int _tackleIndex = -1;  // 今いる体当たりの突っ込む先(-1: 初期位置にいる)
     private int _sealAreaIndex = -1; // 展開しているエリア(-1: 展開していない)
+
+    // 追いかけっこの途中で消えた時(シーンの切り替えなど)も、炎の自動攻撃を止めたままにしない
+    private void OnDestroy() {
+        if (_isChasing) Ability_Fire.isAutoAttackDisabled = false;
+    }
 
     protected override void _Setup() {
         base._Setup();
@@ -800,6 +812,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     private void _StartChase() {
         if (_chasePlayer == null) return;
         _isChasing = true;
+        Ability_Fire.isAutoAttackDisabled = true; // 追いかけっこ中は炎の自動攻撃を出さない
         _isPlayerFalling = false;
         if (_chaseFocus == null) _chaseFocus = new GameObject("ZelxDarkChaseCameraFocus").transform;
 
@@ -807,6 +820,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         _chaseDistance = Mathf.Max(_chaseMinDistance, _GetChaseMaxHalfWidth() * 2f - _chaseScreenMargin * 2f);
         _chaseShownDistance = _GetChaseMaxDistance();
         _chaseViewHalfWidth = _GetChaseMaxHalfWidth();
+        _chaseGenerateTimer = _chaseGenerateInterval;
         _playerWarpCount = 0;
         _playerRightWarpCount = 0;
         _chaseWarpControl = _chasePlayer.GetComponentInChildren<WarpControl>(true);
@@ -869,6 +883,18 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         _MoveTo(new Vector2(player_position.x + _chaseShownDistance, y));
         _UpdateChaseCamera(player_position, false);
 
+        // 一定間隔で、プレイヤーに付いて動くSylxDarkを生み出す(向かう高さは、プレイヤーの高さ±指定の範囲でランダム)
+        _chaseGenerateTimer -= delta;
+        if (_chaseGenerateTimer <= 0f) {
+            _chaseGenerateTimer = _chaseGenerateInterval;
+            if (_sylxDarkPrefab != null) {
+                for (int i = 0; i < _chaseGenerateCount; i++) {
+                    var sylx = Instantiate(_sylxDarkPrefab, _GetGeneratePosition(i), Quaternion.identity);
+                    sylx.SetupEscort(Random.Range(-_chaseGenerateYOffset, _chaseGenerateYOffset));
+                }
+            }
+        }
+
         // 氷の必殺技が届く距離の一定割合まで近づいたら、自動で氷の必殺技を撃たせる
         if (_chaseIce == null) _chaseIce = FindAnyObjectByType<Ability_Ice>();
         float distance = transform.position.x - player_position.x;
@@ -913,6 +939,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     // 倒された時などに、追いかけっこのためにプレイヤーへ変えたものを戻す
     private void _EndChase() {
         _isChasing = false;
+        Ability_Fire.isAutoAttackDisabled = false;
         if (_chaseWarpControl != null) {
             _chaseWarpControl.onWarped -= _OnPlayerWarped;
             _chaseWarpControl = null;

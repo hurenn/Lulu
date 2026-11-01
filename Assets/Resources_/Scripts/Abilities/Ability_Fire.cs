@@ -47,7 +47,9 @@ public class Ability_Fire : Ability_Base
     private float _autoAttackInterval = 0.4f;
     private float _autoAttackResetTime = 0.8f;
     private float _currentAutoAttackInterval = 0.0f;
-    
+    // 自動攻撃を止める(ボスの演出中など。止めている間は、範囲内に敵がいても撃たない)
+    public static bool isAutoAttackDisabled { get; set; } = false;
+
     // トリガーヘルパー参照
     private FireAutoAttackTrigger _triggerHelper;
 
@@ -141,7 +143,7 @@ public class Ability_Fire : Ability_Base
         UpdatePartnerTransform();
 
         // リスト内に敵がいれば自動攻撃
-        if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0 && !isAnySpecialUsing) {
+        if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0 && !isAnySpecialUsing && !isAutoAttackDisabled) {
             // 既に死んでいる敵をリストから削除
             _enemiesInRange.RemoveAll(enemy => enemy == null || enemy.isDead);
             // 敵がリスト内にいれば攻撃
