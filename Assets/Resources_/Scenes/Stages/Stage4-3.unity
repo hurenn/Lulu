@@ -7860,7 +7860,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 0
-      m_TileSpriteIndex: 24
+      m_TileSpriteIndex: 27
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -14511,14 +14511,14 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 1
-    m_Data: {fileID: -2464826795151603093, guid: 3773b274f1332324aace771706aded49, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: -3775403090329895229, guid: 3773b274f1332324aace771706aded49, type: 2}
   - m_RefCount: 82
     m_Data: {fileID: -1492168417867019142, guid: 3773b274f1332324aace771706aded49, type: 2}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: -2464826795151603093, guid: 3773b274f1332324aace771706aded49, type: 2}
   - m_RefCount: 50
     m_Data: {fileID: -2412863012242481111, guid: 3773b274f1332324aace771706aded49, type: 2}
   - m_RefCount: 2
@@ -16831,7 +16831,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2212143472796131003, guid: e267e9c3a05259e499ea2b5c075c8d1e, type: 3}
       propertyPath: _chaseApproachPerWarp
-      value: 0.8
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2212143472796131003, guid: e267e9c3a05259e499ea2b5c075c8d1e, type: 3}
+      propertyPath: _chaseGlitchIntensity
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2212143472796131003, guid: e267e9c3a05259e499ea2b5c075c8d1e, type: 3}
       propertyPath: _sealAreas.Array.size

@@ -42,6 +42,8 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     [SerializeField] private float _impactShakeIntensity = 0.5f;
     [Tooltip("着地・体当たり・エリア展開の時のカメラの揺れの時間(秒)")]
     [SerializeField] private float _impactShakeDuration = 0.4f;
+    [Tooltip("形態が変わるたびに画面を白く光らせる時間(秒)")]
+    [SerializeField] private float _phaseChangeFlashTime = 0.4f;
 
     // SylxDarkが間を移動する2点
     [System.Serializable]
@@ -131,6 +133,10 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     [SerializeField] private float _finalSealAreaOpenTime = 0.5f;
     [Tooltip("第一形態でいた位置に戻る速さ")]
     [SerializeField] private float _thirdPhaseReturnSpeed = 8.0f;
+    [Tooltip("第一形態でいた位置に戻る前に、上に浮かぶ高さ")]
+    [SerializeField] private float _thirdPhaseFloatHeight = 2.0f;
+    [Tooltip("上に浮かぶ時間(秒)")]
+    [SerializeField] private float _thirdPhaseFloatTime = 0.5f;
     [Tooltip("戻ってから、カメラを揺らすまでの時間(秒)")]
     [SerializeField] private float _thirdPhaseShakeWait = 2.0f;
     [Tooltip("カメラを揺らしてから、エリアを展開するまでの時間(秒)")]
@@ -171,6 +177,10 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     [SerializeField] private float _chaseSecondWarpWait = 0.5f;
     [Tooltip("画面外へ飛び出した後の、もう1回の右へのワープの距離")]
     [SerializeField] private float _chaseSecondWarpDistance = 6.0f;
+    [Tooltip("画面外へ飛び出した後に、続けて右へワープする回数")]
+    [SerializeField] private int _chaseSecondWarpCount = 5;
+    [Tooltip("続けて右へワープする間隔(秒)")]
+    [SerializeField] private float _chaseSecondWarpInterval = 0.15f;
     [Tooltip("もう1回右へワープしてから、カメラがプレイヤーに切り替わって操作できるようになるまでの時間(秒)")]
     [SerializeField] private float _chaseCameraWait = 1.0f;
     [Tooltip("追いかけっこ中のカメラの視野角(Lens)の最大値(度)。これより離れると、ゼルクスは画面の外に出る")]
@@ -183,6 +193,14 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     [SerializeField] private float _chaseCameraSharpness = 3.0f;
     [Tooltip("プレイヤーが右へワープするたびに縮まる距離")]
     [SerializeField] private float _chaseApproachPerWarp = 3.0f;
+    [Tooltip("追いかけっこ中の、画面全体のグリッチノイズの強さ(0〜1)")]
+    [SerializeField] private float _chaseGlitchIntensity = 1.0f;
+    [Tooltip("追いかけっこが始まってから、グリッチノイズが最大の強さになるまでの時間(秒)")]
+    [SerializeField] private float _chaseGlitchTime = 10.0f;
+    [Tooltip("倒された時に、グリッチノイズを弱める時間(秒)")]
+    [SerializeField] private float _chaseGlitchEndTime = 0.5f;
+    [Tooltip("倒された後に残す、グリッチノイズの強さ(0〜1)")]
+    [SerializeField] private float _chaseGlitchDefeatedIntensity = 0.2f;
     [Tooltip("追いかけっこ中に、SylxDarkを生み出す間隔(秒)")]
     [SerializeField] private float _chaseGenerateInterval = 1.0f;
     [Tooltip("追いかけっこ中に、1回に生み出すSylxDarkの数")]
@@ -228,7 +246,10 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
 
     // 追いかけっこの途中で消えた時(シーンの切り替えなど)も、炎の自動攻撃を止めたままにしない
     private void OnDestroy() {
-        if (_isChasing) Ability_Fire.isAutoAttackDisabled = false;
+        if (_isChasing) {
+            Ability_Fire.isAutoAttackDisabled = false;
+            ScreenGlitch.FadeTo(0f, 0f);
+        }
     }
 
     protected override void _Setup() {
@@ -296,8 +317,8 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             return base.Damage(0, Vector2.zero, 0f, 0f, is_trap_damage, true);
         }
         if (_phase == ePhase.Fourth) return _DamageFourth(damage, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
-        // 第三形態へ移ってから、エリアの展開が始まるまではダメージを受けない
-        if (_isThirdPhaseStarting) return false;
+        // 第三形態へ移ってから、エリアの展開が始まるまでは、当たったように見せるがダメージは受けない
+        if (_isThirdPhaseStarting) return base.Damage(0, Vector2.zero, 0f, 0f, is_trap_damage, ignore_invincibility);
         if (_phase == ePhase.Down) {
             // ダウン中は、HPが半分より減らない(半分まで削られたら、時間切れを待たずに上がって第二形態へ移る)
             int half_hp = _GetHalfHP();
@@ -350,6 +371,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     /// </summary>
     private void _BreakShield() {
         _phase = ePhase.Down;
+        _FlashPhaseChange();
         _homePosition = transform.position; // 第一形態は動かないため、今の位置が第一形態でいた位置
 
         if (_darkShield != null) {
@@ -390,6 +412,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         _MoveTo(_homePosition);
 
         _phase = ePhase.Second;
+        _FlashPhaseChange();
         _sealAreaRoutine = StartCoroutine(_SealAreaRoutine());
         _actionRoutine = StartCoroutine(_SecondPhaseRoutine());
     }
@@ -463,7 +486,12 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         if (_seExplosion != null) _audioSource?.PlayOneShot(_seExplosion);
     }
 
-    // 画面の端や外で起きた衝撃: カメラを揺らし、離れていても小さくならないよう、カメラの位置で音を鳴らす
+    // 形態が変わった瞬間: 画面を白く光らせる
+    private void _FlashPhaseChange() {
+        ScreenFlash.Instance?.Flash(_phaseChangeFlashTime, Color.white);
+    }
+
+    // 画面の端や外で起きた衝撃:カメラを揺らし、離れていても小さくならないよう、カメラの位置で音を鳴らす
     private void _PlayImpactAtCamera() {
         CinemachineManager.Instance?.ShakeCamera(_impactShakeIntensity, _impactShakeDuration);
         var cam = Camera.main;
@@ -667,6 +695,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     // 第二形態の行動(体当たりの途中でも)とエリアの展開を止めて、第三形態へ移る
     private void _StartThirdPhase() {
         _phase = ePhase.Third;
+        _FlashPhaseChange();
         _isThirdPhaseStarting = true;
         if (_actionRoutine != null) {
             StopCoroutine(_actionRoutine);
@@ -683,6 +712,15 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     // 第一形態でいた位置に戻り、少し待ってカメラを揺らし、さらに少し待ってから画面全体をエリアで覆う
     // その後は、2点の間を移動するSylxDarkを一定間隔で生み出し続ける
     private IEnumerator _ThirdPhaseRoutine() {
+        // 上に浮かんでから、第一形態でいた位置へ向かう
+        Vector2 float_from = transform.position;
+        Vector2 float_to = float_from + Vector2.up * _thirdPhaseFloatHeight;
+        float float_time = 0f;
+        while (float_time < _thirdPhaseFloatTime) {
+            yield return new WaitForFixedUpdate();
+            float_time += Time.deltaTime;
+            _MoveTo(Vector2.Lerp(float_from, float_to, Mathf.SmoothStep(0f, 1f, float_time / Mathf.Max(_thirdPhaseFloatTime, 0.001f))));
+        }
         yield return _MoveLinear(_homePosition, _thirdPhaseReturnSpeed, false);
         yield return new WaitForSeconds(_thirdPhaseShakeWait);
         CinemachineManager.Instance?.ShakeCamera(_impactShakeIntensity, _impactShakeDuration);
@@ -708,6 +746,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     // それまでの行動を全て止めて、HPを戻し、第四形態へ移る
     private void _StartFourthPhase() {
         _phase = ePhase.Fourth;
+        _FlashPhaseChange();
         _isThirdPhaseStarting = false;
         foreach (var routine in new[] { _actionRoutine, _sealAreaRoutine, _thirdPhaseRoutine }) {
             if (routine != null) StopCoroutine(routine);
@@ -792,6 +831,12 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         if (_chasePlayer != null) {
             Vector2 from = _chasePlayer.transform.position;
             _chasePlayer.EventWarp(from + Vector2.right * _chaseSecondWarpDistance, true);
+            for (int i = 1; i < _chaseSecondWarpCount; i++) {
+                yield return new WaitForSeconds(_chaseSecondWarpInterval);
+                if (_chasePlayer == null) break;
+                from = _chasePlayer.transform.position;
+                _chasePlayer.EventWarp(from + Vector2.right * _chaseSecondWarpDistance, true);
+            }
         }
 
         // 少し待ってから、ワープの慣性で動き続けるプレイヤーにカメラを切り替え、操作できるようにする
@@ -813,6 +858,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         if (_chasePlayer == null) return;
         _isChasing = true;
         Ability_Fire.isAutoAttackDisabled = true; // 追いかけっこ中は炎の自動攻撃を出さない
+        ScreenGlitch.FadeTo(_chaseGlitchIntensity, _chaseGlitchTime); // 画面全体のグリッチノイズを少しずつ強める
         _isPlayerFalling = false;
         if (_chaseFocus == null) _chaseFocus = new GameObject("ZelxDarkChaseCameraFocus").transform;
 
@@ -940,6 +986,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     private void _EndChase() {
         _isChasing = false;
         Ability_Fire.isAutoAttackDisabled = false;
+        ScreenGlitch.FadeTo(_chaseGlitchDefeatedIntensity, _chaseGlitchEndTime);
         if (_chaseWarpControl != null) {
             _chaseWarpControl.onWarped -= _OnPlayerWarped;
             _chaseWarpControl = null;
