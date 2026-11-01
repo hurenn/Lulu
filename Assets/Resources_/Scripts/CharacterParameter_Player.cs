@@ -53,7 +53,42 @@ public class CharacterParameter_Player : CharacterParameter {
 
     // 能力使用不可エリア(AbilitySealArea)の中にいるか
     // エリアの中ではMPを急激に吸い取られ、0になってもオーバーヒートしない。MPは回復しない(強制回復・レベルアップを除く)
-    public bool isInSealArea { get; set; }
+    // MP無限モード中は、エリアとMP無限モードが相殺され、エリアの外と同じ扱いになる(MPは通常通り消費・回復する)
+    public bool isInSealArea {
+        get => _isInSealAreaRaw && !isInfiniteMP;
+        set {
+            bool is_exit = _isInSealAreaRaw && !value;
+            _isInSealAreaRaw = value;
+            // MP無限モード中は、エリアを抜けた瞬間にMPを全回復する(オーバーヒートしていたら解除する)
+            if (is_exit && isInfiniteMP) {
+                isOverheat = false;
+                _currentMP = _maxMP;
+                _UpdateMPUI();
+            }
+        }
+    }
+    private bool _isInSealAreaRaw = false;
+
+    // MP無限モード(能力を使ってもMPが減らない。ゲージは虹色に光る)
+    public bool isInfiniteMP { get; private set; }
+    // MPが減らない状態か(MP無限モードでも、能力使用不可エリアの中では相殺されて減る)
+    private bool _isMpUnlimited => isInfiniteMP && !_isInSealAreaRaw;
+    [SerializeField] private float _infiniteHueCycleTime = 1.5f;   // MP無限モード: ゲージの色が一巡する時間
+    [SerializeField] private float _infinitePulseTime = 0.1f;      // MP無限モード(エリアと相殺中): ゲージが減って戻る1回の時間
+    [SerializeField] private float _infinitePulseRate = 0.1f;      // MP無限モード(エリアと相殺中): ゲージが減って見える量(最大MPに対する割合)
+
+    /// <summary>
+    /// MP無限モードを切り替える
+    /// </summary>
+    public void SetInfiniteMP(bool is_infinite) {
+        isInfiniteMP = is_infinite;
+        if (is_infinite) {
+            isOverheat = false;
+            _currentMP = _maxMP;
+            if (_mpBackground != null) _mpBackground.SetActive(true);
+        }
+        _UpdateMPUI();
+    }
     private const float _sealDrainTime = 0.1f; // レベル1の最大MPを吸い取りきるまでの時間
     private float _sealDrainRate => _defaultMaxMP / _sealDrainTime;
     // エリアの中でMPが0になり、ワープが使えない状態か(吸い取られている途中でMPが残っていれば、まだワープできる)
@@ -71,12 +106,32 @@ public class CharacterParameter_Player : CharacterParameter {
     [SerializeField] private Image[] _mpImages;
     // MPゲージアニメーション
     [SerializeField] private Animator _mpFilled;
+    // MP無限モード中に表示するゲージ(通常のゲージは隠し、残りMPの割合をこれ1枚で表示する)
+    [SerializeField] private Image _mpUnlimitedImage;
+
+    // MP無限モードのゲージを表示するか(エリアと相殺中にオーバーヒートした時は、回復するまで通常のゲージで表示する)
+    private bool _isUnlimitedGauge => isInfiniteMP && !isOverheat;
+
+    /// <summary>
+    /// MP無限モードかどうかに合わせて、通常のゲージとMP無限モードのゲージを切り替える
+    /// </summary>
+    private void _UpdateGaugeMode() {
+        if (_mpUnlimitedImage == null) return;
+        bool is_unlimited = _isUnlimitedGauge;
+        if (_mpUnlimitedImage.gameObject.activeSelf != is_unlimited) _mpUnlimitedImage.gameObject.SetActive(is_unlimited);
+        foreach (var image in _mpImages) {
+            if (image != null && image.gameObject.activeSelf == is_unlimited) image.gameObject.SetActive(!is_unlimited);
+        }
+    }
 
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _seMpRecover;
 
     protected override void _Update() {
         base._Update();
+
+        // 通常のゲージとMP無限モードのゲージの切り替え(MPが最大でゲージを更新しない間も、最初から正しい方を出す)
+        _UpdateGaugeMode();
 
         // オーバーヒートタイマーの更新
         _UpdateOverheatTimer();
@@ -110,8 +165,11 @@ public class CharacterParameter_Player : CharacterParameter {
             _UpdateMPUI();
         }
 
-        // MPゲージ非表示タイマーの更新
-        if (_mpBackground != null && _mpBackground.activeSelf) {
+        // MPゲージ非表示タイマーの更新(MP無限モード中は、虹色に光るゲージを出し続ける)
+        if (isInfiniteMP) {
+            if (_mpBackground != null) _mpBackground.SetActive(true);
+            _currentMpHideTime = 0;
+        } else if (_mpBackground != null && _mpBackground.activeSelf) {
             if (_isViewMpFilled) {
                 if (_currentMpHideTime < _mpHideTime) {
                     _currentMpHideTime += Time.deltaTime;
@@ -125,8 +183,8 @@ public class CharacterParameter_Player : CharacterParameter {
             }
         }
 
-        // 表示MPの更新
-        if (_viewMP != _currentMP || _currentMP < _maxMP) {
+        // 表示MPの更新(MP無限モード中は、色とゲージの動きを毎フレーム更新する)
+        if (_viewMP != _currentMP || _currentMP < _maxMP || isInfiniteMP) {
             _UpdateMPUI();
         }
     }
@@ -188,6 +246,9 @@ public class CharacterParameter_Player : CharacterParameter {
     }
 
     public void DecreaseMP(float amount) {
+        // MP無限モード中は減らない
+        if (_isMpUnlimited) return;
+
         if (_currentMP >= _maxMP) {
             _currentWaitViewMpGauge = _waitViewMpGauge;
         }
@@ -270,6 +331,18 @@ public class CharacterParameter_Player : CharacterParameter {
         // MPゲージの更新（配列対応）
         float mp = _viewMP;
         Color targetColor = isOverheat ? Color.red : Color.white;
+        _UpdateGaugeMode();
+        if (_isUnlimitedGauge && _mpUnlimitedImage != null) {
+            // MP無限モード: 専用のゲージ1枚に残りMPの割合をまとめて表示し、虹色に光らせる
+            // 能力使用不可エリアと相殺されている時は、MPの値に関わらず、少し減っては元の値に戻る動きを見た目だけ繰り返す
+            float time = Time.unscaledTime;
+            if (_isInSealAreaRaw) {
+                float wave = 0.5f - 0.5f * Mathf.Cos(Mathf.Repeat(time / _infinitePulseTime, 1f) * Mathf.PI * 2f);
+                mp = Mathf.Max(0f, _viewMP - _maxMP * _infinitePulseRate * wave);
+            }
+            _mpUnlimitedImage.fillAmount = _maxMP > 0f ? Mathf.Clamp01(mp / _maxMP) : 0f;
+            _mpUnlimitedImage.color = Color.HSVToRGB(Mathf.Repeat(time / _infiniteHueCycleTime, 1f), 0.6f, 1f);
+        }
         for (int i = 0; i < _mpImages.Length; i++) {
             if (_mpImages[i] == null) continue;
             float gaugeMax = _defaultMaxMP;

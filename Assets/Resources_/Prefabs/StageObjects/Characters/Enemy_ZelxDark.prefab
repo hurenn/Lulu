@@ -1522,8 +1522,6 @@ MonoBehaviour:
   _fallGravity: 40
   _fallMaxSpeed: 25
   _riseSpeed: 6
-  _riseCeilingMargin: 0.3
-  _riseMaxHeight: 8
   _actionInterval: 3
   _tacklePoints:
   - {fileID: 0}
@@ -1540,8 +1538,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  _sealAreaInterval: 5
+  _sealAreaInterval: 10
   _sealAreaOpenTime: 0.2
+  _thirdPhaseHPRate: 0.33333334
+  _finalSealArea: {fileID: 0}
+  _finalSealAreaScale: {x: 10, y: 10}
+  _finalSealAreaOpenTime: 0.5
+  _thirdPhaseReturnSpeed: 8
 --- !u!1 &9073520181384118194
 GameObject:
   m_ObjectHideFlags: 0

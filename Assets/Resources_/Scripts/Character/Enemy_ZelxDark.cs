@@ -8,6 +8,8 @@ using UnityEngine;
 /// ダウン: 真下に落ちて着地し、HPが半分になるまで削られるか一定時間経ったら第一形態でいた位置まで上がり、第二形態へ移る
 /// 第二形態: SylxDarkを生み出す・体当たりのどちらかの行動を繰り返す
 ///          それとは別に、能力使用不可エリアを一定間隔で展開し直す(最初は1つ目のエリアに決まっている)
+/// 第三形態: HPが1/3を切ると移る。第一形態でいた位置に戻り、画面全体を能力使用不可エリアで覆う
+///          行動は、2点の間を移動する(追尾しない)SylxDarkを生み出すことだけになる
 /// </summary>
 public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, IDamageSourceDeflector {
     public override bool IsBossSide => true; // ボス(氷の必殺技ゲージが多く溜まる)
@@ -16,6 +18,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         First,  // 第一形態(闇の盾で通常攻撃を防ぐ)
         Down,   // ダウン(落ちて着地し、HPが半分になったら上がる)
         Second, // 第二形態
+        Third,  // 第三形態
     }
 
     private enum eAction {
@@ -114,6 +117,26 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     [Tooltip("エリアを展開する(畳む)時間(秒)")]
     [SerializeField] private float _sealAreaOpenTime = 0.2f;
 
+    [Header("■ 第三形態(HPが一定の割合を切ったら移る。第一形態でいた位置に戻り、2点の間を移動するSylxDarkだけを生み出す)")]
+    [Tooltip("第三形態へ移るHP(最大HPに対する割合)。これを切ったら移る")]
+    [SerializeField] private float _thirdPhaseHPRate = 1f / 3f;
+    [Tooltip("第三形態で展開する、画面全体を覆うエリア(第二形態のエリアは全て畳む)")]
+    [SerializeField] private GameObject _finalSealArea;
+    [Tooltip("第三形態のエリアを展開した時のScale(X・Y)")]
+    [SerializeField] private Vector2 _finalSealAreaScale = new Vector2(10f, 10f);
+    [Tooltip("第三形態のエリアを展開する時間(秒)")]
+    [SerializeField] private float _finalSealAreaOpenTime = 0.5f;
+    [Tooltip("第一形態でいた位置に戻る速さ")]
+    [SerializeField] private float _thirdPhaseReturnSpeed = 8.0f;
+    [Tooltip("戻ってから、カメラを揺らすまでの時間(秒)")]
+    [SerializeField] private float _thirdPhaseShakeWait = 2.0f;
+    [Tooltip("カメラを揺らしてから、エリアを展開するまでの時間(秒)")]
+    [SerializeField] private float _thirdPhaseOpenWait = 1.0f;
+    [Tooltip("第三形態でSylxDarkを生み出す間隔(秒)")]
+    [SerializeField] private float _thirdGenerateInterval = 5.0f;
+    [Tooltip("第三形態で1回に生み出すSylxDarkの数")]
+    [SerializeField] private int _thirdGenerateCount = 2;
+
     private ePhase _phase = ePhase.First;
     private bool _isActive = false; // false中はTimelineの合図があるまで行動を止めておく
     private float _generateTimer = 0f;
@@ -121,6 +144,9 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     private bool _isHalfHPReached = false; // HPが半分まで削られた(OnHalfHPを呼んだ)
     private Coroutine _actionRoutine = null;
     private Coroutine _sealAreaRoutine = null;
+    private Coroutine _thirdPhaseRoutine = null;
+    private bool _isThirdPhaseStarting = false; // 第三形態へ移ってから、エリアの展開が始まるまで(ダメージを受けない)
+    private Vector3 _finalSealAreaBaseScale = Vector3.one; // 第三形態のエリアの、展開する前のScale(倒された時に戻す)
     private Vector2 _homePosition; // 第一形態でいた位置(ダウンから復帰する時に戻り、第二形態の初期位置になる)
     private int _tackleIndex = -1;  // 今いる体当たりの突っ込む先(-1: 初期位置にいる)
     private int _sealAreaIndex = -1; // 展開しているエリア(-1: 展開していない)
@@ -134,6 +160,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         if (_sealAreas != null) {
             foreach (var area in _sealAreas) _SetAreaScaleX(area, 0f);
         }
+        if (_finalSealArea != null) _finalSealAreaBaseScale = _finalSealArea.transform.localScale;
     }
 
     // Timelineの合図で行動を開始させる
@@ -181,6 +208,8 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             _isSpecialHit = true;
             return base.Damage(0, Vector2.zero, 0f, 0f, is_trap_damage, true);
         }
+        // 第三形態へ移ってから、エリアの展開が始まるまではダメージを受けない
+        if (_isThirdPhaseStarting) return false;
         if (_phase == ePhase.Down) {
             // ダウン中は、HPが半分より減らない(半分まで削られたら、時間切れを待たずに上がって第二形態へ移る)
             int half_hp = _GetHalfHP();
@@ -192,6 +221,10 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         // 移動するボスのため、被弾時の吹き飛びは無効にする
         bool second_result = base.Damage(damage, Vector2.zero, invincible_time, damage_reaction_time, is_trap_damage, ignore_invincibility);
         _CheckHalfHP();
+        // 第二形態でHPが一定の割合を切ったら、第三形態へ移る
+        if (_phase == ePhase.Second && !_isDead && _charaParam.CurrentHP < _charaParam.MaxHP * _thirdPhaseHPRate) {
+            _StartThirdPhase();
+        }
         return second_result;
     }
 
@@ -466,18 +499,41 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         _SetAreaScaleX(close_area, 0f);
     }
 
-    // 倒された時は、展開していたエリアを畳む
-    private IEnumerator _CloseSealArea() {
-        if (_sealAreas == null || _sealAreaIndex < 0) yield break;
-        var area = _sealAreas[_sealAreaIndex];
+    /// <summary>
+    /// 第二形態のエリアを全て畳み、第三形態のエリアをfinal_scaleの大きさにする
+    /// </summary>
+    private IEnumerator _ChangeAllSealAreas(Vector3 final_scale, float duration, bool is_unscaled) {
         _sealAreaIndex = -1;
+        var areas = new System.Collections.Generic.List<GameObject>();
+        var targets = new System.Collections.Generic.List<Vector3>();
+        if (_sealAreas != null) {
+            foreach (var area in _sealAreas) {
+                if (area == null) continue;
+                var scale = area.transform.localScale;
+                scale.x = 0f;
+                areas.Add(area);
+                targets.Add(scale);
+            }
+        }
+        if (_finalSealArea != null) {
+            areas.Add(_finalSealArea);
+            targets.Add(final_scale);
+        }
+        var starts = new Vector3[areas.Count];
+        for (int i = 0; i < areas.Count; i++) starts[i] = areas[i].transform.localScale;
+
         float time = 0f;
-        while (time < _sealAreaOpenTime) {
-            time += Time.unscaledDeltaTime; // 倒された演出中は時間が遅くなるため、実時間で畳む
-            _SetAreaScaleX(area, 1f - Mathf.Clamp01(time / Mathf.Max(_sealAreaOpenTime, 0.001f)));
+        while (time < duration) {
+            time += is_unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
+            float rate = Mathf.Clamp01(time / Mathf.Max(duration, 0.001f));
+            for (int i = 0; i < areas.Count; i++) {
+                if (areas[i] != null) areas[i].transform.localScale = Vector3.Lerp(starts[i], targets[i], rate);
+            }
             yield return null;
         }
-        _SetAreaScaleX(area, 0f);
+        for (int i = 0; i < areas.Count; i++) {
+            if (areas[i] != null) areas[i].transform.localScale = targets[i];
+        }
     }
 
     private static void _SetAreaScaleX(GameObject area, float x) {
@@ -485,6 +541,47 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         var scale = area.transform.localScale;
         scale.x = x;
         area.transform.localScale = scale;
+    }
+
+    #endregion
+
+    #region 第三形態
+
+    // 第二形態の行動(体当たりの途中でも)とエリアの展開を止めて、第三形態へ移る
+    private void _StartThirdPhase() {
+        _phase = ePhase.Third;
+        _isThirdPhaseStarting = true;
+        if (_actionRoutine != null) {
+            StopCoroutine(_actionRoutine);
+            _actionRoutine = null;
+        }
+        if (_sealAreaRoutine != null) {
+            StopCoroutine(_sealAreaRoutine);
+            _sealAreaRoutine = null;
+        }
+        _tackleIndex = -1;
+        _thirdPhaseRoutine = StartCoroutine(_ThirdPhaseRoutine());
+    }
+
+    // 第一形態でいた位置に戻り、少し待ってカメラを揺らし、さらに少し待ってから画面全体をエリアで覆う
+    // その後は、2点の間を移動するSylxDarkを一定間隔で生み出し続ける
+    private IEnumerator _ThirdPhaseRoutine() {
+        yield return _MoveLinear(_homePosition, _thirdPhaseReturnSpeed, false);
+        yield return new WaitForSeconds(_thirdPhaseShakeWait);
+        CinemachineManager.Instance?.ShakeCamera(_impactShakeIntensity, _impactShakeDuration);
+        yield return new WaitForSeconds(_thirdPhaseOpenWait);
+
+        // エリアの展開が始まったら、ダメージを受けるようになる
+        _isThirdPhaseStarting = false;
+        _PlayImpact();
+        var final_scale = new Vector3(_finalSealAreaScale.x, _finalSealAreaScale.y, _finalSealAreaBaseScale.z);
+        yield return _ChangeAllSealAreas(final_scale, _finalSealAreaOpenTime, false);
+
+        bool can_path = _sylxDarkPrefab != null && _pathPoints != null && System.Array.Exists(_pathPoints, p => p != null && p.PointA != null && p.PointB != null);
+        while (!_isDead) {
+            yield return new WaitForSeconds(_thirdGenerateInterval);
+            if (can_path) _GeneratePath(Mathf.Max(1, _thirdGenerateCount));
+        }
     }
 
     #endregion
@@ -574,8 +671,13 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             StopCoroutine(_sealAreaRoutine);
             _sealAreaRoutine = null;
         }
+        if (_thirdPhaseRoutine != null) {
+            StopCoroutine(_thirdPhaseRoutine);
+            _thirdPhaseRoutine = null;
+        }
         if (_darkShield != null) _darkShield.SetActive(false);
-        StartCoroutine(_CloseSealArea());
+        // 展開していたエリアを全て畳む(倒された演出中は時間が遅くなるため、実時間で畳む)
+        StartCoroutine(_ChangeAllSealAreas(_finalSealAreaBaseScale, _sealAreaOpenTime, true));
 
         OnDied?.Invoke();
 

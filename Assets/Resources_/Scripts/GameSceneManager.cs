@@ -89,6 +89,16 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
             }
         }
 
+        // デバッグ用：Numpad0キーでMP無限モードの切り替え
+        if (keyboard.numpad0Key.wasPressedThisFrame) {
+            var player = PlayerCharacterManager.Current as Player_Character;
+            if (player != null && player.PlayerCharaParam != null) {
+                bool is_infinite = !player.PlayerCharaParam.isInfiniteMP;
+                player.PlayerCharaParam.SetInfiniteMP(is_infinite);
+                Debug.Log("MP無限モード: " + (is_infinite ? "ON" : "OFF"));
+            }
+        }
+
         // デバッグ用：Numpad9キーで必殺チャージ
         if (keyboard.numpad9Key.wasPressedThisFrame) {
             Ability_Base[] abilities = FindObjectsByType<Ability_Base>(FindObjectsSortMode.None);
