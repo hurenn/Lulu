@@ -405,6 +405,9 @@ MonoBehaviour:
   _rend: {fileID: 6554501651606250815}
   isLightInvincible: 0
   isAutoLightInvincible: 0
+  _infiniteHueCycleTime: 1.5
+  _infinitePulseTime: 0.1
+  _infinitePulseRate: 0.1
   _mpBackground: {fileID: 1326344433677251810}
   _mpImages:
   - {fileID: 2498267118133095891}
@@ -6945,7 +6948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 919df050403fee74095f425376652104, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}

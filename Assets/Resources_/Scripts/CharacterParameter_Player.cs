@@ -74,6 +74,7 @@ public class CharacterParameter_Player : CharacterParameter {
     // MPが減らない状態か(MP無限モードでも、能力使用不可エリアの中では相殺されて減る)
     private bool _isMpUnlimited => isInfiniteMP && !_isInSealAreaRaw;
     [SerializeField] private float _infiniteHueCycleTime = 1.5f;   // MP無限モード: ゲージの色が一巡する時間
+    [SerializeField] private float _infiniteShineCycleTime = 1.0f; // MP無限モード: ゲージの上を光の筋が通り過ぎる間隔(AllIn1Shaderのマテリアルの時)
     [SerializeField] private float _infinitePulseTime = 0.1f;      // MP無限モード(エリアと相殺中): ゲージが減って戻る1回の時間
     [SerializeField] private float _infinitePulseRate = 0.1f;      // MP無限モード(エリアと相殺中): ゲージが減って見える量(最大MPに対する割合)
 
@@ -108,6 +109,32 @@ public class CharacterParameter_Player : CharacterParameter {
     [SerializeField] private Animator _mpFilled;
     // MP無限モード中に表示するゲージ(通常のゲージは隠し、残りMPの割合をこれ1枚で表示する)
     [SerializeField] private Image _mpUnlimitedImage;
+    // MP無限モードのゲージのマテリアル(AllIn1Shader。色相と光の筋を動かすため、複製して使う)
+    private Material _mpUnlimitedMaterial = null;
+    private static readonly int _HSV_SHIFT_ID = Shader.PropertyToID("_HsvShift");
+    private static readonly int _SHINE_LOCATION_ID = Shader.PropertyToID("_ShineLocation");
+
+    /// <summary>
+    /// MP無限モードのゲージを虹色に光らせる(AllIn1Shaderの色相と光の筋を動かす)
+    /// </summary>
+    private void _UpdateUnlimitedGlow(float time) {
+        if (_mpUnlimitedMaterial == null) {
+            var src = _mpUnlimitedImage.material;
+            if (src == null || src == Graphic.defaultGraphicMaterial || !src.HasProperty(_HSV_SHIFT_ID)) {
+                // AllIn1Shaderのマテリアルが設定されていない時は、ゲージの色で虹色にする
+                _mpUnlimitedImage.color = Color.HSVToRGB(Mathf.Repeat(time / _infiniteHueCycleTime, 1f), 0.6f, 1f);
+                return;
+            }
+            _mpUnlimitedMaterial = new Material(src);
+            _mpUnlimitedImage.material = _mpUnlimitedMaterial;
+        }
+        _mpUnlimitedMaterial.SetFloat(_HSV_SHIFT_ID, Mathf.Repeat(time / _infiniteHueCycleTime, 1f) * 360f);
+        _mpUnlimitedMaterial.SetFloat(_SHINE_LOCATION_ID, Mathf.Repeat(time / _infiniteShineCycleTime, 1f));
+    }
+
+    private void OnDestroy() {
+        if (_mpUnlimitedMaterial != null) Destroy(_mpUnlimitedMaterial);
+    }
 
     // MP無限モードのゲージを表示するか(エリアと相殺中にオーバーヒートした時は、回復するまで通常のゲージで表示する)
     private bool _isUnlimitedGauge => isInfiniteMP && !isOverheat;
@@ -341,7 +368,7 @@ public class CharacterParameter_Player : CharacterParameter {
                 mp = Mathf.Max(0f, _viewMP - _maxMP * _infinitePulseRate * wave);
             }
             _mpUnlimitedImage.fillAmount = _maxMP > 0f ? Mathf.Clamp01(mp / _maxMP) : 0f;
-            _mpUnlimitedImage.color = Color.HSVToRGB(Mathf.Repeat(time / _infiniteHueCycleTime, 1f), 0.6f, 1f);
+            _UpdateUnlimitedGlow(time);
         }
         for (int i = 0; i < _mpImages.Length; i++) {
             if (_mpImages[i] == null) continue;
