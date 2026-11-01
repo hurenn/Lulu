@@ -191,8 +191,8 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     [SerializeField] private float _chaseScreenMargin = 3.0f;
     [Tooltip("追いかけっこ中に、カメラが寄る・離れる速さ")]
     [SerializeField] private float _chaseCameraSharpness = 3.0f;
-    [Tooltip("プレイヤーが右へワープするたびに縮まる距離")]
-    [SerializeField] private float _chaseApproachPerWarp = 3.0f;
+    [Tooltip("追いかけっこが始まった距離から、自動で氷の必殺技を撃つ距離まで近づくのに必要な、右へのワープの回数(ワープの間隔に関わらず、この回数で追いつく)")]
+    [SerializeField] private int _chaseWarpsToCatch = 30;
     [Tooltip("追いかけっこ中の、画面全体のグリッチノイズの強さ(0〜1)")]
     [SerializeField] private float _chaseGlitchIntensity = 1.0f;
     [Tooltip("追いかけっこが始まってから、グリッチノイズが最大の強さになるまでの時間(秒)")]
@@ -221,6 +221,10 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     [SerializeField] private float _chaseFloatWidth = 0.5f;
     [Tooltip("上下に漂う1回の時間(秒)")]
     [SerializeField] private float _chaseFloatTime = 2.0f;
+    [Tooltip("左右に揺れる幅(近づいたり離れたりを繰り返しているように見せる。見た目だけで、追いつくまでの距離には関わらない)")]
+    [SerializeField] private float _chaseSwayWidth = 1.5f;
+    [Tooltip("左右に揺れる1回の時間(秒)")]
+    [SerializeField] private float _chaseSwayTime = 2.5f;
     [Tooltip("飛び出した後の重力が無いプレイヤーの、上下の動きを止める速さ(ワープの勢いが残らないようにする)")]
     [SerializeField] private float _chasePlayerFloatDamping = 10.0f;
 
@@ -232,6 +236,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
     private float _chaseDistance;             // 追いかけっこ中の、プレイヤーからの右への距離(目標)
     private float _chaseShownDistance;        // 実際の距離(目標へ少しずつ合わせる)
     private WarpControl _chaseWarpControl;    // プレイヤーのワープを知るため
+    private float _chaseApproachPerWarp;      // 右へのワープ1回で縮まる距離(追いかけっこが始まった時に決める)
     private Ability_Ice _chaseIce;            // 近づいた時に自動で必殺技を撃たせる氷の能力
     private float _chaseGenerateTimer = 0f;   // 追いかけっこ中に、次にSylxDarkを生み出すまでの時間
     private int _playerWarpCount = 0;         // 前回の更新からの間に、プレイヤーがワープした回数
@@ -866,6 +871,8 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         _chaseDistance = Mathf.Max(_chaseMinDistance, _GetChaseMaxHalfWidth() * 2f - _chaseScreenMargin * 2f);
         _chaseShownDistance = _GetChaseMaxDistance();
         _chaseViewHalfWidth = _GetChaseMaxHalfWidth();
+        // 右へのワープ1回で縮まる距離(始まった距離から、自動で氷の必殺技を撃つ距離まで、決まった回数で届くようにする)
+        _chaseApproachPerWarp = Mathf.Max(0.01f, (_chaseDistance - _GetAutoSpecialDistance()) / Mathf.Max(1, _chaseWarpsToCatch));
         _chaseGenerateTimer = _chaseGenerateInterval;
         _playerWarpCount = 0;
         _playerRightWarpCount = 0;
@@ -926,7 +933,9 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
 
         float float_y = Mathf.Sin(Time.time / Mathf.Max(_chaseFloatTime, 0.01f) * Mathf.PI * 2f) * _chaseFloatWidth;
         float y = Mathf.Lerp(transform.position.y, player_position.y + float_y, 1f - Mathf.Exp(-_chaseFollowSharpness * delta));
-        _MoveTo(new Vector2(player_position.x + _chaseShownDistance, y));
+        // 左右にも揺れて、近づいたり離れたりを繰り返しているように見せる
+        float sway_x = Mathf.Sin(Time.time / Mathf.Max(_chaseSwayTime, 0.01f) * Mathf.PI * 2f) * _chaseSwayWidth;
+        _MoveTo(new Vector2(player_position.x + _chaseShownDistance + sway_x, y));
         _UpdateChaseCamera(player_position, false);
 
         // 一定間隔で、プレイヤーに付いて動くSylxDarkを生み出す(向かう高さは、プレイヤーの高さ±指定の範囲でランダム)
@@ -943,9 +952,10 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
 
         // 氷の必殺技が届く距離の一定割合まで近づいたら、自動で氷の必殺技を撃たせる
         if (_chaseIce == null) _chaseIce = FindAnyObjectByType<Ability_Ice>();
-        float distance = transform.position.x - player_position.x;
+        // (左右の揺れや、ワープ直後に一瞬近づいて見える分は除いて、追いかけっこの距離そのもので判定する)
+        float distance = _chaseDistance;
         // (ワープの直前に止まっている間は、撃った後にワープしてしまうため撃たない)
-        if (_chaseIce != null && _chaseIce.CanUseSpecial && !_chasePlayer.isWarpDelay && distance > 0f && distance <= _chaseIce.SpecialRange * _autoSpecialRangeRate) {
+        if (_chaseIce != null && _chaseIce.CanUseSpecial && !_chasePlayer.isWarpDelay && distance > 0f && distance <= _GetAutoSpecialDistance() + 0.01f) {
             _chasePlayer.ForceIceSpecial(true);
         }
     }
@@ -963,6 +973,12 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             : Mathf.Lerp(_chaseViewHalfWidth, target_half_width, 1f - Mathf.Exp(-_chaseCameraSharpness * Time.deltaTime));
         _chaseFocus.position = new Vector3(player_position.x - _chaseScreenMargin + _chaseViewHalfWidth, player_position.y, 0f);
         CinemachineManager.Instance?.ZoomOnTarget(_chaseFocus, _chaseViewHalfWidth * 2f / aspect);
+    }
+
+    // 自動で氷の必殺技を撃つ距離
+    private float _GetAutoSpecialDistance() {
+        if (_chaseIce == null) _chaseIce = FindAnyObjectByType<Ability_Ice>();
+        return _chaseIce != null ? _chaseIce.SpecialRange * _autoSpecialRangeRate : _chaseMinDistance;
     }
 
     private static float _GetCameraAspect() {
