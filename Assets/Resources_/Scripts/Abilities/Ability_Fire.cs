@@ -142,8 +142,10 @@ public class Ability_Fire : Ability_Base
         // 位置更新
         UpdatePartnerTransform();
 
-        // リスト内に敵がいれば自動攻撃
-        if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0 && !isAnySpecialUsing && !isAutoAttackDisabled) {
+        // リスト内に敵がいれば自動攻撃(プレイヤーを操作できない間は撃たない)
+        var controller = PlayerCharacterManager.Controller;
+        bool is_controllable = controller == null || controller.isEnabledCharacterInput;
+        if (_enemiesInRange.Count > 0 && _currentAutoAttackInterval <= 0 && !isAnySpecialUsing && !isAutoAttackDisabled && is_controllable) {
             // 既に死んでいる敵をリストから削除
             _enemiesInRange.RemoveAll(enemy => enemy == null || enemy.isDead);
             // 敵がリスト内にいれば攻撃

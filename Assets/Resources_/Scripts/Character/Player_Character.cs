@@ -215,6 +215,8 @@ public class Player_Character : Character_Base {
             // 上下ワープ中のみ左右入力で横方向ズレ
             if (_isVerticalWarpDash) {
                 _warpDashDirection.x += input.x * _param.warpDashControlSteer * Time.deltaTime;
+                // 左右に入力し続けても、通常のダッシュ以上の横の速さにはしない(時間制限の無い下方向ワープで、速さが積み重なり続けないように)
+                _warpDashDirection.x = Mathf.Clamp(_warpDashDirection.x, -_param.dashSpeed, _param.dashSpeed);
             }
         }
 
