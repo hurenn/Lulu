@@ -197,6 +197,7 @@ GameObject:
   - component: {fileID: 1073441699862045369}
   - component: {fileID: 2099095817979731009}
   - component: {fileID: 7198127578751333364}
+  - component: {fileID: 7614835127611345187}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -406,6 +407,7 @@ MonoBehaviour:
   isLightInvincible: 0
   isAutoLightInvincible: 0
   _infiniteHueCycleTime: 1.5
+  _infiniteShineCycleTime: 1
   _infinitePulseTime: 0.1
   _infinitePulseRate: 0.1
   _mpBackground: {fileID: 1326344433677251810}
@@ -417,6 +419,7 @@ MonoBehaviour:
   - {fileID: 9001563991368280453}
   _mpFilled: {fileID: 8242460072774927710}
   _mpUnlimitedImage: {fileID: 9186770135114651673}
+  _infiniteMPEffect: {fileID: 7614835127611345187}
   _audioSource: {fileID: 3123718113213705543}
   _seMpRecover: {fileID: 8300000, guid: bf9741272d0121e4eb35c8e541eb34d3, type: 3}
 --- !u!82 &1073441699862045369
@@ -554,6 +557,38 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7614835127611345187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531109707819632045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76e41eae2c1d3ea41af80501b716a22e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _target: {fileID: 6554501651606250815}
+  _gauge: {fileID: 6327314432795176515}
+  _rainbowMaterial: {fileID: 2100000, guid: 919df050403fee74095f425376652104, type: 2}
+  _hueCycleTime: 1.5
+  _burstTime: 0.8
+  _burstWhiteAlpha: 0.85
+  _glowTime: 0.7
+  _glowLightIntensity: 4
+  _glowLightRadius: 5
+  _glowSpriteSize: 4
+  _edgeAlphaMin: 0.25
+  _edgeAlphaMax: 0.5
+  _edgePulseTime: 1.2
+  _edgeFadeTime: 0.4
+  _screenSparkleCount: 24
+  _screenSparkleSize: 48
+  _screenSparkleAlpha: 0.45
+  _gaugeSparkleCount: 6
+  _gaugeSparkleSize: 1.2
+  _gaugeSparkleAlpha: 0.9
 --- !u!1 &1176145536098947805
 GameObject:
   m_ObjectHideFlags: 0

@@ -83,6 +83,7 @@ public class CharacterParameter_Player : CharacterParameter {
     /// </summary>
     public void SetInfiniteMP(bool is_infinite) {
         isInfiniteMP = is_infinite;
+        if (_infiniteMPEffect != null) _infiniteMPEffect.SetPlaying(is_infinite);
         if (is_infinite) {
             isOverheat = false;
             _currentMP = _maxMP;
@@ -109,6 +110,8 @@ public class CharacterParameter_Player : CharacterParameter {
     [SerializeField] private Animator _mpFilled;
     // MP無限モード中に表示するゲージ(通常のゲージは隠し、残りMPの割合をこれ1枚で表示する)
     [SerializeField] private Image _mpUnlimitedImage;
+    // MP無限モードの演出(発動の瞬間の光と、発動中の画面の周りの光・キラキラ)
+    [SerializeField] private InfiniteMPEffect _infiniteMPEffect;
     // MP無限モードのゲージのマテリアル(AllIn1Shader。色相と光の筋を動かすため、複製して使う)
     private Material _mpUnlimitedMaterial = null;
     private static readonly int _HSV_SHIFT_ID = Shader.PropertyToID("_HsvShift");
