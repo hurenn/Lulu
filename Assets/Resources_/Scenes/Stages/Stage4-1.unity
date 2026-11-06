@@ -1483,12 +1483,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2724777184075545582, guid: 18c553be2da57b14a821bbf0967d834b, type: 3}
       propertyPath: _sceneName
-      value: Stage1-3
+      value: Stage4-2
       objectReference: {fileID: 0}
     - target: {fileID: 2724777184075545582, guid: 18c553be2da57b14a821bbf0967d834b, type: 3}
       propertyPath: _sceneAsset
       value: 
-      objectReference: {fileID: 102900000, guid: 2199831d8e11012458d498227553e2ad, type: 3}
+      objectReference: {fileID: 102900000, guid: 3118ac9ded7921a4383e713905381e18, type: 3}
     - target: {fileID: 6291153235312615648, guid: 18c553be2da57b14a821bbf0967d834b, type: 3}
       propertyPath: m_Size.x
       value: 9.7
@@ -226135,6 +226135,55 @@ Transform:
   - {fileID: 1987638539}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1803324904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1803324906}
+  - component: {fileID: 1803324905}
+  m_Layer: 0
+  m_Name: StageColorVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1803324905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803324904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 10
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 5c9e67a9087cc3e46a22f3ab7b435eae, type: 2}
+--- !u!4 &1803324906
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803324904}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1817208667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -226992,3 +227041,4 @@ SceneRoots:
   - {fileID: 1701003903}
   - {fileID: 1928514427}
   - {fileID: 1709535095}
+  - {fileID: 1803324906}
