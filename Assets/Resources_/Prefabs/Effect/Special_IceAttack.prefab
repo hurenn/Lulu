@@ -5090,10 +5090,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ComponentVersion: 2
   m_LightType: 3
-  m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.5
-  m_Color: {r: 0.26150295, g: 0.24705881, b: 1, a: 1}
-  m_Intensity: 0.2
+  m_BlendStyleIndex: 1
+  m_FalloffIntensity: 0.2
+  m_Color: {r: 0.3, g: 0.75, b: 1, a: 1}
+  m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000006b9dfd36ebd275e469b4218b
@@ -5117,7 +5117,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 1
+  m_PointLightOuterRadius: 4
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
@@ -5137,6 +5137,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8808934566716058842}
+  - component: {fileID: 1154294254531737414}
   m_Layer: 0
   m_Name: Special_IceAttack
   m_TagString: Untagged
@@ -5161,6 +5162,26 @@ Transform:
   - {fileID: 4986393475774634830}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1154294254531737414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7444988537484354709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bece0b92e657cb4da050412ecbb7733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _light: {fileID: 6870222238094709743}
+  _lingerTime: 0.5
+  _dropInterval: 0.06
+  _dropIntensityRate: 0.2
+  _dropRadiusRate: 0.6
+  _dropFadeTime: 0.45
+  _flickerAmount: 0
+  _flickerSpeed: 12
 --- !u!1001 &7169087895059630545
 PrefabInstance:
   m_ObjectHideFlags: 0

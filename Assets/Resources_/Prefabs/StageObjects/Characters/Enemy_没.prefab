@@ -99,6 +99,13 @@ MonoBehaviour:
   _isHitDestroy: 0
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
+  _isTrapDamage: 0
+  _ignoreInvincibility: 0
+  _selfCharacter: {fileID: 0}
+  _damageToSelf: 0
+  _invincibleTimeToSelf: 0.5
+  _blowPowerToSelf: {x: 3, y: 5}
+  _enableSelfDamage: 0
   _hitEffectPrefab: {fileID: 7185826913144432842, guid: c616e47f30084a247ae824890e4b6d8f, type: 3}
   _hitEffectType: 0
   _hitEffectSize: 1
@@ -108,6 +115,8 @@ MonoBehaviour:
   _manualShakeIntensity: 0.5
   _manualShakeDuration: 0.5
   _hitCameraShakeIntensity: 0
+  _hitPlayerEvent: []
+  _avoidPlayerEvent: []
 --- !u!1 &4132797384308099191
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +260,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -514,15 +523,26 @@ MonoBehaviour:
   _seJump: {fileID: 0}
   _seDamage: {fileID: 8300000, guid: 49310710ade74f04abaf99a4bc9ef99c, type: 3}
   _seDead: {fileID: 8300000, guid: ae9ed51805db1a34d98ba0dd085be0b3, type: 3}
+  _seRecover: {fileID: 0}
+  _damageFriction: 0.9
   _isRight: 0
   enableGravity: 1
+  _jumpEffect: {fileID: 0}
+  _landEffect: {fileID: 0}
+  _dashEffect: {fileID: 0}
+  _wallDashEffect: {fileID: 0}
   _exp: 10
   _coinSpawner: {fileID: 0}
   _leftWarpChecker: {fileID: 4162525808674248453}
   _rightWarpChecker: {fileID: 6445688323294802556}
-  _lockonMarker: {fileID: 4132797384308099191}
+  _lockonMarkerAnim: {fileID: 0}
+  isAutoLockOn: 1
   _damageZone: {fileID: 2881627885021399523}
   _dieExplosion: {fileID: 0}
+  _hitFeedback: {fileID: 0}
+  _hitFlash: {fileID: 0}
+  _dieFeedback: {fileID: 0}
+  _hpGauge: {fileID: 0}
 --- !u!114 &4485327489052798882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -536,14 +556,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _defaultMaxHP: 15
-  isLightInvincible: 0
   attackPower: 1
   _rend: {fileID: 9099040648427971505}
-  _mpBackground: {fileID: 0}
-  _mpImage: {fileID: 0}
-  _mpImage2: {fileID: 0}
-  _mpImage3: {fileID: 0}
-  _mpFilled: {fileID: 0}
 --- !u!82 &-3289081394590738705
 AudioSource:
   m_ObjectHideFlags: 0

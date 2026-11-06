@@ -495,7 +495,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1495,6 +1495,7 @@ MonoBehaviour:
   _seExplosion: {fileID: 8300000, guid: 8d88c56678068424b9e0ab46aabef806, type: 3}
   _impactShakeIntensity: 0.5
   _impactShakeDuration: 0.4
+  _phaseChangeFlashTime: 0.4
   _sylxDarkPrefab: {fileID: 8328143510550819280, guid: 8e924df0cffed724ca9c09a09db586c4, type: 3}
   _generateInterval: 3
   _generateCountMin: 1
@@ -1545,6 +1546,47 @@ MonoBehaviour:
   _finalSealAreaScale: {x: 10, y: 10}
   _finalSealAreaOpenTime: 0.5
   _thirdPhaseReturnSpeed: 8
+  _thirdPhaseFloatHeight: 2
+  _thirdPhaseFloatTime: 0.5
+  _thirdPhaseShakeWait: 2
+  _thirdPhaseOpenWait: 1
+  _thirdGenerateInterval: 5
+  _thirdGenerateCount: 2
+  _fourthPhaseHP: 50
+  _escapeWait: 2
+  _escapeFloatHeight: 1.5
+  _escapeFloatTime: 0.6
+  _escapeAcceleration: 60
+  _escapeMaxSpeed: 40
+  _chaseWarpWait: 1
+  _chaseWarpOverDistance: 3
+  _chaseSecondWarpWait: 0.5
+  _chaseSecondWarpDistance: 6
+  _chaseSecondWarpCount: 5
+  _chaseSecondWarpInterval: 0.15
+  _chaseCameraWait: 1
+  _chaseMaxFov: 65
+  _chaseMinViewHeight: 10
+  _chaseScreenMargin: 3
+  _chaseCameraSharpness: 3
+  _chaseWarpsToCatch: 30
+  _chaseGlitchIntensity: 1
+  _chaseGlitchTime: 10
+  _chaseGlitchEndTime: 0.5
+  _chaseGlitchDefeatedIntensity: 0.2
+  _chaseGenerateInterval: 1
+  _chaseGenerateCount: 2
+  _chaseGenerateYOffset: 2
+  _autoSpecialRangeRate: 0.5
+  _chaseMinDistance: 4
+  _chaseHideSpeed: 20
+  _chaseMoveThreshold: 1
+  _chaseFollowSharpness: 6
+  _chaseFloatWidth: 0.5
+  _chaseFloatTime: 2
+  _chaseSwayWidth: 1.5
+  _chaseSwayTime: 2.5
+  _chasePlayerFloatDamping: 10
 --- !u!1 &9073520181384118194
 GameObject:
   m_ObjectHideFlags: 0

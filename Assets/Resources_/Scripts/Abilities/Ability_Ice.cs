@@ -1320,9 +1320,10 @@ public class Ability_Ice : Ability_Base {
         return null;
     }
 
-    // 移動の軌跡を、時間を止めている間も消えていくようにする
+    // 移動の軌跡と残光を、時間を止めている間も消えていくようにする
     private static void _RunTrailUnscaled(GameObject obj) {
         foreach (var trail in obj.GetComponentsInChildren<WarpTrail>(true)) trail.useUnscaledTime = true;
+        foreach (var afterglow in obj.GetComponentsInChildren<LightAfterglow>(true)) afterglow.useUnscaledTime = true;
     }
 
     /// <summary>

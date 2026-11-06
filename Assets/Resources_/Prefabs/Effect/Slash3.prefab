@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalScale: {x: 1.6, y: 1.6, z: 1.6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4700136693428337191}
@@ -46,10 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ComponentVersion: 2
   m_LightType: 2
-  m_BlendStyleIndex: 0
+  m_BlendStyleIndex: 1
   m_FalloffIntensity: 0.5
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 0.3, g: 0.75, b: 1, a: 1}
+  m_Intensity: 2
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 000000006b9dfd36ebd275e469b4218b
@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: -8569588674158632394}
   - component: {fileID: 4779468922720399570}
   - component: {fileID: 7125563842653285775}
+  - component: {fileID: 4002282624469872404}
   m_Layer: 0
   m_Name: Slash3
   m_TagString: Untagged
@@ -342,6 +343,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _comboStep: 3
+--- !u!114 &4002282624469872404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3568965013177453205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bece0b92e657cb4da050412ecbb7733, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _light: {fileID: 173074568233913020}
+  _lingerTime: 0.35
+  _dropInterval: 0
+  _dropIntensityRate: 0
+  _dropRadiusRate: 0
+  _dropFadeTime: 0
+  _flickerAmount: 0
+  _flickerSpeed: 12
 --- !u!1 &4472013383389708359
 GameObject:
   m_ObjectHideFlags: 0
