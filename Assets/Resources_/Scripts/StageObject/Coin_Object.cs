@@ -25,6 +25,7 @@ public class Coin_Object : StageObject_Base {
     [SerializeField] private GameObject _lightObject;
     [SerializeField] private TrailRenderer _trail;
     [SerializeField] private GameObject _pickEffect;
+    [SerializeField] private GameObject _pickRippleEffect; // 取得時に広がる虹色の波紋
 
     [SerializeField] private AudioClip _seCollectCoin; // コイン取得音
     private float _seCollectVolume = 1.0f; // コイン取得音の音量の倍率(コインレールの演出などで下げる)
@@ -104,6 +105,9 @@ public class Coin_Object : StageObject_Base {
 
             if (_pickEffect != null) {
                 Instantiate(_pickEffect, transform.position, Quaternion.identity);
+            }
+            if (_pickRippleEffect != null) {
+                Instantiate(_pickRippleEffect, transform.position, Quaternion.identity);
             }
             // レイヤーを変更
             gameObject.layer = LayerMask.NameToLayer("Default");

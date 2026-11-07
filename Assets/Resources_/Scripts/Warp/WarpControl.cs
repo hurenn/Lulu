@@ -179,7 +179,8 @@ public class WarpControl : MonoBehaviour {
         Vector2 safe_point,
         bool is_warp_camera = true,
         float end_delay = 0.0f,
-        bool is_coin_warp = false
+        bool is_coin_warp = false,
+        bool is_after_image = true // ワープ元に残像を出すか
         ) {
 
         // safe_pointとの間に"WarpProhibitedArea"がある場合は手前で止める
@@ -199,7 +200,7 @@ public class WarpControl : MonoBehaviour {
 
         // ワープSE再生
         PlayWarpSE();
-        _SpawnAfterImage();
+        if (is_after_image) _SpawnAfterImage();
         Vector2 warp_from = transform.position;
         transform.position = safe_point;
         onWarped?.Invoke(warp_from, safe_point);
@@ -442,10 +443,10 @@ public class WarpControl : MonoBehaviour {
     }
 
     /// <summary>
-    /// 指定地点へワープ(コインワープ演出用、カメラ追従のワープ扱いはしない)
+    /// 指定地点へワープ(コインワープ演出用、カメラ追従のワープ扱いはしない。演出中は毎回残像を出さない)
     /// </summary>
     public IEnumerator WarpToPoint(Vector2 point, float end_delay) {
-        yield return _ExecuteWarpCommon(point, is_warp_camera: false, end_delay: end_delay);
+        yield return _ExecuteWarpCommon(point, is_warp_camera: false, end_delay: end_delay, is_after_image: false);
     }
 
     /// <summary>
