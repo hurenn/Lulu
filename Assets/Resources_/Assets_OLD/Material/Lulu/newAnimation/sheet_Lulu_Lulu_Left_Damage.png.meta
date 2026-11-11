@@ -57,7 +57,7 @@ TextureImporter:
       213: 2703645523430153595
     second: sheet_Lulu_Lulu_Left_Damage_8
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -74,11 +74,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -98,7 +99,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 70
@@ -117,9 +118,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -129,9 +131,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -141,9 +144,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -153,6 +157,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -162,13 +180,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_0
       rect:
         serializedVersion: 2
-        x: 157
-        y: 615
-        width: 162
-        height: 228
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 133
+        y: 591
+        width: 210
+        height: 276
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08695652}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -183,13 +202,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_1
       rect:
         serializedVersion: 2
-        x: 675
-        y: 615
-        width: 160
-        height: 226
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 651
+        y: 591
+        width: 208
+        height: 274
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08759124}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -204,13 +224,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_2
       rect:
         serializedVersion: 2
-        x: 1193
-        y: 617
-        width: 160
-        height: 224
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1169
+        y: 593
+        width: 208
+        height: 272
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -225,13 +246,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_3
       rect:
         serializedVersion: 2
-        x: 1711
-        y: 617
-        width: 158
-        height: 222
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1687
+        y: 593
+        width: 206
+        height: 270
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08888889}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -246,13 +268,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_4
       rect:
         serializedVersion: 2
-        x: 2229
-        y: 617
-        width: 158
-        height: 222
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2205
+        y: 593
+        width: 206
+        height: 270
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08888889}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -267,13 +290,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_5
       rect:
         serializedVersion: 2
-        x: 2747
-        y: 617
-        width: 158
-        height: 222
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2723
+        y: 593
+        width: 206
+        height: 270
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08888889}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -288,13 +312,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_6
       rect:
         serializedVersion: 2
-        x: 3265
-        y: 617
-        width: 160
-        height: 224
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3241
+        y: 593
+        width: 208
+        height: 272
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -309,13 +334,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_7
       rect:
         serializedVersion: 2
-        x: 157
-        y: 99
-        width: 162
-        height: 224
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 133
+        y: 75
+        width: 210
+        height: 272
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -330,13 +356,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Damage_8
       rect:
         serializedVersion: 2
-        x: 675
-        y: 99
-        width: 162
-        height: 224
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 651
+        y: 75
+        width: 210
+        height: 272
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0882353}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -348,6 +375,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -357,6 +385,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       sheet_Lulu_Lulu_Left_Damage_0: -8723165664686682167
       sheet_Lulu_Lulu_Left_Damage_1: -8143342763993475556
@@ -367,9 +397,8 @@ TextureImporter:
       sheet_Lulu_Lulu_Left_Damage_6: 7033880288630636116
       sheet_Lulu_Lulu_Left_Damage_7: 8139395056375965705
       sheet_Lulu_Lulu_Left_Damage_8: 6415796170719381758
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

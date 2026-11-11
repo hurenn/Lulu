@@ -39,7 +39,7 @@ TextureImporter:
       213: 1491298226996872837
     second: sheet_Lulu_Lulu_Left_Spin to Fall_11
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -56,11 +56,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -80,7 +81,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 70
@@ -99,9 +100,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -111,9 +113,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -123,9 +126,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -135,6 +139,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -144,13 +162,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_0
       rect:
         serializedVersion: 2
-        x: 159
-        y: 681
-        width: 194
-        height: 210
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 135
+        y: 657
+        width: 242
+        height: 258
+      alignment: 9
+      pivot: {x: 0.5, y: 0.093023255}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -165,13 +184,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_1
       rect:
         serializedVersion: 2
-        x: 633
-        y: 659
-        width: 200
-        height: 212
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 609
+        y: 635
+        width: 248
+        height: 260
+      alignment: 9
+      pivot: {x: 0.5, y: 0.092307694}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -186,13 +206,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_2
       rect:
         serializedVersion: 2
-        x: 1173
-        y: 649
-        width: 226
-        height: 210
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1149
+        y: 625
+        width: 274
+        height: 258
+      alignment: 9
+      pivot: {x: 0.5, y: 0.093023255}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -207,13 +228,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_3
       rect:
         serializedVersion: 2
-        x: 1713
-        y: 668
-        width: 212
-        height: 171
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1689
+        y: 644
+        width: 260
+        height: 219
+      alignment: 9
+      pivot: {x: 0.5, y: 0.10958904}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -228,13 +250,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_4
       rect:
         serializedVersion: 2
-        x: 2261
-        y: 679
-        width: 204
-        height: 202
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2237
+        y: 655
+        width: 252
+        height: 250
+      alignment: 9
+      pivot: {x: 0.5, y: 0.096}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -249,13 +272,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_5
       rect:
         serializedVersion: 2
-        x: 2793
-        y: 667
-        width: 168
-        height: 230
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2769
+        y: 643
+        width: 216
+        height: 278
+      alignment: 9
+      pivot: {x: 0.5, y: 0.086330935}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -270,13 +294,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_6
       rect:
         serializedVersion: 2
-        x: 3275
-        y: 667
-        width: 192
-        height: 216
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3251
+        y: 643
+        width: 240
+        height: 264
+      alignment: 9
+      pivot: {x: 0.5, y: 0.09090909}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -291,13 +316,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_7
       rect:
         serializedVersion: 2
-        x: 151
-        y: 125
-        width: 202
-        height: 234
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 127
+        y: 101
+        width: 250
+        height: 282
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08510638}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -312,13 +338,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_8
       rect:
         serializedVersion: 2
-        x: 647
-        y: 93
-        width: 212
-        height: 258
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 623
+        y: 69
+        width: 260
+        height: 306
+      alignment: 9
+      pivot: {x: 0.5, y: 0.078431375}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -333,13 +360,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_9
       rect:
         serializedVersion: 2
-        x: 1213
-        y: 77
-        width: 152
-        height: 266
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1189
+        y: 53
+        width: 200
+        height: 314
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07643312}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -354,13 +382,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_10
       rect:
         serializedVersion: 2
-        x: 1727
-        y: 71
-        width: 148
-        height: 268
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1703
+        y: 47
+        width: 196
+        height: 316
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07594936}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -375,13 +404,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Spin to Fall_11
       rect:
         serializedVersion: 2
-        x: 2245
-        y: 71
-        width: 148
-        height: 268
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2221
+        y: 47
+        width: 196
+        height: 316
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07594936}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -393,6 +423,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -402,6 +433,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       sheet_Lulu_Lulu_Left_Spin to Fall_0: 2835555284745924653
       sheet_Lulu_Lulu_Left_Spin to Fall_1: -7435192841015636374
@@ -415,9 +448,8 @@ TextureImporter:
       sheet_Lulu_Lulu_Left_Spin to Fall_7: 6350718464452537413
       sheet_Lulu_Lulu_Left_Spin to Fall_8: 56115909761973718
       sheet_Lulu_Lulu_Left_Spin to Fall_9: -9091203624501069926
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -1,0 +1,176 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.U2D.Sprites;
+using UnityEngine;
+
+/// <summary>
+/// スプライトシートの各コマの周りに、アウトラインを描くための透明な余白を作る。
+/// アウトライン(AllIn1SpriteShaderなど)は絵を描く範囲(切り抜き枠)の内側にしか描けないため、
+/// 絵の中身が枠の端に接していると線が欠ける。
+/// - 枠を外側へ広げられるシートは、枠を広げるだけ(画像は変えない)
+/// - テクスチャの端や隣のコマに当たって広げられないシートは、各コマの周りに余白を付けて並べ直した画像に作り直す
+/// どちらもピボットをテクスチャ上の絵の同じ位置に保つので、表示位置は変わらない。メッシュはFull Rectにする。
+/// シートを書き出し直した時は、メニューからもう一度実行する
+/// </summary>
+public static class SpriteOutlinePadding {
+    public const int PADDING = SpriteOutlinePaddingLimit.PADDING; // 余白(取り込み後のテクスチャのピクセル数)。アウトラインの太さの上限になる
+    private const string PLAYER_PREFAB = "Assets/Resources_/Prefabs/StageObjects/Characters/Player.prefab";
+
+    [MenuItem("Tools/Lulu/ルルのシートにアウトライン用の余白を付ける")]
+    private static void _PadLuluSheets() {
+        var log = PadSheets(_GetLuluTextures());
+        Debug.Log(log);
+    }
+
+    // ルルの見た目(Graphic)のAnimatorが使う全シート
+    private static List<Texture2D> _GetLuluTextures() {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PLAYER_PREFAB);
+        var graphic = prefab.GetComponentsInChildren<SpriteRenderer>(true).First(r => r.name == "Graphic");
+        var animator = graphic.GetComponent<Animator>();
+        var textures = new HashSet<Texture2D>();
+        foreach (var clip in animator.runtimeAnimatorController.animationClips) {
+            foreach (var binding in AnimationUtility.GetObjectReferenceCurveBindings(clip)) {
+                if (binding.type != typeof(SpriteRenderer) || binding.path != "") continue;
+                foreach (var key in AnimationUtility.GetObjectReferenceCurve(clip, binding)) {
+                    if (key.value is Sprite sprite) textures.Add(sprite.texture);
+                }
+            }
+        }
+        return textures.OrderBy(t => t.name).ToList();
+    }
+
+    /// <summary>
+    /// 指定したシートに余白を付ける。処理内容をまとめた文字列を返す
+    /// </summary>
+    public static string PadSheets(IEnumerable<Texture2D> textures) {
+        var factory = new SpriteDataProviderFactories();
+        factory.Init();
+        var log = new System.Text.StringBuilder();
+        foreach (var texture in textures) {
+            string path = AssetDatabase.GetAssetPath(texture);
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            var image = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            image.LoadImage(File.ReadAllBytes(path));
+
+            var provider = factory.GetSpriteEditorDataProviderFromObject(importer);
+            provider.InitSpriteEditorDataProvider();
+            var rects = provider.GetSpriteRects();
+
+            // 枠は元画像のピクセルで扱う。取り込み時に縮小されるシートは、その分だけ余白を大きく取る
+            float scale = Mathf.Max(1f, Mathf.Max(image.width, image.height) / (float)importer.maxTextureSize);
+            int pad = Mathf.CeilToInt(PADDING * scale);
+
+            var expanded = rects.Select(r => _ExpandRect(r, rects, image.width, image.height, pad)).ToArray();
+            bool needs_repack = rects.Select((r, i) => _ContentMargin(image, r.rect, expanded[i], pad)).Any(m => m < pad);
+            if (needs_repack) {
+                var size = _Repack(path, importer, image, rects, pad, scale);
+                log.AppendLine($"{texture.name}: 余白を付けて並べ直した ({image.width}x{image.height} → {size.x}x{size.y})");
+            } else {
+                for (int i = 0; i < rects.Length; i++) _SetRectKeepPivot(rects[i], expanded[i]);
+                log.AppendLine($"{texture.name}: 枠を広げた");
+            }
+            Object.DestroyImmediate(image);
+
+            provider.SetSpriteRects(rects);
+            provider.Apply();
+            var settings = new TextureImporterSettings();
+            importer.ReadTextureSettings(settings);
+            settings.spriteMeshType = SpriteMeshType.FullRect;
+            importer.SetTextureSettings(settings);
+            importer.SaveAndReimport();
+        }
+        return log.ToString();
+    }
+
+    // 枠を、他の枠との隙間の半分・テクスチャの端・padのうち最も小さい量だけ外側へ広げる
+    private static Rect _ExpandRect(SpriteRect target, SpriteRect[] all, int width, int height, int pad) {
+        var r = target.rect;
+        float left = Mathf.Min(pad, r.xMin), right = Mathf.Min(pad, width - r.xMax);
+        float down = Mathf.Min(pad, r.yMin), up = Mathf.Min(pad, height - r.yMax);
+        foreach (var other in all) {
+            if (other == target) continue;
+            var q = other.rect;
+            bool overlap_y = q.yMin < r.yMax + pad && q.yMax > r.yMin - pad;
+            bool overlap_x = q.xMin < r.xMax + pad && q.xMax > r.xMin - pad;
+            if (overlap_y && q.xMin >= r.xMax) right = Mathf.Min(right, Mathf.Floor((q.xMin - r.xMax) / 2f));
+            if (overlap_y && q.xMax <= r.xMin) left = Mathf.Min(left, Mathf.Floor((r.xMin - q.xMax) / 2f));
+            if (overlap_x && q.yMin >= r.yMax) up = Mathf.Min(up, Mathf.Floor((q.yMin - r.yMax) / 2f));
+            if (overlap_x && q.yMax <= r.yMin) down = Mathf.Min(down, Mathf.Floor((r.yMin - q.yMax) / 2f));
+        }
+        left = Mathf.Max(0, left); right = Mathf.Max(0, right); down = Mathf.Max(0, down); up = Mathf.Max(0, up);
+        return new Rect(r.xMin - left, r.yMin - down, r.width + left + right, r.height + down + up);
+    }
+
+    // 広げた枠の端から、元の枠の中の絵(不透明な部分)までの最小距離。絵が無ければpad
+    private static int _ContentMargin(Texture2D image, Rect original, Rect expanded, int pad) {
+        int min_x = int.MaxValue, max_x = -1, min_y = int.MaxValue, max_y = -1;
+        for (int y = (int)original.yMin; y < (int)original.yMax; y++) {
+            for (int x = (int)original.xMin; x < (int)original.xMax; x++) {
+                if (image.GetPixel(x, y).a <= 0.04f) continue;
+                min_x = Mathf.Min(min_x, x); max_x = Mathf.Max(max_x, x);
+                min_y = Mathf.Min(min_y, y); max_y = Mathf.Max(max_y, y);
+            }
+        }
+        if (max_x < 0) return pad;
+        float margin = Mathf.Min(Mathf.Min(min_x - expanded.xMin, expanded.xMax - 1 - max_x),
+                                 Mathf.Min(min_y - expanded.yMin, expanded.yMax - 1 - max_y));
+        return (int)margin;
+    }
+
+    // ピボットをテクスチャ上の同じ位置に保ったまま枠を変える
+    private static void _SetRectKeepPivot(SpriteRect sprite, Rect rect, Vector2 offset = default) {
+        Vector2 pivot_abs = sprite.rect.position + Vector2.Scale(sprite.pivot, sprite.rect.size) + offset;
+        sprite.alignment = SpriteAlignment.Custom;
+        sprite.pivot = new Vector2((pivot_abs.x - rect.xMin) / rect.width, (pivot_abs.y - rect.yMin) / rect.height);
+        sprite.rect = rect;
+    }
+
+    // 各コマの周りにpadの余白を付け、元の並び順(上の段から左→右)で詰め直した画像に作り直す。作り直した画像の大きさを返す
+    private static Vector2Int _Repack(string path, TextureImporter importer, Texture2D image, SpriteRect[] rects, int pad, float scale) {
+        var order = rects.OrderByDescending(r => r.rect.yMax).ThenBy(r => r.rect.xMin).ToList();
+        int width = image.width;
+        // 段ごとに並べる位置を決める(テクスチャ上はyが上向きなので、上の段から下へ置いた後で反転する)
+        var placed = new Dictionary<SpriteRect, Vector2Int>();
+        int x = 0, y = 0, row_height = 0;
+        // 枠が小数の位置にある場合も、ピクセル単位で丸ごと写す
+        RectInt PixelRect(Rect r) {
+            int x_min = Mathf.FloorToInt(r.xMin), y_min = Mathf.FloorToInt(r.yMin);
+            return new RectInt(x_min, y_min, Mathf.CeilToInt(r.xMax) - x_min, Mathf.CeilToInt(r.yMax) - y_min);
+        }
+        foreach (var sprite in order) {
+            var src = PixelRect(sprite.rect);
+            int w = src.width + pad * 2, h = src.height + pad * 2;
+            if (x + w > width && x > 0) { x = 0; y += row_height; row_height = 0; }
+            width = Mathf.Max(width, w);
+            placed[sprite] = new Vector2Int(x, y);
+            x += w; row_height = Mathf.Max(row_height, h);
+        }
+        int height = y + row_height;
+        // 取り込み時に縮小された後も4の倍数になるようにする(4の倍数でないと圧縮されない)
+        int align = Mathf.CeilToInt(4 * scale);
+        width = (width + align - 1) / align * align; height = (height + align - 1) / align * align;
+
+        var packed = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        packed.SetPixels32(new Color32[width * height]);
+        foreach (var sprite in order) {
+            var src = PixelRect(sprite.rect);
+            var pos = placed[sprite];
+            int dst_x = pos.x + pad;
+            int dst_y = height - pos.y - src.height - pad; // 上から置いた位置を、下が原点の座標へ
+            packed.SetPixels(dst_x, dst_y, src.width, src.height, image.GetPixels(src.x, src.y, src.width, src.height));
+            var cell = new Rect(dst_x - pad, dst_y - pad, src.width + pad * 2, src.height + pad * 2);
+            _SetRectKeepPivot(sprite, cell, new Vector2(dst_x - src.x, dst_y - src.y));
+        }
+        packed.Apply();
+        File.WriteAllBytes(path, packed.EncodeToPNG());
+        Object.DestroyImmediate(packed);
+
+        // 取り込み時の縮小率が変わらないように、最大サイズを合わせる
+        int needed = Mathf.NextPowerOfTwo(Mathf.CeilToInt(Mathf.Max(width, height) / scale));
+        if (importer.maxTextureSize < needed) importer.maxTextureSize = needed;
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+        return new Vector2Int(width, height);
+    }
+}

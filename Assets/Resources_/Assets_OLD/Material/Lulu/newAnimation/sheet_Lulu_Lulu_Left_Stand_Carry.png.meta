@@ -63,7 +63,7 @@ TextureImporter:
       213: -6627616921852234636
     second: sheet_Lulu_Lulu_Left_Stand_Carry_19
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -80,11 +80,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -104,7 +105,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 70
@@ -123,9 +124,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -135,9 +137,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -147,9 +150,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -159,6 +163,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -168,13 +186,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_0
       rect:
         serializedVersion: 2
-        x: 203
-        y: 1621
-        width: 120
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 179
+        y: 1597
+        width: 168
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -189,13 +208,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_1
       rect:
         serializedVersion: 2
-        x: 719
-        y: 1621
-        width: 120
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 695
+        y: 1597
+        width: 168
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -210,13 +230,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_2
       rect:
         serializedVersion: 2
-        x: 1237
-        y: 1621
-        width: 118
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1213
+        y: 1597
+        width: 166
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -231,13 +252,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_3
       rect:
         serializedVersion: 2
-        x: 1755
-        y: 1621
-        width: 118
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1731
+        y: 1597
+        width: 166
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -252,13 +274,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_4
       rect:
         serializedVersion: 2
-        x: 2273
-        y: 1621
-        width: 120
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2249
+        y: 1597
+        width: 168
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -273,13 +296,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_5
       rect:
         serializedVersion: 2
-        x: 2793
-        y: 1621
-        width: 118
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2769
+        y: 1597
+        width: 166
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -294,13 +318,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_6
       rect:
         serializedVersion: 2
-        x: 3313
-        y: 1621
-        width: 118
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3289
+        y: 1597
+        width: 166
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -315,13 +340,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_7
       rect:
         serializedVersion: 2
-        x: 205
-        y: 1103
-        width: 120
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 181
+        y: 1079
+        width: 168
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -336,13 +362,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_8
       rect:
         serializedVersion: 2
-        x: 725
-        y: 1101
-        width: 118
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 701
+        y: 1077
+        width: 166
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -357,13 +384,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_9
       rect:
         serializedVersion: 2
-        x: 1243
-        y: 1101
-        width: 118
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1219
+        y: 1077
+        width: 166
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -378,13 +406,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_10
       rect:
         serializedVersion: 2
-        x: 1761
-        y: 1101
-        width: 118
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1737
+        y: 1077
+        width: 166
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -399,13 +428,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_11
       rect:
         serializedVersion: 2
-        x: 2279
-        y: 1101
-        width: 120
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2255
+        y: 1077
+        width: 168
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -420,13 +450,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_12
       rect:
         serializedVersion: 2
-        x: 2797
-        y: 1101
-        width: 120
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2773
+        y: 1077
+        width: 168
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -441,13 +472,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_13
       rect:
         serializedVersion: 2
-        x: 3317
-        y: 1103
-        width: 118
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3293
+        y: 1079
+        width: 166
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -462,13 +494,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_14
       rect:
         serializedVersion: 2
-        x: 209
-        y: 585
-        width: 116
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 185
+        y: 561
+        width: 164
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -483,13 +516,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_15
       rect:
         serializedVersion: 2
-        x: 725
-        y: 585
-        width: 120
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 701
+        y: 561
+        width: 168
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -504,13 +538,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_16
       rect:
         serializedVersion: 2
-        x: 1243
-        y: 585
-        width: 120
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1219
+        y: 561
+        width: 168
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -525,13 +560,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_17
       rect:
         serializedVersion: 2
-        x: 1759
-        y: 585
-        width: 122
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1735
+        y: 561
+        width: 170
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -546,13 +582,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_18
       rect:
         serializedVersion: 2
-        x: 2275
-        y: 585
-        width: 122
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2251
+        y: 561
+        width: 170
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -567,13 +604,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Stand_Carry_19
       rect:
         serializedVersion: 2
-        x: 2793
-        y: 585
-        width: 122
-        height: 284
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2769
+        y: 561
+        width: 170
+        height: 332
+      alignment: 9
+      pivot: {x: 0.5, y: 0.072289154}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -585,6 +623,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -594,6 +633,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       sheet_Lulu_Lulu_Left_Stand_Carry_0: 8125033594257086324
       sheet_Lulu_Lulu_Left_Stand_Carry_1: 8618336427446516796
@@ -615,9 +656,8 @@ TextureImporter:
       sheet_Lulu_Lulu_Left_Stand_Carry_7: 4467905563794724257
       sheet_Lulu_Lulu_Left_Stand_Carry_8: 4482597058239590500
       sheet_Lulu_Lulu_Left_Stand_Carry_9: 5231433066950215238
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

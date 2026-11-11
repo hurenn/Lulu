@@ -63,7 +63,7 @@ TextureImporter:
       213: 5369901428178815903
     second: sheet_Lulu_Lulu_Left_Attack_Carry_9
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -80,11 +80,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -104,7 +105,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 70
@@ -123,9 +124,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -135,9 +137,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -147,9 +150,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -159,6 +163,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -168,13 +186,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_0
       rect:
         serializedVersion: 2
-        x: 121
-        y: 637
-        width: 240
-        height: 238
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 97
+        y: 613
+        width: 288
+        height: 286
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08391608}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -189,13 +208,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_1
       rect:
         serializedVersion: 2
-        x: 639
-        y: 639
-        width: 238
-        height: 236
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 615
+        y: 615
+        width: 286
+        height: 284
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08450704}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -210,13 +230,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_2
       rect:
         serializedVersion: 2
-        x: 1163
-        y: 641
-        width: 206
-        height: 234
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1139
+        y: 617
+        width: 254
+        height: 282
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08510638}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -231,13 +252,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_3
       rect:
         serializedVersion: 2
-        x: 1697
-        y: 615
-        width: 202
-        height: 260
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1673
+        y: 591
+        width: 250
+        height: 308
+      alignment: 9
+      pivot: {x: 0.5, y: 0.077922076}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -252,13 +274,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_4
       rect:
         serializedVersion: 2
-        x: 2247
-        y: 589
-        width: 180
-        height: 286
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2223
+        y: 565
+        width: 228
+        height: 334
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07185629}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -273,13 +296,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_5
       rect:
         serializedVersion: 2
-        x: 2767
-        y: 579
-        width: 176
-        height: 296
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2743
+        y: 555
+        width: 224
+        height: 344
+      alignment: 9
+      pivot: {x: 0.5, y: 0.069767445}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -294,13 +318,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_6
       rect:
         serializedVersion: 2
-        x: 3285
-        y: 579
-        width: 162
-        height: 296
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3261
+        y: 555
+        width: 210
+        height: 344
+      alignment: 9
+      pivot: {x: 0.5, y: 0.069767445}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -315,13 +340,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_7
       rect:
         serializedVersion: 2
-        x: 177
-        y: 61
-        width: 158
-        height: 296
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 153
+        y: 37
+        width: 206
+        height: 344
+      alignment: 9
+      pivot: {x: 0.5, y: 0.069767445}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -336,13 +362,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_8
       rect:
         serializedVersion: 2
-        x: 695
-        y: 61
-        width: 158
-        height: 296
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 671
+        y: 37
+        width: 206
+        height: 344
+      alignment: 9
+      pivot: {x: 0.5, y: 0.069767445}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -357,13 +384,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Attack_Carry_9
       rect:
         serializedVersion: 2
-        x: 1213
-        y: 61
-        width: 152
-        height: 296
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1189
+        y: 37
+        width: 200
+        height: 344
+      alignment: 9
+      pivot: {x: 0.5, y: 0.069767445}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -375,6 +403,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -384,6 +413,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       sheet_Lulu_Lulu_Left_Attack_Carry_0: -3996714543217253710
       sheet_Lulu_Lulu_Left_Attack_Carry_1: 9133101844420180153
@@ -395,9 +426,8 @@ TextureImporter:
       sheet_Lulu_Lulu_Left_Attack_Carry_7: 2095928410206525356
       sheet_Lulu_Lulu_Left_Attack_Carry_8: -2075351836260968308
       sheet_Lulu_Lulu_Left_Attack_Carry_9: -7322847937513861575
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

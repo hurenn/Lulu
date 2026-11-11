@@ -33,7 +33,7 @@ TextureImporter:
       213: -6049755127533814162
     second: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_9
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -50,11 +50,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -74,7 +75,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 70
@@ -93,9 +94,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -105,9 +107,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -117,9 +120,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -129,6 +133,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -138,13 +156,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_0
       rect:
         serializedVersion: 2
-        x: 122
-        y: 1606
-        width: 301
-        height: 307
+        x: 98
+        y: 1582
+        width: 349
+        height: 355
       alignment: 9
-      pivot: {x: 0.5, y: 0.1139942}
+      pivot: {x: 0.5, y: 0.16618653}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -159,13 +178,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_1
       rect:
         serializedVersion: 2
-        x: 637
-        y: 1587
-        width: 296
-        height: 341
+        x: 613
+        y: 1563
+        width: 344
+        height: 389
       alignment: 9
-      pivot: {x: 0.5, y: 0.1583696}
+      pivot: {x: 0.5, y: 0.2005245}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -180,13 +200,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_2
       rect:
         serializedVersion: 2
-        x: 1168
-        y: 1641
-        width: 276
-        height: 293
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1144
+        y: 1617
+        width: 324
+        height: 341
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07038123}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -201,13 +222,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_3
       rect:
         serializedVersion: 2
-        x: 1616
-        y: 1517
-        width: 373
-        height: 456
+        x: 1592
+        y: 1493
+        width: 421
+        height: 504
       alignment: 9
-      pivot: {x: 0.5, y: 0.2192851}
+      pivot: {x: 0.5, y: 0.24601988}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -222,13 +244,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_4
       rect:
         serializedVersion: 2
-        x: 2195
-        y: 1617
-        width: 247
-        height: 267
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2171
+        y: 1593
+        width: 271
+        height: 315
+      alignment: 9
+      pivot: {x: 0.54428047, y: 0.07619048}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -243,13 +266,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_5
       rect:
         serializedVersion: 2
-        x: 2605
-        y: 1565
-        width: 468
-        height: 371
+        x: 2581
+        y: 1541
+        width: 492
+        height: 419
       alignment: 9
-      pivot: {x: 0.5, y: 0.1401614}
+      pivot: {x: 0.5243902, y: 0.18138395}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -264,13 +288,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_6
       rect:
         serializedVersion: 2
-        x: 3154
-        y: 1617
-        width: 403
-        height: 267
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3130
+        y: 1593
+        width: 427
+        height: 315
+      alignment: 9
+      pivot: {x: 0.52810305, y: 0.07619048}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -285,13 +310,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_7
       rect:
         serializedVersion: 2
-        x: 127
-        y: 1097
-        width: 248
-        height: 267
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 103
+        y: 1073
+        width: 296
+        height: 315
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07619048}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -306,13 +332,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_8
       rect:
         serializedVersion: 2
-        x: 640
-        y: 1097
-        width: 251
-        height: 267
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 616
+        y: 1073
+        width: 299
+        height: 315
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07619048}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -327,13 +354,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_Warp_Exit_Carry_9
       rect:
         serializedVersion: 2
-        x: 1160
-        y: 1097
-        width: 247
-        height: 267
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1136
+        y: 1073
+        width: 295
+        height: 315
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07619048}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -345,6 +373,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -354,6 +383,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       sheet_Lulu_Lulu_Left_Warp_Exit_Carry_0: 525889555447949655
       sheet_Lulu_Lulu_Left_Warp_Exit_Carry_1: 1212221017248836976
@@ -365,9 +396,8 @@ TextureImporter:
       sheet_Lulu_Lulu_Left_Warp_Exit_Carry_7: -4137453358952156309
       sheet_Lulu_Lulu_Left_Warp_Exit_Carry_8: -534258291981310406
       sheet_Lulu_Lulu_Left_Warp_Exit_Carry_9: -6049755127533814162
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

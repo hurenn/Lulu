@@ -21,7 +21,7 @@ TextureImporter:
       213: -4856733491092679487
     second: sheet_Lulu_Lulu_Left_PickUp_5
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -38,11 +38,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -62,7 +63,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 70
@@ -81,9 +82,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,9 +95,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -105,9 +108,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -117,6 +121,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -126,13 +144,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_PickUp_0
       rect:
         serializedVersion: 2
-        x: 177
-        y: 589
-        width: 158
-        height: 206
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 153
+        y: 565
+        width: 206
+        height: 254
+      alignment: 9
+      pivot: {x: 0.5, y: 0.09448819}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -147,13 +166,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_PickUp_1
       rect:
         serializedVersion: 2
-        x: 679
-        y: 587
-        width: 174
-        height: 220
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 655
+        y: 563
+        width: 222
+        height: 268
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08955224}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -168,13 +188,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_PickUp_2
       rect:
         serializedVersion: 2
-        x: 1193
-        y: 585
-        width: 188
-        height: 244
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1169
+        y: 561
+        width: 236
+        height: 292
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08219178}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -189,13 +210,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_PickUp_3
       rect:
         serializedVersion: 2
-        x: 1719
-        y: 589
-        width: 176
-        height: 266
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1695
+        y: 565
+        width: 224
+        height: 314
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07643312}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -210,13 +232,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_PickUp_4
       rect:
         serializedVersion: 2
-        x: 2279
-        y: 589
-        width: 118
-        height: 286
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2255
+        y: 565
+        width: 166
+        height: 334
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07185629}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -231,13 +254,14 @@ TextureImporter:
       name: sheet_Lulu_Lulu_Left_PickUp_5
       rect:
         serializedVersion: 2
-        x: 2789
-        y: 589
-        width: 134
-        height: 296
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2765
+        y: 565
+        width: 182
+        height: 344
+      alignment: 9
+      pivot: {x: 0.5, y: 0.069767445}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -249,6 +273,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -258,6 +283,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       sheet_Lulu_Lulu_Left_PickUp_0: -3336969937564704638
       sheet_Lulu_Lulu_Left_PickUp_1: -298495827499041458
@@ -265,9 +292,8 @@ TextureImporter:
       sheet_Lulu_Lulu_Left_PickUp_3: -283659770801111931
       sheet_Lulu_Lulu_Left_PickUp_4: 4280079855391696465
       sheet_Lulu_Lulu_Left_PickUp_5: -4856733491092679487
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
