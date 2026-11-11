@@ -168,6 +168,7 @@ GameObject:
   - component: {fileID: 6489534105525540941}
   - component: {fileID: 256934369167759302}
   - component: {fileID: 3268640100333669516}
+  - component: {fileID: 5392241618504179361}
   m_Layer: 0
   m_Name: Graphic_Marlica
   m_TagString: Untagged
@@ -214,7 +215,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 73d430b484e305d4981d0d82d54d750c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -268,6 +269,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5392241618504179361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2939942797071226251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cbccd5fc730e4c4189486d88d2bb4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _noOutlineSprites: []
 --- !u!1 &5629124861586203627
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,6 +418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isGround: 1
   _specialChargeTime: 180
+  _specialReadyDelay: 1.5
   _specialTimelinePrefab: {fileID: 4311468691193044393, guid: e59a36299ddf5d349b6591221e4202bc, type: 3}
   _specialTimelineAsset: {fileID: 11400000, guid: fec68c7dfda478e42bc6ba7d9181e249, type: 2}
   _returnTime: 3

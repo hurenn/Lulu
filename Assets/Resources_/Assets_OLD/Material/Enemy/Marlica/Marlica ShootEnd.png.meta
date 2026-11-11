@@ -78,7 +78,7 @@ TextureImporter:
       213: -2258231111931739493
     second: Marlica ShootEnd_24
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -95,11 +95,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -119,7 +120,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 300
@@ -138,9 +139,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -150,9 +152,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -162,9 +165,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -174,6 +178,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -183,13 +201,14 @@ TextureImporter:
       name: Marlica ShootEnd_0
       rect:
         serializedVersion: 2
-        x: 37
-        y: 1195
-        width: 565
-        height: 1071
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3169
+        y: 2388
+        width: 659
+        height: 1165
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040343348}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -204,13 +223,14 @@ TextureImporter:
       name: Marlica ShootEnd_1
       rect:
         serializedVersion: 2
-        x: 633
-        y: 1179
-        width: 577
-        height: 1070
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5143
+        y: 2389
+        width: 671
+        height: 1164
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040378008}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -225,13 +245,14 @@ TextureImporter:
       name: Marlica ShootEnd_2
       rect:
         serializedVersion: 2
-        x: 1230
-        y: 1164
-        width: 588
-        height: 1068
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 1202
+        width: 682
+        height: 1162
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040447503}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -246,13 +267,14 @@ TextureImporter:
       name: Marlica ShootEnd_3
       rect:
         serializedVersion: 2
-        x: 1845
-        y: 1164
-        width: 585
-        height: 1071
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6489
+        y: 2388
+        width: 679
+        height: 1165
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040343348}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -267,13 +289,14 @@ TextureImporter:
       name: Marlica ShootEnd_4
       rect:
         serializedVersion: 2
-        x: 2461
-        y: 1167
-        width: 585
-        height: 1068
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 7168
+        y: 2391
+        width: 679
+        height: 1162
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040447503}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -288,13 +311,14 @@ TextureImporter:
       name: Marlica ShootEnd_5
       rect:
         serializedVersion: 2
-        x: 3077
-        y: 1167
-        width: 581
-        height: 1072
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5814
+        y: 2387
+        width: 675
+        height: 1166
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040308747}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -309,13 +333,14 @@ TextureImporter:
       name: Marlica ShootEnd_6
       rect:
         serializedVersion: 2
-        x: 3701
-        y: 1175
-        width: 569
-        height: 1076
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4480
+        y: 2383
+        width: 663
+        height: 1170
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04017094}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -330,13 +355,14 @@ TextureImporter:
       name: Marlica ShootEnd_7
       rect:
         serializedVersion: 2
-        x: 4324
-        y: 1183
-        width: 558
-        height: 1080
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3828
+        y: 2379
+        width: 652
+        height: 1174
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04003407}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -351,13 +377,14 @@ TextureImporter:
       name: Marlica ShootEnd_8
       rect:
         serializedVersion: 2
-        x: 4952
-        y: 1191
-        width: 541
-        height: 1083
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2534
+        y: 2376
+        width: 635
+        height: 1177
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03993203}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -372,13 +399,14 @@ TextureImporter:
       name: Marlica ShootEnd_9
       rect:
         serializedVersion: 2
-        x: 5568
-        y: 1191
-        width: 537
-        height: 1087
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1903
+        y: 2372
+        width: 631
+        height: 1181
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03979678}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -393,13 +421,14 @@ TextureImporter:
       name: Marlica ShootEnd_10
       rect:
         serializedVersion: 2
-        x: 6179
-        y: 1191
-        width: 542
-        height: 1091
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 632
+        y: 2368
+        width: 636
+        height: 1185
+      alignment: 9
+      pivot: {x: 0.5, y: 0.039662447}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -414,13 +443,14 @@ TextureImporter:
       name: Marlica ShootEnd_11
       rect:
         serializedVersion: 2
-        x: 6792
-        y: 1191
-        width: 541
-        height: 1091
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1268
+        y: 2368
+        width: 635
+        height: 1185
+      alignment: 9
+      pivot: {x: 0.5, y: 0.039662447}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -435,13 +465,14 @@ TextureImporter:
       name: Marlica ShootEnd_12
       rect:
         serializedVersion: 2
-        x: 7407
-        y: 1191
-        width: 538
-        height: 1095
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 2364
+        width: 632
+        height: 1189
+      alignment: 9
+      pivot: {x: 0.5, y: 0.039529014}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -456,13 +487,14 @@ TextureImporter:
       name: Marlica ShootEnd_13
       rect:
         serializedVersion: 2
-        x: 41
-        y: 45
-        width: 534
-        height: 1099
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 682
+        y: 1171
+        width: 628
+        height: 1193
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03939648}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -477,13 +509,14 @@ TextureImporter:
       name: Marlica ShootEnd_14
       rect:
         serializedVersion: 2
-        x: 653
-        y: 45
-        width: 538
-        height: 1095
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1310
+        y: 1175
+        width: 632
+        height: 1189
+      alignment: 9
+      pivot: {x: 0.5, y: 0.039529014}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -498,13 +531,14 @@ TextureImporter:
       name: Marlica ShootEnd_15
       rect:
         serializedVersion: 2
-        x: 1265
-        y: 45
-        width: 545
-        height: 1091
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1942
+        y: 1179
+        width: 639
+        height: 1185
+      alignment: 9
+      pivot: {x: 0.5, y: 0.039662447}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -519,13 +553,14 @@ TextureImporter:
       name: Marlica ShootEnd_16
       rect:
         serializedVersion: 2
-        x: 1881
-        y: 45
-        width: 545
-        height: 1091
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2581
+        y: 1179
+        width: 639
+        height: 1185
+      alignment: 9
+      pivot: {x: 0.5, y: 0.039662447}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -540,13 +575,14 @@ TextureImporter:
       name: Marlica ShootEnd_17
       rect:
         serializedVersion: 2
-        x: 2492
-        y: 45
-        width: 553
-        height: 1087
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3220
+        y: 1183
+        width: 647
+        height: 1181
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03979678}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -561,13 +597,14 @@ TextureImporter:
       name: Marlica ShootEnd_18
       rect:
         serializedVersion: 2
-        x: 3104
-        y: 45
-        width: 558
-        height: 1083
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3867
+        y: 1187
+        width: 652
+        height: 1177
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03993203}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -582,13 +619,14 @@ TextureImporter:
       name: Marlica ShootEnd_19
       rect:
         serializedVersion: 2
-        x: 3720
-        y: 49
-        width: 557
-        height: 1079
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4519
+        y: 1191
+        width: 651
+        height: 1173
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0400682}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -603,13 +641,14 @@ TextureImporter:
       name: Marlica ShootEnd_20
       rect:
         serializedVersion: 2
-        x: 4332
-        y: 49
-        width: 561
-        height: 1076
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5170
+        y: 1194
+        width: 655
+        height: 1170
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04017094}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -624,13 +663,14 @@ TextureImporter:
       name: Marlica ShootEnd_21
       rect:
         serializedVersion: 2
-        x: 4948
-        y: 49
-        width: 561
-        height: 1076
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5825
+        y: 1194
+        width: 655
+        height: 1170
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04017094}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -645,13 +685,14 @@ TextureImporter:
       name: Marlica ShootEnd_22
       rect:
         serializedVersion: 2
-        x: 5560
-        y: 49
-        width: 565
-        height: 1075
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6480
+        y: 1195
+        width: 659
+        height: 1169
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040205304}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -666,13 +707,14 @@ TextureImporter:
       name: Marlica ShootEnd_23
       rect:
         serializedVersion: 2
-        x: 6176
-        y: 49
-        width: 565
-        height: 1072
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 7139
+        y: 1198
+        width: 659
+        height: 1166
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040308747}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -687,13 +729,14 @@ TextureImporter:
       name: Marlica ShootEnd_24
       rect:
         serializedVersion: 2
-        x: 6787
-        y: 49
-        width: 569
-        height: 1072
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 5
+        width: 663
+        height: 1166
+      alignment: 9
+      pivot: {x: 0.5, y: 0.040308747}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -705,6 +748,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -714,6 +758,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Marlica ShootEnd_0: -4073290715686378613
       Marlica ShootEnd_1: 268094985172434710
@@ -740,9 +786,8 @@ TextureImporter:
       Marlica ShootEnd_7: 887595810593798950
       Marlica ShootEnd_8: 6957811049679943972
       Marlica ShootEnd_9: 3254321347797175547
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

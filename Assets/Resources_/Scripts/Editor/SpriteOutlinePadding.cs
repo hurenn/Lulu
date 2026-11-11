@@ -12,39 +12,58 @@ using UnityEngine;
 /// - 枠を外側へ広げられるシートは、枠を広げるだけ(画像は変えない)
 /// - テクスチャの端や隣のコマに当たって広げられないシートは、各コマの周りに余白を付けて並べ直した画像に作り直す
 /// どちらもピボットをテクスチャ上の絵の同じ位置に保つので、表示位置は変わらない。メッシュはFull Rectにする。
-/// シートを書き出し直した時は、メニューからもう一度実行する
+/// 対象は、プレハブ内でSpriteOutlineWidthを付けたSpriteRendererが使う全シート(Animatorで切り替える絵と、今の絵)。
+/// シートを書き出し直した時や、アウトラインを付けるキャラを増やした時は、メニューからもう一度実行する
 /// </summary>
 public static class SpriteOutlinePadding {
     public const int PADDING = SpriteOutlinePaddingLimit.PADDING; // 余白(取り込み後のテクスチャのピクセル数)。アウトラインの太さの上限になる
-    private const string PLAYER_PREFAB = "Assets/Resources_/Prefabs/StageObjects/Characters/Player.prefab";
+    private static readonly string[] PREFAB_FOLDERS = { "Assets/Resources_/Prefabs", "Assets/Resources/Prefabs" };
 
-    [MenuItem("Tools/Lulu/ルルのシートにアウトライン用の余白を付ける")]
-    private static void _PadLuluSheets() {
-        var log = PadSheets(_GetLuluTextures());
+    [MenuItem("Tools/Lulu/アウトラインを付けたキャラのシートに余白を付ける")]
+    private static void _PadOutlinedSheets() {
+        var sprites = GetOutlinedSprites();
+        var log = PadSheets(sprites.Select(s => s.texture).Distinct().OrderBy(t => t.name), false, sprites);
         Debug.Log(log);
     }
 
-    // ルルの見た目(Graphic)のAnimatorが使う全シート
-    private static List<Texture2D> _GetLuluTextures() {
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PLAYER_PREFAB);
-        var graphic = prefab.GetComponentsInChildren<SpriteRenderer>(true).First(r => r.name == "Graphic");
-        var animator = graphic.GetComponent<Animator>();
-        var textures = new HashSet<Texture2D>();
-        foreach (var clip in animator.runtimeAnimatorController.animationClips) {
-            foreach (var binding in AnimationUtility.GetObjectReferenceCurveBindings(clip)) {
-                if (binding.type != typeof(SpriteRenderer) || binding.path != "") continue;
-                foreach (var key in AnimationUtility.GetObjectReferenceCurve(clip, binding)) {
-                    if (key.value is Sprite sprite) textures.Add(sprite.texture);
-                }
-            }
-        }
-        return textures.OrderBy(t => t.name).ToList();
+    /// <summary>
+    /// プレハブ内でSpriteOutlineWidthを付けたSpriteRendererが使う全シート
+    /// </summary>
+    public static List<Texture2D> GetOutlinedTextures() {
+        return GetOutlinedSprites().Select(s => s.texture).Distinct().OrderBy(t => t.name).ToList();
     }
 
     /// <summary>
-    /// 指定したシートに余白を付ける。処理内容をまとめた文字列を返す
+    /// プレハブ内でSpriteOutlineWidthを付けたSpriteRendererが使う全ての絵(Animatorで切り替える絵と、今の絵)
     /// </summary>
-    public static string PadSheets(IEnumerable<Texture2D> textures) {
+    public static HashSet<Sprite> GetOutlinedSprites() {
+        var sprites = new HashSet<Sprite>();
+        foreach (var guid in AssetDatabase.FindAssets("t:Prefab", PREFAB_FOLDERS)) {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid));
+            foreach (var outline in prefab.GetComponentsInChildren<SpriteOutlineWidth>(true)) {
+                var renderer = outline.GetComponent<SpriteRenderer>();
+                if (renderer.sprite != null) sprites.Add(renderer.sprite);
+                var animator = renderer.GetComponentInParent<Animator>(true);
+                if (animator == null || animator.runtimeAnimatorController == null) continue;
+                string path = AnimationUtility.CalculateTransformPath(renderer.transform, animator.transform);
+                foreach (var clip in animator.runtimeAnimatorController.animationClips) {
+                    foreach (var binding in AnimationUtility.GetObjectReferenceCurveBindings(clip)) {
+                        if (binding.type != typeof(SpriteRenderer) || binding.path != path) continue;
+                        foreach (var key in AnimationUtility.GetObjectReferenceCurve(clip, binding)) {
+                            if (key.value is Sprite sprite) sprites.Add(sprite);
+                        }
+                    }
+                }
+            }
+        }
+        return sprites;
+    }
+
+    /// <summary>
+    /// 指定したシートに余白を付ける。処理内容をまとめた文字列を返す(dry_runなら変更せずに、何をするかだけ返す)。
+    /// used_spritesを渡すと、枠を広げるのはその絵だけにする(他の物と共有しているシートで、関係ない絵の見た目を変えないため)
+    /// </summary>
+    public static string PadSheets(IEnumerable<Texture2D> textures, bool dry_run = false, ICollection<Sprite> used_sprites = null) {
         var factory = new SpriteDataProviderFactories();
         factory.Init();
         var log = new System.Text.StringBuilder();
@@ -58,17 +77,35 @@ public static class SpriteOutlinePadding {
             provider.InitSpriteEditorDataProvider();
             var rects = provider.GetSpriteRects();
 
+            // 当たり判定や輪郭の形を保存しているシートは、枠を動かすと形がずれるため処理しない
+            var physics = provider.GetDataProvider<ISpritePhysicsOutlineDataProvider>();
+            var outlines = provider.GetDataProvider<ISpriteOutlineDataProvider>();
+            if (rects.Any(r => (physics?.GetOutlines(r.spriteID)?.Count ?? 0) > 0 || (outlines?.GetOutlines(r.spriteID)?.Count ?? 0) > 0)) {
+                log.AppendLine($"{path}: 当たり判定・輪郭の形が保存されているため、処理しなかった");
+                Object.DestroyImmediate(image);
+                continue;
+            }
+
             // 枠は元画像のピクセルで扱う。取り込み時に縮小されるシートは、その分だけ余白を大きく取る
             float scale = Mathf.Max(1f, Mathf.Max(image.width, image.height) / (float)importer.maxTextureSize);
             int pad = Mathf.CeilToInt(PADDING * scale);
 
-            var expanded = rects.Select(r => _ExpandRect(r, rects, image.width, image.height, pad)).ToArray();
-            bool needs_repack = rects.Select((r, i) => _ContentMargin(image, r.rect, expanded[i], pad)).Any(m => m < pad);
-            if (needs_repack) {
-                var size = _Repack(path, importer, image, rects, pad, scale);
+            var used_names = used_sprites == null ? null : new HashSet<string>(used_sprites.Where(s => s.texture == texture).Select(s => s.name));
+            bool IsUsed(SpriteRect r) => used_names == null || used_names.Contains(r.name);
+            var expanded = rects.Select(r => IsUsed(r) ? _ExpandRect(r, rects, image.width, image.height, pad) : r.rect).ToArray();
+            bool needs_repack = rects.Select((r, i) => IsUsed(r) ? _ContentMargin(image, r.rect, expanded[i], pad) : pad).Any(m => m < pad);
+            if (dry_run) {
+                log.AppendLine($"{path}: {(needs_repack ? "並べ直す" : "枠を広げる")} (コマ{rects.Length})");
+                Object.DestroyImmediate(image);
+                continue;
+            }
+            var size = needs_repack ? _Repack(path, importer, image, rects, pad, scale) : Vector2Int.zero;
+            if (size != Vector2Int.zero) {
                 log.AppendLine($"{texture.name}: 余白を付けて並べ直した ({image.width}x{image.height} → {size.x}x{size.y})");
             } else {
-                for (int i = 0; i < rects.Length; i++) _SetRectKeepPivot(rects[i], expanded[i]);
+                // 並べ直すと画像が元より大きくなるシート(他と共有する大きなシートなど)は、枠を広げるだけにする
+                if (needs_repack) log.AppendLine($"{texture.name}: 並べ直すと画像が大きくなるため、枠を広げるだけにした(線が欠けるコマがあり得る)");
+                for (int i = 0; i < rects.Length; i++) if (IsUsed(rects[i])) _SetRectKeepPivot(rects[i], expanded[i]);
                 log.AppendLine($"{texture.name}: 枠を広げた");
             }
             Object.DestroyImmediate(image);
@@ -127,30 +164,54 @@ public static class SpriteOutlinePadding {
         sprite.rect = rect;
     }
 
-    // 各コマの周りにpadの余白を付け、元の並び順(上の段から左→右)で詰め直した画像に作り直す。作り直した画像の大きさを返す
+    // 各コマの周りにpadの余白を付け、元の並び順(上の段から左→右)で詰め直した画像に作り直す。作り直した画像の大きさを返す。
+    // 縦横の長い方が元の画像より大きくなる場合は、作り直さずにVector2Int.zeroを返す
     private static Vector2Int _Repack(string path, TextureImporter importer, Texture2D image, SpriteRect[] rects, int pad, float scale) {
         var order = rects.OrderByDescending(r => r.rect.yMax).ThenBy(r => r.rect.xMin).ToList();
-        int width = image.width;
-        // 段ごとに並べる位置を決める(テクスチャ上はyが上向きなので、上の段から下へ置いた後で反転する)
-        var placed = new Dictionary<SpriteRect, Vector2Int>();
-        int x = 0, y = 0, row_height = 0;
         // 枠が小数の位置にある場合も、ピクセル単位で丸ごと写す
         RectInt PixelRect(Rect r) {
             int x_min = Mathf.FloorToInt(r.xMin), y_min = Mathf.FloorToInt(r.yMin);
             return new RectInt(x_min, y_min, Mathf.CeilToInt(r.xMax) - x_min, Mathf.CeilToInt(r.yMax) - y_min);
         }
-        foreach (var sprite in order) {
-            var src = PixelRect(sprite.rect);
-            int w = src.width + pad * 2, h = src.height + pad * 2;
-            if (x + w > width && x > 0) { x = 0; y += row_height; row_height = 0; }
-            width = Mathf.Max(width, w);
-            placed[sprite] = new Vector2Int(x, y);
-            x += w; row_height = Mathf.Max(row_height, h);
+        // 段ごとに並べる位置を決める(テクスチャ上はyが上向きなので、上の段から下へ置いた後で反転する)
+        Dictionary<SpriteRect, Vector2Int> Layout(int max_width, out int used_width, out int used_height) {
+            var result = new Dictionary<SpriteRect, Vector2Int>();
+            int x = 0, y = 0, row_height = 0;
+            used_width = 0;
+            foreach (var sprite in order) {
+                var src = PixelRect(sprite.rect);
+                int w = src.width + pad * 2, h = src.height + pad * 2;
+                if (x + w > max_width && x > 0) { x = 0; y += row_height; row_height = 0; }
+                result[sprite] = new Vector2Int(x, y);
+                x += w; row_height = Mathf.Max(row_height, h);
+                used_width = Mathf.Max(used_width, x);
+            }
+            used_height = y + row_height;
+            return result;
         }
-        int height = y + row_height;
-        // 取り込み時に縮小された後も4の倍数になるようにする(4の倍数でないと圧縮されない)
-        int align = Mathf.CeilToInt(4 * scale);
-        width = (width + align - 1) / align * align; height = (height + align - 1) / align * align;
+        // 元の幅から始めて幅を広げていき、縦横の長い方が最も短くなる並べ方を選ぶ(画像の大きさの上限を超えないように)
+        int cell_width = order.Max(s => PixelRect(s.rect).width + pad * 2);
+        var placed = Layout(image.width, out int width, out int height);
+        for (int max_width = image.width + cell_width; max_width <= image.width + cell_width * order.Count; max_width += cell_width) {
+            var candidate = Layout(max_width, out int w, out int h);
+            if (Mathf.Max(w, h) < Mathf.Max(width, height)) { placed = candidate; width = w; height = h; }
+        }
+        width = Mathf.Max(width, image.width);
+        int original_max = Mathf.Max(image.width, image.height);
+        if (Mathf.Max(width, height) > original_max + Mathf.CeilToInt(4 * scale)) return Vector2Int.zero;
+        // 取り込み時に縮小された後も4の倍数になるようにする(4の倍数でないと圧縮されない)。
+        // 縮小されるシートは、長い方を元の画像の長さに揃えて縮小率を保ち、短い方は縮小後に4の倍数になる長さまで伸ばす
+        if (scale > 1f) {
+            int long_side = Mathf.Max(original_max, Mathf.Max(width, height));
+            float shrink = importer.maxTextureSize / (float)long_side;
+            int Fit(int length) {
+                while (Mathf.RoundToInt(length * shrink) % 4 != 0) length++;
+                return length;
+            }
+            if (width >= height) { width = long_side; height = Fit(height); } else { height = long_side; width = Fit(width); }
+        } else {
+            width = (width + 3) / 4 * 4; height = (height + 3) / 4 * 4;
+        }
 
         var packed = new Texture2D(width, height, TextureFormat.RGBA32, false);
         packed.SetPixels32(new Color32[width * height]);

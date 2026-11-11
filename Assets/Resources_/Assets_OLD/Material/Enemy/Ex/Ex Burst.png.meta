@@ -39,7 +39,7 @@ TextureImporter:
       213: -8760284909237870986
     second: Ex Burst_5
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -56,11 +56,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -80,7 +81,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -99,9 +100,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -111,9 +113,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -123,9 +126,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -135,6 +139,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -144,13 +162,14 @@ TextureImporter:
       name: Ex Burst_0
       rect:
         serializedVersion: 2
-        x: 12
-        y: 8
-        width: 419
-        height: 1077
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 3
+        width: 463
+        height: 1121
+      alignment: 9
+      pivot: {x: 0.5, y: 0.019625334}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -165,13 +184,14 @@ TextureImporter:
       name: Ex Burst_1
       rect:
         serializedVersion: 2
-        x: 628
-        y: 8
-        width: 412
-        height: 1054
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 463
+        y: 26
+        width: 456
+        height: 1098
+      alignment: 9
+      pivot: {x: 0.5, y: 0.02003643}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -186,13 +206,14 @@ TextureImporter:
       name: Ex Burst_2
       rect:
         serializedVersion: 2
-        x: 1245
-        y: 8
-        width: 539
-        height: 958
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 919
+        y: 122
+        width: 583
+        height: 1002
+      alignment: 9
+      pivot: {x: 0.5, y: 0.021956088}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -207,13 +228,14 @@ TextureImporter:
       name: Ex Burst_3
       rect:
         serializedVersion: 2
-        x: 1862
-        y: 7
-        width: 609
-        height: 910
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1502
+        y: 170
+        width: 653
+        height: 954
+      alignment: 9
+      pivot: {x: 0.5, y: 0.023060797}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -228,13 +250,14 @@ TextureImporter:
       name: Ex Burst_4
       rect:
         serializedVersion: 2
-        x: 2478
-        y: 6
-        width: 599
-        height: 909
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2155
+        y: 171
+        width: 643
+        height: 953
+      alignment: 9
+      pivot: {x: 0.5, y: 0.023084994}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -249,13 +272,14 @@ TextureImporter:
       name: Ex Burst_5
       rect:
         serializedVersion: 2
-        x: 3097
-        y: 7
-        width: 515
-        height: 904
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2798
+        y: 176
+        width: 559
+        height: 948
+      alignment: 9
+      pivot: {x: 0.5, y: 0.023206752}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -267,6 +291,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -276,6 +301,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex Burst_0: 4621424007364472297
       Ex Burst_1: 8675653331761930097
@@ -283,9 +310,8 @@ TextureImporter:
       Ex Burst_3: -1517928319520825191
       Ex Burst_4: -1279599413833940248
       Ex Burst_5: 6463089938969494159
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -87,7 +87,7 @@ TextureImporter:
       213: -7621992859842217034
     second: Sainome Stand_27
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -104,11 +104,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -128,7 +129,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 40
@@ -147,9 +148,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -159,9 +161,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -171,9 +174,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -183,6 +187,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -193,12 +211,13 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1376
-        width: 256
-        height: 235
-      alignment: 0
+        y: 1701
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -213,13 +232,14 @@ TextureImporter:
       name: Sainome Stand_1
       rect:
         serializedVersion: 2
-        x: 256
-        y: 1376
-        width: 256
-        height: 235
-      alignment: 0
+        x: 304
+        y: 1701
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -234,13 +254,14 @@ TextureImporter:
       name: Sainome Stand_2
       rect:
         serializedVersion: 2
-        x: 512
-        y: 1376
-        width: 256
-        height: 235
-      alignment: 0
+        x: 608
+        y: 1701
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -255,13 +276,14 @@ TextureImporter:
       name: Sainome Stand_3
       rect:
         serializedVersion: 2
-        x: 768
-        y: 1376
-        width: 256
-        height: 235
-      alignment: 0
+        x: 0
+        y: 1418
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -276,13 +298,14 @@ TextureImporter:
       name: Sainome Stand_4
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1141
-        width: 256
-        height: 235
-      alignment: 0
+        x: 304
+        y: 1418
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -297,13 +320,14 @@ TextureImporter:
       name: Sainome Stand_5
       rect:
         serializedVersion: 2
-        x: 256
-        y: 1141
-        width: 256
-        height: 235
-      alignment: 0
+        x: 608
+        y: 1418
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -318,13 +342,14 @@ TextureImporter:
       name: Sainome Stand_6
       rect:
         serializedVersion: 2
-        x: 512
-        y: 1141
-        width: 256
-        height: 235
-      alignment: 0
+        x: 0
+        y: 1135
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -339,13 +364,14 @@ TextureImporter:
       name: Sainome Stand_7
       rect:
         serializedVersion: 2
-        x: 768
-        y: 1141
-        width: 256
-        height: 235
-      alignment: 0
+        x: 304
+        y: 1135
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -360,13 +386,14 @@ TextureImporter:
       name: Sainome Stand_8
       rect:
         serializedVersion: 2
-        x: 0
-        y: 906
-        width: 256
-        height: 235
-      alignment: 0
+        x: 608
+        y: 1135
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -381,13 +408,14 @@ TextureImporter:
       name: Sainome Stand_9
       rect:
         serializedVersion: 2
-        x: 256
-        y: 906
-        width: 256
-        height: 235
-      alignment: 0
+        x: 0
+        y: 852
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -402,13 +430,14 @@ TextureImporter:
       name: Sainome Stand_10
       rect:
         serializedVersion: 2
-        x: 512
-        y: 906
-        width: 256
-        height: 235
-      alignment: 0
+        x: 304
+        y: 852
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -423,13 +452,14 @@ TextureImporter:
       name: Sainome Stand_11
       rect:
         serializedVersion: 2
-        x: 768
-        y: 906
-        width: 256
-        height: 235
-      alignment: 0
+        x: 608
+        y: 852
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -445,12 +475,13 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 671
-        width: 256
-        height: 235
-      alignment: 0
+        y: 569
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -465,13 +496,14 @@ TextureImporter:
       name: Sainome Stand_13
       rect:
         serializedVersion: 2
-        x: 256
-        y: 671
-        width: 256
-        height: 235
-      alignment: 0
+        x: 304
+        y: 569
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -486,13 +518,14 @@ TextureImporter:
       name: Sainome Stand_14
       rect:
         serializedVersion: 2
-        x: 512
-        y: 671
-        width: 256
-        height: 235
-      alignment: 0
+        x: 608
+        y: 569
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -507,13 +540,14 @@ TextureImporter:
       name: Sainome Stand_15
       rect:
         serializedVersion: 2
-        x: 768
-        y: 671
-        width: 256
-        height: 235
-      alignment: 0
+        x: 0
+        y: 286
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -528,13 +562,14 @@ TextureImporter:
       name: Sainome Stand_16
       rect:
         serializedVersion: 2
-        x: 0
-        y: 436
-        width: 256
-        height: 235
-      alignment: 0
+        x: 304
+        y: 286
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -549,13 +584,14 @@ TextureImporter:
       name: Sainome Stand_17
       rect:
         serializedVersion: 2
-        x: 256
-        y: 436
-        width: 256
-        height: 235
-      alignment: 0
+        x: 608
+        y: 286
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -570,13 +606,14 @@ TextureImporter:
       name: Sainome Stand_18
       rect:
         serializedVersion: 2
-        x: 512
-        y: 436
-        width: 256
-        height: 235
-      alignment: 0
+        x: 0
+        y: 3
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -591,13 +628,14 @@ TextureImporter:
       name: Sainome Stand_19
       rect:
         serializedVersion: 2
-        x: 768
-        y: 436
-        width: 256
-        height: 235
-      alignment: 0
+        x: 304
+        y: 3
+        width: 304
+        height: 283
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -609,6 +647,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 9659009ba01570046b80cf098829b9dd
@@ -618,6 +657,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Sainome Stand_0: -697968708675682547
       Sainome Stand_1: 4958174731201565713
@@ -639,9 +680,8 @@ TextureImporter:
       Sainome Stand_7: 1304148347177797833
       Sainome Stand_8: -5086714327359551295
       Sainome Stand_9: 4382862734918810143
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

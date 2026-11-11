@@ -48,7 +48,7 @@ TextureImporter:
       213: 7653168101221303116
     second: Ex Dash_End_14
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -65,11 +65,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -89,7 +90,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -108,9 +109,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -120,9 +122,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -132,9 +135,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -144,6 +148,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -153,13 +171,14 @@ TextureImporter:
       name: Ex Dash_End_0
       rect:
         serializedVersion: 2
-        x: 42
-        y: 16
-        width: 820
-        height: 711
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 11024
+        y: 225
+        width: 976
+        height: 867
+      alignment: 9
+      pivot: {x: 0.5, y: 0.089965396}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -174,13 +193,14 @@ TextureImporter:
       name: Ex Dash_End_1
       rect:
         serializedVersion: 2
-        x: 895
-        y: 68
-        width: 827
-        height: 705
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 10041
+        y: 231
+        width: 983
+        height: 861
+      alignment: 9
+      pivot: {x: 0.5, y: 0.09059233}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -195,13 +215,14 @@ TextureImporter:
       name: Ex Dash_End_2
       rect:
         serializedVersion: 2
-        x: 1780
-        y: 55
-        width: 813
-        height: 731
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 9072
+        y: 205
+        width: 969
+        height: 887
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08793686}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -216,13 +237,14 @@ TextureImporter:
       name: Ex Dash_End_3
       rect:
         serializedVersion: 2
-        x: 2671
-        y: 49
-        width: 788
-        height: 756
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 8128
+        y: 180
+        width: 944
+        height: 912
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08552632}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -237,13 +259,14 @@ TextureImporter:
       name: Ex Dash_End_4
       rect:
         serializedVersion: 2
-        x: 3569
-        y: 42
-        width: 756
-        height: 777
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 7216
+        y: 159
+        width: 912
+        height: 933
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08360129}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -258,13 +281,14 @@ TextureImporter:
       name: Ex Dash_End_5
       rect:
         serializedVersion: 2
-        x: 4462
-        y: 36
-        width: 729
-        height: 796
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6331
+        y: 140
+        width: 885
+        height: 952
+      alignment: 9
+      pivot: {x: 0.5, y: 0.081932776}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -279,13 +303,14 @@ TextureImporter:
       name: Ex Dash_End_6
       rect:
         serializedVersion: 2
-        x: 5365
-        y: 29
-        width: 691
-        height: 816
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5484
+        y: 120
+        width: 847
+        height: 972
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08024691}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -300,13 +325,14 @@ TextureImporter:
       name: Ex Dash_End_7
       rect:
         serializedVersion: 2
-        x: 6269
-        y: 23
-        width: 657
-        height: 835
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4671
+        y: 101
+        width: 813
+        height: 991
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07870837}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -321,13 +347,14 @@ TextureImporter:
       name: Ex Dash_End_8
       rect:
         serializedVersion: 2
-        x: 7174
-        y: 17
-        width: 619
-        height: 853
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3896
+        y: 83
+        width: 775
+        height: 1009
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07730426}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -342,13 +369,14 @@ TextureImporter:
       name: Ex Dash_End_9
       rect:
         serializedVersion: 2
-        x: 8078
-        y: 16
-        width: 575
-        height: 867
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3165
+        y: 69
+        width: 731
+        height: 1023
+      alignment: 9
+      pivot: {x: 0.5, y: 0.076246336}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -363,13 +391,14 @@ TextureImporter:
       name: Ex Dash_End_10
       rect:
         serializedVersion: 2
-        x: 8983
-        y: 16
-        width: 536
-        height: 880
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2473
+        y: 56
+        width: 692
+        height: 1036
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07528958}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -384,13 +413,14 @@ TextureImporter:
       name: Ex Dash_End_11
       rect:
         serializedVersion: 2
-        x: 9878
-        y: 11
-        width: 506
-        height: 892
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1811
+        y: 44
+        width: 662
+        height: 1048
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07442748}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -405,13 +435,14 @@ TextureImporter:
       name: Ex Dash_End_12
       rect:
         serializedVersion: 2
-        x: 10772
-        y: 11
-        width: 472
-        height: 898
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1183
+        y: 38
+        width: 628
+        height: 1054
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07400379}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -426,13 +457,14 @@ TextureImporter:
       name: Ex Dash_End_13
       rect:
         serializedVersion: 2
-        x: 11663
-        y: 0
-        width: 446
-        height: 919
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 17
+        width: 602
+        height: 1075
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07255814}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -447,13 +479,14 @@ TextureImporter:
       name: Ex Dash_End_14
       rect:
         serializedVersion: 2
-        x: 12543
-        y: 0
-        width: 425
-        height: 919
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 602
+        y: 17
+        width: 581
+        height: 1075
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07255814}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -465,6 +498,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -474,6 +508,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex Dash_End_0: -5417269520959960877
       Ex Dash_End_1: 5926660762392279464
@@ -490,9 +526,8 @@ TextureImporter:
       Ex Dash_End_7: 4564963820827119054
       Ex Dash_End_8: -6390420187826414216
       Ex Dash_End_9: -1000077470910428677
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

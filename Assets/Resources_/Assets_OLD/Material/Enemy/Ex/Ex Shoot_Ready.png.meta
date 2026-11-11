@@ -63,7 +63,7 @@ TextureImporter:
       213: -4063395066432619330
     second: Ex Shoot_Ready_19
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -80,11 +80,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -104,7 +105,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -123,9 +124,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -135,9 +137,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -147,9 +150,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -159,6 +163,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -168,13 +186,14 @@ TextureImporter:
       name: Ex Shoot_Ready_0
       rect:
         serializedVersion: 2
-        x: 58
-        y: 0
-        width: 394
-        height: 899
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 987
+        width: 526
+        height: 1031
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06401552}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -189,13 +208,14 @@ TextureImporter:
       name: Ex Shoot_Ready_1
       rect:
         serializedVersion: 2
-        x: 616
-        y: 0
-        width: 422
-        height: 899
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 526
+        y: 987
+        width: 554
+        height: 1031
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06401552}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -210,13 +230,14 @@ TextureImporter:
       name: Ex Shoot_Ready_2
       rect:
         serializedVersion: 2
-        x: 1175
-        y: 0
-        width: 449
-        height: 899
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1080
+        y: 987
+        width: 581
+        height: 1031
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06401552}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -231,13 +252,14 @@ TextureImporter:
       name: Ex Shoot_Ready_3
       rect:
         serializedVersion: 2
-        x: 1734
-        y: 8
-        width: 477
-        height: 888
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1661
+        y: 998
+        width: 609
+        height: 1020
+      alignment: 9
+      pivot: {x: 0.5, y: 0.064705886}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -252,13 +274,14 @@ TextureImporter:
       name: Ex Shoot_Ready_4
       rect:
         serializedVersion: 2
-        x: 2287
-        y: 19
-        width: 510
-        height: 872
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2270
+        y: 1014
+        width: 642
+        height: 1004
+      alignment: 9
+      pivot: {x: 0.5, y: 0.065737054}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -273,13 +296,14 @@ TextureImporter:
       name: Ex Shoot_Ready_5
       rect:
         serializedVersion: 2
-        x: 2846
-        y: 19
-        width: 510
-        height: 872
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2912
+        y: 1014
+        width: 642
+        height: 1004
+      alignment: 9
+      pivot: {x: 0.5, y: 0.065737054}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -294,13 +318,14 @@ TextureImporter:
       name: Ex Shoot_Ready_6
       rect:
         serializedVersion: 2
-        x: 3405
-        y: 19
-        width: 515
-        height: 872
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3554
+        y: 1014
+        width: 647
+        height: 1004
+      alignment: 9
+      pivot: {x: 0.5, y: 0.065737054}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -315,13 +340,14 @@ TextureImporter:
       name: Ex Shoot_Ready_7
       rect:
         serializedVersion: 2
-        x: 3964
-        y: 19
-        width: 515
-        height: 872
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4201
+        y: 1014
+        width: 647
+        height: 1004
+      alignment: 9
+      pivot: {x: 0.5, y: 0.065737054}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -336,13 +362,14 @@ TextureImporter:
       name: Ex Shoot_Ready_8
       rect:
         serializedVersion: 2
-        x: 4523
-        y: 19
-        width: 514
-        height: 866
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4848
+        y: 1020
+        width: 646
+        height: 998
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06613226}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -357,13 +384,14 @@ TextureImporter:
       name: Ex Shoot_Ready_9
       rect:
         serializedVersion: 2
-        x: 5081
-        y: 19
-        width: 521
-        height: 866
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5494
+        y: 1020
+        width: 653
+        height: 998
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06613226}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -378,13 +406,14 @@ TextureImporter:
       name: Ex Shoot_Ready_10
       rect:
         serializedVersion: 2
-        x: 5640
-        y: 19
-        width: 526
-        height: 866
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6147
+        y: 1020
+        width: 658
+        height: 998
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06613226}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -399,13 +428,14 @@ TextureImporter:
       name: Ex Shoot_Ready_11
       rect:
         serializedVersion: 2
-        x: 6199
-        y: 19
-        width: 526
-        height: 866
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6805
+        y: 1020
+        width: 658
+        height: 998
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06613226}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -420,13 +450,14 @@ TextureImporter:
       name: Ex Shoot_Ready_12
       rect:
         serializedVersion: 2
-        x: 6758
-        y: 19
-        width: 526
-        height: 861
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 7463
+        y: 1025
+        width: 658
+        height: 993
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06646526}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -441,13 +472,14 @@ TextureImporter:
       name: Ex Shoot_Ready_13
       rect:
         serializedVersion: 2
-        x: 7312
-        y: 19
-        width: 536
-        height: 861
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 8121
+        y: 1025
+        width: 668
+        height: 993
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06646526}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -462,13 +494,14 @@ TextureImporter:
       name: Ex Shoot_Ready_14
       rect:
         serializedVersion: 2
-        x: 7875
-        y: 19
-        width: 532
-        height: 861
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 8789
+        y: 1025
+        width: 664
+        height: 993
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06646526}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -483,13 +516,14 @@ TextureImporter:
       name: Ex Shoot_Ready_15
       rect:
         serializedVersion: 2
-        x: 8429
-        y: 19
-        width: 542
-        height: 859
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 9453
+        y: 1027
+        width: 674
+        height: 991
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06659939}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -504,13 +538,14 @@ TextureImporter:
       name: Ex Shoot_Ready_16
       rect:
         serializedVersion: 2
-        x: 8993
-        y: 19
-        width: 537
-        height: 855
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 10127
+        y: 1031
+        width: 669
+        height: 987
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0668693}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -525,13 +560,14 @@ TextureImporter:
       name: Ex Shoot_Ready_17
       rect:
         serializedVersion: 2
-        x: 9546
-        y: 19
-        width: 548
-        height: 855
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 0
+        width: 680
+        height: 987
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0668693}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -546,13 +582,14 @@ TextureImporter:
       name: Ex Shoot_Ready_18
       rect:
         serializedVersion: 2
-        x: 10105
-        y: 19
-        width: 552
-        height: 850
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 680
+        y: 5
+        width: 684
+        height: 982
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06720977}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -567,13 +604,14 @@ TextureImporter:
       name: Ex Shoot_Ready_19
       rect:
         serializedVersion: 2
-        x: 10664
-        y: 19
-        width: 553
-        height: 850
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1364
+        y: 5
+        width: 685
+        height: 982
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06720977}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -585,6 +623,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -594,6 +633,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex Shoot_Ready_0: -6596160095229785730
       Ex Shoot_Ready_1: -6477864600381614850
@@ -615,9 +656,8 @@ TextureImporter:
       Ex Shoot_Ready_7: 4770081222999778069
       Ex Shoot_Ready_8: -1089751232314529652
       Ex Shoot_Ready_9: -7865467116651203525
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

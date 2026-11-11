@@ -48,7 +48,7 @@ TextureImporter:
       213: -4998758922400206388
     second: Ex Land_14
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -65,11 +65,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -89,7 +90,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -108,9 +109,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -120,9 +122,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -132,9 +135,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -144,6 +148,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -153,13 +171,14 @@ TextureImporter:
       name: Ex Land_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 77
-        width: 621
-        height: 622
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 18
+        width: 741
+        height: 742
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08086254}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -174,13 +193,14 @@ TextureImporter:
       name: Ex Land_1
       rect:
         serializedVersion: 2
-        x: 695
-        y: 77
-        width: 627
-        height: 627
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 9139
+        y: 1073
+        width: 747
+        height: 747
+      alignment: 9
+      pivot: {x: 0.5, y: 0.08032128}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -195,13 +215,14 @@ TextureImporter:
       name: Ex Land_2
       rect:
         serializedVersion: 2
-        x: 1377
-        y: 77
-        width: 638
-        height: 631
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 8381
+        y: 1069
+        width: 758
+        height: 751
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07989348}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -216,13 +237,14 @@ TextureImporter:
       name: Ex Land_3
       rect:
         serializedVersion: 2
-        x: 2060
-        y: 67
-        width: 637
-        height: 662
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 7624
+        y: 1038
+        width: 757
+        height: 782
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07672634}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -237,13 +259,14 @@ TextureImporter:
       name: Ex Land_4
       rect:
         serializedVersion: 2
-        x: 2742
-        y: 57
-        width: 637
-        height: 696
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6867
+        y: 1004
+        width: 757
+        height: 816
+      alignment: 9
+      pivot: {x: 0.5, y: 0.073529415}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -258,13 +281,14 @@ TextureImporter:
       name: Ex Land_5
       rect:
         serializedVersion: 2
-        x: 3424
-        y: 52
-        width: 637
-        height: 721
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6110
+        y: 979
+        width: 757
+        height: 841
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07134364}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -279,13 +303,14 @@ TextureImporter:
       name: Ex Land_6
       rect:
         serializedVersion: 2
-        x: 4097
-        y: 42
-        width: 637
-        height: 751
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5353
+        y: 949
+        width: 757
+        height: 871
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06888634}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -300,13 +325,14 @@ TextureImporter:
       name: Ex Land_7
       rect:
         serializedVersion: 2
-        x: 4774
-        y: 32
-        width: 627
-        height: 785
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4606
+        y: 915
+        width: 747
+        height: 905
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06629834}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -321,13 +347,14 @@ TextureImporter:
       name: Ex Land_8
       rect:
         serializedVersion: 2
-        x: 5454
-        y: 23
-        width: 615
-        height: 815
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3871
+        y: 885
+        width: 735
+        height: 935
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06417112}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -342,13 +369,14 @@ TextureImporter:
       name: Ex Land_9
       rect:
         serializedVersion: 2
-        x: 6134
-        y: 17
-        width: 597
-        height: 840
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3154
+        y: 860
+        width: 717
+        height: 960
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0625}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -363,13 +391,14 @@ TextureImporter:
       name: Ex Land_10
       rect:
         serializedVersion: 2
-        x: 6816
-        y: 13
-        width: 577
-        height: 860
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2457
+        y: 840
+        width: 697
+        height: 980
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06122449}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -384,13 +413,14 @@ TextureImporter:
       name: Ex Land_11
       rect:
         serializedVersion: 2
-        x: 7503
-        y: 13
-        width: 548
-        height: 880
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1789
+        y: 820
+        width: 668
+        height: 1000
+      alignment: 9
+      pivot: {x: 0.5, y: 0.06}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -405,13 +435,14 @@ TextureImporter:
       name: Ex Land_12
       rect:
         serializedVersion: 2
-        x: 8190
-        y: 17
-        width: 513
-        height: 896
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1156
+        y: 804
+        width: 633
+        height: 1016
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05905512}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -426,13 +457,14 @@ TextureImporter:
       name: Ex Land_13
       rect:
         serializedVersion: 2
-        x: 8878
-        y: 27
-        width: 478
-        height: 901
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 558
+        y: 799
+        width: 598
+        height: 1021
+      alignment: 9
+      pivot: {x: 0.5, y: 0.058765914}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -447,13 +479,14 @@ TextureImporter:
       name: Ex Land_14
       rect:
         serializedVersion: 2
-        x: 9565
-        y: 0
-        width: 438
-        height: 940
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 760
+        width: 558
+        height: 1060
+      alignment: 9
+      pivot: {x: 0.5, y: 0.056603774}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -465,6 +498,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -474,6 +508,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex Land_0: -5920390491432536139
       Ex Land_1: 7718585752289682556
@@ -490,9 +526,8 @@ TextureImporter:
       Ex Land_7: 1562943574067029345
       Ex Land_8: 3335760025823686097
       Ex Land_9: 2567168966300373299
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

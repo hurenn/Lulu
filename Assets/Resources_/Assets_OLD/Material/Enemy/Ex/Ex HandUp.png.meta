@@ -15,7 +15,7 @@ TextureImporter:
       213: 1903064537495972875
     second: Ex HandUp_3
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -32,11 +32,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -56,7 +57,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -75,9 +76,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -87,9 +89,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -99,9 +102,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -111,6 +115,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -120,13 +138,14 @@ TextureImporter:
       name: Ex HandUp_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 11
-        width: 416
-        height: 1075
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1308
+        y: 5
+        width: 440
+        height: 1099
+      alignment: 9
+      pivot: {x: 0.5, y: 0.010919018}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -141,13 +160,14 @@ TextureImporter:
       name: Ex HandUp_1
       rect:
         serializedVersion: 2
-        x: 459
-        y: 10
-        width: 412
-        height: 1077
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 3
+        width: 436
+        height: 1101
+      alignment: 9
+      pivot: {x: 0.5, y: 0.010899182}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -162,13 +182,14 @@ TextureImporter:
       name: Ex HandUp_2
       rect:
         serializedVersion: 2
-        x: 907
-        y: 10
-        width: 412
-        height: 1077
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 436
+        y: 3
+        width: 436
+        height: 1101
+      alignment: 9
+      pivot: {x: 0.5, y: 0.010899182}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -183,13 +204,14 @@ TextureImporter:
       name: Ex HandUp_3
       rect:
         serializedVersion: 2
-        x: 1353
-        y: 10
-        width: 412
-        height: 1077
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 872
+        y: 3
+        width: 436
+        height: 1101
+      alignment: 9
+      pivot: {x: 0.5, y: 0.010899182}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -201,6 +223,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -210,14 +233,15 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex HandUp_0: 5135306190235327274
       Ex HandUp_1: -6011379061551292039
       Ex HandUp_2: -1420595951330836555
       Ex HandUp_3: 1903064537495972875
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

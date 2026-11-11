@@ -75,7 +75,7 @@ TextureImporter:
       213: -4532080467902926373
     second: Ex Stand_23
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -92,11 +92,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -116,7 +117,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -135,9 +136,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -147,9 +149,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -159,9 +162,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -171,6 +175,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -181,12 +199,13 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 396
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        y: 1022
+        width: 510
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -201,13 +220,14 @@ TextureImporter:
       name: Ex Stand_1
       rect:
         serializedVersion: 2
-        x: 401
-        y: 0
-        width: 399
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 510
+        y: 1022
+        width: 513
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -222,13 +242,14 @@ TextureImporter:
       name: Ex Stand_2
       rect:
         serializedVersion: 2
-        x: 805
-        y: 0
-        width: 402
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1023
+        y: 1022
+        width: 516
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -243,13 +264,14 @@ TextureImporter:
       name: Ex Stand_3
       rect:
         serializedVersion: 2
-        x: 1209
-        y: 0
-        width: 402
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1539
+        y: 1022
+        width: 516
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -264,13 +286,14 @@ TextureImporter:
       name: Ex Stand_4
       rect:
         serializedVersion: 2
-        x: 1616
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2055
+        y: 1022
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -285,13 +308,14 @@ TextureImporter:
       name: Ex Stand_5
       rect:
         serializedVersion: 2
-        x: 2020
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2572
+        y: 1022
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -306,13 +330,14 @@ TextureImporter:
       name: Ex Stand_6
       rect:
         serializedVersion: 2
-        x: 2428
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3089
+        y: 1022
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -327,13 +352,14 @@ TextureImporter:
       name: Ex Stand_7
       rect:
         serializedVersion: 2
-        x: 2831
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3606
+        y: 1022
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -348,13 +374,14 @@ TextureImporter:
       name: Ex Stand_8
       rect:
         serializedVersion: 2
-        x: 3235
-        y: 0
-        width: 407
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4123
+        y: 1022
+        width: 521
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -369,13 +396,14 @@ TextureImporter:
       name: Ex Stand_9
       rect:
         serializedVersion: 2
-        x: 3643
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4644
+        y: 1022
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -390,13 +418,14 @@ TextureImporter:
       name: Ex Stand_10
       rect:
         serializedVersion: 2
-        x: 4046
-        y: 0
-        width: 408
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5161
+        y: 1022
+        width: 522
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -411,13 +440,14 @@ TextureImporter:
       name: Ex Stand_11
       rect:
         serializedVersion: 2
-        x: 4450
-        y: 0
-        width: 408
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5683
+        y: 1022
+        width: 522
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -432,13 +462,14 @@ TextureImporter:
       name: Ex Stand_12
       rect:
         serializedVersion: 2
-        x: 4858
-        y: 0
-        width: 408
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6205
+        y: 1022
+        width: 522
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -453,13 +484,14 @@ TextureImporter:
       name: Ex Stand_13
       rect:
         serializedVersion: 2
-        x: 5261
-        y: 0
-        width: 408
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6727
+        y: 1022
+        width: 522
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -474,13 +506,14 @@ TextureImporter:
       name: Ex Stand_14
       rect:
         serializedVersion: 2
-        x: 5665
-        y: 0
-        width: 408
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 7249
+        y: 1022
+        width: 522
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -495,13 +528,14 @@ TextureImporter:
       name: Ex Stand_15
       rect:
         serializedVersion: 2
-        x: 6073
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 7771
+        y: 1022
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -516,13 +550,14 @@ TextureImporter:
       name: Ex Stand_16
       rect:
         serializedVersion: 2
-        x: 6476
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 8288
+        y: 1022
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -537,13 +572,14 @@ TextureImporter:
       name: Ex Stand_17
       rect:
         serializedVersion: 2
-        x: 6880
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 8805
+        y: 1022
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -558,13 +594,14 @@ TextureImporter:
       name: Ex Stand_18
       rect:
         serializedVersion: 2
-        x: 7288
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 11
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -579,13 +616,14 @@ TextureImporter:
       name: Ex Stand_19
       rect:
         serializedVersion: 2
-        x: 7691
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 517
+        y: 11
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -600,13 +638,14 @@ TextureImporter:
       name: Ex Stand_20
       rect:
         serializedVersion: 2
-        x: 8095
-        y: 0
-        width: 403
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1034
+        y: 11
+        width: 517
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -621,13 +660,14 @@ TextureImporter:
       name: Ex Stand_21
       rect:
         serializedVersion: 2
-        x: 8499
-        y: 0
-        width: 402
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1551
+        y: 11
+        width: 516
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -642,13 +682,14 @@ TextureImporter:
       name: Ex Stand_22
       rect:
         serializedVersion: 2
-        x: 8906
-        y: 0
-        width: 399
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2067
+        y: 11
+        width: 513
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -663,13 +704,14 @@ TextureImporter:
       name: Ex Stand_23
       rect:
         serializedVersion: 2
-        x: 9310
-        y: 0
-        width: 410
-        height: 897
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2580
+        y: 11
+        width: 524
+        height: 1011
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05637982}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -681,6 +723,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -690,6 +733,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex Stand_0: -7792780358079084222
       Ex Stand_1: 1403906976015359161
@@ -715,9 +760,8 @@ TextureImporter:
       Ex Stand_7: 5132398574396470747
       Ex Stand_8: 438517230182709613
       Ex Stand_9: -2892331839013287561
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -1513,6 +1513,7 @@ GameObject:
   - component: {fileID: 2711839995180839478}
   - component: {fileID: 3524860482673684791}
   - component: {fileID: 5631628750388898226}
+  - component: {fileID: 6771708542678084205}
   m_Layer: 16
   m_Name: Enemy_Zelx
   m_TagString: Enemy
@@ -1558,7 +1559,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 3c265743daabbf047a03ce2390a0673b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1612,6 +1613,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6771708542678084205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8933866633136000787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cbccd5fc730e4c4189486d88d2bb4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _noOutlineSprites: []
 --- !u!1 &9087060482952442002
 GameObject:
   m_ObjectHideFlags: 0

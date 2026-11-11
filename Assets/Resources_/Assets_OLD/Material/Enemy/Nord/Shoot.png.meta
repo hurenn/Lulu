@@ -63,7 +63,7 @@ TextureImporter:
       213: -6116459588050605064
     second: Shoot_9
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -80,11 +80,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -104,7 +105,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 200
@@ -123,9 +124,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -135,9 +137,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -147,9 +150,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -159,6 +163,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -168,13 +186,14 @@ TextureImporter:
       name: Shoot_0
       rect:
         serializedVersion: 2
-        x: 114
-        y: 78
-        width: 636
-        height: 824
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 90
+        y: 54
+        width: 684
+        height: 872
+      alignment: 9
+      pivot: {x: 0.5, y: 0.027522936}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -189,13 +208,14 @@ TextureImporter:
       name: Shoot_1
       rect:
         serializedVersion: 2
-        x: 910
-        y: 79
-        width: 674
-        height: 815
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 886
+        y: 55
+        width: 722
+        height: 863
+      alignment: 9
+      pivot: {x: 0.5, y: 0.027809964}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -210,13 +230,14 @@ TextureImporter:
       name: Shoot_2
       rect:
         serializedVersion: 2
-        x: 1706
-        y: 86
-        width: 708
-        height: 848
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1682
+        y: 62
+        width: 756
+        height: 896
+      alignment: 9
+      pivot: {x: 0.5, y: 0.026785715}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -231,13 +252,14 @@ TextureImporter:
       name: Shoot_3
       rect:
         serializedVersion: 2
-        x: 2506
-        y: 86
-        width: 736
-        height: 808
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2482
+        y: 62
+        width: 784
+        height: 856
+      alignment: 9
+      pivot: {x: 0.5, y: 0.028037382}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -252,13 +274,14 @@ TextureImporter:
       name: Shoot_4
       rect:
         serializedVersion: 2
-        x: 3314
-        y: 94
-        width: 756
-        height: 760
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3290
+        y: 70
+        width: 804
+        height: 808
+      alignment: 9
+      pivot: {x: 0.5, y: 0.02970297}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -273,13 +296,14 @@ TextureImporter:
       name: Shoot_5
       rect:
         serializedVersion: 2
-        x: 4130
-        y: 98
-        width: 752
-        height: 771
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4106
+        y: 74
+        width: 800
+        height: 819
+      alignment: 9
+      pivot: {x: 0.5, y: 0.02930403}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -294,13 +318,14 @@ TextureImporter:
       name: Shoot_6
       rect:
         serializedVersion: 2
-        x: 4950
-        y: 98
-        width: 744
-        height: 783
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4926
+        y: 74
+        width: 792
+        height: 831
+      alignment: 9
+      pivot: {x: 0.5, y: 0.028880866}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -315,13 +340,14 @@ TextureImporter:
       name: Shoot_7
       rect:
         serializedVersion: 2
-        x: 5808
-        y: 74
-        width: 662
-        height: 840
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5784
+        y: 50
+        width: 710
+        height: 888
+      alignment: 9
+      pivot: {x: 0.5, y: 0.027027028}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -336,13 +362,14 @@ TextureImporter:
       name: Shoot_8
       rect:
         serializedVersion: 2
-        x: 6674
-        y: 62
-        width: 564
-        height: 880
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 6650
+        y: 38
+        width: 612
+        height: 928
+      alignment: 9
+      pivot: {x: 0.5, y: 0.02586207}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -357,13 +384,14 @@ TextureImporter:
       name: Shoot_9
       rect:
         serializedVersion: 2
-        x: 7538
-        y: 66
-        width: 480
-        height: 900
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 7514
+        y: 42
+        width: 528
+        height: 948
+      alignment: 9
+      pivot: {x: 0.5, y: 0.025316456}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -375,6 +403,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -384,6 +413,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Shoot_0: -8809470994601461542
       Shoot_1: 6622495038012311501
@@ -395,9 +426,8 @@ TextureImporter:
       Shoot_7: 5600082332713294208
       Shoot_8: -865582698295523540
       Shoot_9: 2051688448441928645
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

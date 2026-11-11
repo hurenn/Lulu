@@ -24,7 +24,7 @@ TextureImporter:
       213: -1868128954091745382
     second: Ex Failed_Start_6
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -41,11 +41,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -65,7 +66,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -84,9 +85,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -96,9 +98,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -108,9 +111,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -120,6 +124,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -129,13 +147,14 @@ TextureImporter:
       name: Ex Failed_Start_0
       rect:
         serializedVersion: 2
-        x: 54
+        x: 0
         y: 0
-        width: 514
-        height: 892
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 572
+        height: 950
+      alignment: 9
+      pivot: {x: 0.5, y: 0.030526316}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -150,13 +169,14 @@ TextureImporter:
       name: Ex Failed_Start_1
       rect:
         serializedVersion: 2
-        x: 751
+        x: 572
         y: 0
-        width: 524
-        height: 892
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 582
+        height: 950
+      alignment: 9
+      pivot: {x: 0.5, y: 0.030526316}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -171,13 +191,14 @@ TextureImporter:
       name: Ex Failed_Start_2
       rect:
         serializedVersion: 2
-        x: 1446
+        x: 1154
         y: 0
-        width: 539
-        height: 892
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 597
+        height: 950
+      alignment: 9
+      pivot: {x: 0.5, y: 0.030526316}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -192,13 +213,14 @@ TextureImporter:
       name: Ex Failed_Start_3
       rect:
         serializedVersion: 2
-        x: 2141
+        x: 1751
         y: 0
-        width: 552
-        height: 892
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 610
+        height: 950
+      alignment: 9
+      pivot: {x: 0.5, y: 0.030526316}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -213,13 +235,14 @@ TextureImporter:
       name: Ex Failed_Start_4
       rect:
         serializedVersion: 2
-        x: 2838
+        x: 2361
         y: 0
-        width: 565
-        height: 892
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 623
+        height: 950
+      alignment: 9
+      pivot: {x: 0.5, y: 0.030526316}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -234,13 +257,14 @@ TextureImporter:
       name: Ex Failed_Start_5
       rect:
         serializedVersion: 2
-        x: 3533
+        x: 2984
         y: 0
-        width: 576
-        height: 892
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 634
+        height: 950
+      alignment: 9
+      pivot: {x: 0.5, y: 0.030526316}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -255,13 +279,14 @@ TextureImporter:
       name: Ex Failed_Start_6
       rect:
         serializedVersion: 2
-        x: 4241
+        x: 3618
         y: 0
-        width: 592
-        height: 892
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 650
+        height: 950
+      alignment: 9
+      pivot: {x: 0.5, y: 0.030526316}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -273,6 +298,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -282,6 +308,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex Failed_Start_0: 6711215716218006021
       Ex Failed_Start_1: -8551620723723161182
@@ -290,9 +318,8 @@ TextureImporter:
       Ex Failed_Start_4: 8974521705528422242
       Ex Failed_Start_5: -5395712915945635007
       Ex Failed_Start_6: -1868128954091745382
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

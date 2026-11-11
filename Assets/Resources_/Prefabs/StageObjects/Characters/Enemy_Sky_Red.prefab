@@ -1085,6 +1085,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2203260860451572179}
   - component: {fileID: 7926900712743554025}
+  - component: {fileID: 532293789578536223}
   m_Layer: 0
   m_Name: "\u30B9\u30C6\u30FC\u30B8\u30AE\u30DF\u30C3\u30AF_13"
   m_TagString: Untagged
@@ -1130,7 +1131,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 3c265743daabbf047a03ce2390a0673b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1162,6 +1163,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &532293789578536223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4809076265638180428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cbccd5fc730e4c4189486d88d2bb4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _noOutlineSprites: []
 --- !u!1 &6286225883914771756
 GameObject:
   m_ObjectHideFlags: 0
@@ -1253,6 +1267,7 @@ GameObject:
   - component: {fileID: 1607945895412373313}
   - component: {fileID: 8305622127809740856}
   - component: {fileID: 3718636363629733264}
+  - component: {fileID: 496166745511454095}
   m_Layer: 6
   m_Name: Enemy_Sky_Red
   m_TagString: Enemy
@@ -1307,7 +1322,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 3c265743daabbf047a03ce2390a0673b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1597,6 +1612,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &496166745511454095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6510928090296014800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cbccd5fc730e4c4189486d88d2bb4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _noOutlineSprites: []
 --- !u!1 &7477941796091935077
 GameObject:
   m_ObjectHideFlags: 0
@@ -2053,6 +2081,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2633974678683151106}
   - component: {fileID: 2033845202252862390}
+  - component: {fileID: 6918696327089656693}
   m_Layer: 0
   m_Name: "\u30B9\u30C6\u30FC\u30B8\u30AE\u30DF\u30C3\u30AF_12"
   m_TagString: Untagged
@@ -2098,7 +2127,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 3c265743daabbf047a03ce2390a0673b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2130,6 +2159,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6918696327089656693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9148370906973105186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cbccd5fc730e4c4189486d88d2bb4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _noOutlineSprites: []
 --- !u!1001 &46034188413587797
 PrefabInstance:
   m_ObjectHideFlags: 0

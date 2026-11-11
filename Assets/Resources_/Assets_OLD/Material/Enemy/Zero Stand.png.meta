@@ -60,7 +60,7 @@ TextureImporter:
       213: 1874251018505951679
     second: Zero Stand_8
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -77,11 +77,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -101,7 +102,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 350
@@ -120,9 +121,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -132,9 +134,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -144,9 +147,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -156,8 +160,22 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -165,13 +183,14 @@ TextureImporter:
       name: Zero Stand_0
       rect:
         serializedVersion: 2
-        x: 58
-        y: 0
-        width: 394
-        height: 1704
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 1836
+        width: 514
+        height: 1824
+      alignment: 9
+      pivot: {x: 0.5, y: 0.032894738}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -186,13 +205,14 @@ TextureImporter:
       name: Zero Stand_1
       rect:
         serializedVersion: 2
-        x: 548
-        y: 3
-        width: 426
-        height: 1701
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 514
+        y: 1839
+        width: 546
+        height: 1821
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03294893}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -207,13 +227,14 @@ TextureImporter:
       name: Zero Stand_2
       rect:
         serializedVersion: 2
-        x: 1041
-        y: 15
-        width: 455
-        height: 1689
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1060
+        y: 1851
+        width: 575
+        height: 1809
+      alignment: 9
+      pivot: {x: 0.5, y: 0.033167496}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -228,13 +249,14 @@ TextureImporter:
       name: Zero Stand_3
       rect:
         serializedVersion: 2
-        x: 1534
-        y: 22
-        width: 482
-        height: 1682
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1635
+        y: 1858
+        width: 602
+        height: 1802
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03329634}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -249,13 +271,14 @@ TextureImporter:
       name: Zero Stand_4
       rect:
         serializedVersion: 2
-        x: 2026
-        y: 29
-        width: 509
-        height: 1675
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2237
+        y: 1865
+        width: 629
+        height: 1795
+      alignment: 9
+      pivot: {x: 0.5, y: 0.033426184}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -270,13 +293,14 @@ TextureImporter:
       name: Zero Stand_5
       rect:
         serializedVersion: 2
-        x: 2538
-        y: 29
-        width: 506
-        height: 1675
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2866
+        y: 1865
+        width: 626
+        height: 1795
+      alignment: 9
+      pivot: {x: 0.5, y: 0.033426184}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -291,13 +315,14 @@ TextureImporter:
       name: Zero Stand_6
       rect:
         serializedVersion: 2
-        x: 3054
-        y: 24
-        width: 487
-        height: 1680
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3492
+        y: 1860
+        width: 607
+        height: 1800
+      alignment: 9
+      pivot: {x: 0.5, y: 0.033333335}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -312,13 +337,14 @@ TextureImporter:
       name: Zero Stand_7
       rect:
         serializedVersion: 2
-        x: 3577
-        y: 17
-        width: 461
-        height: 1687
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4099
+        y: 1853
+        width: 581
+        height: 1807
+      alignment: 9
+      pivot: {x: 0.5, y: 0.033204205}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -333,13 +359,14 @@ TextureImporter:
       name: Zero Stand_8
       rect:
         serializedVersion: 2
-        x: 4093
-        y: 12
-        width: 438
-        height: 1692
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 24
+        width: 558
+        height: 1812
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03311258}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -354,13 +381,14 @@ TextureImporter:
       name: Zero Stand_9
       rect:
         serializedVersion: 2
-        x: 4611
-        y: 4
-        width: 413
-        height: 1700
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 558
+        y: 16
+        width: 533
+        height: 1820
+      alignment: 9
+      pivot: {x: 0.5, y: 0.032967035}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -372,6 +400,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 1ca734de622f4bd459b92b4ba4938ad4
@@ -381,6 +410,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Zero Stand_0: 8126170857515783722
       Zero Stand_1: -40983406543042270
@@ -392,9 +423,8 @@ TextureImporter:
       Zero Stand_7: 4050502170529884022
       Zero Stand_8: 4857623788813604166
       Zero Stand_9: -391574539912552952
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

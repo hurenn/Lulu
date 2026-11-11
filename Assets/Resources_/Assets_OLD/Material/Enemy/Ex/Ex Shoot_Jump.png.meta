@@ -33,7 +33,7 @@ TextureImporter:
       213: -6474840553854630503
     second: Ex Shoot_Jump_9
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -50,11 +50,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -74,7 +75,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -93,9 +94,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -105,9 +107,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -117,9 +120,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -129,6 +133,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -138,13 +156,14 @@ TextureImporter:
       name: Ex Shoot_Jump_0
       rect:
         serializedVersion: 2
-        x: 196
-        y: 26
-        width: 504
-        height: 868
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2152
+        y: 28
+        width: 600
+        height: 964
+      alignment: 9
+      pivot: {x: 0.5, y: 0.049792532}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -159,13 +178,14 @@ TextureImporter:
       name: Ex Shoot_Jump_1
       rect:
         serializedVersion: 2
-        x: 965
-        y: 14
-        width: 544
-        height: 849
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4554
+        y: 47
+        width: 640
+        height: 945
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05079365}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -180,13 +200,14 @@ TextureImporter:
       name: Ex Shoot_Jump_2
       rect:
         serializedVersion: 2
-        x: 1640
-        y: 62
-        width: 641
-        height: 725
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5194
+        y: 171
+        width: 737
+        height: 821
+      alignment: 9
+      pivot: {x: 0.5, y: 0.058465287}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -201,13 +222,14 @@ TextureImporter:
       name: Ex Shoot_Jump_3
       rect:
         serializedVersion: 2
-        x: 2662
-        y: 61
-        width: 587
-        height: 869
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 27
+        width: 683
+        height: 965
+      alignment: 9
+      pivot: {x: 0.5, y: 0.049740933}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -222,13 +244,14 @@ TextureImporter:
       name: Ex Shoot_Jump_4
       rect:
         serializedVersion: 2
-        x: 3479
-        y: 38
-        width: 551
-        height: 848
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3907
+        y: 48
+        width: 647
+        height: 944
+      alignment: 9
+      pivot: {x: 0.5, y: 0.050847456}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -243,13 +266,14 @@ TextureImporter:
       name: Ex Shoot_Jump_5
       rect:
         serializedVersion: 2
-        x: 4296
-        y: 30
-        width: 519
-        height: 860
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3292
+        y: 36
+        width: 615
+        height: 956
+      alignment: 9
+      pivot: {x: 0.5, y: 0.050209206}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -264,13 +288,14 @@ TextureImporter:
       name: Ex Shoot_Jump_6
       rect:
         serializedVersion: 2
-        x: 5117
-        y: 22
-        width: 444
-        height: 872
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2752
+        y: 24
+        width: 540
+        height: 968
+      alignment: 9
+      pivot: {x: 0.5, y: 0.049586777}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -285,13 +310,14 @@ TextureImporter:
       name: Ex Shoot_Jump_7
       rect:
         serializedVersion: 2
-        x: 5933
-        y: 22
-        width: 401
-        height: 880
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1655
+        y: 16
+        width: 497
+        height: 976
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04918033}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -306,13 +332,14 @@ TextureImporter:
       name: Ex Shoot_Jump_8
       rect:
         serializedVersion: 2
-        x: 6750
-        y: 26
-        width: 385
-        height: 884
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1174
+        y: 12
+        width: 481
+        height: 980
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04897959}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -327,13 +354,14 @@ TextureImporter:
       name: Ex Shoot_Jump_9
       rect:
         serializedVersion: 2
-        x: 7552
-        y: 38
-        width: 395
-        height: 879
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 683
+        y: 17
+        width: 491
+        height: 975
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04923077}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -345,6 +373,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -354,6 +383,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex Shoot_Jump_0: 2866572747637584467
       Ex Shoot_Jump_1: 5886457221421903818
@@ -365,9 +396,8 @@ TextureImporter:
       Ex Shoot_Jump_7: 52841961419868285
       Ex Shoot_Jump_8: -7928589392620448239
       Ex Shoot_Jump_9: -6474840553854630503
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

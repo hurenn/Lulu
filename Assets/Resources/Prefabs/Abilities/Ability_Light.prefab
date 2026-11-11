@@ -99,6 +99,7 @@ GameObject:
   - component: {fileID: 4391634165254016184}
   - component: {fileID: 92116251085052236}
   - component: {fileID: 9107781353519661290}
+  - component: {fileID: 8307007599923997971}
   m_Layer: 0
   m_Name: Graphic_Pepe
   m_TagString: Untagged
@@ -145,7 +146,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: fe2979caa546e4b458f02ed0b6e6b5d2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -296,6 +297,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8307007599923997971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3519016081082417558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cbccd5fc730e4c4189486d88d2bb4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _noOutlineSprites: []
 --- !u!1 &5518734642110013379
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,6 +356,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isGround: 1
+  _specialChargeTime: 60
+  _specialReadyDelay: 1.5
+  _specialTimelinePrefab: {fileID: 0}
+  _specialTimelineAsset: {fileID: 0}
   _returnTime: 1
   _localPosition: {x: 0, y: 0, z: 1}
   _rend: {fileID: 4391634165254016184}

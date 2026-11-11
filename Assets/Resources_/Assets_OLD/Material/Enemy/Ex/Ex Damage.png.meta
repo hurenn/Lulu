@@ -33,7 +33,7 @@ TextureImporter:
       213: 7592522371147304187
     second: Ex Damage_9
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -50,11 +50,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -74,7 +75,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 130
@@ -93,9 +94,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -105,9 +107,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -117,9 +120,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -129,6 +133,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -138,13 +156,14 @@ TextureImporter:
       name: Ex Damage_0
       rect:
         serializedVersion: 2
-        x: 54
-        y: 66
-        width: 510
-        height: 844
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 56
+        width: 600
+        height: 934
+      alignment: 9
+      pivot: {x: 0.5, y: 0.048179872}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -159,13 +178,14 @@ TextureImporter:
       name: Ex Damage_1
       rect:
         serializedVersion: 2
-        x: 857
-        y: 51
-        width: 615
-        height: 754
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 2471
+        y: 146
+        width: 705
+        height: 844
+      alignment: 9
+      pivot: {x: 0.5, y: 0.053317536}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -180,13 +200,14 @@ TextureImporter:
       name: Ex Damage_2
       rect:
         serializedVersion: 2
-        x: 1667
-        y: 77
-        width: 615
-        height: 616
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 4570
+        y: 284
+        width: 705
+        height: 706
+      alignment: 9
+      pivot: {x: 0.5, y: 0.063739374}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -201,13 +222,14 @@ TextureImporter:
       name: Ex Damage_3
       rect:
         serializedVersion: 2
-        x: 2428
-        y: 73
-        width: 634
-        height: 605
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5980
+        y: 295
+        width: 724
+        height: 695
+      alignment: 9
+      pivot: {x: 0.5, y: 0.0647482}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -222,13 +244,14 @@ TextureImporter:
       name: Ex Damage_4
       rect:
         serializedVersion: 2
-        x: 3204
-        y: 77
-        width: 615
-        height: 616
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 5275
+        y: 284
+        width: 705
+        height: 706
+      alignment: 9
+      pivot: {x: 0.5, y: 0.063739374}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -243,13 +266,14 @@ TextureImporter:
       name: Ex Damage_5
       rect:
         serializedVersion: 2
-        x: 3981
-        y: 55
-        width: 607
-        height: 686
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3873
+        y: 214
+        width: 697
+        height: 776
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05798969}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -264,13 +288,14 @@ TextureImporter:
       name: Ex Damage_6
       rect:
         serializedVersion: 2
-        x: 4746
-        y: 39
-        width: 607
-        height: 747
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 3176
+        y: 153
+        width: 697
+        height: 837
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05376344}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -285,13 +310,14 @@ TextureImporter:
       name: Ex Damage_7
       rect:
         serializedVersion: 2
-        x: 5511
-        y: 24
-        width: 585
-        height: 807
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1796
+        y: 93
+        width: 675
+        height: 897
+      alignment: 9
+      pivot: {x: 0.5, y: 0.050167225}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -306,13 +332,14 @@ TextureImporter:
       name: Ex Damage_8
       rect:
         serializedVersion: 2
-        x: 6287
-        y: 17
-        width: 540
-        height: 856
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1166
+        y: 44
+        width: 630
+        height: 946
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04756871}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -327,13 +354,14 @@ TextureImporter:
       name: Ex Damage_9
       rect:
         serializedVersion: 2
-        x: 7067
-        y: 24
-        width: 476
-        height: 886
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 600
+        y: 14
+        width: 566
+        height: 976
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04610656}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -345,6 +373,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -354,6 +383,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Ex Damage_0: 4226750316144834142
       Ex Damage_1: -8356854126144904896
@@ -365,9 +396,8 @@ TextureImporter:
       Ex Damage_7: -7898232920081935341
       Ex Damage_8: -5070319587202846399
       Ex Damage_9: 7592522371147304187
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -30,7 +30,7 @@ TextureImporter:
       213: 21300016
     second: Warp Effect_8
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -47,11 +47,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -71,7 +72,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 300
@@ -90,9 +91,10 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -102,9 +104,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -114,9 +117,10 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 1024
     resizeAlgorithm: 0
@@ -126,6 +130,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -135,13 +153,14 @@ TextureImporter:
       name: Warp Effect_0
       rect:
         serializedVersion: 2
-        x: 58
-        y: 5930
-        width: 1132
-        height: 1822
-      alignment: 0
+        x: 0
+        y: 8377
+        width: 1318
+        height: 2008
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -156,13 +175,14 @@ TextureImporter:
       name: Warp Effect_1
       rect:
         serializedVersion: 2
-        x: 1309
-        y: 5930
-        width: 1232
-        height: 1822
-      alignment: 0
+        x: 0
+        y: 6369
+        width: 1418
+        height: 2008
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -177,13 +197,14 @@ TextureImporter:
       name: Warp Effect_2
       rect:
         serializedVersion: 2
-        x: 111
-        y: 3966
-        width: 1029
-        height: 1822
-      alignment: 0
+        x: 0
+        y: 4361
+        width: 1215
+        height: 2008
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -198,13 +219,14 @@ TextureImporter:
       name: Warp Effect_3
       rect:
         serializedVersion: 2
-        x: 1359
-        y: 3966
-        width: 1140
-        height: 1822
-      alignment: 0
+        x: 1215
+        y: 4361
+        width: 1326
+        height: 2008
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -219,13 +241,14 @@ TextureImporter:
       name: Warp Effect_4
       rect:
         serializedVersion: 2
-        x: 130
-        y: 2049
-        width: 995
-        height: 1822
-      alignment: 0
+        x: 1330
+        y: 2353
+        width: 1181
+        height: 2008
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -240,13 +263,14 @@ TextureImporter:
       name: Warp Effect_5
       rect:
         serializedVersion: 2
-        x: 1332
-        y: 2056
-        width: 1144
-        height: 1822
-      alignment: 0
+        x: 0
+        y: 2353
+        width: 1330
+        height: 2008
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -261,13 +285,14 @@ TextureImporter:
       name: Warp Effect_6
       rect:
         serializedVersion: 2
-        x: 169
-        y: 0
-        width: 925
-        height: 1822
-      alignment: 0
+        x: 0
+        y: 345
+        width: 1111
+        height: 2008
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -282,13 +307,14 @@ TextureImporter:
       name: Warp Effect_7
       rect:
         serializedVersion: 2
-        x: 1374
-        y: 0
-        width: 1151
-        height: 1822
-      alignment: 0
+        x: 1111
+        y: 345
+        width: 1337
+        height: 2008
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -303,13 +329,14 @@ TextureImporter:
       name: Warp Effect_8
       rect:
         serializedVersion: 2
-        x: 1141
-        y: 166
-        width: 104
-        height: 139
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 20
+        width: 290
+        height: 325
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -321,6 +348,7 @@ TextureImporter:
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
     spriteID: afea82cfd73cc71479da034cd2a6f470
@@ -330,6 +358,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
     nameFileIdTable:
       Warp Effect_0: 21300000
       Warp Effect_1: 21300002
@@ -340,9 +370,8 @@ TextureImporter:
       Warp Effect_6: 21300012
       Warp Effect_7: 21300014
       Warp Effect_8: 21300016
-  spritePackingTag: 
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
