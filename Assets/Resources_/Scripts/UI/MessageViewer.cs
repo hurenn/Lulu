@@ -72,6 +72,13 @@ public class MessageViewer : MonoBehaviour {
     private UnityEngine.Playables.PlayableDirector _choiceDirector; // 選択肢表示のために一時停止したTimeline
     public bool IsChoiceActive { get; private set; }             // 選択肢表示中フラグ
 
+    // Timelineがメッセージ・選択肢の入力待ちで止まっているか(一連のメッセージの切り替わりも含む)
+    // 自動で進むメッセージ(isAutoForce)はTimelineを止めないため含めない(表示し続ける操作説明などがTimeline終了後も残るため)
+    public bool IsWaitingTimeline =>
+        IsChoiceActive
+        || (_isShowing && _currentMessage != null && _currentMessage.playableDirector != null && !_currentMessage.isAutoForce)
+        || (_isEventMessage && _messageListScript.HasMessages());
+
     private PlayerParameter _playerParameter;
 
     private void OnEnable() {
@@ -126,9 +133,13 @@ public class MessageViewer : MonoBehaviour {
 
         if (is_event_message) {
             // イベントメッセージの場合、ユーザー入力待ち
-            if (_isShowing && _playerController.Input.messageNextPressed) {
+            // イベントの早送り中は入力を待たずに次へ送る
+            if (_isShowing && (_playerController.Input.messageNextPressed || EventFastForward.IsActive)) {
                 _HideOrNext();
             }
+        } else if (_currentShowTime > 0 && EventFastForward.IsActive) {
+            // イベントの早送り中は表示時間を待たずに次へ送る
+            _HideOrNext();
         } else if (_currentShowTime > 0) {
             // メッセージ表示の残り時間表示
             _currentShowTime -= deltaTime;

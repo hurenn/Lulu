@@ -17,7 +17,8 @@ public static class TimeScaleRequestManager {
     public static void Request(float scale) {
         if (_requestStack.Count == 0) {
             // 誰も要求していない状態で保存するため、これが本来の値になる
-            _baselineScale = Time.timeScale;
+            // (イベントの早送り中は、早送りしていない時の値を保存する)
+            _baselineScale = EventFastForward.GetBaseTimeScale();
         }
         _requestStack.Add(scale);
         Time.timeScale = scale;

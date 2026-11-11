@@ -151,6 +151,11 @@ public class PlayerController : MonoBehaviour {
     // Pauseアクションのコールバック
     private void OnPause(InputAction.CallbackContext context) {
         var pauseUI = GetPauseUI();
+        // イベント(Timeline)の実行中は、ポーズ画面の代わりにイベントの早送りを切り替える
+        if (!Pause_UI.IsOpen && (pauseUI == null || pauseUI.canOpen) && EventFastForward.IsEventRunning()) {
+            EventFastForward.Toggle();
+            return;
+        }
         if (pauseUI != null) {
             pauseUI.UIViewSwitch();
         }
