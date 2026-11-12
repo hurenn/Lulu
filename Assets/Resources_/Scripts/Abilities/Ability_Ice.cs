@@ -29,6 +29,7 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private GameObject _slash2;
     [SerializeField] private GameObject _slash3;
     [SerializeField] private GameObject _lockonSlash;
+    [SerializeField] private SlashStreak _autoSlashStreak; // ワープ中の自動攻撃で、敵を中心に画面を横断する閃光
     private IEnumerator _separateRoutine = null;
 
     [Header("■ 必殺技:ゲージ(時間では溜まらず、氷の攻撃を敵に当てると溜まる)")]
@@ -475,11 +476,13 @@ public class Ability_Ice : Ability_Base {
             return;
         }
 
-        // フラッシュ
-        Color flash_color = Color.white;
-        flash_color.a = 0.5f;
-        var flash = ScreenFlash.Instance;
-        flash?.Flash(color: flash_color);
+        // フラッシュ(ワープ中の自動攻撃は、画面全体ではなく敵を通る閃光で見せる)
+        if (ability_type != eAbilityType.AutoSlash) {
+            Color flash_color = Color.white;
+            flash_color.a = 0.5f;
+            var flash = ScreenFlash.Instance;
+            flash?.Flash(color: flash_color);
+        }
 
         // MP消費
         _AppearCheck(ability_type, force_appear: true);
@@ -492,11 +495,26 @@ public class Ability_Ice : Ability_Base {
         // エフェクトの向きを調整して生成
         _UpdateEffectDirection();
         _SpawnAttackEffect(_lockonSlash);
+        // ワープ中の自動攻撃: 敵を中心に、攻撃する向き(味方から敵への向き)へ画面を横断する閃光を走らせる
+        if (ability_type == eAbilityType.AutoSlash) {
+            var center = _GetEnemyCenter(target_pos);
+            SlashStreak.Spawn(_autoSlashStreak, center, center - transform.position);
+        }
         // アニメーション再生
         _anim?.Play("Node_Attack2", 0, 0.0f);
 
         // コンボ1段目をスキップ
         _SetComboStep(1);
+    }
+
+    // 敵の位置(足元にあることが多い)から、その敵の体の中心(当たり判定の中心)を求める。見つからなければそのままの位置
+    private static Vector3 _GetEnemyCenter(Vector3 enemy_pos) {
+        Collider2D best = null;
+        foreach (var col in Physics2D.OverlapCircleAll(enemy_pos, 0.5f, LayerMask.GetMask("Enemy"))) {
+            if (col.isTrigger) continue;
+            if (best == null || col.bounds.size.sqrMagnitude > best.bounds.size.sqrMagnitude) best = col;
+        }
+        return best != null ? best.bounds.center : enemy_pos;
     }
 
     public override void UpdateParameter(bool is_right, Transform chara_transform, CommonParameter param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
