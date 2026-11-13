@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1820, y: 980}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4815414541875755315
 CanvasRenderer:
@@ -158,10 +158,10 @@ RectTransform:
   - {fileID: 1423248821521641032}
   m_Father: {fileID: 161236052672031499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 510, y: -460}
-  m_SizeDelta: {x: 700, y: 51.3}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 70}
+  m_SizeDelta: {x: 1500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4801968263040669108
 MonoBehaviour:
@@ -374,15 +374,13 @@ GameObject:
   m_Component:
   - component: {fileID: 8545288417252770482}
   - component: {fileID: 6270482038862129914}
-  - component: {fileID: 7042410243538763098}
-  - component: {fileID: 2168843652077920524}
   m_Layer: 0
   m_Name: BossBattleEvent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8545288417252770482
 Transform:
   m_ObjectHideFlags: 0
@@ -412,15 +410,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _messageTriggerActivators:
   - messageTrigger: {fileID: 0}
-    delay: 4
+    delay: 0
     isHalfHPTrigger: 0
     isSeriouslyTrigger: 0
   - messageTrigger: {fileID: 0}
-    delay: 1
+    delay: 3
+    isHalfHPTrigger: 0
+    isSeriouslyTrigger: 0
+  - messageTrigger: {fileID: 0}
+    delay: 10
+    isHalfHPTrigger: 0
+    isSeriouslyTrigger: 0
+  - messageTrigger: {fileID: 0}
+    delay: 30
+    isHalfHPTrigger: 0
+    isSeriouslyTrigger: 0
+  - messageTrigger: {fileID: 0}
+    delay: 0
     isHalfHPTrigger: 1
     isSeriouslyTrigger: 0
   - messageTrigger: {fileID: 0}
-    delay: 1
+    delay: 4
+    isHalfHPTrigger: 1
+    isSeriouslyTrigger: 0
+  - messageTrigger: {fileID: 0}
+    delay: 14
+    isHalfHPTrigger: 1
+    isSeriouslyTrigger: 0
+  - messageTrigger: {fileID: 0}
+    delay: 22
     isHalfHPTrigger: 1
     isSeriouslyTrigger: 1
   _playerController: {fileID: 0}
@@ -429,51 +447,6 @@ MonoBehaviour:
   _messageViewer: {fileID: 0}
   _stageClearMessageTrigger: {fileID: 0}
   _sparkEffect: {fileID: 275648440569265519}
---- !u!320 &7042410243538763098
-PlayableDirector:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2419109401495234715}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 9a39383de1f06ec4e91534248cbddf59, type: 2}
-  m_InitialState: 1
-  m_WrapMode: 2
-  m_DirectorUpdateMode: 1
-  m_InitialTime: 0
-  m_SceneBindings:
-  - key: {fileID: 7941007283411621922, guid: 9a39383de1f06ec4e91534248cbddf59, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -2647367615345075816, guid: 9a39383de1f06ec4e91534248cbddf59, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: 9028530458038948074, guid: 9a39383de1f06ec4e91534248cbddf59, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -7278565875139482130, guid: 9a39383de1f06ec4e91534248cbddf59, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -7181157161861285550, guid: 9a39383de1f06ec4e91534248cbddf59, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -4429104293274092655, guid: 9a39383de1f06ec4e91534248cbddf59, type: 2}
-    value: {fileID: 0}
-  - key: {fileID: -4852650911540299886, guid: 9a39383de1f06ec4e91534248cbddf59, type: 2}
-    value: {fileID: 0}
-  m_ExposedReferences:
-    m_References:
-    - c07475b7355acfe40a1f6c354aba53e2: {fileID: 0}
-    - 78045772d0a59b94ba4299a8245408d4: {fileID: 0}
---- !u!114 &2168843652077920524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2419109401495234715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ed51551cf4f9b84c99cd5d3352a5842, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3748034840572903066
 GameObject:
   m_ObjectHideFlags: 0
@@ -10897,7 +10870,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4228265331071006453
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10915,7 +10888,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -4.899994, y: -14.8}
+  m_AnchoredPosition: {x: -4.9000244, y: -14.799999}
   m_SizeDelta: {x: 190, y: 45}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &4629740644388613136
