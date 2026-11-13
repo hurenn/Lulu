@@ -96,6 +96,13 @@ public class DamageZone : MonoBehaviour {
     /// <summary>
     /// ダメージを与えた後に呼ぶ処理を設定する(ダメージを与えられなかった時は呼ばない)
     /// </summary>
+    /// <summary>
+    /// ヒットストップの時間を変える(同じ攻撃エフェクトを、出し方によって違う重さで当てる時に使う)
+    /// </summary>
+    public void SetHitStopTime(float time) {
+        _hitStopTime = time;
+    }
+
     public void SetDamagedCallback(System.Action<IDamageable> callback) {
         _damagedCallback = callback;
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Ability_Ice : Ability_Base {
@@ -29,7 +30,10 @@ public class Ability_Ice : Ability_Base {
     [SerializeField] private GameObject _slash2;
     [SerializeField] private GameObject _slash3;
     [SerializeField] private GameObject _lockonSlash;
-    [SerializeField] private SlashStreak _autoSlashStreak; // ワープ中の自動攻撃で、敵を中心に画面を横断する閃光
+    [FormerlySerializedAs("_autoSlashStreak")]
+    [SerializeField] private SlashStreak _slashStreak; // 斬撃が当たった時に、当たった敵を中心に画面を横断する閃光
+    [SerializeField] private float _slashStreakTilt = 30f; // コンボ・ロックオンの閃光の傾き(縦向きから左右にこの角度までランダムに傾ける)
+    [SerializeField] private float _autoSlashHitStopTime = 0.4f; // ワープ中の自動攻撃が当たった時のヒットストップの時間(秒)
     private IEnumerator _separateRoutine = null;
 
     [Header("■ 必殺技:ゲージ(時間では溜まらず、氷の攻撃を敵に当てると溜まる)")]
@@ -494,17 +498,29 @@ public class Ability_Ice : Ability_Base {
 
         // エフェクトの向きを調整して生成
         _UpdateEffectDirection();
-        _SpawnAttackEffect(_lockonSlash);
-        // ワープ中の自動攻撃: 敵を中心に、攻撃する向き(味方から敵への向き)へ画面を横断する閃光を走らせる
-        if (ability_type == eAbilityType.AutoSlash) {
-            var center = _GetEnemyCenter(target_pos);
-            SlashStreak.Spawn(_autoSlashStreak, center, center - transform.position);
+        // ワープ中の自動攻撃の閃光は、攻撃する向き(味方から敵への向き)に走らせる
+        var effect_obj = _SpawnAttackEffect(_lockonSlash, is_streak_toward_enemy: ability_type == eAbilityType.AutoSlash);
+        // ワープ中の自動攻撃は、当たった時に長めに止める
+        if (ability_type == eAbilityType.AutoSlash && effect_obj != null) {
+            foreach (var damage_zone in effect_obj.GetComponentsInChildren<DamageZone>(true)) damage_zone.SetHitStopTime(_autoSlashHitStopTime);
         }
         // アニメーション再生
         _anim?.Play("Node_Attack2", 0, 0.0f);
 
         // コンボ1段目をスキップ
         _SetComboStep(1);
+    }
+
+    // 斬撃が当たった敵を中心に、画面を横断する閃光を走らせる
+    // (toward_enemy: 味方から敵への向き / それ以外: 縦向きからランダムに傾けた向き)
+    private void _SpawnHitStreak(IDamageable character, bool toward_enemy) {
+        var target = character as Component;
+        if (target == null || _slashStreak == null) return;
+        var center = _GetEnemyCenter(target.transform.position);
+        Vector2 direction = toward_enemy
+            ? (Vector2)(center - transform.position)
+            : (Vector2)(Quaternion.Euler(0f, 0f, 90f + Random.Range(-_slashStreakTilt, _slashStreakTilt)) * Vector3.right);
+        SlashStreak.Spawn(_slashStreak, center, direction);
     }
 
     // 敵の位置(足元にあることが多い)から、その敵の体の中心(当たり判定の中心)を求める。見つからなければそのままの位置
@@ -536,7 +552,7 @@ public class Ability_Ice : Ability_Base {
     /// 攻撃エフェクトを生成し、向きを合わせる
     /// (プレハブ本体の向きを書き換えるとプレハブに差分が出るため、生成したものの向きを変える)
     /// </summary>
-    private GameObject _SpawnAttackEffect(GameObject effect) {
+    private GameObject _SpawnAttackEffect(GameObject effect, bool is_streak_toward_enemy = false) {
         if (effect == null) {
             Debug.Log("攻撃エフェクトが登録されていません");
             return null;
@@ -545,9 +561,12 @@ public class Ability_Ice : Ability_Base {
         var scale = effect_obj.transform.localScale;
         scale.x = _isEffectRight ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
         effect_obj.transform.localScale = scale;
-        // 敵に当てたら必殺技ゲージを溜める
+        // 敵に当てたら必殺技ゲージを溜め、当たった敵を中心に閃光を走らせる
         foreach (var damage_zone in effect_obj.GetComponentsInChildren<DamageZone>(true)) {
-            damage_zone.SetDamagedCallback(_ChargeByHit);
+            damage_zone.SetDamagedCallback(character => {
+                _ChargeByHit(character);
+                _SpawnHitStreak(character, is_streak_toward_enemy);
+            });
         }
         return effect_obj;
     }
