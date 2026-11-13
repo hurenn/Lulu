@@ -52,6 +52,8 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private HitEffect _hitEffectPrefab = null;
     [SerializeField] private HitEffect.eType _hitEffectType = HitEffect.eType.Normal;
     [SerializeField] private float _hitEffectSize = 1.0f;
+    // ヒットエフェクトを相手の中心ではなく、ヒット地点(相手の当たり判定のうち、この判定が入ってきた所)に出す(弾など)
+    [SerializeField] private bool _hitEffectAtContact = false;
 
     // ヒットストップ設定
     [SerializeField] private List<LocalTimePause> _localTimePauses = new List<LocalTimePause>();
@@ -84,8 +86,33 @@ public class DamageZone : MonoBehaviour {
     // ダメージを与えない相手(発射したキャラ自身など)
     private IDamageable _ignoreTarget = null;
 
+    // 前のフレームでの位置(_hitEffectAtContact用。速い弾は当たったと分かった時には相手の内側に入っているため、入ってくる前の位置からヒット地点を求める)
+    private Vector3 _lastFramePosition;
+
     private void Reset() {
         _hitEffectPrefab = Resources.Load<HitEffect>("Prefabs/Effects/HitEffect");
+    }
+
+    private void OnEnable() {
+        _lastFramePosition = transform.position;
+    }
+
+    private void LateUpdate() {
+        if (_hitEffectAtContact) _lastFramePosition = transform.position;
+    }
+
+    // ヒット地点(相手の当たり判定のうち、入ってくる前の位置に一番近い点)
+    // 前のフレームで既に内側にいた時(判定が後から有効になった時など)は、進んできた向きを相手の外までさかのぼった位置から求める
+    private Vector3 _GetContactPosition(Collider2D other) {
+        Vector3 from = transform.position;
+        Vector3 move = transform.position - _lastFramePosition;
+        if (!other.OverlapPoint(_lastFramePosition)) {
+            from = _lastFramePosition;
+        } else if (move.sqrMagnitude > 0.000001f) {
+            from = transform.position - move.normalized * other.bounds.size.magnitude;
+        }
+        Vector2 contact = other.ClosestPoint(from);
+        return new Vector3(contact.x, contact.y, other.transform.position.z);
     }
 
     /// <summary>
@@ -260,7 +287,8 @@ public class DamageZone : MonoBehaviour {
         // ダメージ演出
         if (damage_result) {
             // ヒットエフェクト生成
-            var hit_effect = _SpawnHitEffect(other.transform.position, _hitEffectType);
+            var hit_position = _hitEffectAtContact ? _GetContactPosition(other) : other.transform.position;
+            var hit_effect = _SpawnHitEffect(hit_position, _hitEffectType);
             var target_effect = hit_effect?.GetComponent<LocalTimePause>();
 
             // ヒットストップ
