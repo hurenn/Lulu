@@ -233,6 +233,7 @@ MonoBehaviour:
   _destroyObject: {fileID: 0}
   _isOnceHit: 1
   _isTrapDamage: 1
+  _ignoreInvincibility: 0
   _selfCharacter: {fileID: 0}
   _damageToSelf: 0
   _invincibleTimeToSelf: 0.5
@@ -248,6 +249,8 @@ MonoBehaviour:
   _manualShakeIntensity: 1.5
   _manualShakeDuration: 0.1
   _hitCameraShakeIntensity: 0
+  _manualScreenBlurIntensity: 0.5
+  _manualScreenBlurDuration: 0.35
   _hitPlayerEvent: []
   _avoidPlayerEvent: []
 --- !u!1 &5891395673387587722
@@ -571,7 +574,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 85088098c24f82749b1daee3fd2ea782, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -316,7 +316,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 78f6254b5d742a448952265bede6da4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -369,6 +369,7 @@ MonoBehaviour:
   _destroyObject: {fileID: 0}
   _isOnceHit: 0
   _isTrapDamage: 1
+  _ignoreInvincibility: 0
   _selfCharacter: {fileID: 0}
   _damageToSelf: 0
   _invincibleTimeToSelf: 0.5
@@ -380,10 +381,12 @@ MonoBehaviour:
   _localTimePauses:
   - {fileID: 8992723864680944278}
   _hitStopTime: 0.2
-  _manualCameraShake: 0
-  _manualShakeIntensity: 0.5
-  _manualShakeDuration: 0.5
+  _manualCameraShake: 1
+  _manualShakeIntensity: 0.05
+  _manualShakeDuration: 0.2
   _hitCameraShakeIntensity: 0.1
+  _manualScreenBlurIntensity: 0
+  _manualScreenBlurDuration: 0.3
   _hitPlayerEvent: []
   _avoidPlayerEvent: []
 --- !u!61 &2020714752910909934
@@ -557,7 +560,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -25, z: 0}
-  m_LocalScale: {x: 100, y: 2500, z: 1}
+  m_LocalScale: {x: 150, y: 2500, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4821458863706443726}
@@ -606,7 +609,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 2938682ff7a9c8749b8b55ae87cfd2c1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f5cab8fd7c639ba49a2dfb56bc99d595, type: 3}
   m_Color: {r: 1, g: 0.26226407, b: 0.26226407, a: 0.6}
   m_FlipX: 0
   m_FlipY: 0

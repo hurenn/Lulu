@@ -61,6 +61,9 @@ public class DamageZone : MonoBehaviour {
     [SerializeField] private float _manualShakeIntensity = 0.5f;
     [SerializeField] private float _manualShakeDuration = 0.5f;
     [SerializeField] private float _hitCameraShakeIntensity = 0f;
+    // 手動カメラシェイクと同じタイミングで、この位置を中心に画面へ放射状のブラーをかける(強さ0なら出さない)
+    [SerializeField] private float _manualScreenBlurIntensity = 0f;
+    [SerializeField] private float _manualScreenBlurDuration = 0.3f;
 
     [SerializeField] private GameObject[] _hitPlayerEvent;    // ヒット時に発生させるイベントオブジェクト
     [SerializeField] private GameObject[] _avoidPlayerEvent;  // 回避時に発生させるイベントオブジェクト
@@ -155,10 +158,13 @@ public class DamageZone : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         // 手動カメラシェイク
-        if (_manualCameraShake && _manualShakeIntensity > 0f) {
+        if (_manualCameraShake && (_manualShakeIntensity > 0f || _manualScreenBlurIntensity > 0f)) {
             _manualCameraShake = false;
-            var cinemachineManager = CinemachineManager.Instance;
-            cinemachineManager.ShakeCamera(_manualShakeIntensity, _manualShakeDuration);
+            if (_manualShakeIntensity > 0f) {
+                var cinemachineManager = CinemachineManager.Instance;
+                cinemachineManager.ShakeCamera(_manualShakeIntensity, _manualShakeDuration);
+            }
+            ScreenBlur.Play(transform.position, _manualScreenBlurIntensity, _manualScreenBlurDuration);
         }
 
         // クールタイムで自然解除されるエントリが無い場合は何もしない
