@@ -42,10 +42,12 @@ public class GoalMarker : MonoBehaviour
         // 画面中心からの方向ベクトルを求める
         Vector3 dir = (screenPos - new Vector3(Screen.width / 2, Screen.height / 2, 0)).normalized;
 
-        // 画面端の位置を計算
+        // 画面端の位置を計算(画面端からの距離は、Canvasの倍率に合わせて4Kなどでも同じ見た目にする)
+        var canvas = markerUI.GetComponentInParent<Canvas>();
+        float offset = edgeOffset * (canvas != null ? canvas.rootCanvas.scaleFactor : 1f);
         Vector3 edgePos = new Vector3(
-            Mathf.Clamp(Screen.width / 2 + dir.x * (Screen.width / 2 - edgeOffset), edgeOffset, Screen.width - edgeOffset),
-            Mathf.Clamp(Screen.height / 2 + dir.y * (Screen.height / 2 - edgeOffset), edgeOffset, Screen.height - edgeOffset),
+            Mathf.Clamp(Screen.width / 2 + dir.x * (Screen.width / 2 - offset), offset, Screen.width - offset),
+            Mathf.Clamp(Screen.height / 2 + dir.y * (Screen.height / 2 - offset), offset, Screen.height - offset),
             0
         );
 

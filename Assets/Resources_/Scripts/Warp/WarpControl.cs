@@ -55,15 +55,11 @@ public class WarpControl : MonoBehaviour {
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private AudioClip _seWarp;
 
-    // 集中線エフェクト
+    // 以前の集中線エフェクト(UIのパーティクル)。今は使わず、起動時に自動で再生されないよう止めるだけ
     [SerializeField] protected ParticleSystem _warpFocusEffect;
+    // 集中線エフェクト(画面全体にシェーダーで描く。解像度が変わっても見え方が変わらない)
     public void PlayWarpFocusEffect() {
-        if (_warpFocusEffect != null) {
-            if (_warpFocusEffect.gameObject.activeSelf == false) {
-                _warpFocusEffect.gameObject.SetActive(true);
-            }
-            _warpFocusEffect.Play();
-        }
+        WarpFocusLines.Play();
     }
 
     // ワープの瞬間、ワープ前の位置に残す残像
