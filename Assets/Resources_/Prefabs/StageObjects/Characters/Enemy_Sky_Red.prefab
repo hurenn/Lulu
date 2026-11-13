@@ -229,6 +229,7 @@ GameObject:
   - component: {fileID: 1113463699937426540}
   - component: {fileID: 7959331096145378583}
   - component: {fileID: 4188268854570246118}
+  - component: {fileID: 7064734092112552226}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -275,7 +276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: fab7af87ff8edd54bb4c8617b8012482, type: 2}
   m_Color: {r: 0.85, g: 0.3, b: 0.3, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -293,6 +294,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7064734092112552226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428088056563652209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396997c4106e63b458c4c0097f7b0d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineWidth: 4
+  _shadowOffset: {x: 4, y: -7}
 --- !u!1 &2467694181027259661
 GameObject:
   m_ObjectHideFlags: 0
@@ -1440,8 +1455,8 @@ BoxCollider2D:
   m_Offset: {x: 0.35, y: 0.35}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.92008936, y: 0.89666665}
+    pivot: {x: 0.59158415, y: 0.51447874}
+    oldSize: {x: 1.3467973, y: 1.7266667}
     newSize: {x: 0.92008936, y: 0.89666665}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1682,7 +1697,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 3
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

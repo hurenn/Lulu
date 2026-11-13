@@ -280,6 +280,7 @@ GameObject:
   - component: {fileID: 157590926}
   - component: {fileID: 157590928}
   - component: {fileID: 157590927}
+  - component: {fileID: 157590929}
   m_Layer: 5
   m_Name: Logo_Text
   m_TagString: Untagged
@@ -318,7 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: fab7af87ff8edd54bb4c8617b8012482, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -344,6 +345,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157590925}
   m_CullTransparentMesh: 1
+--- !u!114 &157590929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157590925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396997c4106e63b458c4c0097f7b0d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineWidth: 4
+  _shadowOffset: {x: 4, y: -7}
 --- !u!1 &185587938
 GameObject:
   m_ObjectHideFlags: 0
@@ -5753,6 +5768,7 @@ GameObject:
   - component: {fileID: 759314236}
   - component: {fileID: 759314238}
   - component: {fileID: 759314237}
+  - component: {fileID: 759314239}
   m_Layer: 5
   m_Name: Logo_Text
   m_TagString: Untagged
@@ -5791,7 +5807,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: fab7af87ff8edd54bb4c8617b8012482, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -5817,6 +5833,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 759314235}
   m_CullTransparentMesh: 1
+--- !u!114 &759314239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759314235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396997c4106e63b458c4c0097f7b0d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineWidth: 4
+  _shadowOffset: {x: 4, y: -7}
 --- !u!1 &777029775
 GameObject:
   m_ObjectHideFlags: 0
@@ -6675,6 +6705,7 @@ GameObject:
   - component: {fileID: 1311194929}
   - component: {fileID: 1311194931}
   - component: {fileID: 1311194930}
+  - component: {fileID: 1311194932}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -6715,7 +6746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: fab7af87ff8edd54bb4c8617b8012482, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -6741,6 +6772,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1311194928}
   m_CullTransparentMesh: 1
+--- !u!114 &1311194932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311194928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396997c4106e63b458c4c0097f7b0d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineWidth: 4
+  _shadowOffset: {x: 4, y: -7}
 --- !u!1 &1361710067 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 531109707819632045, guid: b63f30ff558138742bfbb5be0bcf7da2, type: 3}
@@ -7452,6 +7497,7 @@ GameObject:
   - component: {fileID: 1980554869}
   - component: {fileID: 1980554871}
   - component: {fileID: 1980554870}
+  - component: {fileID: 1980554872}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -7492,7 +7538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: fab7af87ff8edd54bb4c8617b8012482, type: 2}
   m_Color: {r: 0.3, g: 0.3, b: 0.3, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -7518,6 +7564,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1980554868}
   m_CullTransparentMesh: 1
+--- !u!114 &1980554872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1980554868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396997c4106e63b458c4c0097f7b0d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineWidth: 4
+  _shadowOffset: {x: 4, y: -7}
 --- !u!1 &2071308809
 GameObject:
   m_ObjectHideFlags: 0
@@ -7529,6 +7589,7 @@ GameObject:
   - component: {fileID: 2071308810}
   - component: {fileID: 2071308812}
   - component: {fileID: 2071308811}
+  - component: {fileID: 2071308813}
   m_Layer: 5
   m_Name: StartButton_English
   m_TagString: Untagged
@@ -7569,7 +7630,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: fab7af87ff8edd54bb4c8617b8012482, type: 2}
   m_Color: {r: 0.3, g: 0.3, b: 0.3, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -7595,6 +7656,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2071308809}
   m_CullTransparentMesh: 1
+--- !u!114 &2071308813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071308809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396997c4106e63b458c4c0097f7b0d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineWidth: 4
+  _shadowOffset: {x: 4, y: -7}
 --- !u!1 &2112290733
 GameObject:
   m_ObjectHideFlags: 0

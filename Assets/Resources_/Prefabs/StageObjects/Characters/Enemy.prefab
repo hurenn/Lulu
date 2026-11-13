@@ -93,7 +93,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 3
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -1284886701
   m_SortingOrder: 0
@@ -526,6 +526,7 @@ GameObject:
   - component: {fileID: 4944529155530177756}
   - component: {fileID: 8342394502609183568}
   - component: {fileID: 2260991390621072988}
+  - component: {fileID: 4636189764264322236}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -572,7 +573,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: fab7af87ff8edd54bb4c8617b8012482, type: 2}
   m_Color: {r: 0.85, g: 0.3, b: 0.3, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -590,6 +591,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4636189764264322236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393592791971179011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396997c4106e63b458c4c0097f7b0d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineWidth: 4
+  _shadowOffset: {x: 4, y: -7}
 --- !u!1 &2025302943905522229
 GameObject:
   m_ObjectHideFlags: 0
