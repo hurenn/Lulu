@@ -87,7 +87,11 @@ public class Player_Character : Character_Base {
         ApplyPlayerParameter();
         _isWaterMode = _playerParam.isFireReplacedByWater;
         _SetupHadAbility();
+        if (_sprite != null) _lightAppearance = _sprite.GetComponent<LuluLightAppearance>();
     }
+
+    // 光の能力で発光している間の見た目(リムライト)
+    private LuluLightAppearance _lightAppearance;
 
     /// <summary>
     /// 取得済み能力のセットアップ（Warpも含め、所有している能力を全て割り当て済みスロットに配置）
@@ -111,6 +115,9 @@ public class Player_Character : Character_Base {
         // _UpdateWarpDash()内の壁接触チェックで同一フレーム中に_isWarpDashingがfalseに戻ることがあり、
         // 後から判定すると壁ダッシュへの切替が発光より先に確定してしまうため
         _SetAutoLight(_isWarpDashing || _isWarpDelay || _isLightOnlyAppearance);
+        if (_lightAppearance != null) {
+            _lightAppearance.SetLighting(_GetAbility<Ability_Light>()?.isLighting ?? false);
+        }
 
         _UpdateWarpDash();
         _UpdateSliding();
@@ -591,6 +598,9 @@ public class Player_Character : Character_Base {
             // 自動発光回避
             if (_player_charaParam.isAutoLightInvincible && !_player_charaParam.isLightInvincible) {
                 _OnAvoidAutoLight();
+            } else {
+                // ボタンで発光している間の回避も輝かせる
+                _GetAbility<Ability_Light>()?.OnManualAvoid();
             }
 
             _anim.Play("Warp_Enter");       // ワープアニメ再生

@@ -378,6 +378,7 @@ MonoBehaviour:
     m_Bits: 256
   _coinWarpInterval: 0.07
   _avoidWarpInterval: 0.5
+  _avoidWarpMinDistance: 0.5
   _audioSource: {fileID: 3123718113213705543}
   _seWarp: {fileID: 8300000, guid: 649de4670f4e4214f83fe3e2d29d7f43, type: 3}
   _warpFocusEffect: {fileID: 0}
@@ -601,6 +602,7 @@ GameObject:
   - component: {fileID: 6554501651606250815}
   - component: {fileID: 6181267916212409532}
   - component: {fileID: 2793531191142646063}
+  - component: {fileID: 5934713418461298561}
   m_Layer: 0
   m_Name: Graphic
   m_TagString: Untagged
@@ -760,6 +762,23 @@ MonoBehaviour:
   - {fileID: 3169604009490196110, guid: d2cc6dec3973f9149810718236f3cc36, type: 3}
   - {fileID: -5983673544065627807, guid: d2cc6dec3973f9149810718236f3cc36, type: 3}
   - {fileID: -1376628886, guid: d2cc6dec3973f9149810718236f3cc36, type: 3}
+--- !u!114 &5934713418461298561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176145536098947805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6400fc357b749924596115f4961cf6ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fadeInTime: 0.08
+  _fadeOutTime: 0.15
+  _rimMaterial: {fileID: 2100000, guid: 39fbd163dc5bc0143b1f3101ca517f88, type: 2}
+  _rimColor: {r: 1, g: 0.95, b: 0.75, a: 0.9}
+  _rimWidth: 0.04
 --- !u!1 &1238828326337116156
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,6 +19,15 @@ public class Ability_Light : Ability_Base
     // ボタンを押したまま能力が使えないエリアに入り、発光を止めている(ボタンを押したままエリアを出たら発光を戻す)
     private bool _isSuppressedBySeal = false;
 
+    // 発光ドームを出しているか(ボタンでの発光・ワープ中などの自動発光)
+    public bool isLighting => _isManualLight || _isAutoLight;
+
+    // 発光し始めた瞬間の輝き(ボタンで発光した時と、発光中に攻撃を回避した時に出す。ワープ中の自動発光だけでは出さない)
+    [SerializeField] private LightBurst _lightBurstPrefab;
+    private const float LIGHT_BURST_MIN_INTERVAL = 0.15f; // 連続で回避した時に、続けて出しすぎない間隔(秒)
+    private float _lastLightBurstTime = -999f;
+    private float _lastAvoidBurstTime = -999f;
+
     public override void UpdateParameter(bool is_right, Transform chara_pos, CommonParameter common_param, CharacterParameter_Player chara_param, WarpControl warp_control, MotorStates motor_states) {
         base.UpdateParameter(is_right, chara_pos, common_param, chara_param, warp_control, motor_states);
 
@@ -76,6 +85,7 @@ public class Ability_Light : Ability_Base
 
         // ライトドーム表示
         _isManualLight = true;
+        _SpawnLightBurst();
 
         // ジャスト回避判定
         _warpControl.SpawnJustAvoidZone();
@@ -145,10 +155,14 @@ public class Ability_Light : Ability_Base
         UpdatePartnerTransform(); // 位置更新
         _ResetReturnTimer();
         _isManualLight = true;
+        _SpawnLightBurst();
     }
 
     // 自動発光回避
     public void AutoAvoid() {
+        // 回避した瞬間の輝き(相棒が既に出ている時も、回避したことが分かるように出す。回避した地点に残す)
+        _SpawnLightBurst(stay: true);
+
         if (_isManualLight || _isNotHide) {
             return;
         }
@@ -206,6 +220,32 @@ public class Ability_Light : Ability_Base
         }
         Time.timeScale = 1.0f;
         _justAvoidEffectCoroutine = null;
+    }
+
+    /// <summary>
+    /// ボタンで発光している間に攻撃を回避した時の輝き(自動発光での回避はAutoAvoidで出す)
+    /// </summary>
+    public void OnManualAvoid() {
+        _SpawnLightBurst(stay: true); // 回避した地点に残す
+    }
+
+    /// <summary>
+    /// 発光し始めた瞬間の輝きを、ルル(発光ドームの中心)に出す
+    /// </summary>
+    /// <param name="stay">出した場所に残す(回避した時。ルルは回避ワープで移動するので、回避した地点に輝きを残す)</param>
+    private void _SpawnLightBurst(bool stay = false) {
+        if (_lightBurstPrefab == null || _lightDomeInstance == null) return;
+        // 続けて出しすぎないようにする間隔は、発光開始と回避で別に数える
+        // (押した直後に回避した時も、回避した地点に輝きを残すため)
+        if (stay) {
+            if (Time.unscaledTime - _lastAvoidBurstTime < LIGHT_BURST_MIN_INTERVAL) return;
+            _lastAvoidBurstTime = Time.unscaledTime;
+        } else {
+            if (Time.unscaledTime - _lastLightBurstTime < LIGHT_BURST_MIN_INTERVAL) return;
+            _lastLightBurstTime = Time.unscaledTime;
+        }
+        var center = _lightDomeInstance.transform;
+        LightBurst.Spawn(_lightBurstPrefab, center.position, stay ? null : center);
     }
 
     private void _UpdateLightDomeActive() {
