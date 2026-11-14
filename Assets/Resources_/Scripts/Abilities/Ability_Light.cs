@@ -4,12 +4,10 @@ using UnityEngine.Rendering.Universal;
 
 public class Ability_Light : Ability_Base
 {
+    // 発光ドーム。見た目(絵・ライト)はまとう光(_lightAuraPrefab)に置き換えたので出さず、
+    // 発動音・当たり判定と、輝きを出す位置の目印として使う
     [SerializeField] private GameObject _lightDomePrefab;
     private GameObject _lightDomeInstance;
-    private SpriteRenderer _lightDomeRenderer;
-    private float _lightDomeDefaultAlpha = 0.5f;
-    private Light2D _light;
-    private float _lightDefaultIntensity = 0.7f;
 
     private bool _isNotHide => _rend.color.a > 0.9f;
 
@@ -22,14 +20,7 @@ public class Ability_Light : Ability_Base
     // 発光しているか(ボタンでの発光・ワープ中などの自動発光)
     public bool isLighting => _isManualLight || _isAutoLight;
 
-    // 発光ドームを見せるか。通常の発光中はまとう光(_lightAuraPrefab)を見せ、ドームは出さない。
-    // 姿を消して光だけを見せる演出中(コインレールなど)は、ルルの位置が分かるようドームを出す
-    private bool _isDomeVisible = false;
-    public void SetDomeVisible(bool visible) {
-        _isDomeVisible = visible;
-    }
-
-    // 発光している間にまとう光(一定の明るさで回り、少し拡縮し続ける)
+    // 発光している間にまとう光(一定の明るさで回り、少し拡縮し続ける。コインレールなどで姿を消している間も出す)
     [SerializeField] private LightAura _lightAuraPrefab;
     private LightAura _lightAura;
 
@@ -44,14 +35,9 @@ public class Ability_Light : Ability_Base
 
         if (_lightDomeInstance == null) {
             _lightDomeInstance = Instantiate(_lightDomePrefab, _playerTransform);
-            _lightDomeRenderer = _lightDomeInstance.GetComponentInChildren<SpriteRenderer>();
-            if (_lightDomeRenderer != null) {
-                _lightDomeDefaultAlpha = _lightDomeRenderer.color.a;
-            }
-            _light = _lightDomeInstance.GetComponentInChildren<Light2D>();
-            if (_light != null) {
-                _lightDefaultIntensity = _light.intensity;
-            }
+            // 見た目はまとう光で出すので、ドームの絵とライトは消しておく
+            foreach (var r in _lightDomeInstance.GetComponentsInChildren<SpriteRenderer>(true)) r.enabled = false;
+            foreach (var l in _lightDomeInstance.GetComponentsInChildren<Light2D>(true)) l.enabled = false;
         }
         if (_lightAura == null && _lightAuraPrefab != null) {
             _lightAura = Instantiate(_lightAuraPrefab, _playerTransform);
@@ -67,11 +53,9 @@ public class Ability_Light : Ability_Base
             _anim?.Play("Pepe_ToHide");
         }
 
-        _UpdateLightDomeActive();
-
-        // 発光している間は光をまとう(ドームを見せている演出中は重ねない)
+        // 発光している間は光をまとう
         if (_lightAura != null) {
-            _lightAura.SetVisible(isLighting && !_isDomeVisible);
+            _lightAura.SetVisible(isLighting);
         }
     }
 
@@ -266,34 +250,6 @@ public class Ability_Light : Ability_Base
         }
         var center = _lightDomeInstance.transform;
         LightBurst.Spawn(_lightBurstPrefab, center.position, stay ? null : center);
-    }
-
-    private void _UpdateLightDomeActive() {
-        if(_lightDomeRenderer == null) {
-            return;
-        }
-        var light_color = _lightDomeRenderer.color;
-        if ((_isManualLight || _isAutoLight) && _isDomeVisible) {
-            // 発光中は徐々に明るくする
-            light_color.a = Mathf.Min(light_color.a + Time.deltaTime * 30.0f, _lightDomeDefaultAlpha);
-            if (_light != null) {
-                _light.intensity = Mathf.Min(_light.intensity + Time.deltaTime * 2.0f, _lightDefaultIntensity);
-            }
-        } else {
-            // すぐに暗くする
-            if (light_color.a < _lightDomeDefaultAlpha / 2) {
-                light_color.a = 0;
-                if (_light != null) {
-                    _light.intensity = 0;
-                }
-            } else {
-                light_color.a = light_color.a / 2;
-                if (_light != null) {
-                    _light.intensity = _light.intensity / 2;
-                }
-            }
-        }
-        _lightDomeRenderer.color = light_color;
     }
 
     /// <summary>

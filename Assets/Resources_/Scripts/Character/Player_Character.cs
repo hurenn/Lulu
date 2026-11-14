@@ -1006,7 +1006,7 @@ public class Player_Character : Character_Base {
         if (enable) _rb.linearVelocity = Vector2.zero;
     }
 
-    // true: 姿を消して発光(LightDome)だけを見せる(コインレールの演出中など)
+    // true: 姿を消してまとう光(LightAura)だけを見せる(コインレールの演出中など)
     private bool _isLightOnlyAppearance = false;
 
     // 必殺技のポーズ(Special_Marlica等)を取っているか
@@ -1084,15 +1084,13 @@ public class Player_Character : Character_Base {
     }
 
     /// <summary>
-    /// 姿を消して発光(LightDome)だけを見せる状態にする
+    /// 姿を消してまとう光(LightAura)だけを見せる状態にする
     /// ワープの合間も発光を切らさず、姿は毎フレーム消し直す(アニメーション等で再表示されても見えないように)
     /// </summary>
     /// <returns>光の能力で発光できたか(未所持の時はfalse。発光の見た目は呼び出し側で用意する)</returns>
     public bool SetLightOnlyAppearance(bool enable) {
         _isLightOnlyAppearance = enable;
         if (_sprite != null) _sprite.enabled = !enable;
-        // 姿を消している間は、ルルの位置が分かるよう発光ドームを見せる(通常の発光中はドームを出さない)
-        _GetAbility<Ability_Light>()?.SetDomeVisible(enable);
         _SetAutoLight(enable || _isWarpDashing || _isWarpDelay);
         return _GetAbility<Ability_Light>() != null;
     }

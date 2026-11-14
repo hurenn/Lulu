@@ -17,7 +17,7 @@ public class CoinRailCircus : MonoBehaviour {
     [SerializeField] private GameObject[] _hideOnStart;     // 演出開始時に非表示にするもの(追ってきていたゼルクス等)
 
     [Header("ルルの見た目")]
-    [SerializeField] private GameObject _fallbackLightDomePrefab; // 光の能力が未所持の時に、代わりにルルに付けるLightDome
+    [SerializeField] private LightAura _fallbackLightAuraPrefab; // 光の能力が未所持の時に、代わりにルルに付けるまとう光
 
     [Header("弾(ルルの進行方向の反対側の画面外から絶え間なく撃ち込まれる。大半は弧を描いてルルの脇をかすめる)")]
     [SerializeField] private CircusMissile _missilePrefab;
@@ -126,14 +126,16 @@ public class CoinRailCircus : MonoBehaviour {
         _currentIndex = start_index;
         var player = warp.GetComponentInParent<Player_Character>();
         bool prev_invincible = player != null && player.IsEventInvincible;
-        GameObject fallback_dome = null;
+        LightAura fallback_aura = null;
         if (player != null) {
             player.IsEventInvincible = true;
             player.SetRailTravel(true);
-            // 移動中はルルの姿を消し、LightDomeの光だけを見せる(光の能力が無ければ代わりのLightDomeを付ける)
+            // 移動中はルルの姿を消し、まとう光だけを見せる(光の能力が無ければ代わりのまとう光を付ける)
             bool has_light = player.SetLightOnlyAppearance(true);
-            if (!has_light && _fallbackLightDomePrefab != null) {
-                fallback_dome = _CreateFallbackLightDome(player.transform);
+            if (!has_light && _fallbackLightAuraPrefab != null) {
+                fallback_aura = Instantiate(_fallbackLightAuraPrefab, player.transform);
+                fallback_aura.transform.localPosition = Vector3.zero;
+                fallback_aura.SetVisible(true);
             }
         }
 
@@ -212,21 +214,8 @@ public class CoinRailCircus : MonoBehaviour {
             player.SetRailTravel(false);
             player.SetLightOnlyAppearance(false);
         }
-        if (fallback_dome != null) Destroy(fallback_dome);
+        if (fallback_aura != null) Destroy(fallback_aura.gameObject);
         _isPlaying = false;
-    }
-
-    // 見た目だけのLightDomeを付ける(光の能力の発動音・当たり判定は出さない)
-    private GameObject _CreateFallbackLightDome(Transform parent) {
-        // 非アクティブな親の下で生成し、発動音(playOnAwake)が鳴る前に音と当たり判定を止める
-        var holder = new GameObject("FallbackLightDomeHolder");
-        holder.SetActive(false);
-        var dome = Instantiate(_fallbackLightDomePrefab, holder.transform);
-        foreach (var audio in dome.GetComponentsInChildren<AudioSource>(true)) audio.enabled = false;
-        foreach (var col in dome.GetComponentsInChildren<Collider2D>(true)) col.enabled = false;
-        dome.transform.SetParent(parent, false);
-        Destroy(holder);
-        return dome;
     }
 
     /// <summary>
