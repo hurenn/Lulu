@@ -19,10 +19,21 @@ public class Ability_Light : Ability_Base
     // ボタンを押したまま能力が使えないエリアに入り、発光を止めている(ボタンを押したままエリアを出たら発光を戻す)
     private bool _isSuppressedBySeal = false;
 
-    // 発光ドームを出しているか(ボタンでの発光・ワープ中などの自動発光)
+    // 発光しているか(ボタンでの発光・ワープ中などの自動発光)
     public bool isLighting => _isManualLight || _isAutoLight;
 
-    // 発光し始めた瞬間の輝き(ボタンで発光した時と、発光中に攻撃を回避した時に出す。ワープ中の自動発光だけでは出さない)
+    // 発光ドームを見せるか。通常の発光中はまとう光(_lightAuraPrefab)を見せ、ドームは出さない。
+    // 姿を消して光だけを見せる演出中(コインレールなど)は、ルルの位置が分かるようドームを出す
+    private bool _isDomeVisible = false;
+    public void SetDomeVisible(bool visible) {
+        _isDomeVisible = visible;
+    }
+
+    // 発光している間にまとう光(一定の明るさで回り、少し拡縮し続ける)
+    [SerializeField] private LightAura _lightAuraPrefab;
+    private LightAura _lightAura;
+
+    // 輝き(ボタンで発光した時と、発光中に攻撃を回避した時に出す。ワープ中の自動発光だけでは出さない)
     [SerializeField] private LightBurst _lightBurstPrefab;
     private const float LIGHT_BURST_MIN_INTERVAL = 0.15f; // 連続で回避した時に、続けて出しすぎない間隔(秒)
     private float _lastLightBurstTime = -999f;
@@ -42,6 +53,10 @@ public class Ability_Light : Ability_Base
                 _lightDefaultIntensity = _light.intensity;
             }
         }
+        if (_lightAura == null && _lightAuraPrefab != null) {
+            _lightAura = Instantiate(_lightAuraPrefab, _playerTransform);
+            _lightAura.transform.localPosition = Vector3.zero;
+        }
 
         _warpControl.SetJustAvoidCallback(StartJustAvoid);
     }
@@ -53,6 +68,11 @@ public class Ability_Light : Ability_Base
         }
 
         _UpdateLightDomeActive();
+
+        // 発光している間は光をまとう(ドームを見せている演出中は重ねない)
+        if (_lightAura != null) {
+            _lightAura.SetVisible(isLighting && !_isDomeVisible);
+        }
     }
 
     // 自動発光設定
@@ -253,7 +273,7 @@ public class Ability_Light : Ability_Base
             return;
         }
         var light_color = _lightDomeRenderer.color;
-        if (_isManualLight || _isAutoLight) {
+        if ((_isManualLight || _isAutoLight) && _isDomeVisible) {
             // 発光中は徐々に明るくする
             light_color.a = Mathf.Min(light_color.a + Time.deltaTime * 30.0f, _lightDomeDefaultAlpha);
             if (_light != null) {

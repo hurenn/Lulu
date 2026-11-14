@@ -35,7 +35,7 @@ public class LuluLightAppearance : MonoBehaviour {
     }
 
     /// <summary>
-    /// 発光しているかを設定する(光の能力の発光ドームを出している間true)
+    /// 発光しているかを設定する(光の能力で発光している間true)
     /// </summary>
     public void SetLighting(bool is_lighting) {
         _isLighting = is_lighting;

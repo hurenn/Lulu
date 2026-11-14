@@ -1091,6 +1091,8 @@ public class Player_Character : Character_Base {
     public bool SetLightOnlyAppearance(bool enable) {
         _isLightOnlyAppearance = enable;
         if (_sprite != null) _sprite.enabled = !enable;
+        // 姿を消している間は、ルルの位置が分かるよう発光ドームを見せる(通常の発光中はドームを出さない)
+        _GetAbility<Ability_Light>()?.SetDomeVisible(enable);
         _SetAutoLight(enable || _isWarpDashing || _isWarpDelay);
         return _GetAbility<Ability_Light>() != null;
     }

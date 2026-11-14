@@ -26,15 +26,18 @@ public class LightBurst : MonoBehaviour {
 
     private float _time;
     private Transform _follow;
+    private float _strength = 1f;
 
     /// <summary>
     /// エフェクトを出す
     /// </summary>
     /// <param name="follow">付いていく対象(nullなら出した位置に留まる)</param>
-    public static LightBurst Spawn(LightBurst prefab, Vector3 center, Transform follow = null) {
+    /// <param name="strength">強さの倍率(全ての層の濃さとライトの明るさに掛ける)</param>
+    public static LightBurst Spawn(LightBurst prefab, Vector3 center, Transform follow = null, float strength = 1f) {
         if (prefab == null) return null;
         var burst = Instantiate(prefab, new Vector3(center.x, center.y, prefab.transform.position.z), Quaternion.identity);
         burst._follow = follow;
+        burst._strength = strength;
         burst._Begin();
         return burst;
     }
@@ -70,11 +73,11 @@ public class LightBurst : MonoBehaviour {
                 ? new Vector3(layer.baseScale.x * s, layer.baseScale.y * layer.thinning.Evaluate(rate), layer.baseScale.z)
                 : layer.baseScale * s;
             var color = r.color;
-            color.a = layer.baseAlpha * layer.alpha.Evaluate(rate);
+            color.a = layer.baseAlpha * layer.alpha.Evaluate(rate) * _strength;
             r.color = color;
         }
         if (_light != null) {
-            _light.intensity = _lightIntensity.Evaluate(rate);
+            _light.intensity = _lightIntensity.Evaluate(rate) * _strength;
         }
     }
 }
