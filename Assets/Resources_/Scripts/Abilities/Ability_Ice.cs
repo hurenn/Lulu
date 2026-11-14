@@ -963,6 +963,7 @@ public class Ability_Ice : Ability_Base {
                 damaged.Add(enemy);
                 _SpecialDamage(enemy, _specialFirstAttackDamage, zone);
                 _PlaySpecialSe(_seSpecialFirstHit, _seSpecialFirstHitVolume);
+                _SpawnSpecialStreak(enemy, velocity);
                 CinemachineManager.Instance?.ShakeCamera(0.3f, 0.1f);
                 // 倒した時もヒットストップをかける(ヒットストップ中は進まないため、その場に止まってから通り抜ける)
                 float hit_stop = _IsValidTarget(enemy) ? _specialFirstAttackHitStopTime : _specialFirstAttackKillHitStopTime;
@@ -1101,6 +1102,7 @@ public class Ability_Ice : Ability_Base {
                 is_hit = true;
                 if (_SpecialDamage(target, _specialAttackDamage, zone)) {
                     _PlaySpecialSe(_seSpecialHit, _seSpecialHitVolume);
+                    _SpawnSpecialStreak(target, dir);
                     // ヒットストップ(演出だけを止める。カメラの揺れは止めない)
                     _StartSpecialHitStop(_specialAttackHitStopTime);
                     CinemachineManager.Instance?.ShakeCamera(_specialAttackHitShake, _specialAttackHitShakeTime);
@@ -1187,6 +1189,7 @@ public class Ability_Ice : Ability_Base {
         if (_IsValidTarget(target)) {
             is_hit = true;
             if (zone != null) _RunUnscaled(zone.SpawnHitEffectAt(_GetTargetCenter(target)));
+            _SpawnSpecialStreak(target, dir);
         }
         if (_seSpecialFinishHit != null) {
             foreach (var se in _seSpecialFinishHit) _PlaySpecialSe(se, _seSpecialFinishHitVolume);
@@ -1290,6 +1293,15 @@ public class Ability_Ice : Ability_Base {
         rect.anchorMax = Vector2.one;
         rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
+    }
+
+    /// <summary>
+    /// 必殺技の攻撃が当たった敵を中心に、攻撃の向きへ画面を横断する閃光を走らせる
+    /// (閃光は実時間で動くため、時間を止めている間も走る)
+    /// </summary>
+    private void _SpawnSpecialStreak(Enemy_Base target, Vector2 dir) {
+        if (_slashStreak == null || target == null) return;
+        SlashStreak.Spawn(_slashStreak, _GetTargetCenter(target), dir);
     }
 
     /// <summary>
