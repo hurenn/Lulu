@@ -24,6 +24,7 @@ public class WarpControl : MonoBehaviour {
     [SerializeField] private LayerMask _coinLayer;          // コインのレイヤー
     [SerializeField] private float _coinWarpInterval = 0.1f;
     [SerializeField] private float _avoidWarpInterval = 0.5f;
+    [SerializeField] private float _avoidWarpMinDistance = 0.5f; // 回避ワープで移動する最短距離(これより近い場所しか空いていない方向には飛ばない)
     private bool _isRight = true;   // 右向きか確認
     public bool isRight { get { return _isRight; } set { _isRight = value; } }
     private Vector3 _forward => _isRight ? Vector3.right : Vector3.left;
@@ -192,6 +193,9 @@ public class WarpControl : MonoBehaviour {
         // 能力が使えないエリアに入る場合は、エリアとの境界線で止める
         AbilitySealArea.ClipPath(transform.position, ref safe_point);
 
+        // このワープの番号(後から別のワープが始まったら、このワープの終了処理は行わない)
+        int warp_serial = ++_warpSerial;
+
         // ワープ前の共通処理
         if (_onPreWarpCommon != null) {
             _onPreWarpCommon();
@@ -228,9 +232,16 @@ public class WarpControl : MonoBehaviour {
         if (end_delay > 0.0f)
             yield return new WaitForSeconds(end_delay);
 
+        // 待っている間に次のワープが始まっていたら、終了処理(重力を戻すなど)はそちらに任せる。
+        // 回避ワープの滞空中に再び回避した時などに、前のワープの終了で滞空が途中で切れないようにするため
+        if (warp_serial != _warpSerial) yield break;
+
         if (_onWarpEndCommon != null)
             _onWarpEndCommon();
     }
+
+    // ワープを始めるたびに増やす番号(最後に始めたワープを判別する)
+    private int _warpSerial = 0;
 
     // 今の見た目をその場に複製し、_afterImageDurationかけて薄くしながら消す
     private void _SpawnAfterImage() {
@@ -529,15 +540,18 @@ public class WarpControl : MonoBehaviour {
     /// 回避ワープ
     /// </summary>
     public IEnumerator AvoidWarp(System.Action avoid_effect, Vector2 input_dir) {
-        // 全てのチェッカーでワープ可能な方向を調べる
-        WarpChecker[] valid_checkers =
-        System.Array.FindAll(warpCheckers, (checker) => {
-            var safe_point = checker.GetWarpPoint(true);
-            if (!safe_point.HasValue) {
-                safe_point = checker.GetWarpPoint(false);
+        // 全てのチェッカーでワープ先を調べる。最大距離の地点が地形に埋まっていても、通常のワープと同じく
+        // 手前の空いている場所を探す(狭い場所で回避が不発になり、その場から落ちるのを防ぐ)
+        Vector2 origin = transform.position;
+        var destinations = new System.Collections.Generic.Dictionary<WarpChecker, Vector2>();
+        foreach (var checker in warpCheckers) {
+            Vector2 dest = checker.GetWarpDestination(origin, checker.transform.position);
+            // ほとんど動かない場所はワープ先にしない
+            if (Vector2.Distance(origin, dest) >= _avoidWarpMinDistance) {
+                destinations[checker] = dest;
             }
-            return safe_point.HasValue;
-        });
+        }
+        WarpChecker[] valid_checkers = System.Array.FindAll(warpCheckers, destinations.ContainsKey);
 
         if (_currentAvoidEffectInterval <= 0) {
             if (avoid_effect != null) {
@@ -576,7 +590,7 @@ public class WarpControl : MonoBehaviour {
             selected_checker = valid_checkers[Random.Range(0, valid_checkers.Length)];
         }
 
-        yield return TargetWarp(selected_checker, _avoidWarpInterval);
+        yield return _ExecuteWarpCommon(destinations[selected_checker], end_delay: _avoidWarpInterval);
     }
 
     /// <summary>
