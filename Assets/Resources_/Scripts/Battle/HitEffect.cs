@@ -27,6 +27,9 @@ public class HitEffect : MonoBehaviour {
     private float _defaultSize = 0f;
     // 種類ごとの色で塗り替えるか(絵そのものに色を付けたエフェクトや、色の帯で塗り分ける材質のエフェクトではfalseにする)
     [SerializeField] private bool _applyTypeColor = true;
+    // 発生する円などの半径も大きさの倍率に合わせるか(粒を中心から離れた位置に出して、引き伸ばした絵の端を中心に揃えるエフェクト用)
+    [SerializeField] private bool _scaleShapeRadius = false;
+    private float _defaultShapeRadius = -1f;
 
     public void Setup(eType type, float size_rate = 1.0f) {
         if (_particle == null) {
@@ -34,6 +37,11 @@ public class HitEffect : MonoBehaviour {
         }
         if(_defaultSize == 0f) {
             _defaultSize = _particle.main.startSize.constant;
+        }
+        if (_scaleShapeRadius) {
+            var shape = _particle.shape;
+            if (_defaultShapeRadius < 0f) _defaultShapeRadius = shape.radius;
+            shape.radius = _defaultShapeRadius * size_rate;
         }
 
         var main = _particle.main;
