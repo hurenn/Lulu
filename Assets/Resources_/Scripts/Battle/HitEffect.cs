@@ -25,6 +25,8 @@ public class HitEffect : MonoBehaviour {
     // パーティクル
     [SerializeField] private ParticleSystem _particle = null;
     private float _defaultSize = 0f;
+    // 種類ごとの色で塗り替えるか(絵そのものに色を付けたエフェクトや、色の帯で塗り分ける材質のエフェクトではfalseにする)
+    [SerializeField] private bool _applyTypeColor = true;
 
     public void Setup(eType type, float size_rate = 1.0f) {
         if (_particle == null) {
@@ -35,7 +37,9 @@ public class HitEffect : MonoBehaviour {
         }
 
         var main = _particle.main;
-        if (_typeColor.ContainsKey(type)) {
+        if (!_applyTypeColor) {
+            // 色は絵・材質のまま(プレハブに設定した開始時の色を使う)
+        } else if (_typeColor.ContainsKey(type)) {
             main.startColor = new ParticleSystem.MinMaxGradient(_typeColor[type], Color.white);
         } else {
             main.startColor = Color.white;
