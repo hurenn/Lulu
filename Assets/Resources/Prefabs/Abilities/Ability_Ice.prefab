@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isGround: 1
   _specialChargeTime: 60
-  _specialReadyDelay: 1.5
+  _specialReadyDelay: 1
   _specialTimelinePrefab: {fileID: 4311468691193044393, guid: e59a36299ddf5d349b6591221e4202bc, type: 3}
   _specialTimelineAsset: {fileID: 11400000, guid: 156d836e251bca248af70e059e3203a0, type: 2}
   _returnTime: 0.7
@@ -60,7 +60,8 @@ MonoBehaviour:
   _slash2: {fileID: 3568965013177453205, guid: 4b72e1cb41d4c294fb83b45a2d17c16f, type: 3}
   _slash3: {fileID: 3568965013177453205, guid: 09088dd8cbcea0c41bce9975dc2537cd, type: 3}
   _lockonSlash: {fileID: 3568965013177453205, guid: 65b8a166ce83b3d45bcf7f20a15c30a4, type: 3}
-  _autoSlashStreak: {fileID: 9208047606563100969, guid: 3bf68361f78980d46a106c80cb3fcdbf, type: 3}
+  _slashStreak: {fileID: 9208047606563100969, guid: 3bf68361f78980d46a106c80cb3fcdbf, type: 3}
+  _slashStreakTilt: 30
   _autoSlashHitStopTime: 0.3
   _specialChargePerHit: 0.01
   _specialChargeBonusRate: 2

@@ -37,7 +37,7 @@ public class Ability_Base : MonoBehaviour {
     /// 必殺技チャージ完了から使えるようになるまでの時間
     /// </summary>
     [SerializeField]
-    private float _specialReadyDelay = 1.5f;
+    private float _specialReadyDelay = 1.0f;
     private float _currentSpecialReadyTime = 0.0f;
     /// <summary>
     /// 必殺技チャージ完了確認(チャージ完了から一定時間経つまでは使えない)
