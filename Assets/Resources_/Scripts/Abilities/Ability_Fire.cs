@@ -14,6 +14,7 @@ public class Ability_Fire : Ability_Base
 
     // 弾オブジェクト
     [SerializeField] private FireBullet _bulletObj;
+    [SerializeField] private Vector2 _shotPosJitter = new Vector2(0.05f, 0.12f); // 発射位置のブレ幅(左右・上下にこの範囲でランダムにずらす)
     // 発射地点
     [SerializeField] private Transform _shotPoint;
 
@@ -223,6 +224,9 @@ public class Ability_Fire : Ability_Base
             shot_offset.x = Mathf.Abs(shot_offset.x) * (_isRight ? 1 : -1);
             shot_pos += shot_offset;
         }
+        // 発射位置を毎回少しずらす(弾道が上下に微妙にばらつく)
+        shot_pos.x += Random.Range(-_shotPosJitter.x, _shotPosJitter.x);
+        shot_pos.y += Random.Range(-_shotPosJitter.y, _shotPosJitter.y);
 
         var bullet = Instantiate(_bulletObj, shot_pos, Quaternion.identity);
         bullet.SetCallback(() => _currentShot--);

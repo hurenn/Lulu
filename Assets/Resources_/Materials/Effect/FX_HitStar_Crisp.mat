@@ -37,7 +37,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DistortTex:
-        m_Texture: {fileID: 2800000, guid: 7aad8c583ef292e48b06af0d1f2fab97, type: 3}
+        m_Texture: {fileID: 2800000, guid: 806e236bc12668e4da974bb8f536d28f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FadeBurnTex:
@@ -104,9 +104,9 @@ Material:
     - _ColorSwapRedLuminosity: 0.5
     - _Contrast: 1
     - _CullingOption: 0
-    - _DistortAmount: 0.5
-    - _DistortTexXSpeed: 5
-    - _DistortTexYSpeed: 5
+    - _DistortAmount: 0.25
+    - _DistortTexXSpeed: 0
+    - _DistortTexYSpeed: -4
     - _EditorDrawers: 6
     - _FadeAmount: -0.1
     - _FadeBurnGlow: 2

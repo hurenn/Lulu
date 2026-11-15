@@ -55,6 +55,14 @@ public class ParticleLights2D : MonoBehaviour {
         }
     }
 
+    // 自身が非表示になった時(プールへ戻った時など)は、親子関係の無いライトが点いたまま残らないよう消す
+    private void OnDisable() {
+        if (_lights == null) return;
+        foreach (var light in _lights) {
+            if (light != null && light.gameObject.activeSelf) light.gameObject.SetActive(false);
+        }
+    }
+
     private void OnDestroy() {
         if (_lights == null) return;
         foreach (var light in _lights) {
