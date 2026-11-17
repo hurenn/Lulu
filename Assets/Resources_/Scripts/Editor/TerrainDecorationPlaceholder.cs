@@ -6,48 +6,80 @@ using UnityEngine.Tilemaps;
 using Placement = TerrainDecorationProfile.ePlacement;
 
 /// <summary>
-/// 地形装飾の仮素材(16x16のドット絵タイル)と初期プロファイルを生成する。
+/// 地形装飾の仮素材(ドット絵タイル)と初期プロファイルを生成する。ステージ1(廃ビル内部)向け。
 /// 正式な絵ができたら、同じ名前のpngを上書きするか、プロファイルのタイルを差し替える。
+/// 2マス幅の絵は左端のマスが基準(ピボットは基準マスの中心)。
 /// </summary>
 public static class TerrainDecorationPlaceholder {
     public const string Folder = "Assets/Resources_/TilePalettes/TerrainDecoration";
     public const string ProfilePath = Folder + "/TerrainDecorationProfile.asset";
-    private const string SpriteFolder = Folder + "/Placeholder";
-    private const string TileFolder = Folder + "/Tiles";
-    private const int Size = 16;
+    public const string SpriteFolder = Folder + "/Placeholder";
+    public const string TileFolder = Folder + "/Tiles";
+    private const int Cell = 16;
 
     private static readonly string[] TerrainTilePaths = {
         "Assets/Resources_/TilePalettes/AutoTile_Building.asset",
         "Assets/Resources_/TilePalettes/AutoTile_BuildingGreen.asset",
     };
 
+    // 地形(灰色のコンクリート)より少し明るくして見分けがつくようにする
     private static readonly Color Clear = new Color(0, 0, 0, 0);
-    private static readonly Color Green = new Color32(92, 184, 84, 255);
-    private static readonly Color DarkGreen = new Color32(52, 120, 60, 255);
-    private static readonly Color Red = new Color32(230, 80, 90, 255);
-    private static readonly Color Yellow = new Color32(250, 220, 90, 255);
-    private static readonly Color Stone = new Color32(150, 150, 160, 255);
-    private static readonly Color StoneDark = new Color32(100, 100, 112, 255);
-    private static readonly Color Ice = new Color32(150, 200, 230, 255);
-    private static readonly Color Crack = new Color32(40, 40, 48, 255);
-    private static readonly Color Window = new Color32(255, 210, 120, 255);
-    private static readonly Color Frame = new Color32(70, 70, 80, 255);
+    private static readonly Color Outline = new Color32(40, 40, 46, 255);
+    private static readonly Color Concrete = new Color32(128, 128, 134, 255);
+    private static readonly Color ConcreteLight = new Color32(168, 168, 174, 255);
+    private static readonly Color ConcreteDark = new Color32(92, 92, 100, 255);
+    private static readonly Color Rust = new Color32(140, 78, 46, 255);
+    private static readonly Color RustDark = new Color32(96, 52, 32, 255);
+    private static readonly Color Glass = new Color32(170, 220, 236, 255);
+    private static readonly Color Cable = new Color32(30, 30, 34, 255);
+    private static readonly Color Stain = new Color32(50, 54, 50, 110);
+    // 緑化(BuildingGreen用)
+    private static readonly Color Leaf = new Color32(84, 146, 64, 255);
+    private static readonly Color LeafLight = new Color32(130, 190, 90, 255);
+    private static readonly Color LeafDark = new Color32(46, 92, 44, 255);
+    private static readonly Color Stem = new Color32(70, 100, 50, 255);
+    private static readonly Color FlowerYellow = new Color32(236, 212, 104, 255);
+    private static readonly Color FlowerPink = new Color32(222, 120, 150, 255);
+    private static readonly Color Moss = new Color32(80, 128, 64, 150);
+
+    /// <summary>絵の基準の置き方</summary>
+    private enum eAnchor { Bottom, Top, Center }
 
     [MenuItem("Tools/Lulu/地形装飾の仮素材を作成")]
     public static TerrainDecorationProfile Create() {
         Directory.CreateDirectory(SpriteFolder);
         Directory.CreateDirectory(TileFolder);
 
-        var grassA = MakeTile("Grass_A", DrawGrassA);
-        var grassB = MakeTile("Grass_B", DrawGrassB);
-        var flower = MakeTile("Flower", DrawFlower);
-        var stone = MakeTile("Stone", DrawStone);
-        var vine = MakeTile("Vine", DrawVine);
-        var icicle = MakeTile("Icicle", DrawIcicle);
-        var mossL = MakeTile("Moss_WallLeft", p => DrawMoss(p, true));
-        var mossR = MakeTile("Moss_WallRight", p => DrawMoss(p, false));
-        var crack = MakeTile("Crack", DrawCrack);
-        var window = MakeTile("Window", DrawWindow);
+        // 床
+        var rubbleLarge = MakeTile("Rubble_Large", 32, 20, eAnchor.Bottom, DrawRubbleLarge);
+        var rubbleA = MakeTile("Rubble_A", 16, 16, eAnchor.Bottom, DrawRubbleA);
+        var rubbleB = MakeTile("Rubble_B", 16, 16, eAnchor.Bottom, DrawRubbleB);
+        var rebar = MakeTile("Debris_Rebar", 16, 16, eAnchor.Bottom, DrawRebar);
+        var pebblesA = MakeTile("Pebbles_A", 16, 16, eAnchor.Bottom, p => DrawPebbles(p, 1));
+        var pebblesB = MakeTile("Pebbles_B", 16, 16, eAnchor.Bottom, p => DrawPebbles(p, 2));
+        var glass = MakeTile("Glass_Shards", 16, 16, eAnchor.Bottom, DrawGlass);
+        // 天井
+        var cable = MakeTile("Ceiling_Cable", 16, 16, eAnchor.Top, DrawCable);
+        var brokenCeiling = MakeTile("Ceiling_Broken", 16, 16, eAnchor.Top, DrawBrokenCeiling);
+        // 地形の内部
+        var crackA = MakeTile("Crack_A", 16, 16, eAnchor.Center, DrawCrackA);
+        var crackB = MakeTile("Crack_B", 16, 16, eAnchor.Center, DrawCrackB);
+        var stain = MakeTile("Stain", 16, 16, eAnchor.Center, DrawStain);
+        var exposed = MakeTile("Rebar_Exposed", 16, 16, eAnchor.Center, DrawExposedRebar);
+
+        // 緑化(BuildingGreen用)
+        var bushLarge = MakeTile("Green_Bush_Large", 32, 20, eAnchor.Bottom, DrawBushLarge);
+        var fern = MakeTile("Green_Fern", 16, 24, eAnchor.Bottom, DrawFern);
+        var grassA = MakeTile("Green_Grass_A", 16, 16, eAnchor.Bottom, p => DrawGrass(p, 1));
+        var grassB = MakeTile("Green_Grass_B", 16, 16, eAnchor.Bottom, p => DrawGrass(p, 2));
+        var flower = MakeTile("Green_Flower", 16, 16, eAnchor.Bottom, DrawFlower);
+        var vineLong = MakeTile("Green_Vine_Long", 16, 32, eAnchor.Top, p => DrawHangingVine(p, 26));
+        var vineShort = MakeTile("Green_Vine_Short", 16, 16, eAnchor.Top, p => DrawHangingVine(p, 10));
+        var ivyL = MakeTile("Green_Ivy_WallLeft", 16, 32, eAnchor.Bottom, p => DrawWallIvy(p, true));
+        var ivyR = MakeTile("Green_Ivy_WallRight", 16, 32, eAnchor.Bottom, p => DrawWallIvy(p, false));
+        var mossA = MakeTile("Green_Moss_A", 16, 16, eAnchor.Center, p => DrawMossPatch(p, 1));
+        var mossB = MakeTile("Green_Moss_B", 16, 16, eAnchor.Center, p => DrawMossPatch(p, 2));
+        var ivyPatch = MakeTile("Green_Ivy_Patch", 16, 16, eAnchor.Center, DrawIvyPatch);
 
         var profile = AssetDatabase.LoadAssetAtPath<TerrainDecorationProfile>(ProfilePath);
         if (profile != null) {
@@ -60,15 +92,62 @@ public static class TerrainDecorationPlaceholder {
             var t = AssetDatabase.LoadAssetAtPath<TileBase>(path);
             if (t != null) profile.terrainTiles.Add(t);
         }
-        // 同じ配置先では上のルールが優先される(小石→草の順にして、小石が草に埋もれないようにする)
-        profile.rules = new List<TerrainDecorationProfile.Rule> {
-            Rule("小石", Placement.Top, 0.08f, 4, (stone, 1f)),
-            Rule("草花", Placement.Top, 0.35f, 0, (grassA, 3f), (grassB, 2f), (flower, 1f)),
-            Rule("天井のツタ", Placement.Ceiling, 0.15f, 1, (vine, 2f), (icicle, 1f)),
-            Rule("壁の苔(左面)", Placement.WallLeft, 0.12f, 1, (mossL, 1f)),
-            Rule("壁の苔(右面)", Placement.WallRight, 0.12f, 1, (mossR, 1f)),
-            Rule("内部のひび・窓", Placement.Inner, 0.03f, 3, (crack, 2f), (window, 1f)),
+        var building = AssetDatabase.LoadAssetAtPath<TileBase>(TerrainTilePaths[0]);
+        var green = AssetDatabase.LoadAssetAtPath<TileBase>(TerrainTilePaths[1]);
+
+        // 同じ配置先では上のルールが優先される(大きい物→小さい物の順に置き、小さい物で隙間を埋める)
+        // ---- Building: 廃ビルの瓦礫 ----
+        var cornerRule = Rule("隅の瓦礫の山", Placement.Top, 0.6f, 0, (rubbleLarge, 1f));
+        cornerRule.cornerOnly = true;
+        cornerRule.footprint = 2;
+        cornerRule.clearance = 2;
+        var largeRule = Rule("大きな瓦礫", Placement.Top, 0.05f, 5, (rubbleLarge, 1f));
+        largeRule.footprint = 2;
+        largeRule.clearance = 2;
+        largeRule.minSurfaceLength = 4;
+        var buildingRules = new List<TerrainDecorationProfile.Rule> {
+            cornerRule,
+            largeRule,
+            Rule("瓦礫", Placement.Top, 0.10f, 3, (rubbleA, 2f), (rubbleB, 2f), (rebar, 1f)),
+            Rule("小石・ガラス片", Placement.Top, 0.25f, 1, (pebblesA, 3f), (pebblesB, 3f), (glass, 1f)),
+            Rule("天井の垂れ下がり", Placement.Ceiling, 0.08f, 3, (cable, 1f), (brokenCeiling, 1f)),
+            Rule("壁のひび・染み", Placement.Inner, 0.03f, 3, (crackA, 2f), (crackB, 2f), (stain, 1f), (exposed, 1f)),
         };
+        foreach (var r in buildingRules) r.targetTerrainTiles.Add(building);
+
+        // ---- BuildingGreen: 植物・蔓 ----
+        var greenCorner = Rule("隅の茂み", Placement.Top, 0.6f, 0, (bushLarge, 1f));
+        greenCorner.cornerOnly = true;
+        greenCorner.footprint = 2;
+        greenCorner.clearance = 2;
+        var greenBush = Rule("茂み", Placement.Top, 0.06f, 4, (bushLarge, 1f));
+        greenBush.footprint = 2;
+        greenBush.clearance = 2;
+        greenBush.minSurfaceLength = 4;
+        var greenFern = Rule("シダ", Placement.Top, 0.08f, 3, (fern, 1f));
+        greenFern.clearance = 2;
+        var vineLongRule = Rule("垂れ下がる蔓(長)", Placement.Ceiling, 0.10f, 2, (vineLong, 1f));
+        vineLongRule.clearance = 3;
+        var ivyLRule = Rule("壁を這う蔦(左面)", Placement.WallLeft, 0.15f, 2, (ivyL, 1f));
+        ivyLRule.footprint = 2;
+        var ivyRRule = Rule("壁を這う蔦(右面)", Placement.WallRight, 0.15f, 2, (ivyR, 1f));
+        ivyRRule.footprint = 2;
+        var greenRules = new List<TerrainDecorationProfile.Rule> {
+            greenCorner,
+            greenBush,
+            greenFern,
+            Rule("草花", Placement.Top, 0.45f, 0, (grassA, 3f), (grassB, 3f), (flower, 1f)),
+            vineLongRule,
+            Rule("垂れ下がる蔓(短)", Placement.Ceiling, 0.20f, 1, (vineShort, 1f)),
+            ivyLRule,
+            ivyRRule,
+            Rule("苔・蔦の張り付き", Placement.Inner, 0.06f, 2, (mossA, 2f), (mossB, 2f), (ivyPatch, 1f)),
+        };
+        foreach (var r in greenRules) r.targetTerrainTiles.Add(green);
+
+        profile.rules = new List<TerrainDecorationProfile.Rule>();
+        profile.rules.AddRange(buildingRules);
+        profile.rules.AddRange(greenRules);
         AssetDatabase.CreateAsset(profile, ProfilePath);
         AssetDatabase.SaveAssets();
         return profile;
@@ -92,30 +171,93 @@ public static class TerrainDecorationPlaceholder {
     // 素材の書き出し
     // ------------------------------------------------------------------
 
-    private static Tile MakeTile(string name, System.Action<Color[]> draw) {
+    private class Canvas {
+        public readonly int w, h;
+        public readonly Color[] px;
+        public Canvas(int w, int h) {
+            this.w = w;
+            this.h = h;
+            px = new Color[w * h];
+            for (int i = 0; i < px.Length; i++) px[i] = Clear;
+        }
+        public void Set(int x, int y, Color c) {
+            if (x < 0 || x >= w || y < 0 || y >= h) return;
+            px[y * w + x] = c;
+        }
+        public Color Get(int x, int y) => (x < 0 || x >= w || y < 0 || y >= h) ? Clear : px[y * w + x];
+        public void Fill(int x0, int y0, int x1, int y1, Color c) {
+            for (int x = x0; x <= x1; x++)
+                for (int y = y0; y <= y1; y++)
+                    Set(x, y, c);
+        }
+        public void Line(int x0, int y0, int x1, int y1, Color c) {
+            int n = Mathf.Max(Mathf.Abs(x1 - x0), Mathf.Abs(y1 - y0));
+            for (int i = 0; i <= n; i++) {
+                float t = n == 0 ? 0 : i / (float)n;
+                Set(Mathf.RoundToInt(Mathf.Lerp(x0, x1, t)), Mathf.RoundToInt(Mathf.Lerp(y0, y1, t)), c);
+            }
+        }
+        /// <summary>多角形(凸)を塗りつぶし、上側を明るく・縁を暗くする</summary>
+        public void Chunk(Vector2Int[] poly, Color body) {
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                    if (Inside(poly, x + 0.5f, y + 0.5f)) Set(x, y, body);
+            // 縁取り
+            var copy = (Color[])px.Clone();
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++) {
+                    if (copy[y * w + x] != body) continue;
+                    bool edge = x == 0 || y == 0 || x == w - 1 || y == h - 1 ||
+                                copy[y * w + x - 1].a == 0 || copy[y * w + x + 1].a == 0 ||
+                                copy[(y - 1) * w + x].a == 0 || copy[(y + 1) * w + x].a == 0;
+                    if (edge) Set(x, y, Outline);
+                    else if (copy[(y + 1) * w + x] == Outline || copy[(y + 1) * w + x].a == 0 ||
+                             (y + 2 < h && copy[(y + 2) * w + x].a == 0)) Set(x, y, ConcreteLight);
+                }
+        }
+        private static bool Inside(Vector2Int[] poly, float x, float y) {
+            bool inside = false;
+            for (int i = 0, j = poly.Length - 1; i < poly.Length; j = i++) {
+                if ((poly[i].y > y) != (poly[j].y > y) &&
+                    x < (poly[j].x - poly[i].x) * (y - poly[i].y) / (float)(poly[j].y - poly[i].y) + poly[i].x)
+                    inside = !inside;
+            }
+            return inside;
+        }
+    }
+
+    private static Tile MakeTile(string name, int w, int h, eAnchor anchor, System.Action<Canvas> draw) {
         string pngPath = $"{SpriteFolder}/{name}.png";
         string tilePath = $"{TileFolder}/{name}.asset";
 
         // 既にpngがあれば描き直さない(正式な絵に差し替え済みの場合を壊さないため)
         if (!File.Exists(pngPath)) {
-            var pixels = new Color[Size * Size];
-            for (int i = 0; i < pixels.Length; i++) pixels[i] = Clear;
-            draw(pixels);
-            var tex = new Texture2D(Size, Size, TextureFormat.RGBA32, false);
-            tex.SetPixels(pixels);
+            var canvas = new Canvas(w, h);
+            draw(canvas);
+            var tex = new Texture2D(w, h, TextureFormat.RGBA32, false);
+            tex.SetPixels(canvas.px);
             tex.Apply();
             File.WriteAllBytes(pngPath, tex.EncodeToPNG());
             Object.DestroyImmediate(tex);
             AssetDatabase.ImportAsset(pngPath);
 
+            // ピボット=基準マス(左端のマス)の中心。Tilemapはピボットをマスの中心に合わせて描く
+            float pivotY = anchor == eAnchor.Bottom ? (Cell * 0.5f) / h
+                         : anchor == eAnchor.Top ? (h - Cell * 0.5f) / h
+                         : 0.5f;
             var importer = (TextureImporter)AssetImporter.GetAtPath(pngPath);
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
-            importer.spritePixelsPerUnit = Size;
+            importer.spritePixelsPerUnit = Cell;
             importer.filterMode = FilterMode.Point;
             importer.textureCompression = TextureImporterCompression.Uncompressed;
             importer.mipmapEnabled = false;
             importer.alphaIsTransparency = true;
+            var settings = new TextureImporterSettings();
+            importer.ReadTextureSettings(settings);
+            settings.spriteAlignment = (int)SpriteAlignment.Custom;
+            settings.spritePivot = new Vector2((Cell * 0.5f) / w, pivotY);
+            importer.SetTextureSettings(settings);
             importer.SaveAndReimport();
         }
 
@@ -129,72 +271,221 @@ public static class TerrainDecorationPlaceholder {
         return tile;
     }
 
+    private static Vector2Int[] P(params int[] xy) {
+        var r = new Vector2Int[xy.Length / 2];
+        for (int i = 0; i < r.Length; i++) r[i] = new Vector2Int(xy[i * 2], xy[i * 2 + 1]);
+        return r;
+    }
+
     // ------------------------------------------------------------------
-    // 仮の絵(左下原点、16x16)
+    // 仮の絵(左下原点)
     // ------------------------------------------------------------------
 
-    private static void Set(Color[] p, int x, int y, Color c) {
-        if (x < 0 || x >= Size || y < 0 || y >= Size) return;
-        p[y * Size + x] = c;
+    private static void DrawRubbleLarge(Canvas c) {
+        // 崩れたコンクリート塊が積み重なった山(32x20)
+        c.Chunk(P(0, 0, 13, 0, 12, 7, 7, 10, 1, 6), Concrete);
+        c.Chunk(P(10, 0, 26, 0, 25, 9, 17, 12, 11, 6), Concrete);
+        c.Chunk(P(22, 0, 31, 0, 31, 4, 26, 6), ConcreteDark);
+        c.Chunk(P(8, 9, 18, 10, 19, 17, 12, 18, 7, 14), Concrete);
+        // 飛び出した鉄筋
+        c.Line(15, 15, 22, 19, Rust);
+        c.Line(16, 14, 23, 18, RustDark);
+        c.Line(24, 8, 28, 15, Rust);
+        // 細かい破片
+        c.Set(29, 0, Concrete); c.Set(30, 1, ConcreteLight); c.Set(3, 7, ConcreteDark);
     }
 
-    private static void VLine(Color[] p, int x, int y0, int y1, Color c) {
-        for (int y = Mathf.Min(y0, y1); y <= Mathf.Max(y0, y1); y++) Set(p, x, y, c);
+    private static void DrawRubbleA(Canvas c) {
+        c.Chunk(P(2, 0, 11, 0, 10, 6, 5, 8, 2, 4), Concrete);
+        c.Chunk(P(10, 0, 15, 0, 14, 4, 11, 4), ConcreteDark);
     }
 
-    private static void DrawGrassA(Color[] p) {
-        VLine(p, 3, 0, 4, Green); VLine(p, 4, 0, 6, DarkGreen);
-        VLine(p, 8, 0, 5, Green); VLine(p, 9, 0, 3, DarkGreen);
-        VLine(p, 12, 0, 4, Green);
+    private static void DrawRubbleB(Canvas c) {
+        c.Chunk(P(1, 0, 7, 0, 7, 4, 3, 5), ConcreteDark);
+        c.Chunk(P(6, 0, 14, 0, 13, 9, 8, 7), Concrete);
+        c.Line(9, 6, 12, 12, Rust);
     }
 
-    private static void DrawGrassB(Color[] p) {
-        for (int x = 1; x < 15; x++) VLine(p, x, 0, 1 + (x * 7 % 5), x % 2 == 0 ? Green : DarkGreen);
+    private static void DrawRebar(Canvas c) {
+        // 曲がった鉄筋と小さな塊
+        c.Line(1, 1, 7, 2, Rust); c.Line(7, 2, 10, 7, Rust); c.Line(10, 7, 14, 8, Rust);
+        c.Line(1, 0, 7, 1, RustDark); c.Line(8, 1, 11, 6, RustDark);
+        c.Chunk(P(3, 0, 8, 0, 7, 3, 4, 3), ConcreteDark);
     }
 
-    private static void DrawFlower(Color[] p) {
-        VLine(p, 7, 0, 6, DarkGreen);
-        Set(p, 6, 2, Green); Set(p, 8, 3, Green);
-        Set(p, 7, 7, Yellow);
-        Set(p, 6, 7, Red); Set(p, 8, 7, Red); Set(p, 7, 8, Red); Set(p, 7, 6, Red);
-    }
-
-    private static void DrawStone(Color[] p) {
-        for (int x = 4; x <= 11; x++) VLine(p, x, 0, x >= 6 && x <= 9 ? 3 : 2, Stone);
-        for (int x = 5; x <= 10; x++) Set(p, x, 0, StoneDark);
-        Set(p, 7, 3, Color.white);
-    }
-
-    private static void DrawVine(Color[] p) {
-        VLine(p, 3, 15, 8, DarkGreen); VLine(p, 4, 15, 11, Green);
-        VLine(p, 9, 15, 5, DarkGreen); Set(p, 10, 9, Green); Set(p, 8, 7, Green);
-        VLine(p, 13, 15, 10, Green);
-    }
-
-    private static void DrawIcicle(Color[] p) {
-        for (int i = 0; i < 6; i++) VLine(p, 5 + i, 15, 15 - (i < 3 ? i * 3 : (5 - i) * 3) - 2, Ice);
-    }
-
-    private static void DrawMoss(Color[] p, bool hugRight) {
-        // WallLeft = 壁の左面 = 装飾マスの右端に貼り付く
-        for (int y = 2; y < 14; y++) {
-            int w = 1 + (y * 5 % 3);
-            for (int i = 0; i < w; i++) Set(p, hugRight ? Size - 1 - i : i, y, i == 0 ? DarkGreen : Green);
+    private static void DrawPebbles(Canvas c, int variant) {
+        int[] xs = variant == 1 ? new[] { 1, 5, 6, 11, 14 } : new[] { 2, 3, 8, 12, 13 };
+        for (int i = 0; i < xs.Length; i++) {
+            Color col = i % 2 == 0 ? Concrete : ConcreteDark;
+            c.Set(xs[i], 0, col);
+            if (i % 2 == 0) { c.Set(xs[i] + 1, 0, col); c.Set(xs[i], 1, ConcreteLight); }
         }
     }
 
-    private static void DrawCrack(Color[] p) {
-        int x = 4;
-        for (int y = 13; y >= 3; y--) {
-            Set(p, x, y, Crack);
-            if (y % 3 == 0) x++;
-        }
-        Set(p, 7, 8, Crack); Set(p, 8, 9, Crack); Set(p, 9, 9, Crack);
+    private static void DrawGlass(Canvas c) {
+        c.Line(2, 0, 4, 2, Glass); c.Set(3, 0, Glass);
+        c.Line(8, 0, 9, 3, Glass); c.Set(9, 0, Color.white);
+        c.Set(12, 0, Glass); c.Set(13, 1, Glass); c.Set(13, 0, Glass);
+        c.Set(6, 0, ConcreteDark); c.Set(15, 0, Concrete);
     }
 
-    private static void DrawWindow(Color[] p) {
-        for (int x = 4; x <= 11; x++)
-            for (int y = 4; y <= 11; y++)
-                Set(p, x, y, (x == 4 || x == 11 || y == 4 || y == 11 || x == 7 || y == 7) ? Frame : Window);
+    private static void DrawCable(Canvas c) {
+        // 天井から垂れ下がった配線(上端が天井)
+        for (int x = 2; x <= 13; x++) {
+            int sag = Mathf.RoundToInt(Mathf.Sin((x - 2) / 11f * Mathf.PI) * 7f);
+            c.Set(x, 15 - sag, Cable);
+        }
+        c.Line(9, 15, 10, 4, Cable);
+        c.Set(10, 3, Rust); c.Set(11, 3, ConcreteLight);
+    }
+
+    private static void DrawBrokenCeiling(Canvas c) {
+        // 剥がれかけたコンクリートと鉄筋
+        c.Chunk(P(2, 15, 13, 15, 11, 10, 6, 9, 3, 12), Concrete);
+        c.Line(5, 10, 4, 4, Rust);
+        c.Line(9, 10, 11, 5, Rust);
+        c.Set(4, 3, RustDark);
+    }
+
+    private static void DrawCrackA(Canvas c) {
+        c.Line(3, 14, 6, 10, Outline); c.Line(6, 10, 5, 6, Outline); c.Line(5, 6, 9, 2, Outline);
+        c.Line(6, 9, 10, 8, Outline); c.Line(10, 8, 12, 10, Outline);
+    }
+
+    private static void DrawCrackB(Canvas c) {
+        c.Line(2, 4, 7, 7, Outline); c.Line(7, 7, 13, 6, Outline);
+        c.Line(7, 7, 8, 11, Outline); c.Line(13, 6, 14, 3, Outline);
+    }
+
+    private static void DrawStain(Canvas c) {
+        // 雨漏りの染み(縦に流れる)
+        for (int x = 4; x <= 11; x++) {
+            int len = 4 + (x * 7 % 5) * 2;
+            for (int y = 15; y > 15 - len; y--) c.Set(x, y, Stain);
+        }
+    }
+
+    private static void DrawExposedRebar(Canvas c) {
+        // 剥がれた穴から鉄筋が見えている
+        c.Fill(3, 4, 12, 11, ConcreteDark);
+        for (int x = 3; x <= 12; x++) { c.Set(x, 4, Outline); c.Set(x, 11, ConcreteLight); }
+        for (int y = 4; y <= 11; y++) { c.Set(3, y, Outline); c.Set(12, y, ConcreteLight); }
+        c.Line(4, 6, 11, 6, Rust); c.Line(4, 9, 11, 9, Rust);
+        c.Line(6, 5, 6, 10, RustDark); c.Line(9, 5, 9, 10, RustDark);
+    }
+
+    // ---- 緑化(BuildingGreen用) ----
+
+    /// <summary>葉の塊(円)。左上を明るく、右下を暗くする</summary>
+    private static void LeafBlob(Canvas c, int cx, int cy, int r) {
+        for (int y = cy - r; y <= cy + r; y++)
+            for (int x = cx - r; x <= cx + r; x++) {
+                int dx = x - cx, dy = y - cy;
+                int d2 = dx * dx + dy * dy;
+                if (d2 > r * r) continue;
+                Color col = d2 > (r - 1) * (r - 1) && (dx > 0 || dy < 0) ? LeafDark
+                          : (dx < 0 && dy > 0 && d2 > (r - 2) * (r - 2)) ? LeafLight
+                          : Leaf;
+                c.Set(x, y, col);
+            }
+    }
+
+    /// <summary>1枚の小さな葉(3ピクセル)</summary>
+    private static void SmallLeaf(Canvas c, int x, int y, bool right) {
+        c.Set(x, y, Leaf);
+        c.Set(x + (right ? 1 : -1), y, LeafLight);
+        c.Set(x, y - 1, LeafDark);
+    }
+
+    private static void DrawBushLarge(Canvas c) {
+        // 2マス幅の茂み(32x20)
+        LeafBlob(c, 6, 4, 5);
+        LeafBlob(c, 25, 4, 5);
+        LeafBlob(c, 15, 7, 7);
+        LeafBlob(c, 9, 10, 4);
+        LeafBlob(c, 21, 11, 4);
+        c.Set(14, 12, FlowerYellow); c.Set(22, 13, FlowerPink); c.Set(7, 11, FlowerYellow);
+    }
+
+    private static void DrawFern(Canvas c) {
+        // 背の高いシダ(16x24、下端が床)
+        int[][] fronds = { new[] { 7, 0, 2, 16 }, new[] { 8, 0, 13, 18 }, new[] { 7, 0, 7, 21 }, new[] { 8, 0, 11, 12 }, new[] { 7, 0, 4, 11 } };
+        foreach (var f in fronds) {
+            c.Line(f[0], f[1], f[2], f[3], Stem);
+            int n = Mathf.Max(Mathf.Abs(f[2] - f[0]), f[3]);
+            for (int i = 3; i < n; i += 2) {
+                float t = i / (float)n;
+                int x = Mathf.RoundToInt(Mathf.Lerp(f[0], f[2], t));
+                int y = Mathf.RoundToInt(Mathf.Lerp(f[1], f[3], t));
+                c.Set(x - 1, y, Leaf); c.Set(x + 1, y, LeafLight);
+                if (i % 4 == 1) { c.Set(x - 2, y - 1, LeafDark); c.Set(x + 2, y - 1, Leaf); }
+            }
+        }
+    }
+
+    private static void DrawGrass(Canvas c, int variant) {
+        int seed = variant * 5;
+        for (int x = 1; x < 15; x++) {
+            int h = 1 + ((x + seed) * 7 % 6);
+            if ((x + variant) % 3 == 0) h += 2;
+            for (int y = 0; y < h; y++) c.Set(x, y, y == h - 1 ? LeafLight : (x % 2 == 0 ? Leaf : LeafDark));
+        }
+    }
+
+    private static void DrawFlower(Canvas c) {
+        DrawGrass(c, 3);
+        c.Line(5, 0, 5, 8, Stem); c.Line(11, 0, 11, 6, Stem);
+        c.Set(5, 9, FlowerYellow); c.Set(4, 9, FlowerPink); c.Set(6, 9, FlowerPink); c.Set(5, 10, FlowerPink);
+        c.Set(11, 7, FlowerYellow); c.Set(10, 7, Color.white); c.Set(12, 7, Color.white); c.Set(11, 8, Color.white);
+    }
+
+    private static void DrawHangingVine(Canvas c, int length) {
+        // 天井(上端)から垂れ下がる蔓
+        int top = c.h - 1;
+        int[] xs = { 3, 8, 12 };
+        int[] lens = { length, length * 2 / 3, length / 2 };
+        for (int i = 0; i < xs.Length; i++) {
+            int x = xs[i];
+            for (int k = 0; k < lens[i]; k++) {
+                int sway = Mathf.RoundToInt(Mathf.Sin((k + i * 3) * 0.45f));
+                c.Set(x + sway, top - k, Stem);
+                if (k % 3 == 1) SmallLeaf(c, x + sway + (k % 2 == 0 ? 1 : -1), top - k, k % 2 == 0);
+            }
+        }
+        // 天井際の葉の塊
+        for (int x = 1; x < 15; x++) { c.Set(x, top, Leaf); if (x % 3 != 0) c.Set(x, top - 1, LeafDark); }
+    }
+
+    private static void DrawWallIvy(Canvas c, bool hugRight) {
+        // 壁面を這う蔦(16x32、2マス分の高さ)。WallLeft=壁の左面=マスの右端に貼り付く
+        int wallX = hugRight ? c.w - 1 : 0;
+        int dir = hugRight ? -1 : 1;
+        for (int y = 0; y < c.h - 2; y++) {
+            int off = Mathf.RoundToInt((Mathf.Sin(y * 0.35f) + 1f) * 1.5f);
+            c.Set(wallX + dir * off, y, Stem);
+            if (y % 3 == 0) {
+                c.Set(wallX + dir * (off + 1), y, Leaf);
+                c.Set(wallX + dir * (off + 2), y, LeafLight);
+                c.Set(wallX + dir * (off + 1), y + 1, LeafDark);
+            }
+            if (y % 5 == 2) c.Set(wallX + dir * Mathf.Max(0, off - 1), y, Leaf);
+        }
+    }
+
+    private static void DrawMossPatch(Canvas c, int variant) {
+        // 壁に張り付いた苔(半透明で地形の質感を残す)
+        int cx = variant == 1 ? 6 : 9, cy = variant == 1 ? 9 : 6;
+        for (int y = 0; y < 16; y++)
+            for (int x = 0; x < 16; x++) {
+                float d = Mathf.Sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy) * 1.6f);
+                if (d < 4.5f + ((x * 3 + y * 5) % 3)) c.Set(x, y, Moss);
+            }
+        c.Set(cx, cy, LeafLight); c.Set(cx + 2, cy - 1, Leaf);
+    }
+
+    private static void DrawIvyPatch(Canvas c) {
+        c.Line(2, 3, 7, 8, Stem); c.Line(7, 8, 13, 10, Stem); c.Line(7, 8, 6, 13, Stem);
+        SmallLeaf(c, 4, 6, false); SmallLeaf(c, 9, 10, true); SmallLeaf(c, 12, 11, true);
+        SmallLeaf(c, 6, 12, false); SmallLeaf(c, 3, 4, true);
     }
 }

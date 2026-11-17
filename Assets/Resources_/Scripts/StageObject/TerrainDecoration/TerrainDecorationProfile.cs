@@ -53,6 +53,12 @@ public class TerrainDecorationProfile : ScriptableObject {
 
         [Tooltip("Inner: 地形の表面からこのマス数以上内側だけに置く")]
         [Min(1)] public int innerDepth = 2;
+
+        [Tooltip("装飾が面に沿って占めるマス数(大きな瓦礫など)。絵は左端(壁なら下端)のマスを基準に描く")]
+        [Min(1)] public int footprint = 1;
+
+        [Tooltip("Top/Ceiling/Wall: 面の端が壁や段差に突き当たる「隅」だけに置く(瓦礫の吹き溜まり用)。edgeMarginは無視される")]
+        public bool cornerOnly = false;
     }
 
     [Tooltip("乱数シード。シーン名と組み合わせるので、同じシードでもステージごとに配置は変わる")]

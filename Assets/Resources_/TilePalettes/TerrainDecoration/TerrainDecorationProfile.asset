@@ -21,85 +21,109 @@ MonoBehaviour:
   excludedTilemapMargin: 2
   sortingOrderOffset: 1
   rules:
-  - name: "\u5C0F\u77F3"
+  - name: "\u9685\u306E\u74E6\u792B\u306E\u5C71"
     enabled: 1
     placement: 0
-    targetTerrainTiles: []
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
     variants:
-    - tile: {fileID: 11400000, guid: 0db0bac1c666f0e4db544ddacf6b37da, type: 2}
+    - tile: {fileID: 11400000, guid: 7986c34a958510942b4c97c44c68aa13, type: 2}
       weight: 1
-    density: 0.08
-    minSpacing: 4
-    minSurfaceLength: 3
-    edgeMargin: 1
-    clearance: 1
-    innerDepth: 2
-  - name: "\u8349\u82B1"
-    enabled: 1
-    placement: 0
-    targetTerrainTiles: []
-    variants:
-    - tile: {fileID: 11400000, guid: 8ec6ee0f98678d34e87ea25fac187094, type: 2}
-      weight: 3
-    - tile: {fileID: 11400000, guid: 08c03ab9a5a0b184a86a8e087e6d9908, type: 2}
-      weight: 2
-    - tile: {fileID: 11400000, guid: f3720e2f40a35024094c299f06c40291, type: 2}
-      weight: 1
-    density: 0.35
+    density: 0.6
     minSpacing: 0
     minSurfaceLength: 3
     edgeMargin: 1
+    clearance: 2
+    innerDepth: 2
+    footprint: 2
+    cornerOnly: 1
+  - name: "\u5927\u304D\u306A\u74E6\u792B"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: 7986c34a958510942b4c97c44c68aa13, type: 2}
+      weight: 1
+    density: 0.05
+    minSpacing: 5
+    minSurfaceLength: 4
+    edgeMargin: 1
+    clearance: 2
+    innerDepth: 2
+    footprint: 2
+    cornerOnly: 0
+  - name: "\u74E6\u792B"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: 9cd2956281ca8c4499759ee1a50900f7, type: 2}
+      weight: 2
+    - tile: {fileID: 11400000, guid: 2c2946345e6aac74ca861eda937bd22c, type: 2}
+      weight: 2
+    - tile: {fileID: 11400000, guid: 72719bd797f1e4f418b6b4b8d02bfedd, type: 2}
+      weight: 1
+    density: 0.1
+    minSpacing: 3
+    minSurfaceLength: 3
+    edgeMargin: 1
     clearance: 1
     innerDepth: 2
-  - name: "\u5929\u4E95\u306E\u30C4\u30BF"
+    footprint: 1
+    cornerOnly: 0
+  - name: "\u5C0F\u77F3\u30FB\u30AC\u30E9\u30B9\u7247"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: e7af0c3d7f998854ea7e9b1d9961b670, type: 2}
+      weight: 3
+    - tile: {fileID: 11400000, guid: ce73fa28fcf895c469ceba6fdf025811, type: 2}
+      weight: 3
+    - tile: {fileID: 11400000, guid: 2cacfdedbcb7fa14294fb75ca0c4b00e, type: 2}
+      weight: 1
+    density: 0.25
+    minSpacing: 1
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+    footprint: 1
+    cornerOnly: 0
+  - name: "\u5929\u4E95\u306E\u5782\u308C\u4E0B\u304C\u308A"
     enabled: 1
     placement: 1
-    targetTerrainTiles: []
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
     variants:
-    - tile: {fileID: 11400000, guid: a098544e23cc1194b863628c00070436, type: 2}
-      weight: 2
-    - tile: {fileID: 11400000, guid: 885d72cbce6aaeb42830a8826fc4c7f5, type: 2}
+    - tile: {fileID: 11400000, guid: 78c2050fe3d00424eb2f5f8b38b46100, type: 2}
       weight: 1
-    density: 0.15
-    minSpacing: 1
+    - tile: {fileID: 11400000, guid: db683832628df2a499ad8dafaa8adbb2, type: 2}
+      weight: 1
+    density: 0.08
+    minSpacing: 3
     minSurfaceLength: 3
     edgeMargin: 1
     clearance: 1
     innerDepth: 2
-  - name: "\u58C1\u306E\u82D4(\u5DE6\u9762)"
-    enabled: 1
-    placement: 2
-    targetTerrainTiles: []
-    variants:
-    - tile: {fileID: 11400000, guid: c7801fc7d9c18a441b062a4e59da3032, type: 2}
-      weight: 1
-    density: 0.12
-    minSpacing: 1
-    minSurfaceLength: 3
-    edgeMargin: 1
-    clearance: 1
-    innerDepth: 2
-  - name: "\u58C1\u306E\u82D4(\u53F3\u9762)"
-    enabled: 1
-    placement: 3
-    targetTerrainTiles: []
-    variants:
-    - tile: {fileID: 11400000, guid: 692bb73d5e1d13b479c2ad3ecbbaf733, type: 2}
-      weight: 1
-    density: 0.12
-    minSpacing: 1
-    minSurfaceLength: 3
-    edgeMargin: 1
-    clearance: 1
-    innerDepth: 2
-  - name: "\u5185\u90E8\u306E\u3072\u3073\u30FB\u7A93"
+    footprint: 1
+    cornerOnly: 0
+  - name: "\u58C1\u306E\u3072\u3073\u30FB\u67D3\u307F"
     enabled: 1
     placement: 4
-    targetTerrainTiles: []
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
     variants:
-    - tile: {fileID: 11400000, guid: 07050c438a3ef374e9ba3045e77a101c, type: 2}
+    - tile: {fileID: 11400000, guid: 90a0ecf1f6a6c0b4bb6c2a9d4cac064c, type: 2}
       weight: 2
-    - tile: {fileID: 11400000, guid: c45feb55ce75ed94cb16e25953833b3a, type: 2}
+    - tile: {fileID: 11400000, guid: e9adc52c3398dc042bcec98d64f411d1, type: 2}
+      weight: 2
+    - tile: {fileID: 11400000, guid: c4b06c4f1eea6124780918a94d534343, type: 2}
+      weight: 1
+    - tile: {fileID: 11400000, guid: b01bbd0116907f94d942f92532759551, type: 2}
       weight: 1
     density: 0.03
     minSpacing: 3
@@ -107,3 +131,157 @@ MonoBehaviour:
     edgeMargin: 1
     clearance: 1
     innerDepth: 2
+    footprint: 1
+    cornerOnly: 0
+  - name: "\u9685\u306E\u8302\u307F"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: 7d84410242ed61d43bf8da0f1ca82e30, type: 2}
+      weight: 1
+    density: 0.6
+    minSpacing: 0
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 2
+    innerDepth: 2
+    footprint: 2
+    cornerOnly: 1
+  - name: "\u8302\u307F"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: 7d84410242ed61d43bf8da0f1ca82e30, type: 2}
+      weight: 1
+    density: 0.06
+    minSpacing: 4
+    minSurfaceLength: 4
+    edgeMargin: 1
+    clearance: 2
+    innerDepth: 2
+    footprint: 2
+    cornerOnly: 0
+  - name: "\u30B7\u30C0"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: f19da14a360cb4a46b948815028dae0c, type: 2}
+      weight: 1
+    density: 0.08
+    minSpacing: 3
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 2
+    innerDepth: 2
+    footprint: 1
+    cornerOnly: 0
+  - name: "\u8349\u82B1"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: ab66093cf44b90341ab752acdfd687b5, type: 2}
+      weight: 3
+    - tile: {fileID: 11400000, guid: dca942adb999ade4dbeec4b24fb54570, type: 2}
+      weight: 3
+    - tile: {fileID: 11400000, guid: a0bacc1febd441446a6b8403bb2f3be9, type: 2}
+      weight: 1
+    density: 0.45
+    minSpacing: 0
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+    footprint: 1
+    cornerOnly: 0
+  - name: "\u5782\u308C\u4E0B\u304C\u308B\u8513(\u9577)"
+    enabled: 1
+    placement: 1
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: 80ddf13f343384e4582950b1f086f03e, type: 2}
+      weight: 1
+    density: 0.1
+    minSpacing: 2
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 3
+    innerDepth: 2
+    footprint: 1
+    cornerOnly: 0
+  - name: "\u5782\u308C\u4E0B\u304C\u308B\u8513(\u77ED)"
+    enabled: 1
+    placement: 1
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: f93d88921ebc8864f99abe927ec845f1, type: 2}
+      weight: 1
+    density: 0.2
+    minSpacing: 1
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+    footprint: 1
+    cornerOnly: 0
+  - name: "\u58C1\u3092\u9019\u3046\u8526(\u5DE6\u9762)"
+    enabled: 1
+    placement: 2
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: 87b3700cd789e2a4388d5410849b97a4, type: 2}
+      weight: 1
+    density: 0.15
+    minSpacing: 2
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+    footprint: 2
+    cornerOnly: 0
+  - name: "\u58C1\u3092\u9019\u3046\u8526(\u53F3\u9762)"
+    enabled: 1
+    placement: 3
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: 508c28be7e5aa6f4481f2bc88c3565a4, type: 2}
+      weight: 1
+    density: 0.15
+    minSpacing: 2
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+    footprint: 2
+    cornerOnly: 0
+  - name: "\u82D4\u30FB\u8526\u306E\u5F35\u308A\u4ED8\u304D"
+    enabled: 1
+    placement: 4
+    targetTerrainTiles:
+    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+    variants:
+    - tile: {fileID: 11400000, guid: 464475571f71cee40aec31faecf84fcb, type: 2}
+      weight: 2
+    - tile: {fileID: 11400000, guid: fba477ea76447464ca464491eec2fd36, type: 2}
+      weight: 2
+    - tile: {fileID: 11400000, guid: dc3676ebd37d4674f9311a3ca221be5f, type: 2}
+      weight: 1
+    density: 0.06
+    minSpacing: 2
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+    footprint: 1
+    cornerOnly: 0

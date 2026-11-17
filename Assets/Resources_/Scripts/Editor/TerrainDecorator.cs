@@ -118,7 +118,9 @@ public static class TerrainDecorator {
         bool IsEmpty(Vector3Int c) => !IsSolid(c);
 
         int sceneHash = StableHash(scene.name);
+        // placed: タイルを置くマス(基準マス) / occupied: 大きな装飾がはみ出す分も含めた使用済みマス
         var placed = Layers.ToDictionary(l => l.name, l => new Dictionary<Vector3Int, TileBase>());
+        var occupied = Layers.ToDictionary(l => l.name, l => new HashSet<Vector3Int>());
 
         for (int ruleIndex = 0; ruleIndex < profile.rules.Count; ruleIndex++) {
             var rule = profile.rules[ruleIndex];
@@ -128,18 +130,26 @@ public static class TerrainDecorator {
 
             string layerName = Layers.First(l => l.placements.Contains(rule.placement)).name;
             var layerPlaced = placed[layerName];
+            var layerOccupied = occupied[layerName];
 
-            var candidates = CollectCandidates(rule, solid, IsSolid, IsEmpty);
+            var candidates = CollectCandidates(rule, solid, IsSolid, IsEmpty, out var along);
             // 走査順を固定して結果を安定させる
             candidates.Sort((a, b) => a.y != b.y ? a.y.CompareTo(b.y) : a.x.CompareTo(b.x));
 
             int count = 0;
+            var cells = new Vector3Int[rule.footprint];
             foreach (var cell in candidates) {
-                if (blocked.Contains(cell) || layerPlaced.ContainsKey(cell)) continue;
                 if (Hash01(profile.seed, sceneHash, ruleIndex, cell, 0) >= rule.density) continue;
-                if (rule.minSpacing > 0 && HasNeighbor(layerPlaced, cell, rule.minSpacing)) continue;
+                bool ok = true;
+                for (int i = 0; i < cells.Length && ok; i++) {
+                    cells[i] = cell + along * i;
+                    if (blocked.Contains(cells[i]) || layerOccupied.Contains(cells[i])) ok = false;
+                    else if (rule.minSpacing > 0 && HasNeighbor(layerOccupied, cells[i], rule.minSpacing)) ok = false;
+                }
+                if (!ok) continue;
 
                 layerPlaced[cell] = PickVariant(variants, Hash01(profile.seed, sceneHash, ruleIndex, cell, 1));
+                foreach (var c in cells) layerOccupied.Add(c);
                 count++;
             }
             result.lines.Add($"{scene.name}: {rule.name} ({rule.placement}) 候補{candidates.Count}マス → {count}個");
@@ -181,7 +191,8 @@ public static class TerrainDecorator {
         TerrainDecorationProfile.Rule rule,
         Dictionary<Vector3Int, TerrainCell> solid,
         System.Func<Vector3Int, bool> isSolid,
-        System.Func<Vector3Int, bool> isEmpty) {
+        System.Func<Vector3Int, bool> isEmpty,
+        out Vector3Int along) {
 
         var list = new List<Vector3Int>();
         bool Matches(Vector3Int c) =>
@@ -189,20 +200,24 @@ public static class TerrainDecorator {
             (rule.targetTerrainTiles.Count == 0 || rule.targetTerrainTiles.Contains(t.tile));
 
         if (rule.placement == Placement.Inner) {
+            along = Vector3Int.right;
             int d = rule.innerDepth - 1;
             foreach (var c in solid.Keys) {
-                if (!Matches(c)) continue;
                 bool deep = true;
-                for (int dx = -d; dx <= d && deep; dx++)
-                    for (int dy = -d; dy <= d && deep; dy++)
-                        if (!isSolid(c + new Vector3Int(dx, dy, 0))) deep = false;
+                for (int i = 0; i < rule.footprint && deep; i++) {
+                    var f = c + along * i;
+                    if (!Matches(f)) deep = false;
+                    for (int dx = -d; dx <= d && deep; dx++)
+                        for (int dy = -d; dy <= d && deep; dy++)
+                            if (!isSolid(f + new Vector3Int(dx, dy, 0))) deep = false;
+                }
                 if (deep) list.Add(c);
             }
             return list;
         }
 
         // toWall: 装飾マスから地形へ向かう方向 / along: 面に沿った方向
-        Vector3Int toWall, along;
+        Vector3Int toWall;
         switch (rule.placement) {
             case Placement.Top: toWall = Vector3Int.down; along = Vector3Int.right; break;
             case Placement.Ceiling: toWall = Vector3Int.up; along = Vector3Int.right; break;
@@ -210,7 +225,18 @@ public static class TerrainDecorator {
             default: toWall = Vector3Int.left; along = Vector3Int.up; break;
         }
 
+        var dir = along;
         bool IsFace(Vector3Int c) => isEmpty(c) && isSolid(c + toWall);
+        // 基準マスから footprint 分のマスが全て、対象の地形に接していて必要な空きがあるか
+        bool Fits(Vector3Int origin) {
+            for (int i = 0; i < rule.footprint; i++) {
+                var p = origin + dir * i;
+                if (!Matches(p + toWall)) return false;
+                for (int k = 1; k < rule.clearance; k++)
+                    if (!isEmpty(p - toWall * k)) return false;
+            }
+            return true;
+        }
 
         foreach (var wallCell in solid.Keys) {
             var c = wallCell - toWall;
@@ -220,15 +246,19 @@ public static class TerrainDecorator {
 
             var run = new List<Vector3Int>();
             for (var p = c; IsFace(p); p += along) run.Add(p);
-            if (run.Count < rule.minSurfaceLength) continue;
+            if (run.Count < rule.minSurfaceLength || run.Count < rule.footprint) continue;
 
-            for (int i = rule.edgeMargin; i < run.Count - rule.edgeMargin; i++) {
-                var p = run[i];
-                if (!Matches(p + toWall)) continue;
-                bool clear = true;
-                for (int k = 1; k < rule.clearance && clear; k++)
-                    if (!isEmpty(p - toWall * k)) clear = false;
-                if (clear) list.Add(p);
+            if (rule.cornerOnly) {
+                // 面の端の先が地形(=壁)なら隅。段差で途切れている端は対象外
+                var first = run[0];
+                var last = run[run.Count - rule.footprint];
+                if (isSolid(run[0] - along) && Fits(first)) list.Add(first);
+                if (isSolid(run[run.Count - 1] + along) && last != first && Fits(last)) list.Add(last);
+                continue;
+            }
+
+            for (int i = rule.edgeMargin; i + rule.footprint - 1 < run.Count - rule.edgeMargin; i++) {
+                if (Fits(run[i])) list.Add(run[i]);
             }
         }
         return list;
@@ -257,10 +287,10 @@ public static class TerrainDecorator {
                     if (tiles[i] != null) action(new Vector3Int(x, y, z), tiles[i]);
     }
 
-    private static bool HasNeighbor(Dictionary<Vector3Int, TileBase> placed, Vector3Int c, int r) {
+    private static bool HasNeighbor(HashSet<Vector3Int> occupied, Vector3Int c, int r) {
         for (int dx = -r; dx <= r; dx++)
             for (int dy = -r; dy <= r; dy++)
-                if (placed.ContainsKey(c + new Vector3Int(dx, dy, 0))) return true;
+                if (occupied.Contains(c + new Vector3Int(dx, dy, 0))) return true;
         return false;
     }
 
