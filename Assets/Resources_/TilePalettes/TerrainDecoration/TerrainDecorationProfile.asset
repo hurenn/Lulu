@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 232d9f6f10b04314fa1820c6f03d3094, type: 3}
+  m_Name: TerrainDecorationProfile
+  m_EditorClassIdentifier: 
+  seed: 12345
+  terrainTiles:
+  - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
+  - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
+  excludedTilemapNames:
+  - Door
+  excludedTilemapMargin: 2
+  sortingOrderOffset: 1
+  rules:
+  - name: "\u5C0F\u77F3"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles: []
+    variants:
+    - tile: {fileID: 11400000, guid: 0db0bac1c666f0e4db544ddacf6b37da, type: 2}
+      weight: 1
+    density: 0.08
+    minSpacing: 4
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+  - name: "\u8349\u82B1"
+    enabled: 1
+    placement: 0
+    targetTerrainTiles: []
+    variants:
+    - tile: {fileID: 11400000, guid: 8ec6ee0f98678d34e87ea25fac187094, type: 2}
+      weight: 3
+    - tile: {fileID: 11400000, guid: 08c03ab9a5a0b184a86a8e087e6d9908, type: 2}
+      weight: 2
+    - tile: {fileID: 11400000, guid: f3720e2f40a35024094c299f06c40291, type: 2}
+      weight: 1
+    density: 0.35
+    minSpacing: 0
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+  - name: "\u5929\u4E95\u306E\u30C4\u30BF"
+    enabled: 1
+    placement: 1
+    targetTerrainTiles: []
+    variants:
+    - tile: {fileID: 11400000, guid: a098544e23cc1194b863628c00070436, type: 2}
+      weight: 2
+    - tile: {fileID: 11400000, guid: 885d72cbce6aaeb42830a8826fc4c7f5, type: 2}
+      weight: 1
+    density: 0.15
+    minSpacing: 1
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+  - name: "\u58C1\u306E\u82D4(\u5DE6\u9762)"
+    enabled: 1
+    placement: 2
+    targetTerrainTiles: []
+    variants:
+    - tile: {fileID: 11400000, guid: c7801fc7d9c18a441b062a4e59da3032, type: 2}
+      weight: 1
+    density: 0.12
+    minSpacing: 1
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+  - name: "\u58C1\u306E\u82D4(\u53F3\u9762)"
+    enabled: 1
+    placement: 3
+    targetTerrainTiles: []
+    variants:
+    - tile: {fileID: 11400000, guid: 692bb73d5e1d13b479c2ad3ecbbaf733, type: 2}
+      weight: 1
+    density: 0.12
+    minSpacing: 1
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
+  - name: "\u5185\u90E8\u306E\u3072\u3073\u30FB\u7A93"
+    enabled: 1
+    placement: 4
+    targetTerrainTiles: []
+    variants:
+    - tile: {fileID: 11400000, guid: 07050c438a3ef374e9ba3045e77a101c, type: 2}
+      weight: 2
+    - tile: {fileID: 11400000, guid: c45feb55ce75ed94cb16e25953833b3a, type: 2}
+      weight: 1
+    density: 0.03
+    minSpacing: 3
+    minSurfaceLength: 3
+    edgeMargin: 1
+    clearance: 1
+    innerDepth: 2
