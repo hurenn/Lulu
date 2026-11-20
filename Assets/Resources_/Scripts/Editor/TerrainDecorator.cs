@@ -72,14 +72,18 @@ public static class TerrainDecorator {
 
         // 地形マスを装飾グリッドの座標に集約。重なりは手前に描画される方を採用
         var solid = new Dictionary<Vector3Int, TerrainCell>();
-        int maxSortKey = int.MinValue;
-        TilemapRenderer topRenderer = null;
+        int maxSortKey = int.MinValue, minSortKey = int.MaxValue;
+        TilemapRenderer topRenderer = null, bottomRenderer = null;
         foreach (var tm in terrainMaps) {
             var r = tm.GetComponent<TilemapRenderer>();
             int sortKey = r ? SortingLayer.GetLayerValueFromID(r.sortingLayerID) * 100000 + r.sortingOrder : 0;
             if (sortKey > maxSortKey) {
                 maxSortKey = sortKey;
                 topRenderer = r;
+            }
+            if (sortKey < minSortKey) {
+                minSortKey = sortKey;
+                bottomRenderer = r;
             }
             ForEachTile(tm, (pos, tile) => {
                 if (!IsTerrainTile(tile, profile)) return;
@@ -169,7 +173,88 @@ public static class TerrainDecorator {
             }
             tm.CompressBounds();
         }
+
+        // 奥の壁(近景)。無効またはタイル未設定なら、既存のTilemapごと消す
+        var wallVariants = profile.backWallVariants.Where(v => v.tile != null && v.weight > 0f).ToList();
+        if (!profile.backWallEnabled || wallVariants.Count == 0) {
+            var old = decoRoot.transform.Find(BackWallLayerName);
+            if (old != null) Undo.DestroyObjectImmediate(old.gameObject);
+        } else {
+            int order = (bottomRenderer ? bottomRenderer.sortingOrder : 0) + profile.backWallSortingOffset;
+            int layerId = bottomRenderer ? bottomRenderer.sortingLayerID : 0;
+            var tm = GetOrCreateLayer(decoRoot, BackWallLayerName, layerId, order);
+            tm.transform.SetAsFirstSibling();
+            tm.ClearAllTiles();
+            tm.color = profile.backWallColor;
+            {
+                var cells = CollectBackWall(profile, solid, IsSolid, blocked, sceneHash, out int interior);
+                var tiles = new TileBase[cells.Count];
+                for (int i = 0; i < cells.Count; i++) {
+                    tiles[i] = PickVariant(wallVariants, Hash01(profile.seed, sceneHash, -1, cells[i], 2));
+                }
+                if (cells.Count > 0) tm.SetTiles(cells.ToArray(), tiles);
+                result.lines.Add($"{scene.name}: 奥の壁 内部{interior}マス → 壁{cells.Count}マス(穴{interior - cells.Count}マス)");
+            }
+            tm.CompressBounds();
+        }
+
         EditorSceneManager.MarkSceneDirty(scene);
+        return result;
+    }
+
+    public const string BackWallLayerName = "Deco_BackWall";
+
+    /// <summary>
+    /// 地形に囲まれた内部の空きマスを探し、ノイズで穴(崩れた所)を開けた残りを奥の壁にする。
+    /// 内部 = 左右それぞれ interiorMaxWidth 以内、上 interiorMaxHeight 以内に地形がある空きマス。
+    /// </summary>
+    private static List<Vector3Int> CollectBackWall(
+        TerrainDecorationProfile profile,
+        Dictionary<Vector3Int, TerrainCell> solid,
+        System.Func<Vector3Int, bool> isSolid,
+        HashSet<Vector3Int> blocked,
+        int sceneHash,
+        out int interiorCount) {
+
+        var result = new List<Vector3Int>();
+        interiorCount = 0;
+        if (solid.Count == 0) return result;
+
+        int xMin = int.MaxValue, xMax = int.MinValue, yMin = int.MaxValue, yMax = int.MinValue;
+        foreach (var c in solid.Keys) {
+            xMin = Mathf.Min(xMin, c.x); xMax = Mathf.Max(xMax, c.x);
+            yMin = Mathf.Min(yMin, c.y); yMax = Mathf.Max(yMax, c.y);
+        }
+
+        bool Hit(Vector3Int from, Vector3Int dir, int maxDist) {
+            for (int i = 1; i <= maxDist; i++)
+                if (isSolid(from + dir * i)) return true;
+            return false;
+        }
+
+        // ノイズの原点をシードとシーンでずらす
+        float ox = Hash01(profile.seed, sceneHash, -2, Vector3Int.zero, 0) * 10000f;
+        float oy = Hash01(profile.seed, sceneHash, -2, Vector3Int.zero, 1) * 10000f;
+
+        for (int y = yMin; y <= yMax; y++) {
+            for (int x = xMin; x <= xMax; x++) {
+                var c = new Vector3Int(x, y, 0);
+                if (isSolid(c) || blocked.Contains(c)) continue;
+                if (!Hit(c, Vector3Int.up, profile.interiorMaxHeight)) continue;
+                if (!Hit(c, Vector3Int.left, profile.interiorMaxWidth)) continue;
+                if (!Hit(c, Vector3Int.right, profile.interiorMaxWidth)) continue;
+                if (profile.interiorRequireFloor && !Hit(c, Vector3Int.down, profile.interiorMaxHeight)) continue;
+                interiorCount++;
+
+                // 大きな塊の穴 + 縁の細かい崩れ
+                float s = profile.backWallHoleScale;
+                float n = Mathf.PerlinNoise(ox + x * s, oy + y * s) * 0.8f
+                        + Mathf.PerlinNoise(ox * 0.5f + x * s * 4f, oy * 0.5f + y * s * 4f) * 0.2f;
+                // パーリンノイズの値はほぼ0.2〜0.8に収まるので、その範囲で穴の割合を閾値に置き換える
+                if (profile.backWallHoleAmount > 0f && n < Mathf.Lerp(0.2f, 0.8f, profile.backWallHoleAmount)) continue;
+                result.Add(c);
+            }
+        }
         return result;
     }
 

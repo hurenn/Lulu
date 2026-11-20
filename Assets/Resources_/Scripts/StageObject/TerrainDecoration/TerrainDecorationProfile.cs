@@ -77,4 +77,35 @@ public class TerrainDecorationProfile : ScriptableObject {
     public int sortingOrderOffset = 1;
 
     public List<Rule> rules = new List<Rule>();
+
+    // ------------------------------------------------------------------
+    // 奥の壁(近景): 地形に囲まれた内部に、崩れかけた廃ビルの壁を敷く
+    // ------------------------------------------------------------------
+
+    [Header("奥の壁(近景)")]
+    public bool backWallEnabled = true;
+
+    [Tooltip("奥の壁のタイル。重みに応じてランダムに選ばれる。Fang AutoTileを1つだけ入れると穴の縁が自動で整う")]
+    public List<Variant> backWallVariants = new List<Variant>();
+
+    [Tooltip("奥の壁Tilemapの色(暗くすると奥に見える)")]
+    public Color backWallColor = Color.white;
+
+    [Tooltip("左右それぞれこのマス数以内に地形があれば「内部」とみなす")]
+    [Min(1)] public int interiorMaxWidth = 40;
+
+    [Tooltip("上方向このマス数以内に地形(天井)があれば「内部」とみなす")]
+    [Min(1)] public int interiorMaxHeight = 30;
+
+    [Tooltip("下方向にも地形(床)が必要か。オンにすると吹き抜けの下側などが除外される")]
+    public bool interiorRequireFloor = false;
+
+    [Tooltip("崩れて穴が開いている割合(0で穴なし)")]
+    [Range(0f, 1f)] public float backWallHoleAmount = 0.25f;
+
+    [Tooltip("穴の大きさ。小さいほど大きな穴になる")]
+    [Range(0.01f, 0.5f)] public float backWallHoleScale = 0.08f;
+
+    [Tooltip("奥の壁の描画順。地形Tilemapの最小のOrder in Layerにこの値を足す(マイナスで地形より奥)")]
+    public int backWallSortingOffset = -5;
 }

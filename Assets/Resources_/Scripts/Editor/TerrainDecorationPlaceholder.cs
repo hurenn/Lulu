@@ -51,9 +51,7 @@ public static class TerrainDecorationPlaceholder {
         Directory.CreateDirectory(TileFolder);
 
         // 床
-        var rubbleLarge = MakeTile("Rubble_Large", 32, 20, eAnchor.Bottom, DrawRubbleLarge);
         var rubbleA = MakeTile("Rubble_A", 16, 16, eAnchor.Bottom, DrawRubbleA);
-        var rubbleB = MakeTile("Rubble_B", 16, 16, eAnchor.Bottom, DrawRubbleB);
         var rebar = MakeTile("Debris_Rebar", 16, 16, eAnchor.Bottom, DrawRebar);
         var pebblesA = MakeTile("Pebbles_A", 16, 16, eAnchor.Bottom, p => DrawPebbles(p, 1));
         var pebblesB = MakeTile("Pebbles_B", 16, 16, eAnchor.Bottom, p => DrawPebbles(p, 2));
@@ -65,21 +63,19 @@ public static class TerrainDecorationPlaceholder {
         var crackA = MakeTile("Crack_A", 16, 16, eAnchor.Center, DrawCrackA);
         var crackB = MakeTile("Crack_B", 16, 16, eAnchor.Center, DrawCrackB);
         var stain = MakeTile("Stain", 16, 16, eAnchor.Center, DrawStain);
-        var exposed = MakeTile("Rebar_Exposed", 16, 16, eAnchor.Center, DrawExposedRebar);
 
         // 緑化(BuildingGreen用)
-        var bushLarge = MakeTile("Green_Bush_Large", 32, 20, eAnchor.Bottom, DrawBushLarge);
         var fern = MakeTile("Green_Fern", 16, 24, eAnchor.Bottom, DrawFern);
         var grassA = MakeTile("Green_Grass_A", 16, 16, eAnchor.Bottom, p => DrawGrass(p, 1));
         var grassB = MakeTile("Green_Grass_B", 16, 16, eAnchor.Bottom, p => DrawGrass(p, 2));
         var flower = MakeTile("Green_Flower", 16, 16, eAnchor.Bottom, DrawFlower);
-        var vineLong = MakeTile("Green_Vine_Long", 16, 32, eAnchor.Top, p => DrawHangingVine(p, 26));
-        var vineShort = MakeTile("Green_Vine_Short", 16, 16, eAnchor.Top, p => DrawHangingVine(p, 10));
         var ivyL = MakeTile("Green_Ivy_WallLeft", 16, 32, eAnchor.Bottom, p => DrawWallIvy(p, true));
         var ivyR = MakeTile("Green_Ivy_WallRight", 16, 32, eAnchor.Bottom, p => DrawWallIvy(p, false));
         var mossA = MakeTile("Green_Moss_A", 16, 16, eAnchor.Center, p => DrawMossPatch(p, 1));
         var mossB = MakeTile("Green_Moss_B", 16, 16, eAnchor.Center, p => DrawMossPatch(p, 2));
         var ivyPatch = MakeTile("Green_Ivy_Patch", 16, 16, eAnchor.Center, DrawIvyPatch);
+
+        // 奥の壁(近景)の仮素材は作らない(機能はプロファイルの「奥の壁」でタイルを指定すれば使える)
 
         var profile = AssetDatabase.LoadAssetAtPath<TerrainDecorationProfile>(ProfilePath);
         if (profile != null) {
@@ -96,49 +92,26 @@ public static class TerrainDecorationPlaceholder {
         var green = AssetDatabase.LoadAssetAtPath<TileBase>(TerrainTilePaths[1]);
 
         // 同じ配置先では上のルールが優先される(大きい物→小さい物の順に置き、小さい物で隙間を埋める)
+        // 2マス幅の装飾(footprint=2)や隅だけの配置(cornerOnly)はルール側で設定できる
         // ---- Building: 廃ビルの瓦礫 ----
-        var cornerRule = Rule("隅の瓦礫の山", Placement.Top, 0.6f, 0, (rubbleLarge, 1f));
-        cornerRule.cornerOnly = true;
-        cornerRule.footprint = 2;
-        cornerRule.clearance = 2;
-        var largeRule = Rule("大きな瓦礫", Placement.Top, 0.05f, 5, (rubbleLarge, 1f));
-        largeRule.footprint = 2;
-        largeRule.clearance = 2;
-        largeRule.minSurfaceLength = 4;
         var buildingRules = new List<TerrainDecorationProfile.Rule> {
-            cornerRule,
-            largeRule,
-            Rule("瓦礫", Placement.Top, 0.10f, 3, (rubbleA, 2f), (rubbleB, 2f), (rebar, 1f)),
+            Rule("瓦礫", Placement.Top, 0.10f, 3, (rubbleA, 2f), (rebar, 1f)),
             Rule("小石・ガラス片", Placement.Top, 0.25f, 1, (pebblesA, 3f), (pebblesB, 3f), (glass, 1f)),
             Rule("天井の垂れ下がり", Placement.Ceiling, 0.08f, 3, (cable, 1f), (brokenCeiling, 1f)),
-            Rule("壁のひび・染み", Placement.Inner, 0.03f, 3, (crackA, 2f), (crackB, 2f), (stain, 1f), (exposed, 1f)),
+            Rule("壁のひび・染み", Placement.Inner, 0.03f, 3, (crackA, 2f), (crackB, 2f), (stain, 1f)),
         };
         foreach (var r in buildingRules) r.targetTerrainTiles.Add(building);
 
-        // ---- BuildingGreen: 植物・蔓 ----
-        var greenCorner = Rule("隅の茂み", Placement.Top, 0.6f, 0, (bushLarge, 1f));
-        greenCorner.cornerOnly = true;
-        greenCorner.footprint = 2;
-        greenCorner.clearance = 2;
-        var greenBush = Rule("茂み", Placement.Top, 0.06f, 4, (bushLarge, 1f));
-        greenBush.footprint = 2;
-        greenBush.clearance = 2;
-        greenBush.minSurfaceLength = 4;
+        // ---- BuildingGreen: 植物・蔦 ----
         var greenFern = Rule("シダ", Placement.Top, 0.08f, 3, (fern, 1f));
         greenFern.clearance = 2;
-        var vineLongRule = Rule("垂れ下がる蔓(長)", Placement.Ceiling, 0.10f, 2, (vineLong, 1f));
-        vineLongRule.clearance = 3;
         var ivyLRule = Rule("壁を這う蔦(左面)", Placement.WallLeft, 0.15f, 2, (ivyL, 1f));
         ivyLRule.footprint = 2;
         var ivyRRule = Rule("壁を這う蔦(右面)", Placement.WallRight, 0.15f, 2, (ivyR, 1f));
         ivyRRule.footprint = 2;
         var greenRules = new List<TerrainDecorationProfile.Rule> {
-            greenCorner,
-            greenBush,
             greenFern,
             Rule("草花", Placement.Top, 0.45f, 0, (grassA, 3f), (grassB, 3f), (flower, 1f)),
-            vineLongRule,
-            Rule("垂れ下がる蔓(短)", Placement.Ceiling, 0.20f, 1, (vineShort, 1f)),
             ivyLRule,
             ivyRRule,
             Rule("苔・蔦の張り付き", Placement.Inner, 0.06f, 2, (mossA, 2f), (mossB, 2f), (ivyPatch, 1f)),
@@ -148,6 +121,7 @@ public static class TerrainDecorationPlaceholder {
         profile.rules = new List<TerrainDecorationProfile.Rule>();
         profile.rules.AddRange(buildingRules);
         profile.rules.AddRange(greenRules);
+        profile.backWallEnabled = false;
         AssetDatabase.CreateAsset(profile, ProfilePath);
         AssetDatabase.SaveAssets();
         return profile;
@@ -281,29 +255,9 @@ public static class TerrainDecorationPlaceholder {
     // 仮の絵(左下原点)
     // ------------------------------------------------------------------
 
-    private static void DrawRubbleLarge(Canvas c) {
-        // 崩れたコンクリート塊が積み重なった山(32x20)
-        c.Chunk(P(0, 0, 13, 0, 12, 7, 7, 10, 1, 6), Concrete);
-        c.Chunk(P(10, 0, 26, 0, 25, 9, 17, 12, 11, 6), Concrete);
-        c.Chunk(P(22, 0, 31, 0, 31, 4, 26, 6), ConcreteDark);
-        c.Chunk(P(8, 9, 18, 10, 19, 17, 12, 18, 7, 14), Concrete);
-        // 飛び出した鉄筋
-        c.Line(15, 15, 22, 19, Rust);
-        c.Line(16, 14, 23, 18, RustDark);
-        c.Line(24, 8, 28, 15, Rust);
-        // 細かい破片
-        c.Set(29, 0, Concrete); c.Set(30, 1, ConcreteLight); c.Set(3, 7, ConcreteDark);
-    }
-
     private static void DrawRubbleA(Canvas c) {
         c.Chunk(P(2, 0, 11, 0, 10, 6, 5, 8, 2, 4), Concrete);
         c.Chunk(P(10, 0, 15, 0, 14, 4, 11, 4), ConcreteDark);
-    }
-
-    private static void DrawRubbleB(Canvas c) {
-        c.Chunk(P(1, 0, 7, 0, 7, 4, 3, 5), ConcreteDark);
-        c.Chunk(P(6, 0, 14, 0, 13, 9, 8, 7), Concrete);
-        c.Line(9, 6, 12, 12, Rust);
     }
 
     private static void DrawRebar(Canvas c) {
@@ -365,46 +319,13 @@ public static class TerrainDecorationPlaceholder {
         }
     }
 
-    private static void DrawExposedRebar(Canvas c) {
-        // 剥がれた穴から鉄筋が見えている
-        c.Fill(3, 4, 12, 11, ConcreteDark);
-        for (int x = 3; x <= 12; x++) { c.Set(x, 4, Outline); c.Set(x, 11, ConcreteLight); }
-        for (int y = 4; y <= 11; y++) { c.Set(3, y, Outline); c.Set(12, y, ConcreteLight); }
-        c.Line(4, 6, 11, 6, Rust); c.Line(4, 9, 11, 9, Rust);
-        c.Line(6, 5, 6, 10, RustDark); c.Line(9, 5, 9, 10, RustDark);
-    }
-
     // ---- 緑化(BuildingGreen用) ----
-
-    /// <summary>葉の塊(円)。左上を明るく、右下を暗くする</summary>
-    private static void LeafBlob(Canvas c, int cx, int cy, int r) {
-        for (int y = cy - r; y <= cy + r; y++)
-            for (int x = cx - r; x <= cx + r; x++) {
-                int dx = x - cx, dy = y - cy;
-                int d2 = dx * dx + dy * dy;
-                if (d2 > r * r) continue;
-                Color col = d2 > (r - 1) * (r - 1) && (dx > 0 || dy < 0) ? LeafDark
-                          : (dx < 0 && dy > 0 && d2 > (r - 2) * (r - 2)) ? LeafLight
-                          : Leaf;
-                c.Set(x, y, col);
-            }
-    }
 
     /// <summary>1枚の小さな葉(3ピクセル)</summary>
     private static void SmallLeaf(Canvas c, int x, int y, bool right) {
         c.Set(x, y, Leaf);
         c.Set(x + (right ? 1 : -1), y, LeafLight);
         c.Set(x, y - 1, LeafDark);
-    }
-
-    private static void DrawBushLarge(Canvas c) {
-        // 2マス幅の茂み(32x20)
-        LeafBlob(c, 6, 4, 5);
-        LeafBlob(c, 25, 4, 5);
-        LeafBlob(c, 15, 7, 7);
-        LeafBlob(c, 9, 10, 4);
-        LeafBlob(c, 21, 11, 4);
-        c.Set(14, 12, FlowerYellow); c.Set(22, 13, FlowerPink); c.Set(7, 11, FlowerYellow);
     }
 
     private static void DrawFern(Canvas c) {
@@ -437,23 +358,6 @@ public static class TerrainDecorationPlaceholder {
         c.Line(5, 0, 5, 8, Stem); c.Line(11, 0, 11, 6, Stem);
         c.Set(5, 9, FlowerYellow); c.Set(4, 9, FlowerPink); c.Set(6, 9, FlowerPink); c.Set(5, 10, FlowerPink);
         c.Set(11, 7, FlowerYellow); c.Set(10, 7, Color.white); c.Set(12, 7, Color.white); c.Set(11, 8, Color.white);
-    }
-
-    private static void DrawHangingVine(Canvas c, int length) {
-        // 天井(上端)から垂れ下がる蔓
-        int top = c.h - 1;
-        int[] xs = { 3, 8, 12 };
-        int[] lens = { length, length * 2 / 3, length / 2 };
-        for (int i = 0; i < xs.Length; i++) {
-            int x = xs[i];
-            for (int k = 0; k < lens[i]; k++) {
-                int sway = Mathf.RoundToInt(Mathf.Sin((k + i * 3) * 0.45f));
-                c.Set(x + sway, top - k, Stem);
-                if (k % 3 == 1) SmallLeaf(c, x + sway + (k % 2 == 0 ? 1 : -1), top - k, k % 2 == 0);
-            }
-        }
-        // 天井際の葉の塊
-        for (int x = 1; x < 15; x++) { c.Set(x, top, Leaf); if (x % 3 != 0) c.Set(x, top - 1, LeafDark); }
     }
 
     private static void DrawWallIvy(Canvas c, bool hugRight) {

@@ -21,38 +21,6 @@ MonoBehaviour:
   excludedTilemapMargin: 2
   sortingOrderOffset: 1
   rules:
-  - name: "\u9685\u306E\u74E6\u792B\u306E\u5C71"
-    enabled: 1
-    placement: 0
-    targetTerrainTiles:
-    - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
-    variants:
-    - tile: {fileID: 11400000, guid: 7986c34a958510942b4c97c44c68aa13, type: 2}
-      weight: 1
-    density: 0.6
-    minSpacing: 0
-    minSurfaceLength: 3
-    edgeMargin: 1
-    clearance: 2
-    innerDepth: 2
-    footprint: 2
-    cornerOnly: 1
-  - name: "\u5927\u304D\u306A\u74E6\u792B"
-    enabled: 1
-    placement: 0
-    targetTerrainTiles:
-    - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
-    variants:
-    - tile: {fileID: 11400000, guid: 7986c34a958510942b4c97c44c68aa13, type: 2}
-      weight: 1
-    density: 0.05
-    minSpacing: 5
-    minSurfaceLength: 4
-    edgeMargin: 1
-    clearance: 2
-    innerDepth: 2
-    footprint: 2
-    cornerOnly: 0
   - name: "\u74E6\u792B"
     enabled: 1
     placement: 0
@@ -60,8 +28,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
     variants:
     - tile: {fileID: 11400000, guid: 9cd2956281ca8c4499759ee1a50900f7, type: 2}
-      weight: 2
-    - tile: {fileID: 11400000, guid: 2c2946345e6aac74ca861eda937bd22c, type: 2}
       weight: 2
     - tile: {fileID: 11400000, guid: 72719bd797f1e4f418b6b4b8d02bfedd, type: 2}
       weight: 1
@@ -123,8 +89,6 @@ MonoBehaviour:
       weight: 2
     - tile: {fileID: 11400000, guid: c4b06c4f1eea6124780918a94d534343, type: 2}
       weight: 1
-    - tile: {fileID: 11400000, guid: b01bbd0116907f94d942f92532759551, type: 2}
-      weight: 1
     density: 0.03
     minSpacing: 3
     minSurfaceLength: 3
@@ -132,38 +96,6 @@ MonoBehaviour:
     clearance: 1
     innerDepth: 2
     footprint: 1
-    cornerOnly: 0
-  - name: "\u9685\u306E\u8302\u307F"
-    enabled: 1
-    placement: 0
-    targetTerrainTiles:
-    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
-    variants:
-    - tile: {fileID: 11400000, guid: 7d84410242ed61d43bf8da0f1ca82e30, type: 2}
-      weight: 1
-    density: 0.6
-    minSpacing: 0
-    minSurfaceLength: 3
-    edgeMargin: 1
-    clearance: 2
-    innerDepth: 2
-    footprint: 2
-    cornerOnly: 1
-  - name: "\u8302\u307F"
-    enabled: 1
-    placement: 0
-    targetTerrainTiles:
-    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
-    variants:
-    - tile: {fileID: 11400000, guid: 7d84410242ed61d43bf8da0f1ca82e30, type: 2}
-      weight: 1
-    density: 0.06
-    minSpacing: 4
-    minSurfaceLength: 4
-    edgeMargin: 1
-    clearance: 2
-    innerDepth: 2
-    footprint: 2
     cornerOnly: 0
   - name: "\u30B7\u30C0"
     enabled: 1
@@ -195,38 +127,6 @@ MonoBehaviour:
       weight: 1
     density: 0.45
     minSpacing: 0
-    minSurfaceLength: 3
-    edgeMargin: 1
-    clearance: 1
-    innerDepth: 2
-    footprint: 1
-    cornerOnly: 0
-  - name: "\u5782\u308C\u4E0B\u304C\u308B\u8513(\u9577)"
-    enabled: 1
-    placement: 1
-    targetTerrainTiles:
-    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
-    variants:
-    - tile: {fileID: 11400000, guid: 80ddf13f343384e4582950b1f086f03e, type: 2}
-      weight: 1
-    density: 0.1
-    minSpacing: 2
-    minSurfaceLength: 3
-    edgeMargin: 1
-    clearance: 3
-    innerDepth: 2
-    footprint: 1
-    cornerOnly: 0
-  - name: "\u5782\u308C\u4E0B\u304C\u308B\u8513(\u77ED)"
-    enabled: 1
-    placement: 1
-    targetTerrainTiles:
-    - {fileID: 11400000, guid: cb18d8c735ca2824e995ba92c6a6225b, type: 2}
-    variants:
-    - tile: {fileID: 11400000, guid: f93d88921ebc8864f99abe927ec845f1, type: 2}
-      weight: 1
-    density: 0.2
-    minSpacing: 1
     minSurfaceLength: 3
     edgeMargin: 1
     clearance: 1
@@ -285,3 +185,12 @@ MonoBehaviour:
     innerDepth: 2
     footprint: 1
     cornerOnly: 0
+  backWallEnabled: 0
+  backWallVariants: []
+  backWallColor: {r: 0.55, g: 0.58, b: 0.66, a: 1}
+  interiorMaxWidth: 40
+  interiorMaxHeight: 30
+  interiorRequireFloor: 0
+  backWallHoleAmount: 0.25
+  backWallHoleScale: 0.08
+  backWallSortingOffset: -5
