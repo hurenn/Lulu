@@ -276,7 +276,7 @@ Transform:
   m_GameObject: {fileID: 612209894246321321}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -40, z: 100}
+  m_LocalPosition: {x: 0, y: 0, z: 100}
   m_LocalScale: {x: 10.000001, y: 10.000001, z: 10.000001}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -326,7 +326,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -98
-  m_Sprite: {fileID: 21300000, guid: 88a0c8f67ba6fcf42a8e09a6061ccac5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 99bee4cafbb88fb499976339dfa47458, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -364,7 +364,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 20, z: 100}
-  m_LocalScale: {x: 8, y: 8, z: 1.6}
+  m_LocalScale: {x: 10, y: 10, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3628510773260573516}
@@ -450,7 +450,7 @@ Transform:
   m_GameObject: {fileID: 941158531085260867}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -24.25, z: 100}
+  m_LocalPosition: {x: 320, y: -24.25, z: 100}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -809,7 +809,7 @@ Transform:
   m_GameObject: {fileID: 1888075137937341027}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.2500191, y: -0.48000336, z: -7}
+  m_LocalPosition: {x: 23.73644, y: 82.55382, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2225,24 +2225,28 @@ MonoBehaviour:
     - {fileID: 7151257172272446801}
     parallaxFactor: 0
     loop: 0
+    loopWidth: 0
   - name: Vista
     objects:
     - {fileID: 8273364460719963101}
     - {fileID: 5847052965880623245}
     parallaxFactor: 0.3
     loop: 1
+    loopWidth: 0
   - name: Middle
     objects:
     - {fileID: 6371827753866887577}
     - {fileID: 2089240531792307248}
     parallaxFactor: 0.4
     loop: 1
+    loopWidth: 0
   - name: Close
     objects:
     - {fileID: 5822938680873188404}
     - {fileID: 3799018749414169070}
     parallaxFactor: 0.5
     loop: 1
+    loopWidth: 0
   autoScrollSpeed: 0
   shakeMultiplier: 0.3
 --- !u!1 &6108543092880215991
@@ -2277,9 +2281,9 @@ Transform:
   m_Children:
   - {fileID: 7359455803420762934}
   - {fileID: 1833688239979042794}
+  - {fileID: 8394721969277334416}
   - {fileID: 5970821368689400280}
   - {fileID: 7847334005207113091}
-  - {fileID: 8394721969277334416}
   - {fileID: 4374894741114548915}
   - {fileID: 1537350930871352156}
   - {fileID: 8454734602259120743}
@@ -2305,24 +2309,28 @@ MonoBehaviour:
     - {fileID: 7359455803420762934}
     parallaxFactor: 0
     loop: 0
+    loopWidth: 0
   - name: Vista
     objects:
     - {fileID: 1833688239979042794}
     - {fileID: 8394721969277334416}
     parallaxFactor: 0.3
     loop: 1
+    loopWidth: 0
   - name: Middle
     objects:
     - {fileID: 5970821368689400280}
     - {fileID: 7847334005207113091}
     parallaxFactor: 0.4
     loop: 1
+    loopWidth: 0
   - name: Close
     objects:
     - {fileID: 1537350930871352156}
     - {fileID: 8454734602259120743}
     parallaxFactor: 0.5
     loop: 1
+    loopWidth: 0
   autoScrollSpeed: 0
   shakeMultiplier: 0.3
 --- !u!1 &6849500081224587085
@@ -2996,7 +3004,7 @@ Transform:
   m_GameObject: {fileID: 7878548051035028842}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 730, y: -40, z: 100}
+  m_LocalPosition: {x: 833, y: 0, z: 100}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3046,7 +3054,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -98
-  m_Sprite: {fileID: 21300000, guid: 88a0c8f67ba6fcf42a8e09a6061ccac5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 99bee4cafbb88fb499976339dfa47458, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
