@@ -58,7 +58,6 @@ public static class TerrainDecorationPlaceholder {
         var glass = MakeTile("Glass_Shards", 16, 16, eAnchor.Bottom, DrawGlass);
         // 天井
         var cable = MakeTile("Ceiling_Cable", 16, 16, eAnchor.Top, DrawCable);
-        var brokenCeiling = MakeTile("Ceiling_Broken", 16, 16, eAnchor.Top, DrawBrokenCeiling);
         // 地形の内部
         var crackA = MakeTile("Crack_A", 16, 16, eAnchor.Center, DrawCrackA);
         var crackB = MakeTile("Crack_B", 16, 16, eAnchor.Center, DrawCrackB);
@@ -97,7 +96,7 @@ public static class TerrainDecorationPlaceholder {
         var buildingRules = new List<TerrainDecorationProfile.Rule> {
             Rule("瓦礫", Placement.Top, 0.10f, 3, (rubbleA, 2f), (rebar, 1f)),
             Rule("小石・ガラス片", Placement.Top, 0.25f, 1, (pebblesA, 3f), (pebblesB, 3f), (glass, 1f)),
-            Rule("天井の垂れ下がり", Placement.Ceiling, 0.08f, 3, (cable, 1f), (brokenCeiling, 1f)),
+            Rule("天井の垂れ下がり", Placement.Ceiling, 0.08f, 3, (cable, 1f)),
             Rule("壁のひび・染み", Placement.Inner, 0.03f, 3, (crackA, 2f), (crackB, 2f), (stain, 1f)),
         };
         foreach (var r in buildingRules) r.targetTerrainTiles.Add(building);
@@ -291,14 +290,6 @@ public static class TerrainDecorationPlaceholder {
         }
         c.Line(9, 15, 10, 4, Cable);
         c.Set(10, 3, Rust); c.Set(11, 3, ConcreteLight);
-    }
-
-    private static void DrawBrokenCeiling(Canvas c) {
-        // 剥がれかけたコンクリートと鉄筋
-        c.Chunk(P(2, 15, 13, 15, 11, 10, 6, 9, 3, 12), Concrete);
-        c.Line(5, 10, 4, 4, Rust);
-        c.Line(9, 10, 11, 5, Rust);
-        c.Set(4, 3, RustDark);
     }
 
     private static void DrawCrackA(Canvas c) {
