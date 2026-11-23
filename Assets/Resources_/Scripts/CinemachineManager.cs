@@ -19,7 +19,14 @@ public class CinemachineManager : SceneSingleton<CinemachineManager> {
     private LensSettings _zoomDefaultLens;
     private Vector3 _zoomDefaultOffset;
 
-    private CinemachinePositionComposer _ZoomComposer => _zoomCam.GetComponent<CinemachinePositionComposer>();
+    // 毎フレームズームを更新する演出があるので、取得したものを使い回す
+    private CinemachinePositionComposer _zoomComposerCache;
+    private CinemachinePositionComposer _ZoomComposer {
+        get {
+            if (_zoomComposerCache == null) _zoomComposerCache = _zoomCam.GetComponent<CinemachinePositionComposer>();
+            return _zoomComposerCache;
+        }
+    }
 
     private void _SaveZoomDefault() {
         if (_isZoomDefaultSaved) return;
