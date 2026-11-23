@@ -516,7 +516,7 @@ public class Ability_Ice : Ability_Base {
     private void _SpawnHitStreak(IDamageable character, bool toward_enemy) {
         var target = character as Component;
         if (target == null || _slashStreak == null) return;
-        var center = _GetEnemyCenter(target.transform.position);
+        var center = _GetEnemyCenter(target.transform);
         Vector2 direction = toward_enemy
             ? (Vector2)(center - transform.position)
             : (Vector2)(Quaternion.Euler(0f, 0f, 90f + Random.Range(-_slashStreakTilt, _slashStreakTilt)) * Vector3.right);
@@ -524,10 +524,12 @@ public class Ability_Ice : Ability_Base {
     }
 
     // 敵の位置(足元にあることが多い)から、その敵の体の中心(当たり判定の中心)を求める。見つからなければそのままの位置
-    private static Vector3 _GetEnemyCenter(Vector3 enemy_pos) {
+    // (近くに重なっている別の敵の当たり判定は使わない)
+    private static Vector3 _GetEnemyCenter(Transform enemy) {
+        Vector3 enemy_pos = enemy.position;
         Collider2D best = null;
         foreach (var col in Physics2D.OverlapCircleAll(enemy_pos, 0.5f, LayerMask.GetMask("Enemy"))) {
-            if (col.isTrigger) continue;
+            if (col.isTrigger || !col.transform.IsChildOf(enemy)) continue;
             if (best == null || col.bounds.size.sqrMagnitude > best.bounds.size.sqrMagnitude) best = col;
         }
         return best != null ? best.bounds.center : enemy_pos;
