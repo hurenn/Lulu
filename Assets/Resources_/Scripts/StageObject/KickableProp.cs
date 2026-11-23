@@ -24,14 +24,25 @@ public class KickableProp : MonoBehaviour {
     private AudioSource _audio;
     private float _cooldown;
     private Character_Base _ignoredWith;
+    private Renderer _renderer;
+    private float _startY;
+
+    // 置かれた位置からこれ以上落ちて画面外にあれば、穴に落ちたとみなして消す(落ち続けて物理演算に残らないように)
+    private const float FALL_DESTROY_DISTANCE = 30f;
 
     private void Awake() {
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
         _audio = GetComponent<AudioSource>();
+        _renderer = GetComponentInChildren<Renderer>();
+        _startY = transform.position.y;
     }
 
     private void Update() {
+        if (transform.position.y < _startY - FALL_DESTROY_DISTANCE && (_renderer == null || !_renderer.isVisible)) {
+            Destroy(gameObject);
+            return;
+        }
         _cooldown -= Time.deltaTime;
         var lulu = PlayerCharacterManager.Current;
         if (lulu == null) return;
