@@ -47,6 +47,13 @@ public class Ability_Light : Ability_Base
         _warpControl.SetJustAvoidCallback(StartJustAvoid);
     }
 
+    // ドームとまとう光はプレイヤーの子に作っているので、能力が外された時に一緒に消す
+    protected override void OnDestroy() {
+        base.OnDestroy();
+        if (_lightDomeInstance != null) Destroy(_lightDomeInstance);
+        if (_lightAura != null) Destroy(_lightAura.gameObject);
+    }
+
     protected override void _Update() {
         if (_isNotHide && _IsOutOfScreen()) {
             // 画面外に出たら非表示にする
