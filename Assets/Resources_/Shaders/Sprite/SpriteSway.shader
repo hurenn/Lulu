@@ -13,6 +13,8 @@ Shader "Lulu/Sprite/Sway"
         _SwayPhaseScale ("位置によるずれ(1ユニットあたり)", Range(0, 2)) = 0.35
         _GustAmount ("突風の強さ", Range(0, 1)) = 0.5
         [Toggle] _HangFromTop ("上端を固定する(垂れ下がる物)", Float) = 0
+        _PushRadius ("ルルに押しのけられる範囲(ワールド単位)", Range(0, 3)) = 0.9
+        _PushAmount ("ルルに押しのけられる強さ(ワールド単位)", Range(0, 1)) = 0.3
     }
 
     SubShader
@@ -41,6 +43,9 @@ Shader "Lulu/Sprite/Sway"
             sampler2D _MainTex;
             fixed4 _Color;
             float _SwayAmount, _SwaySpeed, _SwayPhaseScale, _GustAmount, _HangFromTop;
+            float _PushRadius, _PushAmount;
+            // ルルの位置(xy)と動きの速さ(z: 0=止まっている〜1=ダッシュ)、有効か(w)。StageAmbienceが毎フレーム全体に渡す
+            float4 _LuluPos;
 
             struct appdata { float4 vertex : POSITION; float4 color : COLOR; float2 uv : TEXCOORD0; };
             struct v2f { float4 pos : SV_POSITION; fixed4 color : COLOR; float2 uv : TEXCOORD0; };
@@ -56,6 +61,10 @@ Shader "Lulu/Sprite/Sway"
                 // ゆっくりした揺れ + ときどき強くなる突風
                 float gust = 1.0 + _GustAmount * saturate(sin(t * 0.23 + phase * 0.5) * 1.6 - 0.6);
                 float offset = sin(t + phase) * _SwayAmount * gust;
+                // ルルの近くでは、ルルから遠ざかる向きに押しのける(速く動いているほど強い)
+                float2 d = world.xy - _LuluPos.xy;
+                float near = saturate(1.0 - abs(d.x) / _PushRadius) * saturate(1.0 - abs(d.y) / (_PushRadius * 1.6));
+                offset += sign(d.x) * near * _PushAmount * (1.0 + _LuluPos.z * 1.5) * _LuluPos.w; // w=1の時だけ有効(ルルがいない場面では押さない)
                 world.x += offset * weight;
                 o.pos = mul(UNITY_MATRIX_VP, float4(world, 1.0));
                 o.uv = v.uv;

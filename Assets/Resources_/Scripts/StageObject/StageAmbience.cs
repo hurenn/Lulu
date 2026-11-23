@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 /// 開始時に地形のTilemapを読み取り「天井の下」「垂れた配線」「緑の床」などの場所を覚え、
 /// カメラの近くの場所を選んで、ときどき演出を出す。地形を変えても置き直しは要らない。
 /// </summary>
-public class StageAmbience : MonoBehaviour {
+public partial class StageAmbience : MonoBehaviour {
     [System.Serializable]
     public class Spawner {
         public bool enabled = true;
@@ -103,6 +103,7 @@ public class StageAmbience : MonoBehaviour {
         if (_lightShaftsEnabled && _lightShaftPrefab != null) _PlaceLightShafts();
         foreach (var s in new[] { _debris, _sparks, _drips, _leaves }) s.timer = Random.Range(s.interval.x, s.interval.y);
         _SetupBuildings();
+        _InteractStart(); // ルルへの反応(StageAmbience.Interact.cs)
         _birdTimer = Random.Range(2f, _birdInterval.x);
     }
 
@@ -118,6 +119,7 @@ public class StageAmbience : MonoBehaviour {
         if (_butterfliesEnabled) _UpdateButterflies();
         _UpdateWindows();
         _UpdateBirds();
+        _InteractUpdate();
     }
 
     // ------------------------------------------------------------------

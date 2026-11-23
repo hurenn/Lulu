@@ -12,7 +12,8 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _HANGFROMTOP_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -31,7 +32,9 @@ Material:
     m_Floats:
     - _GustAmount: 0.5
     - _HangFromTop: 1
-    - _SwayAmount: 0.18
+    - _PushAmount: 0.55
+    - _PushRadius: 1.2
+    - _SwayAmount: 0.3
     - _SwayPhaseScale: 0.35
     - _SwaySpeed: 1.6
     m_Colors:

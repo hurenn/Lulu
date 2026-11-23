@@ -15812,6 +15812,26 @@ MonoBehaviour:
   _birdCount: {x: 3, y: 7}
   _birdSpeed: 3.5
   _birdSortingOrder: -100
+  _pushPlants: 1
+  _fullPushSpeed: 12
+  _grassLeafPrefab: {fileID: 6029837337350818488, guid: ffdda64ba5177ef408ddf20327d676dc, type: 3}
+  _grassLeafMinSpeed: 3.5
+  _cableTouchSpark: 1
+  _glintPrefab: {fileID: 5505782719313037541, guid: 9b89e038756e0884ead2ec46dbce4c38, type: 3}
+  _butterflyRepel: 3
+  _floorProps:
+  - {fileID: 5996775630840491833, guid: ab3a6c57cbb90cb43bd71e35b5e473da, type: 3}
+  - {fileID: 5996775630840491833, guid: ab3a6c57cbb90cb43bd71e35b5e473da, type: 3}
+  - {fileID: 5996775630840491833, guid: ab3a6c57cbb90cb43bd71e35b5e473da, type: 3}
+  - {fileID: 2138911944263455860, guid: 776210ead4457204190d4b8c9639bd8c, type: 3}
+  - {fileID: 1266491684083143063, guid: 8459ff40dc4b9694bba1d625965c28a5, type: 3}
+  - {fileID: 8462710451666292548, guid: 7d120fcfdc1475143945d533bfd37cba, type: 3}
+  _floorPropsPer100: 6
+  _perchedBirdsPrefab: {fileID: 2496703011920872960, guid: 23f60a6dd0c361848813b746afb68f57, type: 3}
+  _perchedBirdsSpacing: 50
+  _perchedBirdsChance: 0.12
+  _puddlePrefab: {fileID: 3259308373969963510, guid: b8dcf2c2084be3149940de7698f41dde, type: 3}
+  _puddleSpacing: 22
 --- !u!4 &485018627
 Transform:
   m_ObjectHideFlags: 0
