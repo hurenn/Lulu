@@ -86,6 +86,7 @@ public class InfiniteMPEffect : MonoBehaviour {
     private readonly List<Sparkle> _gaugeSparkles = new List<Sparkle>();
     private Light2D _glowLight;
     private SpriteRenderer _glowSprite;
+    private Material _glowMaterial;
 
     private static readonly int _HSV_SHIFT_ID = Shader.PropertyToID("_HsvShift");
     private static Sprite _softCircleSprite, _ringSprite, _edgeSprite, _starSprite;
@@ -288,7 +289,10 @@ public class InfiniteMPEffect : MonoBehaviour {
             _glowSprite = glow_obj.AddComponent<SpriteRenderer>();
             _glowSprite.sprite = _softCircleSprite;
             var unlit = Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
-            if (unlit != null) _glowSprite.sharedMaterial = new Material(unlit);
+            if (unlit != null) {
+                _glowMaterial = new Material(unlit);
+                _glowSprite.sharedMaterial = _glowMaterial;
+            }
             _glowSprite.sortingLayerID = _target.sortingLayerID;
             _glowSprite.sortingOrder = _target.sortingOrder + 1;
             _glowSprite.enabled = false;
@@ -325,6 +329,7 @@ public class InfiniteMPEffect : MonoBehaviour {
         if (_rainbowInstance != null) Destroy(_rainbowInstance);
         if (_glowLight != null) Destroy(_glowLight.gameObject);
         if (_glowSprite != null) Destroy(_glowSprite.gameObject);
+        if (_glowMaterial != null) Destroy(_glowMaterial);
         foreach (var sparkle in _gaugeSparkles) {
             if (sparkle.rect != null) Destroy(sparkle.rect.gameObject);
         }
