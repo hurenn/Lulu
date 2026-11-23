@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// 画面全体のグリッチノイズの強さを管理する(描画は、2DレンダラーのFull Screen Pass Renderer Featureで、Lulu/ScreenGlitchシェーダーが行う)
-/// 強さと時間はシェーダーのグローバルな値で渡す。必殺技などで時間が止まっていても、ノイズは動き続ける
+/// 強さと時間はシェーダーのグローバルな値で渡す。必殺技などで時間が止まっていても、ノイズは動き続ける(ポーズ中は止める)
 /// シーンが切り替わって消えた時は、強さを0に戻す
 /// </summary>
 public class ScreenGlitch : MonoBehaviour {
@@ -15,6 +15,7 @@ public class ScreenGlitch : MonoBehaviour {
     private float _toIntensity = 0f;
     private float _duration = 0f;
     private float _elapsed = 0f;
+    private float _noiseTime = 0f; // ノイズを動かす時間(実時間で進め、ポーズ中は止める)
 
     /// <summary>
     /// 強さ(0〜1)を、指定した時間(秒)をかけて変える
@@ -35,6 +36,9 @@ public class ScreenGlitch : MonoBehaviour {
     }
 
     private void Update() {
+        // ポーズ中はノイズも強さの変化も止める
+        if (Pause_UI.IsOpen) return;
+        _noiseTime += Time.unscaledDeltaTime;
         if (_elapsed < _duration) _elapsed += Time.unscaledDeltaTime;
         _Apply();
     }
@@ -43,7 +47,7 @@ public class ScreenGlitch : MonoBehaviour {
         float rate = _duration > 0f ? Mathf.Clamp01(_elapsed / _duration) : 1f;
         _intensity = Mathf.Lerp(_fromIntensity, _toIntensity, rate);
         Shader.SetGlobalFloat(_INTENSITY_ID, _intensity);
-        Shader.SetGlobalFloat(_TIME_ID, Time.unscaledTime);
+        Shader.SetGlobalFloat(_TIME_ID, _noiseTime);
     }
 
     private void OnDestroy() {
