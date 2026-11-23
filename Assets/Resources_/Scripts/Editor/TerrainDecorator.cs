@@ -15,6 +15,7 @@ using Placement = TerrainDecorationProfile.ePlacement;
 /// </summary>
 public static class TerrainDecorator {
     public const string RootName = "TerrainDecoration";
+    public const string SwaySuffix = "_Sway"; // 揺らす装飾を入れるTilemapの名前の末尾
 
     // 配置先ごとに装飾Tilemapを分ける(1マスに1タイルしか置けないため)
     private static readonly (string name, Placement[] placements)[] Layers = {
@@ -122,8 +123,10 @@ public static class TerrainDecorator {
         bool IsEmpty(Vector3Int c) => !IsSolid(c);
 
         int sceneHash = StableHash(scene.name);
-        // placed: タイルを置くマス(基準マス) / occupied: 大きな装飾がはみ出す分も含めた使用済みマス
-        var placed = Layers.ToDictionary(l => l.name, l => new Dictionary<Vector3Int, TileBase>());
+        // placed: タイルを置くマス(基準マス。揺らすルールは「_Sway」付きのTilemapへ分ける)
+        // occupied: 大きな装飾がはみ出す分も含めた使用済みマス(揺らす/揺らさないで共有し、同じマスに重ならないようにする)
+        var placed = new Dictionary<string, Dictionary<Vector3Int, TileBase>>();
+        foreach (var l in Layers) { placed[l.name] = new Dictionary<Vector3Int, TileBase>(); placed[l.name + SwaySuffix] = new Dictionary<Vector3Int, TileBase>(); }
         var occupied = Layers.ToDictionary(l => l.name, l => new HashSet<Vector3Int>());
 
         for (int ruleIndex = 0; ruleIndex < profile.rules.Count; ruleIndex++) {
@@ -133,7 +136,7 @@ public static class TerrainDecorator {
             if (variants.Count == 0) continue;
 
             string layerName = Layers.First(l => l.placements.Contains(rule.placement)).name;
-            var layerPlaced = placed[layerName];
+            var layerPlaced = placed[rule.sway ? layerName + SwaySuffix : layerName];
             var layerOccupied = occupied[layerName];
 
             var candidates = CollectCandidates(rule, solid, IsSolid, IsEmpty, out var along);
@@ -172,6 +175,20 @@ public static class TerrainDecorator {
                 tm.SetTiles(cells.Keys.ToArray(), cells.Values.ToArray());
             }
             tm.CompressBounds();
+
+            // 揺らす装飾。垂れ下がる物(天井)は上端固定のマテリアルを使う
+            var swayCells = placed[layer.name + SwaySuffix];
+            var swayMat = layer.placements.Contains(Placement.Ceiling) ? profile.hangingSwayMaterial : profile.swayMaterial;
+            var old = decoRoot.transform.Find(layer.name + SwaySuffix);
+            if (swayCells.Count == 0 || swayMat == null) {
+                if (old != null) Undo.DestroyObjectImmediate(old.gameObject);
+                continue;
+            }
+            var stm = GetOrCreateLayer(decoRoot, layer.name + SwaySuffix, sortingLayerId, sortingOrder);
+            stm.GetComponent<TilemapRenderer>().sharedMaterial = swayMat;
+            stm.ClearAllTiles();
+            stm.SetTiles(swayCells.Keys.ToArray(), swayCells.Values.ToArray());
+            stm.CompressBounds();
         }
 
         // 奥の壁(近景)。無効またはタイル未設定なら、既存のTilemapごと消す

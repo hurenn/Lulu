@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 232d9f6f10b04314fa1820c6f03d3094, type: 3}
   m_Name: TerrainDecorationProfile
   m_EditorClassIdentifier: 
+  swayMaterial: {fileID: 2100000, guid: 3266e37c7807aae4a8e6bd7459f435e7, type: 2}
+  hangingSwayMaterial: {fileID: 2100000, guid: 3441d3949d9a41e469dea3f1e82e833a, type: 2}
   seed: 12345
   terrainTiles:
   - {fileID: 11400000, guid: 3773b274f1332324aace771706aded49, type: 2}
@@ -39,6 +41,7 @@ MonoBehaviour:
     innerDepth: 2
     footprint: 1
     cornerOnly: 0
+    sway: 0
   - name: "\u5C0F\u77F3\u30FB\u30AC\u30E9\u30B9\u7247"
     enabled: 1
     placement: 0
@@ -59,6 +62,7 @@ MonoBehaviour:
     innerDepth: 2
     footprint: 1
     cornerOnly: 0
+    sway: 0
   - name: "\u5929\u4E95\u306E\u5782\u308C\u4E0B\u304C\u308A"
     enabled: 1
     placement: 1
@@ -75,6 +79,7 @@ MonoBehaviour:
     innerDepth: 2
     footprint: 1
     cornerOnly: 0
+    sway: 1
   - name: "\u58C1\u306E\u3072\u3073\u30FB\u67D3\u307F"
     enabled: 1
     placement: 4
@@ -97,6 +102,7 @@ MonoBehaviour:
     innerDepth: 2
     footprint: 1
     cornerOnly: 0
+    sway: 0
   - name: "\u30B7\u30C0"
     enabled: 1
     placement: 0
@@ -113,6 +119,7 @@ MonoBehaviour:
     innerDepth: 2
     footprint: 1
     cornerOnly: 0
+    sway: 1
   - name: "\u8349\u82B1"
     enabled: 1
     placement: 0
@@ -133,6 +140,7 @@ MonoBehaviour:
     innerDepth: 2
     footprint: 1
     cornerOnly: 0
+    sway: 1
   - name: "\u82D4\u30FB\u8526\u306E\u5F35\u308A\u4ED8\u304D"
     enabled: 1
     placement: 4
@@ -153,6 +161,7 @@ MonoBehaviour:
     innerDepth: 2
     footprint: 1
     cornerOnly: 0
+    sway: 0
   backWallEnabled: 0
   backWallVariants: []
   backWallColor: {r: 0.55, g: 0.58, b: 0.66, a: 1}

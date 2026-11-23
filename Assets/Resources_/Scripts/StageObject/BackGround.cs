@@ -13,6 +13,8 @@ public class ParallaxLayer {
     public bool loop = false;
     [Tooltip("ループの周期(ワールド単位)。0なら自動 = 並べた範囲(端のオブジェクト同士の距離) + 平均の間隔")]
     [Min(0f)] public float loopWidth = 0f;
+    [Tooltip("カメラと関係なく一定の速さで流す(ワールド単位/秒)。マイナスで左へ。雲など")]
+    public float driftSpeed = 0f;
 }
 
 /// <summary>
@@ -59,8 +61,8 @@ public class BackGround : MonoBehaviour {
 
             foreach (var obj in layer.objects) {
                 if (obj == null) continue;
-                // 反対方向パララックス
-                obj.position += Vector3.right * (-deltaX * layer.parallaxFactor - autoScrollSpeed * layer.parallaxFactor * Time.deltaTime);
+                // 反対方向パララックス + レイヤーごとの一定の流れ
+                obj.position += Vector3.right * (-deltaX * layer.parallaxFactor - autoScrollSpeed * layer.parallaxFactor * Time.deltaTime + layer.driftSpeed * Time.deltaTime);
             }
 
             // ループ処理: カメラから周期の半分以上離れたら、周期1つ分だけ反対側へ回す

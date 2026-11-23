@@ -59,7 +59,16 @@ public class TerrainDecorationProfile : ScriptableObject {
 
         [Tooltip("Top/Ceiling/Wall: 面の端が壁や段差に突き当たる「隅」だけに置く(瓦礫の吹き溜まり用)。edgeMarginは無視される")]
         public bool cornerOnly = false;
+
+        [Tooltip("風で揺らす(草花・垂れた配線など)。揺らす装飾は「_Sway」付きのTilemapに分けて置く")]
+        public bool sway = false;
     }
+
+    [Header("揺らす装飾")]
+    [Tooltip("床・壁の揺らす装飾に使うマテリアル(下端固定)")]
+    public Material swayMaterial;
+    [Tooltip("天井から垂れ下がる揺らす装飾に使うマテリアル(上端固定)")]
+    public Material hangingSwayMaterial;
 
     [Tooltip("乱数シード。シーン名と組み合わせるので、同じシードでもステージごとに配置は変わる")]
     public int seed = 12345;

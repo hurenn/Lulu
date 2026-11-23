@@ -114,9 +114,31 @@ public static class TerrainDecorationPlaceholder {
         profile.rules.AddRange(buildingRules);
         profile.rules.AddRange(greenRules);
         profile.backWallEnabled = false;
+        // 草花・シダ・垂れた配線は風で揺らす
+        foreach (var r in profile.rules) r.sway = r.name == "シダ" || r.name == "草花" || r.name == "天井の垂れ下がり";
+        profile.swayMaterial = SwayMaterial(false);
+        profile.hangingSwayMaterial = SwayMaterial(true);
         AssetDatabase.CreateAsset(profile, ProfilePath);
         AssetDatabase.SaveAssets();
         return profile;
+    }
+
+    /// <summary>揺らす装飾のマテリアル(Lulu/Sprite/Sway)。hanging=trueは上端固定(天井から垂れ下がる物)</summary>
+    public static Material SwayMaterial(bool hanging) {
+        string path = Folder + (hanging ? "/FX_DecoSway_Hanging.mat" : "/FX_DecoSway.mat");
+        var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+        if (m != null) return m;
+        m = new Material(Shader.Find("Lulu/Sprite/Sway"));
+        if (hanging) {
+            m.SetFloat("_HangFromTop", 1f);
+            m.SetFloat("_SwayAmount", 0.18f);
+            m.SetFloat("_SwaySpeed", 1.6f);
+        } else {
+            m.SetFloat("_SwayAmount", 0.12f);
+            m.SetFloat("_SwaySpeed", 2.2f);
+        }
+        AssetDatabase.CreateAsset(m, path);
+        return m;
     }
 
     private static TerrainDecorationProfile.Rule Rule(string name, Placement placement, float density, int spacing,
