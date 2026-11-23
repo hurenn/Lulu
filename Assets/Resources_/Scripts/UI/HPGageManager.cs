@@ -52,6 +52,8 @@ public class HPGageManager : MonoBehaviour {
             }
             _hearts.Add(heart);
         }
+        // 生成したハートを今のHPに合わせておく(次のHPの変化で、割れる演出などが正しく出るように)
+        if (_characterParameter != null) UpdateHPGage(_characterParameter.CurrentHP);
 
         // 初期化フラグを設定
         if (!isInitialized) {

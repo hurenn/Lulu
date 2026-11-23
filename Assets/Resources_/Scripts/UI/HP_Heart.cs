@@ -28,7 +28,7 @@ public class HP_Heart : MonoBehaviour {
             }
             _hpFill.SetActive(is_fill);
             // HP回復アニメーション再生
-            if (_hpBreakHeart != null && is_fill && _hpBreakHeart.activeSelf) {
+            if (_isFillInitialized && _hpBreakHeart != null && is_fill && _hpBreakHeart.activeSelf) {
                 _PlayHealHeart();
             }
         }
