@@ -22,7 +22,18 @@ public static class SpriteOutlinePadding {
     [MenuItem("Tools/Lulu/アウトラインを付けたキャラのシートに余白を付ける")]
     private static void _PadOutlinedSheets() {
         var sprites = GetOutlinedSprites();
-        var log = PadSheets(sprites.Select(s => s.texture).Distinct().OrderBy(t => t.name), false, sprites);
+        var textures = sprites.Select(s => s.texture).Distinct().OrderBy(t => t.name).ToList();
+        // 元のPNGを直接書き換えてUndoもできないので、何をするかを見せて確認してから実行する
+        var plan = PadSheets(textures, true, sprites);
+        const int MAX_PLAN_LENGTH = 1500;
+        string plan_text = plan.Length > MAX_PLAN_LENGTH ? plan.Substring(0, MAX_PLAN_LENGTH) + "\n…(続きはコンソール)" : plan;
+        Debug.Log(plan);
+        if (!EditorUtility.DisplayDialog("シートに余白を付ける",
+                "元のPNGを直接書き換えます(Undoできません。戻す時はgitで戻してください)。\n\n" + plan_text,
+                "実行", "キャンセル")) {
+            return;
+        }
+        var log = PadSheets(textures, false, sprites);
         Debug.Log(log);
     }
 
