@@ -10,6 +10,7 @@ public class GoalMarker : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float edgeOffset = 50f; // 画面端から少し内側に
     private bool _isActive = false;
+    private Canvas _canvas; // 毎フレーム親をたどらないように使い回す
 
     private void Reset() {
         player = GameObject.FindWithTag("Player")?.transform;
@@ -43,7 +44,8 @@ public class GoalMarker : MonoBehaviour
         Vector3 dir = (screenPos - new Vector3(Screen.width / 2, Screen.height / 2, 0)).normalized;
 
         // 画面端の位置を計算(画面端からの距離は、Canvasの倍率に合わせて4Kなどでも同じ見た目にする)
-        var canvas = markerUI.GetComponentInParent<Canvas>();
+        if (_canvas == null) _canvas = markerUI.GetComponentInParent<Canvas>();
+        var canvas = _canvas;
         float offset = edgeOffset * (canvas != null ? canvas.rootCanvas.scaleFactor : 1f);
         Vector3 edgePos = new Vector3(
             Mathf.Clamp(Screen.width / 2 + dir.x * (Screen.width / 2 - offset), offset, Screen.width - offset),
