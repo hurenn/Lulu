@@ -65,6 +65,7 @@ public partial class StageAmbience {
 
     private void OnDisable() {
         Shader.SetGlobalVector(LuluPosId, Vector4.zero); // ルルがいない時は押しのけを無効にする(w=0)
+        _ClearBirds();
     }
 
     private void _InteractUpdate() {
@@ -82,24 +83,24 @@ public partial class StageAmbience {
         float now = Time.time;
         // 草むらを走り抜けると葉っぱが舞う
         if (_grassLeafPrefab != null && Mathf.Abs(vel.x) >= _grassLeafMinSpeed)
-            _TouchSpots(_grassSpots, pos + Vector3.down * half, 0.6f, 0.6f, 1.2f, p => Instantiate(_grassLeafPrefab, p, Quaternion.identity, transform));
+            _TouchSpots(_grassSpots, pos + Vector3.down * half, 0.6f, 0.6f, 1.2f, _grassLeafPrefab, Vector3.zero);
         // 垂れた配線に触れると火花
         if (_cableTouchSpark && _sparks.prefab != null)
-            _TouchSpots(_cables, pos, 0.6f, half + 0.4f, 0.7f, p => Instantiate(_sparks.prefab, p, Quaternion.identity, transform));
+            _TouchSpots(_cables, pos, 0.6f, half + 0.4f, 0.7f, _sparks.prefab, Vector3.zero);
         // ガラス片に近づくときらっと光る
         if (_glintPrefab != null && speed > 0.5f)
-            _TouchSpots(_glassSpots, pos + Vector3.down * half, 1.2f, 0.8f, 2.5f, p => Instantiate(_glintPrefab, p + Vector3.up * 0.1f, Quaternion.identity, transform));
+            _TouchSpots(_glassSpots, pos + Vector3.down * half, 1.2f, 0.8f, 2.5f, _glintPrefab, Vector3.up * 0.1f);
     }
 
-    // 範囲内の場所ごとに、冷却時間を空けて反応を出す
-    private void _TouchSpots(List<Vector3> spots, Vector3 center, float rx, float ry, float cooldown, System.Action<Vector3> spawn) {
+    // 範囲内の場所ごとに、冷却時間を空けて反応を出す(毎フレーム呼ぶので、ラムダを使わずプレハブを直接受け取る)
+    private void _TouchSpots(List<Vector3> spots, Vector3 center, float rx, float ry, float cooldown, GameObject prefab, Vector3 offset) {
         float now = Time.time;
         foreach (var s in spots) {
             if (Mathf.Abs(s.x - center.x) > rx || Mathf.Abs(s.y - center.y) > ry) continue;
             int key = (Mathf.RoundToInt(s.x * 10f) * 73856093) ^ (Mathf.RoundToInt(s.y * 10f) * 19349663) ^ spots.GetHashCode();
             if (_cooldowns.TryGetValue(key, out var t) && now - t < cooldown) continue;
             _cooldowns[key] = now;
-            spawn(s);
+            Instantiate(prefab, s + offset, Quaternion.identity, transform);
         }
     }
 

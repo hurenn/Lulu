@@ -189,6 +189,14 @@ public partial class StageAmbience : MonoBehaviour {
     private readonly List<Bird> _birds = new List<Bird>();
     private float _birdTimer;
 
+    // 鳥はカメラの子に作っていて動かすのはこのコンポーネントなので、無効になった時は空中で止まって残らないように消す
+    private void _ClearBirds() {
+        foreach (var b in _birds) {
+            if (b.t != null) Destroy(b.t.gameObject);
+        }
+        _birds.Clear();
+    }
+
     private void _UpdateBirds() {
         if (!_birdsEnabled || _birdFrames == null || _birdFrames.Length == 0 || _cam == null) return;
         _birdTimer -= Time.deltaTime;
