@@ -1129,7 +1129,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
         var flash = ScreenFlash.Instance;
 
         // === 2. カメラズーム ===
-        cinemachineManager.ZoomOnTarget(transform);
+        cinemachineManager?.ZoomOnTarget(transform);
         yield return new WaitForSeconds(0.05f);
 
         // === 1. ヒット時演出 ===
@@ -1145,7 +1145,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
 
         yield return Pause_UI.WaitForUnpausedSeconds(4.0f);
 
-        cinemachineManager.ReturnToPlayer();
+        cinemachineManager?.ReturnToPlayer();
 
         // 徐々に時間を戻す
         yield return Pause_UI.RestoreTimeScaleGradually();
@@ -1161,7 +1161,7 @@ public class Enemy_ZelxDark : Enemy_Base, IActivatable, IDamageSourceBlocker, ID
             yield return Pause_UI.WaitForUnpausedSeconds(0.5f);
 
             Instantiate(_dieExplosion, transform.position, Quaternion.identity);
-            cinemachineManager.ShakeCamera(duration: 0.5f);
+            cinemachineManager?.ShakeCamera(duration: 0.5f);
             _sprite.enabled = false;
             ParticleTrail.DetachAll(gameObject); // 姿が消えたら靄も出すのをやめる
         }
