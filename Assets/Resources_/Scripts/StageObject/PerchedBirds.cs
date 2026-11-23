@@ -48,8 +48,20 @@ public class PerchedBirds : MonoBehaviour {
             foreach (var b in _birds) _Fly(b);
             // ルルが離れていれば、しばらくして戻る
             _awayTimer = dist > _fleeDistance * 2.5f ? _awayTimer + Time.deltaTime : 0f;
-            if (_awayTimer > _returnTime) _Land();
+            // 巣が画面に映っている間は戻さない(画面内に急に現れないように)
+            if (_awayTimer > _returnTime && !_IsHomeInView()) _Land();
         }
+    }
+
+    private const float VIEW_MARGIN = 2f; // 画面に映っているとみなす範囲の余白
+
+    private bool _IsHomeInView() {
+        var cam = Camera.main;
+        if (cam == null || !cam.orthographic) return false;
+        Vector2 offset = transform.position - cam.transform.position;
+        float half_height = cam.orthographicSize + VIEW_MARGIN;
+        float half_width = cam.orthographicSize * cam.aspect + VIEW_MARGIN;
+        return Mathf.Abs(offset.x) < half_width && Mathf.Abs(offset.y) < half_height;
     }
 
     private void _Idle(Bird b) {
