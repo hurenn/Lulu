@@ -1401,7 +1401,8 @@ public class Ability_Ice : Ability_Base {
     }
 
     // 必殺技の途中で能力が破棄された時に、止めた時間や敵のHPの下限を元に戻す
-    private void OnDestroy() {
+    protected override void OnDestroy() {
+        base.OnDestroy();
         if (_isSpecialTimeStopped) {
             _ResumeWorld();
             var pause_ui = GetPauseUI();
@@ -1414,10 +1415,6 @@ public class Ability_Ice : Ability_Base {
             if (obj != null) Destroy(obj);
         }
         if (_specialTarget != null) _specialTarget.SetMinHP(0);
-        if (_isSpecialUsing) {
-            isAnySpecialUsing = false;
-            specialUsingAbility = null;
-        }
     }
 
     #endregion

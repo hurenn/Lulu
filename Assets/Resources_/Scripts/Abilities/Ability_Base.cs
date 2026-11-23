@@ -76,6 +76,14 @@ public class Ability_Base : MonoBehaviour {
         };
     }
 
+    // 必殺技の途中で能力が破棄された時(ポーズからのリトライなど)に、他の能力を止めるフラグが次のシーンへ残らないようにする
+    protected virtual void OnDestroy() {
+        if (_isSpecialUsing) {
+            isAnySpecialUsing = false;
+            specialUsingAbility = null;
+        }
+    }
+
     // 必殺技アニメーションコールバック
     protected System.Action<string> _onStartSpecialAnim = null;
     public void SetOnStartSpecialAnim(System.Action<string> onAnim) {
