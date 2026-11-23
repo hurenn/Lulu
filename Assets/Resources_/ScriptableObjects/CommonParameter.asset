@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 086ff492030fd024fb7e4786992d4edf, type: 3}
   m_Name: CommonParameter
   m_EditorClassIdentifier: 
-  gameMode: 3
   moveSpeed: 5
   dashSpeed: 10
   slideJumpSpeed: 14
@@ -39,7 +38,7 @@ MonoBehaviour:
   warpDashControlAccel: 0
   warpDashControlDecel: 40
   warpDashControlSteer: 20
-  maxSlideTime: 1
+  maxSlideTime: 0.5
   slideCancelDamping: 0.8
   maxWallSlideTime: 0.5
   wallSlideSpeed: 10

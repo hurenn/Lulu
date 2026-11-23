@@ -70,7 +70,7 @@ public class Character_Base : MonoBehaviour, IDamageable {
     protected bool _isGroundSticking; // 地面に張り付いている状態
     protected bool _isWallDash;  // 壁に沿って滑っている状態
     private float _wallDashEffectTimer = 0f;
-    private const float WALL_DASH_EFFECT_INTERVAL = 0.2f;
+    protected const float WALL_DASH_EFFECT_INTERVAL = 0.2f; // 壁ダッシュ・スライディング中に土煙を出す間隔(秒)
     protected void _SetWallDash(bool is_wall_sliding, bool is_play_anim = true) {
         _isWallDash = is_wall_sliding;
         _anim?.SetBool("WallDash", is_wall_sliding && is_play_anim);

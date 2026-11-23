@@ -317,6 +317,21 @@ public class Player_Character : Character_Base {
         _SetDash(_isRight, is_effect: false);
         _SetSliding(true);
         _currentSlideTime = 0;
+        _SpawnSlideDust(); // 滑り出しの瞬間にも土煙を出す
+        _slideDustTimer = 0f;
+    }
+
+    // スライディング中に土煙を出す間隔の計測
+    private float _slideDustTimer = 0f;
+
+    /// <summary>
+    /// スライディングの土煙を足元に出す(壁ダッシュの土煙と同じ絵。床向き)
+    /// </summary>
+    private void _SpawnSlideDust() {
+        if (_dashEffect == null || !_isGrounded) return;
+        bool to_right = _warpDashDirection.x != 0f ? _warpDashDirection.x > 0f : _isRight;
+        var footPos = transform.position + Vector3.down * (GetCharacterSize().y / 2f);
+        EffectPool.Instance.Spawn(_dashEffect, footPos, !to_right);
     }
     /// <summary>
     /// ダッシュ実行
@@ -378,6 +393,13 @@ public class Player_Character : Character_Base {
             var dash_dir = _warpDashDirection.normalized;
             velocity.x = dash_dir.x * _param.slideSpeed;
             _rb.linearVelocity = velocity;
+
+            // 壁ダッシュと同じように、滑っている間は一定間隔で土煙を出し続ける
+            _slideDustTimer += Time.deltaTime;
+            if (_slideDustTimer >= WALL_DASH_EFFECT_INTERVAL) {
+                _SpawnSlideDust();
+                _slideDustTimer = 0f;
+            }
 
             _currentSlideTime += Time.deltaTime;
             if (_currentSlideTime >= _param.maxSlideTime) {
