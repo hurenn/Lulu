@@ -1391,9 +1391,13 @@ public class Player_Character : Character_Base {
         if (_isWaterMode == is_water_mode) {
             return;
         }
+        var fire_slot = GetCurrentSlot(eAbilityType.Fire);
+        // 必殺技の演出中は能力を作り直せない(能力側で破棄が止められる)ので、切り替えない
+        if (fire_slot.HasValue && _abilities[(int)fire_slot.Value] != null && _abilities[(int)fire_slot.Value].IsSpecialUsing) {
+            return;
+        }
         _isWaterMode = is_water_mode;
 
-        var fire_slot = GetCurrentSlot(eAbilityType.Fire);
         if (!fire_slot.HasValue) {
             return; // Fire未装備：次にFireを装備した時に反映される
         }
@@ -1419,7 +1423,10 @@ public class Player_Character : Character_Base {
     public void RemoveAbility(eAbilitySlot slot) {
         var ability = _abilities[(int)slot];
 
-        AbilityFactory.DestroyAbility(ability, slot);
+        // 必殺技の演出中は能力側で破棄が止められるので、スロットもそのままにする
+        if (!AbilityFactory.DestroyAbility(ability, slot)) {
+            return;
+        }
 
         ClearAbilitySlotReference(slot);
     }

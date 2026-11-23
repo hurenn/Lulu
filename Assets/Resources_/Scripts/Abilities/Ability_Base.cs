@@ -385,13 +385,24 @@ public class Ability_Base : MonoBehaviour {
     }
 
     /// <summary>
-    /// 能力破棄
+    /// 必殺技の演出中か(この間は能力を破棄できない)
     /// </summary>
-    public virtual void DestroyAbility() {
+    public bool IsSpecialUsing => _isSpecialUsing;
+
+    /// <summary>
+    /// 能力破棄をリクエストする。必殺技の演出中は破棄しない
+    /// (途中で破棄すると、プレイヤーが操作不能・非表示のまま残るため)
+    /// </summary>
+    /// <returns>破棄したか</returns>
+    public virtual bool DestroyAbility() {
+        if (_isSpecialUsing) {
+            return false;
+        }
         if (_specialTimelineDirector != null) {
             Destroy(_specialTimelineDirector.gameObject);
         }
         Destroy(this.gameObject);
+        return true;
     }
 
 }

@@ -81,9 +81,12 @@ public static class AbilityFactory {
     /// </summary>
     /// <typeparam name="T">確認したい能力の型</typeparam>
     /// <returns>装備されていればtrue</returns>
-    public static void DestroyAbility(Ability_Base ability, eAbilitySlot slot) {
+    /// <returns>破棄したか(必殺技の演出中は破棄されず、UI・装備もそのまま)</returns>
+    public static bool DestroyAbility(Ability_Base ability, eAbilitySlot slot) {
         // シーン中から対象の能力を探す
-        ability.DestroyAbility();
+        if (ability != null && !ability.DestroyAbility()) {
+            return false;
+        }
 
         // UI更新
         _AbilityUIManager?.RemoveAbilityUI(slot);
@@ -93,5 +96,6 @@ public static class AbilityFactory {
         if (playerParam != null) {
             playerParam.RemoveAbility(slot);
         }
+        return true;
     }
 }
