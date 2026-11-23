@@ -21,6 +21,11 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
     }
 
     private void _OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        // 前のシーンの早送り・スロー演出などを持ち越さず、元の速さで開始する
+        EventFastForward.ResetForNewScene();
+        TimeScaleRequestManager.Clear();
+        Time.timeScale = 1f;
+
         // シーン再読み込み時のみリスポーン地点に移動
         var player = PlayerCharacterManager.Current as Player_Character;
         var checkpointManager = CheckpointManager.Instance;

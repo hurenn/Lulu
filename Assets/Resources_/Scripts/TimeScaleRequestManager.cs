@@ -25,6 +25,14 @@ public static class TimeScaleRequestManager {
     }
 
     /// <summary>
+    /// 全ての要求を破棄する(シーンの開始時に呼ぶ。前のシーンで解除されずに残った要求を持ち越さないため。時間の流れは呼び出し側で戻す)
+    /// </summary>
+    public static void Clear() {
+        _requestStack.Clear();
+        _baselineScale = 1f;
+    }
+
+    /// <summary>
     /// 直前のRequestを解除する。他に要求元が残っていればその値に、
     /// 誰も残っていなければ本来の値に復元する
     /// </summary>

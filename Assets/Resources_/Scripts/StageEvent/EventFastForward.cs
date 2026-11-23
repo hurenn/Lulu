@@ -57,6 +57,16 @@ public class EventFastForward : MonoBehaviour {
     }
 
     /// <summary>
+    /// 早送りを解除する(シーンの開始時に呼ぶ。早送りはステージを跨がない。時間の流れは呼び出し側で戻す)
+    /// </summary>
+    public static void ResetForNewScene() {
+        if (s_instance == null) return;
+        s_instance._isActive = false;
+        s_instance._noEventTime = 0f;
+        s_instance._appliedTimeScale = -1f;
+    }
+
+    /// <summary>
     /// 早送りしていなければ使われている時間の流れ(早送り中に時間の流れを保存して後で戻す処理向け)
     /// </summary>
     public static float GetBaseTimeScale() {
