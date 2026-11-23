@@ -36,6 +36,8 @@ public class EventFastForward : MonoBehaviour {
         foreach (var director in FindObjectsByType<PlayableDirector>(FindObjectsSortMode.None)) {
             if (director.state != PlayState.Playing) continue;
             if (director.timeUpdateMode == DirectorUpdateMode.UnscaledGameTime) continue;
+            // 最後の状態を保ったまま止まっているTimeline(WrapMode=Hold)は、再生中のままでも終わったものとして扱う
+            if (director.extrapolationMode == DirectorWrapMode.Hold && director.time >= director.duration) continue;
             return true;
         }
         var viewer = FindAnyObjectByType<MessageViewer>();
