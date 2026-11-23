@@ -39,6 +39,7 @@ public class SlashStreak : MonoBehaviour {
         _baseThickness = new float[_layers.Length];
         _baseAlpha = new float[_layers.Length];
         for (int i = 0; i < _layers.Length; i++) {
+            if (_layers[i] == null) continue;
             _baseThickness[i] = _layers[i].transform.localScale.y;
             _baseAlpha[i] = _layers[i].color.a;
         }
