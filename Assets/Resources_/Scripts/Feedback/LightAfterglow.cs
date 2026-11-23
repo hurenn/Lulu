@@ -74,6 +74,8 @@ public class LightAfterglow : MonoBehaviour {
         if (_wasLightOn && !is_light_on) _SpawnLinger();
         _wasLightOn = is_light_on;
         if (!is_light_on) return;
+        // 実時間で動かしている時も、ポーズ中は止める(複製は止まったまま消えないので、同じ場所に溜まらないように)
+        if (useUnscaledTime && Pause_UI.IsOpen) return;
 
         float dt = useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
 
