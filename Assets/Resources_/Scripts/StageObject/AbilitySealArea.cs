@@ -39,12 +39,20 @@ public class AbilitySealArea : MonoBehaviour {
     /// </summary>
     /// <returns>経路がエリアに入ったか</returns>
     public static bool ClipPath(Vector2 from, ref Vector2 to) {
-        // エリアの中から(MPが残っている間)のワープは止めない
-        if (Contains(from)) return false;
-        var hit = Physics2D.Linecast(from, to, LayerMask);
-        if (hit.collider == null) return false;
-        to = hit.point - (to - from).normalized * _BOUNDARY_OFFSET;
-        return true;
+        if (!Contains(from)) {
+            var hit = Physics2D.Linecast(from, to, LayerMask);
+            if (hit.collider == null) return false;
+            to = hit.point - (to - from).normalized * _BOUNDARY_OFFSET;
+            return true;
+        }
+        // エリアの中から(MPが残っている間)のワープは、今いるエリアでは止めない。経路の先にある別のエリアでは止める
+        // (ワープの時だけ呼ばれるので、配列の確保は気にしない)
+        foreach (var other in Physics2D.LinecastAll(from, to, LayerMask)) {
+            if (other.collider.OverlapPoint(from)) continue;
+            to = other.point - (to - from).normalized * _BOUNDARY_OFFSET;
+            return true;
+        }
+        return false;
     }
 
     [SerializeField] private Renderer _visual; // エリアの見た目(シェーダーにエリアの範囲を渡す。未設定なら同じオブジェクトのRenderer)
