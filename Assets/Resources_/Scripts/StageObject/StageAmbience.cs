@@ -30,6 +30,8 @@ public class StageAmbience : MonoBehaviour {
 
     [Header("ホコリ(カメラについて回る)")]
     [SerializeField] private GameObject _dustPrefab;
+    [Tooltip("霧のような埃のもや(カメラについて回る)。空にするとオフ")]
+    [SerializeField] private GameObject _hazePrefab;
 
     [Header("光の筋(広い天井の下に固定で置く)")]
     [SerializeField] private bool _lightShaftsEnabled = true;
@@ -91,11 +93,13 @@ public class StageAmbience : MonoBehaviour {
     private readonly List<Vector3> _cables = new List<Vector3>();           // 配線の先端
     private readonly List<GameObject> _butterflies = new List<GameObject>();
     private Transform _dust;
+    private Transform _haze;
 
     private void Start() {
         _cam = Camera.main;
         _ScanStage();
         if (_dustPrefab != null) _dust = Instantiate(_dustPrefab, transform).transform;
+        if (_hazePrefab != null) _haze = Instantiate(_hazePrefab, transform).transform;
         if (_lightShaftsEnabled && _lightShaftPrefab != null) _PlaceLightShafts();
         foreach (var s in new[] { _debris, _sparks, _drips, _leaves }) s.timer = Random.Range(s.interval.x, s.interval.y);
         _SetupBuildings();
@@ -105,6 +109,7 @@ public class StageAmbience : MonoBehaviour {
     private void Update() {
         if (_cam == null) { _cam = Camera.main; if (_cam == null) return; }
         if (_dust != null) { var p = _cam.transform.position; _dust.position = new Vector3(p.x, p.y, 0f); }
+        if (_haze != null) { var p = _cam.transform.position; _haze.position = new Vector3(p.x, p.y, 0f); }
 
         _Tick(_debris, _concreteCeilings, Vector3.zero);
         _Tick(_sparks, _cables, Vector3.zero);

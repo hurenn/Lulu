@@ -15730,6 +15730,103 @@ MonoBehaviour:
   _targetObjects:
   - {fileID: 208023599}
   _disableOnBuildTypes: 0
+--- !u!1 &485018625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 485018627}
+  - component: {fileID: 485018626}
+  m_Layer: 0
+  m_Name: StageAmbience
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &485018626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485018625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60462cfbfee1add4e939a41bc7d10ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _excludedTilemapNames:
+  - Door
+  _greenTileKeyword: Green
+  _cableTileName: Ceiling_Cable
+  _viewMargin: 2
+  _dustPrefab: {fileID: 7958526289504828651, guid: 3bb5e040b78ca1b41b30309796d22fb6, type: 3}
+  _hazePrefab: {fileID: 197813296634577027, guid: 21e0a058a4e71b543b82380be674d4dc, type: 3}
+  _lightShaftsEnabled: 1
+  _lightShaftPrefab: {fileID: 3138211222732893106, guid: 01e69600d2a0c7341ab5a82bac8f0171, type: 3}
+  _lightShaftMinWidth: 6
+  _lightShaftMinHeight: 5
+  _lightShaftSpacing: 14
+  _debris:
+    enabled: 1
+    prefab: {fileID: 6812672454328741064, guid: 04bdf2d90e7e3d0469beb53892673794, type: 3}
+    interval: {x: 2.5, y: 6}
+    timer: 0
+  _sparks:
+    enabled: 1
+    prefab: {fileID: 3724989534248545944, guid: 927adff9163f85743b20d6541df7d8f4, type: 3}
+    interval: {x: 1.5, y: 4}
+    timer: 0
+  _drips:
+    enabled: 1
+    prefab: {fileID: 830856195778915312, guid: f47f949ae7f484d47b30278e27240db9, type: 3}
+    interval: {x: 0.8, y: 2.2}
+    timer: 0
+  _leaves:
+    enabled: 1
+    prefab: {fileID: 7244213870610322380, guid: b0ae0553d1f89cc46b85a33c18cdbde2, type: 3}
+    interval: {x: 1.5, y: 3.5}
+    timer: 0
+  _butterfliesEnabled: 1
+  _butterflyPrefab: {fileID: 1659654447098195934, guid: 1d056c4381104944dabf945b6de9f4ea, type: 3}
+  _butterflyGroups: 2
+  _buildingData:
+  - {fileID: 11400000, guid: 94b4d6535644e0a4aaf426680f83c9bb, type: 2}
+  - {fileID: 11400000, guid: 9687a58a7fd8626459d2ae2773a28356, type: 2}
+  _windowLightSprite: {fileID: 21300000, guid: d11bc0ff0bc763c4dba56530efbe9835, type: 3}
+  _windowLightColor: {r: 1, g: 0.95, b: 0.75, a: 0.9}
+  _windowFlickerRatio: 0.5
+  _windowOnTime: {x: 0.5, y: 3}
+  _windowOffTime: {x: 2, y: 8}
+  _smokePrefab: {fileID: 6194902608115421182, guid: e661830f9dc1d2b4191e30c5f1dc5463, type: 3}
+  _birdsEnabled: 1
+  _birdFrames:
+  - {fileID: 21300000, guid: a1638aa239237054c80828e82f15382c, type: 3}
+  - {fileID: 21300000, guid: 9f16f8f2c16ebd44b83dbe78c9cacf03, type: 3}
+  _birdColor: {r: 0.25, g: 0.36, b: 0.42, a: 1}
+  _birdInterval: {x: 10, y: 22}
+  _birdCount: {x: 3, y: 7}
+  _birdSpeed: 3.5
+  _birdSortingOrder: -100
+--- !u!4 &485018627
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485018625}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &497599975 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3313654072791041014, guid: e63778a580d2cdf4ba17466b41ba4104, type: 3}
@@ -292774,3 +292871,4 @@ SceneRoots:
   - {fileID: 1550867978}
   - {fileID: 1798307588}
   - {fileID: 1404566681}
+  - {fileID: 485018627}
