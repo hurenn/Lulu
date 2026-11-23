@@ -431,8 +431,11 @@ public static class TerrainDecorator {
             SceneManager.MoveGameObjectToScene(root, scene);
             Undo.RegisterCreatedObjectUndo(root, "Create Terrain Decoration");
         }
+        // 既存のルートを変更する場合も元に戻せるように記録する
+        Undo.RecordObject(root.transform, "Generate Terrain Decoration");
         var grid = root.GetComponent<Grid>();
-        if (grid == null) grid = root.AddComponent<Grid>();
+        if (grid == null) grid = Undo.AddComponent<Grid>(root);
+        else Undo.RecordObject(grid, "Generate Terrain Decoration");
         grid.cellSize = refGrid.cellSize;
         grid.cellGap = refGrid.cellGap;
         grid.cellLayout = refGrid.cellLayout;
@@ -535,6 +538,8 @@ public class TerrainDecoratorWindow : EditorWindow {
         _log = RunBatch(profilePath, DefaultScenes, generate);
         // シーンを開き直すと未参照アセットが解放されるので読み直す
         _profile = AssetDatabase.LoadAssetAtPath<TerrainDecorationProfile>(profilePath);
+        // 保存確認ダイアログやシーンの開き直しでレイアウトが崩れるので、このフレームのGUI描画を打ち切る
+        GUIUtility.ExitGUI();
     }
 
     /// <summary>シーンを順に開いて生成/削除し、保存する。最後に元のシーン構成へ戻す</summary>
@@ -560,7 +565,12 @@ public class TerrainDecoratorWindow : EditorWindow {
                 if (changed) EditorSceneManager.SaveScene(scene);
             }
         } finally {
-            if (setup.Length > 0) EditorSceneManager.RestoreSceneManagerSetup(setup);
+            // 未保存の新規シーン(パスが空)は開き直せないので除く。全て除かれた時は最後のシーンを開いたままにする
+            var restorable = setup.Where(s => !string.IsNullOrEmpty(s.path)).ToArray();
+            if (restorable.Length > 0) {
+                if (!restorable.Any(s => s.isActive)) restorable[0].isActive = true;
+                EditorSceneManager.RestoreSceneManagerSetup(restorable);
+            }
         }
         return sb.ToString();
     }
