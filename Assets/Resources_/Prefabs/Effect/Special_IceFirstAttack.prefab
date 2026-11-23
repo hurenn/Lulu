@@ -96,7 +96,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8808934566716058842}
-  - component: {fileID: 1007231671162086440}
   m_Layer: 0
   m_Name: Special_IceFirstAttack
   m_TagString: Untagged
@@ -121,26 +120,6 @@ Transform:
   - {fileID: 4986393475774634830}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1007231671162086440
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7444988537484354709}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bece0b92e657cb4da050412ecbb7733, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _light: {fileID: 0}
-  _lingerTime: 0.5
-  _dropInterval: 0.06
-  _dropIntensityRate: 0.2
-  _dropRadiusRate: 0.6
-  _dropFadeTime: 0.45
-  _flickerAmount: 0
-  _flickerSpeed: 12
 --- !u!1001 &7169087895059630545
 PrefabInstance:
   m_ObjectHideFlags: 0
