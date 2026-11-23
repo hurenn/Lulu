@@ -77,6 +77,9 @@ public class EventFastForward : MonoBehaviour {
                 _Stop();
                 return;
             }
+            // イベントが途切れている間は元の速さに戻しておく(イベントが終わって操作が戻った直後に速く動かないように)
+            _RestoreBaseTimeScale();
+            return;
         }
         _ApplyTimeScale();
     }
@@ -92,6 +95,11 @@ public class EventFastForward : MonoBehaviour {
 
     private void _Stop() {
         _isActive = false;
+        _RestoreBaseTimeScale();
+    }
+
+    // 早送りで設定した時間の流れを元に戻す(他の処理が書き換えていたら、そちらを優先して触らない)
+    private void _RestoreBaseTimeScale() {
         if (Mathf.Approximately(Time.timeScale, _appliedTimeScale)) {
             Time.timeScale = _baseTimeScale;
         }
