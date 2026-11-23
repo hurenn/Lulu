@@ -62,17 +62,16 @@ public static class TerrainDecorationPlaceholder {
         var crackA = MakeTile("Crack_A", 16, 16, eAnchor.Center, DrawCrackA);
         var crackB = MakeTile("Crack_B", 16, 16, eAnchor.Center, DrawCrackB);
         var stain = MakeTile("Stain", 16, 16, eAnchor.Center, DrawStain);
+        var stainTriangle = MakeTile("StainTriangle", 16, 16, eAnchor.Center, DrawStain); // 正式な絵(StainTriangle.png)があればそれを使う
 
         // 緑化(BuildingGreen用)
         var fern = MakeTile("Green_Fern", 16, 24, eAnchor.Bottom, DrawFern);
         var grassA = MakeTile("Green_Grass_A", 16, 16, eAnchor.Bottom, p => DrawGrass(p, 1));
         var grassB = MakeTile("Green_Grass_B", 16, 16, eAnchor.Bottom, p => DrawGrass(p, 2));
         var flower = MakeTile("Green_Flower", 16, 16, eAnchor.Bottom, DrawFlower);
-        var ivyL = MakeTile("Green_Ivy_WallLeft", 16, 32, eAnchor.Bottom, p => DrawWallIvy(p, true));
-        var ivyR = MakeTile("Green_Ivy_WallRight", 16, 32, eAnchor.Bottom, p => DrawWallIvy(p, false));
         var mossA = MakeTile("Green_Moss_A", 16, 16, eAnchor.Center, p => DrawMossPatch(p, 1));
         var mossB = MakeTile("Green_Moss_B", 16, 16, eAnchor.Center, p => DrawMossPatch(p, 2));
-        var ivyPatch = MakeTile("Green_Ivy_Patch", 16, 16, eAnchor.Center, DrawIvyPatch);
+        var mossC = MakeTile("Green_Moss_C", 16, 16, eAnchor.Center, p => DrawMossPatch(p, 1)); // 正式な絵(Green_Moss_C.png)があればそれを使う
 
         // 奥の壁(近景)の仮素材は作らない(機能はプロファイルの「奥の壁」でタイルを指定すれば使える)
 
@@ -97,23 +96,17 @@ public static class TerrainDecorationPlaceholder {
             Rule("瓦礫", Placement.Top, 0.10f, 3, (rubbleA, 2f), (rebar, 1f)),
             Rule("小石・ガラス片", Placement.Top, 0.25f, 1, (pebblesA, 3f), (pebblesB, 3f), (glass, 1f)),
             Rule("天井の垂れ下がり", Placement.Ceiling, 0.08f, 3, (cable, 1f)),
-            Rule("壁のひび・染み", Placement.Inner, 0.03f, 3, (crackA, 2f), (crackB, 2f), (stain, 1f)),
+            Rule("壁のひび・染み", Placement.Inner, 0.03f, 3, (crackA, 2f), (crackB, 2f), (stain, 1f), (stainTriangle, 1f)),
         };
         foreach (var r in buildingRules) r.targetTerrainTiles.Add(building);
 
         // ---- BuildingGreen: 植物・蔦 ----
         var greenFern = Rule("シダ", Placement.Top, 0.08f, 3, (fern, 1f));
         greenFern.clearance = 2;
-        var ivyLRule = Rule("壁を這う蔦(左面)", Placement.WallLeft, 0.15f, 2, (ivyL, 1f));
-        ivyLRule.footprint = 2;
-        var ivyRRule = Rule("壁を這う蔦(右面)", Placement.WallRight, 0.15f, 2, (ivyR, 1f));
-        ivyRRule.footprint = 2;
         var greenRules = new List<TerrainDecorationProfile.Rule> {
             greenFern,
             Rule("草花", Placement.Top, 0.45f, 0, (grassA, 3f), (grassB, 3f), (flower, 1f)),
-            ivyLRule,
-            ivyRRule,
-            Rule("苔・蔦の張り付き", Placement.Inner, 0.06f, 2, (mossA, 2f), (mossB, 2f), (ivyPatch, 1f)),
+            Rule("苔の張り付き", Placement.Inner, 0.06f, 2, (mossA, 1f), (mossB, 1f), (mossC, 1f)),
         };
         foreach (var r in greenRules) r.targetTerrainTiles.Add(green);
 
@@ -312,13 +305,6 @@ public static class TerrainDecorationPlaceholder {
 
     // ---- 緑化(BuildingGreen用) ----
 
-    /// <summary>1枚の小さな葉(3ピクセル)</summary>
-    private static void SmallLeaf(Canvas c, int x, int y, bool right) {
-        c.Set(x, y, Leaf);
-        c.Set(x + (right ? 1 : -1), y, LeafLight);
-        c.Set(x, y - 1, LeafDark);
-    }
-
     private static void DrawFern(Canvas c) {
         // 背の高いシダ(16x24、下端が床)
         int[][] fronds = { new[] { 7, 0, 2, 16 }, new[] { 8, 0, 13, 18 }, new[] { 7, 0, 7, 21 }, new[] { 8, 0, 11, 12 }, new[] { 7, 0, 4, 11 } };
@@ -351,22 +337,6 @@ public static class TerrainDecorationPlaceholder {
         c.Set(11, 7, FlowerYellow); c.Set(10, 7, Color.white); c.Set(12, 7, Color.white); c.Set(11, 8, Color.white);
     }
 
-    private static void DrawWallIvy(Canvas c, bool hugRight) {
-        // 壁面を這う蔦(16x32、2マス分の高さ)。WallLeft=壁の左面=マスの右端に貼り付く
-        int wallX = hugRight ? c.w - 1 : 0;
-        int dir = hugRight ? -1 : 1;
-        for (int y = 0; y < c.h - 2; y++) {
-            int off = Mathf.RoundToInt((Mathf.Sin(y * 0.35f) + 1f) * 1.5f);
-            c.Set(wallX + dir * off, y, Stem);
-            if (y % 3 == 0) {
-                c.Set(wallX + dir * (off + 1), y, Leaf);
-                c.Set(wallX + dir * (off + 2), y, LeafLight);
-                c.Set(wallX + dir * (off + 1), y + 1, LeafDark);
-            }
-            if (y % 5 == 2) c.Set(wallX + dir * Mathf.Max(0, off - 1), y, Leaf);
-        }
-    }
-
     private static void DrawMossPatch(Canvas c, int variant) {
         // 壁に張り付いた苔(半透明で地形の質感を残す)
         int cx = variant == 1 ? 6 : 9, cy = variant == 1 ? 9 : 6;
@@ -376,11 +346,5 @@ public static class TerrainDecorationPlaceholder {
                 if (d < 4.5f + ((x * 3 + y * 5) % 3)) c.Set(x, y, Moss);
             }
         c.Set(cx, cy, LeafLight); c.Set(cx + 2, cy - 1, Leaf);
-    }
-
-    private static void DrawIvyPatch(Canvas c) {
-        c.Line(2, 3, 7, 8, Stem); c.Line(7, 8, 13, 10, Stem); c.Line(7, 8, 6, 13, Stem);
-        SmallLeaf(c, 4, 6, false); SmallLeaf(c, 9, 10, true); SmallLeaf(c, 12, 11, true);
-        SmallLeaf(c, 6, 12, false); SmallLeaf(c, 3, 4, true);
     }
 }
