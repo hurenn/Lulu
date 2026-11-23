@@ -197,13 +197,16 @@ public class GameSceneManager : PersistentSingleton<GameSceneManager>
     public void StageRestart(bool is_ability_save, bool is_death_retry = false) {
         // 死亡リトライフラグを設定
         _isDeathRetry = is_death_retry;
-        
+        // 必殺技の時間停止やスロー演出の途中でも、すぐに画面を切り替える(フェードはゲーム時間で進むため)
+        Time.timeScale = 1f;
+
         // シーン再読み込み
         ChangeScene.LoadScene(is_ability_save);
     }
 
     public void GameRestart() {
         _isDeathRetry = false; // タイトルに戻る場合はフラグをクリア
+        Time.timeScale = 1f; // 時間が止まっていても、すぐに画面を切り替える
         CheckpointManager.Instance.ClearCheckpoint(); // タイトルに戻る場合はチェックポイントをクリア
         ChangeScene.LoadScene(false, _titleSceneName);
     }

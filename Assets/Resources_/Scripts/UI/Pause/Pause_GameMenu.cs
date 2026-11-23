@@ -60,12 +60,13 @@ public class Pause_GameMenu : Pause_MenuBase {
                 OnCloseMenu();
                 break;
             case eMenuIndex.Retry: // やり直し（ポーズからのリトライなので必殺チャージなし）
-                GameSceneManager.Instance.StageRestart(false, false);
+                // 先にポーズを閉じる(閉じる時に開く前の時間の流れへ戻されるため、リトライ側で通常の速さにするのを上書きしないように)
                 OnCloseMenu();
+                GameSceneManager.Instance.StageRestart(false, false);
                 break;
             case eMenuIndex.Title: // タイトルに戻る
-                GameSceneManager.Instance.GameRestart();
                 OnCloseMenu();
+                GameSceneManager.Instance.GameRestart();
                 break;
         }
     }
