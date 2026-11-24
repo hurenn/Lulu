@@ -20,11 +20,11 @@ public class UIFloatingOutline : BaseMeshEffect {
 
     protected override void OnEnable() {
         base.OnEnable();
-        _EnableShaderChannels();
+        EnableShaderChannels(graphic);
     }
 
     // 線の太さ・影のずれ(TEXCOORD1)と絵の範囲(TEXCOORD2)をシェーダーへ渡せるようにする
-    private void _EnableShaderChannels() {
+    public static void EnableShaderChannels(Graphic graphic) {
         var canvas = graphic != null ? graphic.canvas : null;
         if (canvas == null) return;
         canvas.additionalShaderChannels |= AdditionalCanvasShaderChannels.TexCoord1 | AdditionalCanvasShaderChannels.TexCoord2;
@@ -32,7 +32,17 @@ public class UIFloatingOutline : BaseMeshEffect {
 
     public override void ModifyMesh(VertexHelper vh) {
         if (!IsActive() || vh.currentVertCount == 0) return;
-        _EnableShaderChannels();
+        ExpandMesh(vh, graphic, _outlineWidth, _shadowOffset);
+    }
+
+    /// <summary>
+    /// 画像のメッシュを線の太さ・影のずれの分だけ外側へ広げ、太さ・ずれ(UV)と絵の範囲を頂点に入れる。
+    /// 発光アウトライン(UIGlowOutline)も同じ広げ方を使う
+    /// </summary>
+    public static void ExpandMesh(VertexHelper vh, Graphic graphic, float outlineWidth, Vector2 shadowOffset) {
+        if (vh.currentVertCount == 0) return;
+        EnableShaderChannels(graphic);
+        var transform = graphic.transform;
 
         // 親の拡大率に関わらず、Canvas上で同じ太さになるようにローカルの大きさへ直す
         // ワールド空間のCanvas(頭上のゲージなど)は、1ワールド単位=100として画面上の太さを揃える
@@ -43,8 +53,8 @@ public class UIFloatingOutline : BaseMeshEffect {
             float root = canvas.renderMode == RenderMode.WorldSpace ? WORLD_UNITS_PER_CANVAS_UNIT : canvas.transform.lossyScale.x;
             if (local > 0f && root > 0f) scale = root / local;
         }
-        float width = _outlineWidth * scale;
-        Vector2 shadow = _shadowOffset * scale;
+        float width = outlineWidth * scale;
+        Vector2 shadow = shadowOffset * scale;
         float margin = width + Mathf.Max(Mathf.Abs(shadow.x), Mathf.Abs(shadow.y));
 
         Vector4 uvRect = new Vector4(0f, 0f, 1f, 1f);
