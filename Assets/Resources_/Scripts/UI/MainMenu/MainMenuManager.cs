@@ -5,7 +5,8 @@ using UnityEngine;
 /// メインメニュー(部屋の画面)。「ステージ」「はなす」「よみもの」「オプション」を横に並べ、
 /// 左右入力でカーソルを動かし、決定ボタンで選ぶ。
 /// カーソルを合わせた項目に対応する部屋の家具(黒板・机・本棚・箱)を発光アウトラインで強調する。
-/// 各項目の先(ステージセレクト・ランダム会話・資料閲覧・オプション)は未実装
+/// 「ステージ」を選ぶと、黒板を中心に部屋を少しズームしながら黒板の背景へクロスフェードし、ステージセレクトを開く。
+/// それ以外の項目の先(ランダム会話・資料閲覧・オプション)は未実装
 /// </summary>
 public class MainMenuManager : MonoBehaviour {
     private const float FRAME_MOVE_TIME = 0.06f;    // 選択枠の移動時間(秒)
@@ -37,6 +38,27 @@ public class MainMenuManager : MonoBehaviour {
     [SerializeField] private AudioClip _seSelect;        // 選択時の効果音
     [SerializeField] private AudioClip _seDecide;        // 決定時の効果音
 
+    [Header("ステージセレクトへの切り替え")]
+    [SerializeField] private StageSelectMenu _stageSelect;
+    [SerializeField] private RectTransform _zoomCenter;       // ズームの中心(黒板)
+    [SerializeField] private RectTransform[] _zoomTargets;    // ズームする物(部屋の背景・家具)
+    [SerializeField] private GameObject[] _hideObjects;       // ステージセレクト中は非表示にする物(家具・ボタン・選択枠)
+    [SerializeField] private CanvasGroup[] _fadeGroups;       // 切り替え中にフェードさせるUI(ボタン・選択枠)
+    [SerializeField] private CanvasGroup _boardBackGround;    // ステージセレクトの背景(黒板のアップ)
+    [SerializeField] private float _zoomScale = 1.15f;        // ズームの倍率
+    [SerializeField] private float _transitionTime = 0.45f;   // 切り替えの時間(秒)
+    [SerializeField] private float _boardBackGroundStartScale = 0.92f; // 黒板の背景が出始める時の大きさ
+
+    private enum eState {
+        Menu,         // メインメニュー操作中
+        Transition,   // 画面切り替え中
+        StageSelect,  // ステージセレクト中
+    }
+    private eState _state = eState.Menu;
+    private Vector3[] _zoomBasePositions;
+    private Vector3[] _zoomBaseScales;
+    private Vector3[] _zoomCenterLocals;
+
     private int _currentIndex;
     private bool _isHorizontalHeld;       // 左右を倒し続けている間は1回だけ動かす
     private Coroutine _frameMoveCoroutine;
@@ -53,9 +75,29 @@ public class MainMenuManager : MonoBehaviour {
         // ボタンはHorizontalLayoutGroupで並べているので、レイアウトを確定させてから選択枠を合わせる
         Canvas.ForceUpdateCanvases();
         _UpdateView(instant: true);
+
+        // ズームする物の元の位置・大きさと、ズームの中心(黒板の位置。ズームする物の親の座標)を覚えておく
+        if (_zoomTargets == null) _zoomTargets = new RectTransform[0];
+        int count = _zoomTargets.Length;
+        _zoomBasePositions = new Vector3[count];
+        _zoomBaseScales = new Vector3[count];
+        _zoomCenterLocals = new Vector3[count];
+        for (int i = 0; i < count; i++) {
+            _zoomBasePositions[i] = _zoomTargets[i].localPosition;
+            _zoomBaseScales[i] = _zoomTargets[i].localScale;
+            Vector3 center = _zoomCenter != null ? _zoomCenter.position : _zoomTargets[i].position;
+            _zoomCenterLocals[i] = _zoomTargets[i].parent.InverseTransformPoint(center);
+        }
+
+        if (_boardBackGround != null) {
+            _boardBackGround.alpha = 0f;
+            _boardBackGround.gameObject.SetActive(false);
+        }
+        if (_stageSelect != null) _stageSelect.gameObject.SetActive(false);
     }
 
     private void Update() {
+        if (_state != eState.Menu) return;
         if (_playerController == null) {
             _playerController = PlayerCharacterManager.Controller;
             if (_playerController == null) return;
@@ -96,14 +138,17 @@ public class MainMenuManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// 決定。各機能は未実装なので、決定音を鳴らしてログを出すだけ
+    /// 決定。ステージ以外は未実装なので、決定音を鳴らしてログを出すだけ
     /// </summary>
     private void _Decide() {
         _PlaySe(_seDecide);
         var menu = _items[_currentIndex].menu;
         switch (menu) {
             case eMainMenu.Stage:
-                // TODO: ステージセレクトへ
+                if (_stageSelect != null) {
+                    StartCoroutine(_EnterStageSelect());
+                    return;
+                }
                 break;
             case eMainMenu.Talk:
                 // TODO: ランダム会話へ
@@ -116,6 +161,85 @@ public class MainMenuManager : MonoBehaviour {
                 break;
         }
         Debug.Log($"[MainMenu] {menu} を選択(未実装)");
+    }
+
+    /// <summary>
+    /// メインメニュー → ステージセレクト。
+    /// 黒板を中心に部屋を少しズームしながら、黒板の背景をクロスフェードで重ね、ボタン類を消す
+    /// </summary>
+    private IEnumerator _EnterStageSelect() {
+        _state = eState.Transition;
+        if (_boardBackGround != null) _boardBackGround.gameObject.SetActive(true);
+
+        yield return _TransitionAnim(0f, 1f);
+
+        foreach (var obj in _hideObjects) {
+            if (obj != null) obj.SetActive(false);
+        }
+        _state = eState.StageSelect;
+        _stageSelect.Open(_OnStageSelectCanceled);
+    }
+
+    private void _OnStageSelectCanceled() {
+        if (_state != eState.StageSelect) return;
+        StartCoroutine(_ReturnToMenu());
+    }
+
+    /// <summary>
+    /// ステージセレクト → メインメニュー(入った時の逆再生)
+    /// </summary>
+    private IEnumerator _ReturnToMenu() {
+        _state = eState.Transition;
+        foreach (var obj in _hideObjects) {
+            if (obj != null) obj.SetActive(true);
+        }
+        // 非表示の間に消えた家具の光・ハイライトを付け直す
+        _UpdateView(instant: true);
+
+        yield return _TransitionAnim(1f, 0f);
+
+        if (_boardBackGround != null) _boardBackGround.gameObject.SetActive(false);
+        _isHorizontalHeld = true;  // 戻った時に倒していた方向では動かさない
+        _state = eState.Menu;
+    }
+
+    /// <summary>
+    /// 切り替えの進み具合(0:メインメニュー 1:ステージセレクト)をfromからtoへ動かす
+    /// </summary>
+    private IEnumerator _TransitionAnim(float from, float to) {
+        float t = 0f;
+        while (t < _transitionTime) {
+            t += Time.unscaledDeltaTime;
+            float rate = Mathf.Lerp(from, to, Mathf.Clamp01(t / _transitionTime));
+            _ApplyTransition(Mathf.SmoothStep(0f, 1f, rate), rate);
+            yield return null;
+        }
+        _ApplyTransition(to, to);
+    }
+
+    // zoomRate: ズームの進み具合(なめらかにしたもの) fadeRate: フェードの進み具合
+    private void _ApplyTransition(float zoomRate, float fadeRate) {
+        // 黒板を中心に拡大する: 中心からの距離を倍率分だけ伸ばす
+        float scale = Mathf.Lerp(1f, _zoomScale, zoomRate);
+        for (int i = 0; i < _zoomTargets.Length; i++) {
+            var target = _zoomTargets[i];
+            if (target == null) continue;
+            Vector3 center = _zoomCenterLocals[i];
+            target.localPosition = center + (_zoomBasePositions[i] - center) * scale;
+            target.localScale = _zoomBaseScales[i] * scale;
+        }
+
+        // ボタン類は前半で消す/後半で出す
+        float uiAlpha = 1f - Mathf.Clamp01(fadeRate * 2f);
+        foreach (var group in _fadeGroups) {
+            if (group != null) group.alpha = uiAlpha;
+        }
+
+        // 黒板の背景は少し小さい所から広がりながら現れる
+        if (_boardBackGround != null) {
+            _boardBackGround.alpha = fadeRate;
+            _boardBackGround.transform.localScale = Vector3.one * Mathf.Lerp(_boardBackGroundStartScale, 1f, zoomRate);
+        }
     }
 
     // 選択中の項目に合わせて、ハイライト・家具の光・選択枠を切り替える

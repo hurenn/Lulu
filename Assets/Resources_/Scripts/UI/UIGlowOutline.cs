@@ -27,6 +27,7 @@ public class UIGlowOutline : BaseMeshEffect {
     private bool _isHighlighted;
     private float _fade;          // 0:消えている 1:光っている
     private float _pulseTime;     // 光り始めからの経過時間
+    private float _meshScale;     // メッシュを作った時の拡大率
 
     public bool IsHighlighted => _isHighlighted;
 
@@ -75,6 +76,13 @@ public class UIGlowOutline : BaseMeshEffect {
     private void Update() {
         if (_materialInstance == null || graphic.material != _materialInstance) return;
 
+        // 光の幅はメッシュを作る時の拡大率で決まるので、拡縮アニメ中は作り直して幅を一定に保つ
+        float lossy = transform.lossyScale.x;
+        if (Mathf.Abs(lossy - _meshScale) > 0.005f) {
+            _meshScale = lossy;
+            graphic.SetVerticesDirty();
+        }
+
         // フェードイン/アウト(時間停止中のメニューでも動くようにunscaledで進める)
         float dt = Time.unscaledDeltaTime;
         if (_isHighlighted) {
@@ -121,6 +129,9 @@ public class UIGlowOutline : BaseMeshEffect {
     public override void ModifyMesh(VertexHelper vh) {
         // 光っている間だけメッシュを広げる
         if (!IsActive() || _materialInstance == null || graphic.material != _materialInstance) return;
+        _meshScale = transform.lossyScale.x;
+        // 大きさ0付近では幅の換算が破綻するので広げない(出てくる演出の最初の一瞬)
+        if (_meshScale < 0.01f) return;
         UIFloatingOutline.ExpandMesh(vh, graphic, _glowWidth, Vector2.zero);
     }
 }
