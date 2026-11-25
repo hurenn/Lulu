@@ -5,8 +5,9 @@ using UnityEngine;
 /// メインメニュー(部屋の画面)。「ステージ」「はなす」「よみもの」「オプション」を横に並べ、
 /// 左右入力でカーソルを動かし、決定ボタンで選ぶ。
 /// カーソルを合わせた項目に対応する部屋の家具(黒板・机・本棚・箱)を発光アウトラインで強調する。
-/// 「ステージ」を選ぶと、黒板を中心に部屋を少しズームしながら黒板の背景へクロスフェードし、ステージセレクトを開く。
-/// それ以外の項目の先(ランダム会話・資料閲覧・オプション)は未実装
+/// 開く画面が設定された項目(ステージ→ステージセレクト、よみもの→読み物)を選ぶと、
+/// その家具を中心に部屋を少しズームしながら家具のアップの背景へクロスフェードし、画面を開く。
+/// はなす(ランダム会話)・オプションは未実装
 /// </summary>
 public class MainMenuManager : MonoBehaviour {
     private const float FRAME_MOVE_TIME = 0.06f;    // 選択枠の移動時間(秒)
@@ -26,7 +27,13 @@ public class MainMenuManager : MonoBehaviour {
         public eMainMenu menu;
         public RectTransform button;         // 項目のボタン
         public GameObject activeButton;      // 選択中だけ表示するハイライト
-        public UIGlowOutline furniture;      // 選択中に光らせる家具
+        public UIGlowOutline furniture;      // 選択中に光らせる家具(決定した時のズームの中心にもなる)
+
+        [Header("決定した時に開く画面(未設定なら未実装扱い)")]
+        public MainMenuSubScreen subScreen;
+        public CanvasGroup backGround;               // 画面の背景(家具のアップ)。部屋の上にクロスフェードで重ねる
+        public float zoomScale = 1.15f;              // 部屋をズームする倍率
+        public float backGroundStartScale = 0.92f;   // 背景が出始める時の大きさ
     }
 
     [SerializeField] private PlayerController _playerController;
@@ -38,23 +45,19 @@ public class MainMenuManager : MonoBehaviour {
     [SerializeField] private AudioClip _seSelect;        // 選択時の効果音
     [SerializeField] private AudioClip _seDecide;        // 決定時の効果音
 
-    [Header("ステージセレクトへの切り替え")]
-    [SerializeField] private StageSelectMenu _stageSelect;
-    [SerializeField] private RectTransform _zoomCenter;       // ズームの中心(黒板)
+    [Header("項目の画面への切り替え")]
     [SerializeField] private RectTransform[] _zoomTargets;    // ズームする物(部屋の背景・家具)
-    [SerializeField] private GameObject[] _hideObjects;       // ステージセレクト中は非表示にする物(家具・ボタン・選択枠)
+    [SerializeField] private GameObject[] _hideObjects;       // 項目の画面を開いている間は非表示にする物(家具・ボタン・選択枠)
     [SerializeField] private CanvasGroup[] _fadeGroups;       // 切り替え中にフェードさせるUI(ボタン・選択枠)
-    [SerializeField] private CanvasGroup _boardBackGround;    // ステージセレクトの背景(黒板のアップ)
-    [SerializeField] private float _zoomScale = 1.15f;        // ズームの倍率
     [SerializeField] private float _transitionTime = 0.45f;   // 切り替えの時間(秒)
-    [SerializeField] private float _boardBackGroundStartScale = 0.92f; // 黒板の背景が出始める時の大きさ
 
     private enum eState {
         Menu,         // メインメニュー操作中
         Transition,   // 画面切り替え中
-        StageSelect,  // ステージセレクト中
+        SubScreen,    // 項目の画面(ステージセレクトなど)を開いている
     }
     private eState _state = eState.Menu;
+    private MenuItem _openedItem;          // 開いている項目
     private Vector3[] _zoomBasePositions;
     private Vector3[] _zoomBaseScales;
     private Vector3[] _zoomCenterLocals;
@@ -76,7 +79,7 @@ public class MainMenuManager : MonoBehaviour {
         Canvas.ForceUpdateCanvases();
         _UpdateView(instant: true);
 
-        // ズームする物の元の位置・大きさと、ズームの中心(黒板の位置。ズームする物の親の座標)を覚えておく
+        // ズームする物の元の位置・大きさを覚えておく
         if (_zoomTargets == null) _zoomTargets = new RectTransform[0];
         int count = _zoomTargets.Length;
         _zoomBasePositions = new Vector3[count];
@@ -85,15 +88,16 @@ public class MainMenuManager : MonoBehaviour {
         for (int i = 0; i < count; i++) {
             _zoomBasePositions[i] = _zoomTargets[i].localPosition;
             _zoomBaseScales[i] = _zoomTargets[i].localScale;
-            Vector3 center = _zoomCenter != null ? _zoomCenter.position : _zoomTargets[i].position;
-            _zoomCenterLocals[i] = _zoomTargets[i].parent.InverseTransformPoint(center);
         }
 
-        if (_boardBackGround != null) {
-            _boardBackGround.alpha = 0f;
-            _boardBackGround.gameObject.SetActive(false);
+        // 項目の画面と背景は最初は隠しておく
+        foreach (var item in _items) {
+            if (item.backGround != null) {
+                item.backGround.alpha = 0f;
+                item.backGround.gameObject.SetActive(false);
+            }
+            if (item.subScreen != null) item.subScreen.gameObject.SetActive(false);
         }
-        if (_stageSelect != null) _stageSelect.gameObject.SetActive(false);
     }
 
     private void Update() {
@@ -138,57 +142,52 @@ public class MainMenuManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// 決定。ステージ以外は未実装なので、決定音を鳴らしてログを出すだけ
+    /// 決定。開く画面が設定されていない項目(はなす・オプション)は未実装なので、決定音を鳴らしてログを出すだけ
     /// </summary>
     private void _Decide() {
         _PlaySe(_seDecide);
-        var menu = _items[_currentIndex].menu;
-        switch (menu) {
-            case eMainMenu.Stage:
-                if (_stageSelect != null) {
-                    StartCoroutine(_EnterStageSelect());
-                    return;
-                }
-                break;
-            case eMainMenu.Talk:
-                // TODO: ランダム会話へ
-                break;
-            case eMainMenu.Book:
-                // TODO: 資料閲覧へ
-                break;
-            case eMainMenu.Option:
-                // TODO: オプションへ
-                break;
+        var item = _items[_currentIndex];
+        if (item.subScreen != null) {
+            StartCoroutine(_EnterSubScreen(item));
+            return;
         }
-        Debug.Log($"[MainMenu] {menu} を選択(未実装)");
+        // TODO: はなす(ランダム会話)・オプション
+        Debug.Log($"[MainMenu] {item.menu} を選択(未実装)");
     }
 
     /// <summary>
-    /// メインメニュー → ステージセレクト。
-    /// 黒板を中心に部屋を少しズームしながら、黒板の背景をクロスフェードで重ね、ボタン類を消す
+    /// メインメニュー → 項目の画面。
+    /// 家具を中心に部屋を少しズームしながら、家具のアップの背景をクロスフェードで重ね、ボタン類を消す
     /// </summary>
-    private IEnumerator _EnterStageSelect() {
+    private IEnumerator _EnterSubScreen(MenuItem item) {
         _state = eState.Transition;
-        if (_boardBackGround != null) _boardBackGround.gameObject.SetActive(true);
+        _openedItem = item;
 
-        yield return _TransitionAnim(0f, 1f);
+        // ズームの中心(家具の位置)を、ズームする物の親の座標で求める(ズームしていない今の位置で求める)
+        Vector3 center = item.furniture != null ? item.furniture.transform.position : Vector3.zero;
+        for (int i = 0; i < _zoomTargets.Length; i++) {
+            _zoomCenterLocals[i] = _zoomTargets[i].parent.InverseTransformPoint(center);
+        }
+        if (item.backGround != null) item.backGround.gameObject.SetActive(true);
+
+        yield return _TransitionAnim(item, 0f, 1f);
 
         foreach (var obj in _hideObjects) {
             if (obj != null) obj.SetActive(false);
         }
-        _state = eState.StageSelect;
-        _stageSelect.Open(_OnStageSelectCanceled);
+        _state = eState.SubScreen;
+        item.subScreen.Open(_OnSubScreenCanceled);
     }
 
-    private void _OnStageSelectCanceled() {
-        if (_state != eState.StageSelect) return;
-        StartCoroutine(_ReturnToMenu());
+    private void _OnSubScreenCanceled() {
+        if (_state != eState.SubScreen) return;
+        StartCoroutine(_ReturnToMenu(_openedItem));
     }
 
     /// <summary>
-    /// ステージセレクト → メインメニュー(入った時の逆再生)
+    /// 項目の画面 → メインメニュー(入った時の逆再生)
     /// </summary>
-    private IEnumerator _ReturnToMenu() {
+    private IEnumerator _ReturnToMenu(MenuItem item) {
         _state = eState.Transition;
         foreach (var obj in _hideObjects) {
             if (obj != null) obj.SetActive(true);
@@ -196,31 +195,32 @@ public class MainMenuManager : MonoBehaviour {
         // 非表示の間に消えた家具の光・ハイライトを付け直す
         _UpdateView(instant: true);
 
-        yield return _TransitionAnim(1f, 0f);
+        yield return _TransitionAnim(item, 1f, 0f);
 
-        if (_boardBackGround != null) _boardBackGround.gameObject.SetActive(false);
+        if (item.backGround != null) item.backGround.gameObject.SetActive(false);
+        _openedItem = null;
         _isHorizontalHeld = true;  // 戻った時に倒していた方向では動かさない
         _state = eState.Menu;
     }
 
     /// <summary>
-    /// 切り替えの進み具合(0:メインメニュー 1:ステージセレクト)をfromからtoへ動かす
+    /// 切り替えの進み具合(0:メインメニュー 1:項目の画面)をfromからtoへ動かす
     /// </summary>
-    private IEnumerator _TransitionAnim(float from, float to) {
+    private IEnumerator _TransitionAnim(MenuItem item, float from, float to) {
         float t = 0f;
         while (t < _transitionTime) {
             t += Time.unscaledDeltaTime;
             float rate = Mathf.Lerp(from, to, Mathf.Clamp01(t / _transitionTime));
-            _ApplyTransition(Mathf.SmoothStep(0f, 1f, rate), rate);
+            _ApplyTransition(item, Mathf.SmoothStep(0f, 1f, rate), rate);
             yield return null;
         }
-        _ApplyTransition(to, to);
+        _ApplyTransition(item, to, to);
     }
 
     // zoomRate: ズームの進み具合(なめらかにしたもの) fadeRate: フェードの進み具合
-    private void _ApplyTransition(float zoomRate, float fadeRate) {
-        // 黒板を中心に拡大する: 中心からの距離を倍率分だけ伸ばす
-        float scale = Mathf.Lerp(1f, _zoomScale, zoomRate);
+    private void _ApplyTransition(MenuItem item, float zoomRate, float fadeRate) {
+        // 家具を中心に拡大する: 中心からの距離を倍率分だけ伸ばす
+        float scale = Mathf.Lerp(1f, item.zoomScale, zoomRate);
         for (int i = 0; i < _zoomTargets.Length; i++) {
             var target = _zoomTargets[i];
             if (target == null) continue;
@@ -235,10 +235,10 @@ public class MainMenuManager : MonoBehaviour {
             if (group != null) group.alpha = uiAlpha;
         }
 
-        // 黒板の背景は少し小さい所から広がりながら現れる
-        if (_boardBackGround != null) {
-            _boardBackGround.alpha = fadeRate;
-            _boardBackGround.transform.localScale = Vector3.one * Mathf.Lerp(_boardBackGroundStartScale, 1f, zoomRate);
+        // 家具のアップの背景は少し小さい所から広がりながら現れる
+        if (item.backGround != null) {
+            item.backGround.alpha = fadeRate;
+            item.backGround.transform.localScale = Vector3.one * Mathf.Lerp(item.backGroundStartScale, 1f, zoomRate);
         }
     }
 
