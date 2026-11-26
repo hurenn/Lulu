@@ -155,6 +155,7 @@ public class TalkTrigger : MonoBehaviour {
             CinemachineManager.Instance?.ZoomOnTarget(_playerController.Character.transform); // 直接メッセージ表示中はプレイヤーに少しズームする
             foreach (var message in set.messageDatas) {
                 message.waitForButton = true; // 会話中はタイマー自動送りにせず手動送りにする
+                message.isConversationStyle = true; // 左右にアイコンを大きく出す会話形式で表示する
                 _messageListScript.Enqueue(message);
             }
             _isWaitingForMessageEnd = true;

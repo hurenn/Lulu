@@ -34,6 +34,7 @@ public class MainMenuManager : MonoBehaviour {
         public CanvasGroup backGround;               // 画面の背景(家具のアップ)。部屋の上にクロスフェードで重ねる
         public float zoomScale = 1.15f;              // 部屋をズームする倍率
         public float backGroundStartScale = 0.92f;   // 背景が出始める時の大きさ
+        public bool hideRoom = true;                 // 開いている間、部屋(家具・ボタン・選択枠)を非表示にするか。falseならボタン類が消えるだけで部屋は見えたまま
     }
 
     [SerializeField] private PlayerController _playerController;
@@ -172,8 +173,10 @@ public class MainMenuManager : MonoBehaviour {
 
         yield return _TransitionAnim(item, 0f, 1f);
 
-        foreach (var obj in _hideObjects) {
-            if (obj != null) obj.SetActive(false);
+        if (item.hideRoom) {
+            foreach (var obj in _hideObjects) {
+                if (obj != null) obj.SetActive(false);
+            }
         }
         _state = eState.SubScreen;
         item.subScreen.Open(_OnSubScreenCanceled);
@@ -189,11 +192,13 @@ public class MainMenuManager : MonoBehaviour {
     /// </summary>
     private IEnumerator _ReturnToMenu(MenuItem item) {
         _state = eState.Transition;
-        foreach (var obj in _hideObjects) {
-            if (obj != null) obj.SetActive(true);
+        if (item.hideRoom) {
+            foreach (var obj in _hideObjects) {
+                if (obj != null) obj.SetActive(true);
+            }
+            // 非表示の間に消えた家具の光・ハイライトを付け直す
+            _UpdateView(instant: true);
         }
-        // 非表示の間に消えた家具の光・ハイライトを付け直す
-        _UpdateView(instant: true);
 
         yield return _TransitionAnim(item, 1f, 0f);
 

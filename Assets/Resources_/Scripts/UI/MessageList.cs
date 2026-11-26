@@ -9,10 +9,18 @@ public class MessageDataList {
     public bool isForced;        // 強制メッセージかどうか
 }
 
+// メッセージウィンドウのどちら側にキャラクターアイコンを出すか
+public enum eMessageIconSide {
+    Auto = 0,   // 会話の流れで自動(最初に話したキャラが左、次の別キャラが右。同じキャラは同じ側)
+    Left = 1,
+    Right = 2,
+}
+
 [System.Serializable]
 public class MessageData {
     public string key;   // 外部テキストテーブル(Assets/Resources/Localization/Messages.json)を引くキー
     public Sprite characterIcon;    // キャラクターアイコン
+    public eMessageIconSide iconSide = eMessageIconSide.Auto; // アイコンを出す側
     public float addShowTime;      // 追加表示時間
     public AudioClip soundEffect;   // 表示開始と同時に再生する効果音
     public bool isShakeWindow = false; // 表示開始と同時にウィンドウを振動させる(強さ・時間はMessageViewerの固定値)
@@ -27,6 +35,10 @@ public class MessageData {
 
     // trueならTimelineが無くてもボタン入力を待って手動送りにする(TalkTrigger等の会話イベント用)
     public bool waitForButton = false;
+
+    // trueなら左右にアイコンを出す会話形式で表示する(メインメニューの「はなす」・話しかけて始まる会話イベントが実行時にセットする)。
+    // Timelineから出るボタン送りのメッセージは、これが無くても会話形式になる
+    [System.NonSerialized] public bool isConversationStyle;
 
     // 非nullならこの行の表示完了後に選択肢を表示する。
     // ChoiceMarkerが実行時にセットするだけの値なのでInspectorでは編集させない

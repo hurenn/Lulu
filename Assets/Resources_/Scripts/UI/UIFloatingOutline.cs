@@ -16,11 +16,26 @@ public class UIFloatingOutline : BaseMeshEffect {
     [SerializeField] private float _outlineWidth = 4f;                        // 線の太さ(Canvas上の単位)
     [SerializeField] private Vector2 _shadowOffset = new Vector2(4f, -7f);  // 影のずれ(Canvas上の単位)
 
+    private const float MAX_SCALE_COMPENSATION = 20f; // 拡大率0付近で線の太さの換算が無限大にならないようにする上限
+
     private static readonly List<UIVertex> _verts = new List<UIVertex>();
+
+    private float _meshScale = -1f;  // メッシュを作った時の拡大率
 
     protected override void OnEnable() {
         base.OnEnable();
         EnableShaderChannels(graphic);
+    }
+
+    // 線の太さはメッシュを作る時の拡大率で換算するので、拡縮アニメ(選択肢の出現など)で拡大率が変わったら作り直す。
+    // 作り直さないと、拡大率が小さい時に作った極端に太い線と影がそのまま残る
+    private void LateUpdate() {
+        if (graphic == null || _meshScale < 0f) return;
+        float scale = transform.lossyScale.x;
+        if (Mathf.Abs(scale - _meshScale) > Mathf.Max(0.001f, _meshScale * 0.005f)) {
+            _meshScale = scale;
+            graphic.SetVerticesDirty();
+        }
     }
 
     // 線の太さ・影のずれ(TEXCOORD1)と絵の範囲(TEXCOORD2)をシェーダーへ渡せるようにする
@@ -32,6 +47,7 @@ public class UIFloatingOutline : BaseMeshEffect {
 
     public override void ModifyMesh(VertexHelper vh) {
         if (!IsActive() || vh.currentVertCount == 0) return;
+        _meshScale = transform.lossyScale.x;
         ExpandMesh(vh, graphic, _outlineWidth, _shadowOffset);
     }
 
@@ -51,7 +67,7 @@ public class UIFloatingOutline : BaseMeshEffect {
         if (canvas != null) {
             float local = transform.lossyScale.x;
             float root = canvas.renderMode == RenderMode.WorldSpace ? WORLD_UNITS_PER_CANVAS_UNIT : canvas.transform.lossyScale.x;
-            if (local > 0f && root > 0f) scale = root / local;
+            if (local > 0f && root > 0f) scale = Mathf.Min(root / local, MAX_SCALE_COMPENSATION);
         }
         float width = outlineWidth * scale;
         Vector2 shadow = shadowOffset * scale;

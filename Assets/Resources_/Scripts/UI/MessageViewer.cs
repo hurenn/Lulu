@@ -42,6 +42,8 @@ public class MessageViewer : MonoBehaviour {
     [SerializeField] private float _iconBounceHeight = 20f;    // 全文表示時にアイコンが跳ねる高さ
     [SerializeField] private float _iconBounceDuration = 0.2f; // 全文表示時にアイコンが跳ねる時間
     [SerializeField] private float _iconAppearDelay = 0.25f;   // アイコンが外から現れるアニメーションの再生時間(ShowMessage.anim準拠)
+    [SerializeField] private MessageSpeakerIcons _speakerIcons;  // 左右のキャラクターアイコン(設定されていれば_iconImageの代わりに使う)
+    [SerializeField] private float _conversationGapTime = 1.0f;  // 窓が閉じてからこの時間を過ぎると別の会話として左右を並べ直す(Timeline外のメッセージ)
     private RectTransform _messagePanelRect; // メッセージパネルのRectTransform
     private RectTransform _iconRect;         // キャラクターアイコンのRectTransform
 
@@ -55,6 +57,19 @@ public class MessageViewer : MonoBehaviour {
     private bool _isEventMessage;    // イベントメッセージフラグ
     private float _currentCoolTime; // 次のメッセージを表示するまでのクールタイム
     private IEnumerator _typingCoroutine; // 文字を1つずつ表示するコルーチン
+
+    // 左右アイコンの会話の区切りを判定するための状態
+    private bool _isPanelOpen;                 // 窓が開いているか(表示アニメーションの状態)
+    private bool _wasPanelOpenAtShow;          // 今のメッセージを出した時に窓がすでに開いていたか
+    private float _panelClosedTime = -999f;    // 窓が閉じた時刻
+    private UnityEngine.Playables.PlayableDirector _conversationDirector; // 今の会話を出しているTimeline
+    private bool _isConversationMode;          // 左右にアイコンを出す会話形式で表示中か
+    // 名前欄・本文の元の配置(右側のキャラが話す時・右にアイコンがある時に変えるため)
+    private bool _layoutCached;
+    private Vector2 _nameAnchorMin, _nameAnchorMax, _namePos;
+    private Vector2 _textOffsetMin, _textOffsetMax;
+    [SerializeField] private float _conversationTextLeft = 100f;   // 会話中の本文の左の余白(窓の左端から)
+    [SerializeField] private float _conversationTextRight = 280f;  // 会話中の本文の右の余白(右下のBボタンの分)
 
     private bool _isStopMessage = false;    // メッセージ表示停止フラグ
     public void SetIsStopMessage(bool enable) {
@@ -153,7 +168,8 @@ public class MessageViewer : MonoBehaviour {
     }
 
     private void _ShowNext() {
-        _messagePanel.SetActive(true);                  // パネルを表示                
+        _wasPanelOpenAtShow = _isPanelOpen;             // 窓が開いたまま続くメッセージか(アイコンを跳ねさせる時機に使う)
+        _messagePanel.SetActive(true);                  // パネルを表示
         if (_typingCoroutine != null)
             StopCoroutine(_typingCoroutine);            // 表示中のコルーチンを停止
 
@@ -199,7 +215,11 @@ public class MessageViewer : MonoBehaviour {
             }
         }
 
-        _iconImage.sprite = chara_icon;   // キャラクターアイコンをセット
+        if (_speakerIcons != null) {
+            _ShowSpeakerIcon(chara_icon);
+        } else {
+            _iconImage.sprite = chara_icon;   // キャラクターアイコンをセット
+        }
         _isSeries = _messageListScript.HasMessages();   // 次のメッセージがあるかどうか
 
         _currentShowTime = _BASE_SHOW_TIME + (_currentVisibleLength *
@@ -223,6 +243,73 @@ public class MessageViewer : MonoBehaviour {
             if (_messagePanelAnimator != null) { _messagePanelAnimator.SetBool("Show", true); _messagePanelAnimator.Update(999f); }
             ShakeWindow(shake_intensity, shake_duration);
         }
+    }
+
+    // 左右のアイコンに話すキャラを出し、名前欄と本文の配置を合わせる
+    private void _ShowSpeakerIcon(Sprite chara_icon) {
+        _CacheLayout();
+        var director = _currentMessage.playableDirector;
+        // 会話形式(左右にアイコンを大きく出す)は「はなす」とTimelineの会話イベントだけ。
+        // ステージ中に自動で流れるメッセージや話しかけた時の直接メッセージは、今まで通り左だけに出す
+        bool isConversation = _currentMessage.isConversationStyle || (director != null && !_currentMessage.isAutoForce);
+        if (isConversation != _isConversationMode) {
+            // 形式が変わったら左右の割り当てを最初からにする
+            _isConversationMode = isConversation;
+            _speakerIcons.ResetSides();
+        }
+        if (isConversation && !_isPanelOpen) {
+            // 窓が閉じていた: 別のTimeline、またはTimeline外で間が空いたら別の会話として並べ直す
+            bool isOtherEvent = director != _conversationDirector;
+            bool isLongGap = director == null && Time.unscaledTime - _panelClosedTime > _conversationGapTime;
+            if (isOtherEvent || isLongGap) {
+                _speakerIcons.ResetSides();
+            }
+        }
+        _conversationDirector = director;
+
+        _speakerIcons.SetConversation(isConversation);
+        var side = isConversation
+            ? _speakerIcons.ShowSpeaker(chara_icon, _currentMessage.iconSide)
+            : _speakerIcons.ShowSingle(chara_icon);
+
+        // 名前欄: 会話中は話しているキャラのアイコンの斜め下(目印の位置)、普段は元の位置(窓の左下)
+        if (_namePanel != null) {
+            var rt = (RectTransform)_namePanel.transform;
+            var anchor = isConversation ? _speakerIcons.GetNameAnchor(side) : null;
+            if (anchor != null) {
+                // 目印(ConversationIcons の下)と名前欄(MessagePanel の下)は親の範囲が同じなので、配置の値をそのまま写す
+                rt.anchorMin = anchor.anchorMin;
+                rt.anchorMax = anchor.anchorMax;
+                rt.anchoredPosition = anchor.anchoredPosition;
+            } else {
+                rt.anchorMin = _nameAnchorMin;
+                rt.anchorMax = _nameAnchorMax;
+                rt.anchoredPosition = _namePos;
+            }
+        }
+
+        // 本文: 会話中はアイコンも名前も窓の左端を使わないので、窓を左右いっぱいに使う(右はBボタンの分だけ空ける)
+        var textRect = _messageText.rectTransform;
+        if (isConversation) {
+            textRect.offsetMin = new Vector2(_conversationTextLeft, _textOffsetMin.y);
+            textRect.offsetMax = new Vector2(-_conversationTextRight, _textOffsetMax.y);
+        } else {
+            textRect.offsetMin = _textOffsetMin;
+            textRect.offsetMax = _textOffsetMax;
+        }
+    }
+
+    private void _CacheLayout() {
+        if (_layoutCached) return;
+        _layoutCached = true;
+        if (_namePanel != null) {
+            var rt = (RectTransform)_namePanel.transform;
+            _nameAnchorMin = rt.anchorMin;
+            _nameAnchorMax = rt.anchorMax;
+            _namePos = rt.anchoredPosition;
+        }
+        _textOffsetMin = _messageText.rectTransform.offsetMin;
+        _textOffsetMax = _messageText.rectTransform.offsetMax;
     }
 
     // 1文字ずつ表示する場合のコルーチン
@@ -389,6 +476,18 @@ public class MessageViewer : MonoBehaviour {
     /// メッセージウィンドウ表示開始アニメーション再生
     /// </summary>
     private void _SwitchShowAnimation(bool is_show) {
+        // 窓の開閉に合わせて左右のアイコンを出し入れする
+        if (is_show != _isPanelOpen) {
+            _isPanelOpen = is_show;
+            if (_speakerIcons != null) {
+                if (is_show) {
+                    _speakerIcons.SlideIn();
+                } else {
+                    _speakerIcons.SlideOut();
+                }
+            }
+            if (!is_show) _panelClosedTime = Time.unscaledTime;
+        }
         if (_messagePanelAnimator != null) {
             _messagePanelAnimator.SetBool("Show", is_show);
         } else {
@@ -434,7 +533,7 @@ public class MessageViewer : MonoBehaviour {
     Character_Base player => _playerController.Character;
     private bool _IsIconOverlapping() {
         // プレイヤーがメッセージウィンドウと重なっているかどうかを判定
-        if (player == null) return false;
+        if (player == null || !player.gameObject.activeInHierarchy) return false; // メインメニューなどプレイヤーが出ていない画面では判定しない
         var playerPos = mainCamera.WorldToScreenPoint(player.transform.position);
 
         // RectTransformの取得
@@ -445,7 +544,9 @@ public class MessageViewer : MonoBehaviour {
             _messagePanelRect = _messagePanel.GetComponent<RectTransform>();
         }
 
-        var is_icon_overlap = RectTransformUtility.RectangleContainsScreenPoint(_iconRect, playerPos, null);
+        var is_icon_overlap = _speakerIcons != null
+            ? _speakerIcons.ContainsScreenPoint(playerPos)
+            : RectTransformUtility.RectangleContainsScreenPoint(_iconRect, playerPos, null);
         var is_window_overlap = RectTransformUtility.RectangleContainsScreenPoint(_messagePanelRect, playerPos, null);
 
         return is_icon_overlap || is_window_overlap;
@@ -503,6 +604,13 @@ public class MessageViewer : MonoBehaviour {
     private Coroutine _iconAppearBounceCoroutine;
 
     private IEnumerator _BounceIconAfterAppearCo() {
+        if (_speakerIcons != null) {
+            // 窓が開いたばかりならアイコンが滑り込み終わってから、開いたままなら少しだけ待って跳ねる
+            yield return new WaitForSecondsRealtime(_wasPanelOpenAtShow ? 0.05f : _iconAppearDelay);
+            _speakerIcons.BounceSpeaker();
+            _iconAppearBounceCoroutine = null;
+            yield break;
+        }
         yield return new WaitForSecondsRealtime(_iconAppearDelay);
         _BounceIcon();
         _iconAppearBounceCoroutine = null;
