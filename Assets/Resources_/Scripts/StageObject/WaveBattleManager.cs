@@ -18,6 +18,10 @@ public class WaveBattleManager : MonoBehaviour
     [Header("道封鎖設定")]
     [SerializeField] private GameObject[] walls; // 道を封鎖するオブジェクト
 
+    [Header("チュートリアル設定")]
+    [Tooltip("設定すると、プレイヤーがこのエリアに触れるまでWaveを繰り返す（敵が何度でも復活する）。触れた後にWaveの敵を全滅させると戦闘終了")]
+    [SerializeField] private WaveClearTrigger _clearTrigger;
+
     private GameObject _appearEffect;
     private bool hasTriggered = false;
     private float _spawnInterval = 0.3f;
@@ -57,8 +61,9 @@ public class WaveBattleManager : MonoBehaviour
         // 出現させた敵を管理するリスト
         List<Enemy_Base> spawnedEnemies = new List<Enemy_Base>();
         int nextSpawnIndex = 0;
-        // 各Waveを順番に実行
-        foreach (var wave in waveData) {
+        // 各Waveを順番に実行（チュートリアル時は終了条件を満たすまで先頭から繰り返す）
+        for (int waveIndex = 0; waveIndex < waveData.Length; waveIndex++) {
+            var wave = waveData[waveIndex];
 
             foreach (var enemyInfo in wave.enemies) {
                 for (int i = 0; i < enemyInfo.count; i++) {
@@ -94,6 +99,17 @@ public class WaveBattleManager : MonoBehaviour
             // 全ての敵が倒されるまで待機
             while (spawnedEnemies.Count > 0) {
                 yield return null;
+            }
+
+            if (_clearTrigger != null) {
+                // プレイヤーが触れた後にWaveを全滅させたら、残りのWaveを飛ばして終了
+                if (_clearTrigger.IsTouched) break;
+                // まだ触れていなければ、最後のWaveの後も先頭に戻って敵を復活させる
+                // （敵が0体のWaveでも無限ループでフリーズしないよう1フレーム待つ）
+                if (waveIndex == waveData.Length - 1) {
+                    waveIndex = -1;
+                    yield return null;
+                }
             }
         }
 

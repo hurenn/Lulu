@@ -12,6 +12,14 @@ public class AnimationStopper : MonoBehaviour {
         _animator.enabled = false; // 最初は停止
     }
 
+    void Awake() {
+        // 検知範囲が大きいため、Defaultレイヤーのままだと他の敵の判定やコイン等と大量に接触し、物理演算が非常に重くなる
+        // プレイヤーの検知にしか使わないので、Playerレイヤー以外とは接触しないようにする
+        foreach (var col in GetComponents<Collider2D>()) {
+            col.excludeLayers = ~LayerMask.GetMask("Player");
+        }
+    }
+
     void Start() {
         if (_animator == null && _animator.enabled) {
             _animator.enabled = false;
